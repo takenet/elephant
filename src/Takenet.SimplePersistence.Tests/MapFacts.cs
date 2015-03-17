@@ -31,10 +31,10 @@ namespace Takenet.SimplePersistence.Tests
             var value = _fixture.Create<TValue>();
 
             // Act
-            var result = await map.TryAddAsync(key, value, false);
+            var actual = await map.TryAddAsync(key, value, false);
 
             // Assert
-            Check.That(result).IsTrue();
+            Check.That(actual).IsTrue();
             Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(value);
         }
 
@@ -49,10 +49,10 @@ namespace Takenet.SimplePersistence.Tests
             var newValue = _fixture.Create<TValue>();
 
             // Act
-            var result = await map.TryAddAsync(key, newValue, true);
+            var actual = await map.TryAddAsync(key, newValue, true);
 
             // Assert
-            Check.That(result).IsTrue();
+            Check.That(actual).IsTrue();
             Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(newValue);
         }
 
@@ -67,11 +67,103 @@ namespace Takenet.SimplePersistence.Tests
             var newValue = _fixture.Create<TValue>();
 
             // Act
-            var result = await map.TryAddAsync(key, newValue, false);
+            var actual = await map.TryAddAsync(key, newValue, false);
 
             // Assert
-            Check.That(result).IsFalse();
+            Check.That(actual).IsFalse();
             Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(value);
+        }
+
+        [Fact(DisplayName = "GetExistingKeyReturnsValue")]
+        public async Task GetExistingKeyReturnsValue()
+        {
+            // Arrange
+            var map = Create();
+            var key = _fixture.Create<TKey>();
+            var value = _fixture.Create<TValue>();
+            await map.TryAddAsync(key, value, false);
+
+            // Act
+            var actual = await map.GetValueOrDefaultAsync(key);
+
+            // Assert
+            Check.That(actual).IsEqualTo(value);
+        }
+
+        [Fact(DisplayName = "GetNonExistingKeyReturnsDefault")]
+        public async Task GetNonExistingKeyReturnsDefault()
+        {
+            // Arrange
+            var map = Create();
+            var key = _fixture.Create<TKey>();
+
+            // Act
+            var actual = await map.GetValueOrDefaultAsync(key);
+
+            // Assert
+            Check.That(actual).IsEqualTo(default(TValue));
+        }
+
+        [Fact(DisplayName = "RemoveExistingKeyAndValueSucceeds")]
+        public async Task RemoveExistingKeyAndValueSucceeds()
+        {
+            // Arrange
+            var map = Create();
+            var key = _fixture.Create<TKey>();
+            var value = _fixture.Create<TValue>();
+            await map.TryAddAsync(key, value, false);
+
+            // Act
+            var actual = await map.TryRemoveAsync(key);
+
+            // Assert
+            Check.That(actual).IsTrue();
+            Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(default(TValue));
+        }
+
+        [Fact(DisplayName = "RemoveNonExistingKeyReturnsFalse")]
+        public async Task RemoveNonExistingKeyReturnsFalse()
+        {
+            // Arrange
+            var map = Create();
+            var key = _fixture.Create<TKey>();
+            var value = _fixture.Create<TValue>();
+
+            // Act
+            var actual = await map.TryRemoveAsync(key);
+
+            // Assert
+            Check.That(actual).IsFalse();
+        }
+
+        [Fact(DisplayName = "CheckForExistingKeyReturnsTrue")]
+        public async Task CheckForExistingKeyReturnsTrue()
+        {
+            // Arrange
+            var map = Create();
+            var key = _fixture.Create<TKey>();
+            var value = _fixture.Create<TValue>();
+            await map.TryAddAsync(key, value, false);
+
+            // Act
+            var actual = await map.ContainsKeyAsync(key);
+
+            // Assert
+            Check.That(actual).IsTrue();
+        }
+
+        [Fact(DisplayName = "CheckForNonExistingKeyReturnsFalse")]
+        public async Task CheckForNonExistingKeyReturnsFalse()
+        {
+            // Arrange
+            var map = Create();
+            var key = _fixture.Create<TKey>();
+
+            // Act
+            var actual = await map.ContainsKeyAsync(key);
+
+            // Assert
+            Check.That(actual).IsFalse();
         }
     }
 }
