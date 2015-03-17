@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Takenet.SimplePersistence.Tests
 {
-    public abstract class IntegerObjectMapFacts : MapFacts<int, object>
+    public abstract class IntegerObjectDictionaryMapFacts : MapFacts<int, object>
     {
     }
 }
