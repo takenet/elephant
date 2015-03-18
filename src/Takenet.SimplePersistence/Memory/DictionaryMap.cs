@@ -82,9 +82,7 @@ namespace Takenet.SimplePersistence.Memory
         {
             var predicate = where.Compile();
 
-            var totalValues = this._internalDictionary
-                .Where(pair => predicate.Invoke(pair.Value));
-
+            var totalValues = _internalDictionary.Where(pair => predicate.Invoke(pair.Value));
             var resultValues = totalValues
                 .Skip(skip)
                 .Take(take)
@@ -92,23 +90,10 @@ namespace Takenet.SimplePersistence.Memory
                 .ToArray();
 
             var result = new QueryResult<TValue>(resultValues, totalValues.Count());
-
             return Task.FromResult(result);
         }
 
         #endregion
-
-        protected TValue GetOrCreateValue(TKey key)
-        {
-            TValue value;
-
-            if (!_internalDictionary.TryGetValue(key, out value))
-            {
-                value = _valueFactory();
-                _internalDictionary.TryAdd(key, value);
-            }
-            return value;
-        }
 
         #region IUpdatableMap<TKey,TValue> Members
 
@@ -121,17 +106,14 @@ namespace Takenet.SimplePersistence.Memory
 
         #region IExpirableKeyMap<TKey,TValue> Members
 
-
-
         private readonly ConcurrentDictionary<TKey, Tuple<Task, CancellationTokenSource>> _expirationTaskDictionary = new ConcurrentDictionary<TKey, Tuple<Task, CancellationTokenSource>>();
-
 
         public Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
-            Tuple<Task, CancellationTokenSource> expirationTaskWithCancellation;
-            if (_expirationTaskDictionary.TryRemove(key, out expirationTaskWithCancellation))
+            Tuple<Task, CancellationTokenSource> expirationTaskWithCts;
+            if (_expirationTaskDictionary.TryRemove(key, out expirationTaskWithCts))
             {
-                expirationTaskWithCancellation.Item2.Cancel();
+                expirationTaskWithCts.Item2.Cancel();
             }
 
             var cancellationTokenSource = new CancellationTokenSource();
@@ -139,11 +121,11 @@ namespace Takenet.SimplePersistence.Memory
             {
                 await Task.Delay(ttl, cancellationTokenSource.Token);
                 await TryRemoveAsync(key);
-                _expirationTaskDictionary.TryRemove(key, out expirationTaskWithCancellation);
+                _expirationTaskDictionary.TryRemove(key, out expirationTaskWithCts);
             }, cancellationTokenSource.Token);
 
-            expirationTaskWithCancellation = new Tuple<Task, CancellationTokenSource>(expirationTask, cancellationTokenSource);
-            _expirationTaskDictionary.TryAdd(key, expirationTaskWithCancellation);
+            expirationTaskWithCts = new Tuple<Task, CancellationTokenSource>(expirationTask, cancellationTokenSource);
+            _expirationTaskDictionary.TryAdd(key, expirationTaskWithCts);
             return TaskUtil.CompletedTask;
         }
 
