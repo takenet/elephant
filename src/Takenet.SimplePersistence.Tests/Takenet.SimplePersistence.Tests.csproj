@@ -61,6 +61,7 @@
     <Compile Include="MapFacts.cs" />
     <Compile Include="Memory\MemoryIntegerObjectDictionaryMapFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sql\SqlIntegerObjectDictionaryMapFacts.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

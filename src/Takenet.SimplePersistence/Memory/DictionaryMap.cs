@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Takenet.SimplePersistence.Memory
 {
     /// <summary>
-    /// Implemens the IMap interface  using a concurrent dictionary. 
+    /// Implemens the <see cref="IMap{TKey,TValue}"/> interface  using a concurrent dictionary. 
     /// This class should be used only for local data, since the dictionary stores the values in the local process memory.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
@@ -83,13 +83,14 @@ namespace Takenet.SimplePersistence.Memory
             var predicate = where.Compile();
 
             var totalValues = _internalDictionary.Where(pair => predicate.Invoke(pair.Value));
+            var count = totalValues.Count();
             var resultValues = totalValues
                 .Skip(skip)
                 .Take(take)
                 .Select(pair => pair.Value)
                 .ToArray();
 
-            var result = new QueryResult<TValue>(resultValues, totalValues.Count());
+            var result = new QueryResult<TValue>(resultValues, count);
             return Task.FromResult(result);
         }
 
