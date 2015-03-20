@@ -57,10 +57,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IntegerObjectDictionaryMapFacts.cs" />
+    <Compile Include="IntegerStringDictionaryMapFacts.cs" />
     <Compile Include="MapFacts.cs" />
     <Compile Include="Memory\MemoryIntegerObjectDictionaryMapFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sql\IntegerStringTableMapper.cs" />
+    <Compile Include="Sql\SqlConnectionFixture.cs" />
     <Compile Include="Sql\SqlIntegerObjectDictionaryMapFacts.cs" />
   </ItemGroup>
   <ItemGroup>

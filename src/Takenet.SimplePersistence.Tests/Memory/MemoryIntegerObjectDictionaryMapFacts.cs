@@ -10,11 +10,11 @@ using Xunit.Extensions;
 
 namespace Takenet.SimplePersistence.Tests.Memory
 {
-    public class MemoryIntegerObjectDictionaryMapFacts : IntegerObjectDictionaryMapFacts
+    public class MemoryIntegerStringDictionaryMapFacts : IntegerStringDictionaryMapFacts
     {
-        public override IMap<int, object> Create()
+        public override IMap<int, string> Create()
         {
-            return new DictionaryMap<int, object>();            
+            return new DictionaryMap<int, string>();            
         }
     }
 }
