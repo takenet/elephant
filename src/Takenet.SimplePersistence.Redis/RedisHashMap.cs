@@ -13,7 +13,7 @@ namespace Takenet.SimplePersistence.Redis
 
         #region Constructor
 
-        public RedisHashMap(IDictionaryConverter<TValue> dictionaryConverter, string mapName, string configuration)
+        public RedisHashMap(string mapName, IDictionaryConverter<TValue> dictionaryConverter, string configuration)
             : base(mapName, configuration)
         {
             _dictionaryConverter = dictionaryConverter;
