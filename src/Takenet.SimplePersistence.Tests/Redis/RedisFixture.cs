@@ -10,8 +10,6 @@ namespace Takenet.SimplePersistence.Tests.Redis
 {
     public class RedisFixture : IDisposable
     {
-
-
         public RedisFixture()
         {
             var redisProcess = new ProcessStartInfo()

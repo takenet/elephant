@@ -9,11 +9,11 @@ using Xunit;
 
 namespace Takenet.SimplePersistence.Tests.Redis
 {
-    public class IntegerObjectRedisStringMapFacts : IntegerStringDictionaryMapFacts, IClassFixture<RedisFixture>
+    public class RedisStringIntegerStringMapFacts : IntegerStringDictionaryMapFacts, IClassFixture<RedisFixture>
     {
         private readonly RedisFixture _redisFixture;
 
-        public IntegerObjectRedisStringMapFacts(RedisFixture redisFixture)
+        public RedisStringIntegerStringMapFacts(RedisFixture redisFixture)
         {
             _redisFixture = redisFixture;
         }

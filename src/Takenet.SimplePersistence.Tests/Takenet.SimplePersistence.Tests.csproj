@@ -63,13 +63,13 @@
   <ItemGroup>
     <Compile Include="IntegerStringDictionaryMapFacts.cs" />
     <Compile Include="MapFacts.cs" />
-    <Compile Include="Memory\IntegerObjectDictionaryMemoryMapFacts.cs" />
+    <Compile Include="Memory\IntegerStringDictionaryMemoryMapFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Redis\IntegerObjectRedisStringMapFacts.cs" />
+    <Compile Include="Redis\RedisStringIntegerStringMapFacts.cs" />
     <Compile Include="Redis\RedisFixture.cs" />
     <Compile Include="Sql\IntegerStringTableMapper.cs" />
     <Compile Include="Sql\SqlConnectionFixture.cs" />
-    <Compile Include="Sql\IntegerObjectDictionarySqlMapFacts.cs" />
+    <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
