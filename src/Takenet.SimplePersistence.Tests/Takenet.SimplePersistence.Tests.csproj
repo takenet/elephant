@@ -39,6 +39,10 @@
     <Reference Include="Ploeh.AutoFixture">
       <HintPath>..\packages\AutoFixture.3.24.3\lib\net40\Ploeh.AutoFixture.dll</HintPath>
     </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.0.316.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\StackExchange.Redis.1.0.414\lib\net45\StackExchange.Redis.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,16 +63,22 @@
   <ItemGroup>
     <Compile Include="IntegerStringDictionaryMapFacts.cs" />
     <Compile Include="MapFacts.cs" />
-    <Compile Include="Memory\MemoryIntegerObjectDictionaryMapFacts.cs" />
+    <Compile Include="Memory\IntegerObjectDictionaryMemoryMapFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Redis\IntegerObjectRedisStringMapFacts.cs" />
+    <Compile Include="Redis\RedisFixture.cs" />
     <Compile Include="Sql\IntegerStringTableMapper.cs" />
     <Compile Include="Sql\SqlConnectionFixture.cs" />
-    <Compile Include="Sql\SqlIntegerObjectDictionaryMapFacts.cs" />
+    <Compile Include="Sql\IntegerObjectDictionarySqlMapFacts.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Takenet.SimplePersistence.Redis\Takenet.SimplePersistence.Redis.csproj">
+      <Project>{6895c290-8eaa-468b-8b2f-b1a7cb3cb32a}</Project>
+      <Name>Takenet.SimplePersistence.Redis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Takenet.SimplePersistence\Takenet.SimplePersistence.csproj">
       <Project>{aea9548d-8d87-41ce-8959-81b3361c0298}</Project>
       <Name>Takenet.SimplePersistence</Name>

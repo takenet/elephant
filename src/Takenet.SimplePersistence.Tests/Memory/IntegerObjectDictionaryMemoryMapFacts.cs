@@ -10,7 +10,7 @@ using Xunit.Extensions;
 
 namespace Takenet.SimplePersistence.Tests.Memory
 {
-    public class MemoryIntegerStringDictionaryMapFacts : IntegerStringDictionaryMapFacts
+    public class IntegerObjectDictionaryMemoryMapFacts : IntegerStringDictionaryMapFacts
     {
         public override IMap<int, string> Create()
         {
