@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -57,9 +58,13 @@
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sql\ExpressionTranslator.cs" />
-    <Compile Include="Sql\Mapping\IExtendedTableMapper.cs" />
-    <Compile Include="Sql\Mapping\ITableMapper.cs" />
+    <Compile Include="Sql\Mapping\IMapper.cs" />
+    <Compile Include="Sql\Mapping\ITable.cs" />
     <Compile Include="Sql\MapBase.cs" />
+    <Compile Include="Sql\Mapping\KeyValuePropertyTable.cs" />
+    <Compile Include="Sql\Mapping\PropertyMapper.cs" />
+    <Compile Include="Sql\Mapping\PropertyTable.cs" />
+    <Compile Include="Sql\Mapping\ValueMapper.cs" />
     <Compile Include="Sql\SqlMap.cs" />
     <Compile Include="Sql\Mapping\SqlType.cs" />
     <Compile Include="Sql\Mapping\TableMapperExtensions.cs" />

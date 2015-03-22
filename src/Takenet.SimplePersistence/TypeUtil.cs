@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,6 +83,91 @@ namespace Takenet.SimplePersistence
             }
 
             return parseFunc;
+        }
+
+        /// <summary>
+        /// Build a delegate to
+        /// get a property value
+        /// of a class
+        /// </summary>
+        /// <a href="http://stackoverflow.com/questions/10820453/reflection-performance-create-delegate-properties-c"/>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static Func<object, object> BuildGetAccessor(PropertyInfo propertyInfo)
+        {
+            return BuildGetAccessor(propertyInfo.GetGetMethod());
+        }
+
+        /// <summary>
+        /// Build a delegate to
+        /// get a property value
+        /// of a class
+        /// </summary>
+        /// <a href="http://stackoverflow.com/questions/10820453/reflection-performance-create-delegate-properties-c"/>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static Func<object, object> BuildGetAccessor(MethodInfo methodInfo)
+        {
+            if (methodInfo == null)
+            {
+                throw new ArgumentNullException("methodInfo");
+            }
+
+            var obj = Expression.Parameter(typeof(object), "o");
+
+            Expression<Func<object, object>> expr =
+                Expression.Lambda<Func<object, object>>(
+                    Expression.Convert(
+                        Expression.Call(
+                            Expression.Convert(obj, methodInfo.DeclaringType),
+                            methodInfo),
+                        typeof(object)),
+                    obj);
+
+            return expr.Compile();
+        }
+
+        /// <summary>
+        /// Build a delegate to
+        /// set a property value
+        /// of a class
+        /// </summary>
+        /// <a href="http://stackoverflow.com/questions/10820453/reflection-performance-create-delegate-properties-c"/>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static Action<object, object> BuildSetAccessor(PropertyInfo propertyInfo)
+        {
+            return BuildSetAccessor(propertyInfo.GetSetMethod());
+        }
+
+        /// <summary>
+        /// Build a delegate to
+        /// set a property value
+        /// of a class
+        /// </summary>
+        /// <a href="http://stackoverflow.com/questions/10820453/reflection-performance-create-delegate-properties-c"/>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static Action<object, object> BuildSetAccessor(MethodInfo methodInfo)
+        {
+            if (methodInfo == null)
+            {
+                throw new ArgumentNullException("methodInfo");
+            }
+
+            var obj = Expression.Parameter(typeof(object), "o");
+            var value = Expression.Parameter(typeof(object));
+
+            Expression<Action<object, object>> expr =
+                Expression.Lambda<Action<object, object>>(
+                    Expression.Call(
+                        Expression.Convert(obj, methodInfo.DeclaringType),
+                        methodInfo,
+                        Expression.Convert(value, methodInfo.GetParameters()[0].ParameterType)),
+                    obj,
+                    value);
+
+            return expr.Compile();
         }
     }
 }

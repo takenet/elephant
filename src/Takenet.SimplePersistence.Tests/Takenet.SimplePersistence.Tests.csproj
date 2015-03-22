@@ -61,15 +61,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GuidItemMapFacts.cs" />
     <Compile Include="IntegerStringMapFacts.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="MapFacts.cs" />
-    <Compile Include="Memory\IntegerStringDictionaryMemoryMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemMapFacts.cs" />
+    <Compile Include="Memory\MemoryIntegerStringMapFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Redis\RedisHashGuidItemMapFacts.cs" />
     <Compile Include="Redis\RedisHashIntegerStringMapFacts.cs" />
+    <Compile Include="Redis\RedisStringGuidItemMapFacts.cs" />
     <Compile Include="Redis\RedisStringIntegerStringMapFacts.cs" />
     <Compile Include="Redis\RedisFixture.cs" />
-    <Compile Include="Sql\IntegerStringTableMapper.cs" />
     <Compile Include="Sql\SqlConnectionFixture.cs" />
+    <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
   </ItemGroup>
   <ItemGroup>

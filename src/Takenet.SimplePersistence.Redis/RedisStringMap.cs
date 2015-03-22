@@ -8,7 +8,7 @@ using StackExchange.Redis;
 namespace Takenet.SimplePersistence.Redis
 {
     /// <summary>
-    /// Maps using a Redis server, storing the value as a serialized string.
+    /// Implements the <see cref="IMap{TKey,TValue}"/> interface using Redis stardard key/value data structure.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>

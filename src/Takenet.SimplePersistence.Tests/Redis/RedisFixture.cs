@@ -19,9 +19,7 @@ namespace Takenet.SimplePersistence.Tests.Redis
                 WindowStyle = ProcessWindowStyle.Hidden
             };
 
-            ServerProcess = Process.Start(redisProcess);
-            
-            // Flush the database
+            ServerProcess = Process.Start(redisProcess);          
             var options = new ConfigurationOptions
             {
                 EndPoints = { "localhost" },

@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 
 namespace Takenet.SimplePersistence.Redis
 {
+    /// <summary>
+    /// Implements the <see cref="IMap{TKey,TValue}"/> interface using Redis hash data structure.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     public class RedisHashMap<TKey, TValue> : MapBase<TKey, TValue>, IPropertyMap<TKey, TValue>
     {
         private readonly IDictionaryConverter<TValue> _dictionaryConverter;
@@ -52,7 +54,7 @@ namespace Takenet.SimplePersistence.Redis
         public override Task<bool> TryRemoveAsync(TKey key)
         {
             var database = _connectionMultiplexer.GetDatabase();
-            return database.KeyDeleteAsync(this.GetRedisKey(key));
+            return database.KeyDeleteAsync(GetRedisKey(key));
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
