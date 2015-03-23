@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncEnumerableExtensions.cs" />
+    <Compile Include="IAsyncEnumerable.cs" />
     <Compile Include="IQueryableStorage.cs" />
     <Compile Include="IAsyncEnumerator.cs" />
     <Compile Include="IExpirableKeyMap.cs" />
@@ -65,6 +67,8 @@
     <Compile Include="Sql\Mapping\PropertyMapper.cs" />
     <Compile Include="Sql\Mapping\PropertyTable.cs" />
     <Compile Include="Sql\Mapping\ValueMapper.cs" />
+    <Compile Include="Sql\SqlDataReaderAsyncEnumerable.cs" />
+    <Compile Include="Sql\SqlDataReaderAsyncEnumerator.cs" />
     <Compile Include="Sql\SqlMap.cs" />
     <Compile Include="Sql\Mapping\SqlType.cs" />
     <Compile Include="Sql\Mapping\TableMapperExtensions.cs" />
