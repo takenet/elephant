@@ -12,7 +12,7 @@ namespace Takenet.SimplePersistence.Tests
 
         public override string ToString()
         {
-            return string.Format("{0};{1}:{2}", StringProperty, IntegerProperty, GuidProperty);
+            return string.Format("{0};{1};{2}", StringProperty, IntegerProperty, GuidProperty);
         }
 
         public static Item Parse(string s)
@@ -38,7 +38,9 @@ namespace Takenet.SimplePersistence.Tests
 
         protected bool Equals(Item other)
         {
-            return string.Equals(StringProperty, other.StringProperty) && IntegerProperty == other.IntegerProperty && GuidProperty.Equals(other.GuidProperty);
+            return string.Equals(StringProperty, other.StringProperty) && 
+                IntegerProperty == other.IntegerProperty && 
+                GuidProperty.Equals(other.GuidProperty);
         }
 
         public override int GetHashCode()

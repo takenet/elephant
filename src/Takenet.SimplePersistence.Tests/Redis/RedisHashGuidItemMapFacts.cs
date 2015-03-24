@@ -33,8 +33,9 @@ namespace Takenet.SimplePersistence.Tests.Redis
             {
                 return new Dictionary<string, object>()
                 {
-                    {"integerProperty", value.IntegerProperty},
-                    {"stringProperty", value.StringProperty}
+                    {nameof(value.IntegerProperty), value.IntegerProperty},
+                    {nameof(value.StringProperty), value.StringProperty},
+                    {nameof(value.GuidProperty), value.GuidProperty.ToString()}
                 };
             }         
 
@@ -42,8 +43,9 @@ namespace Takenet.SimplePersistence.Tests.Redis
             {
                 return new Item()
                 {
-                    IntegerProperty = (int)(RedisValue) dictionary["integerProperty"],
-                    StringProperty = (RedisValue) dictionary["stringProperty"],
+                    IntegerProperty = (int)(RedisValue) dictionary["IntegerProperty"],
+                    StringProperty = (RedisValue) dictionary["StringProperty"],
+                    GuidProperty = Guid.Parse((string)(RedisValue)dictionary["GuidProperty"])
                 };
             }
         }

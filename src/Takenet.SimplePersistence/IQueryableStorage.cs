@@ -38,19 +38,24 @@ namespace Takenet.SimplePersistence
         Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> where, Expression<Func<TKey, TResult>> select, int skip, int take, CancellationToken cancellationToken);
     }
 
-    public sealed class QueryResult<T> : IEnumerable<T>
+    public sealed class QueryResult<T> : IAsyncEnumerable<T>
     {
-        public QueryResult(IEnumerable<T> items, int total)
+        public QueryResult(IAsyncEnumerable<T> items, int total)
         {
             Items = items;
             Total = total;
         }
 
-        public IEnumerable<T> Items { get; }
+        public IAsyncEnumerable<T> Items { get; }
 
         public int Total { get; private set; }
 
         #region IEnumerable<T> Members
+
+        public Task<IAsyncEnumerator<T>> GetEnumeratorAsync(CancellationToken cancellationToken)
+        {
+            return Items.GetEnumeratorAsync(cancellationToken);
+        }
 
         public IEnumerator<T> GetEnumerator()
         {

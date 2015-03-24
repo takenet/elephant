@@ -46,6 +46,7 @@
     <Compile Include="ISerializer.cs" />
     <Compile Include="MapBase.cs" />
     <Compile Include="RedisHashMap.cs" />
+    <Compile Include="RedisSet.cs" />
     <Compile Include="RedisStringMap.cs" />
     <Compile Include="RedisValueExtensions.cs" />
     <Compile Include="Serializers\StringSerializer.cs" />

@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 namespace Takenet.SimplePersistence.Memory
 {
     /// <summary>
-    /// Implemens the <see cref="IMap{TKey,TValue}"/> interface  using a concurrent dictionary. 
+    /// Implemens the <see cref="IMap{TKey,TValue}"/> interface with a concurrent dictionary. 
     /// This class should be used only for local data, since the dictionary stores the values in the local process memory.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class DictionaryMap<TKey, TValue> : IMap<TKey, TValue>, IQueryableStorage<TValue>, IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
+    public class DictionaryMap<TKey, TValue> : IMap<TKey, TValue>, IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue> //, IQueryableStorage<TValue>
     {
         protected readonly ConcurrentDictionary<TKey, TValue> _internalDictionary;
         protected readonly Func<TValue> _valueFactory;
@@ -72,30 +72,6 @@ namespace Takenet.SimplePersistence.Memory
 
         #endregion
 
-        #region IQueryableStorage<TValue>
-
-        public Task<QueryResult<TValue>> QueryAsync<TResult>(Expression<Func<TValue, bool>> where,
-            Expression<Func<TValue, TResult>> select,
-            int skip,
-            int take,
-            CancellationToken cancellationToken)
-        {
-            var predicate = where.Compile();
-
-            var totalValues = _internalDictionary.Where(pair => predicate.Invoke(pair.Value));
-            var count = totalValues.Count();
-            var resultValues = totalValues
-                .Skip(skip)
-                .Take(take)
-                .Select(pair => pair.Value)
-                .ToArray();
-
-            var result = new QueryResult<TValue>(resultValues, count);
-            return Task.FromResult(result);
-        }
-
-        #endregion
-
         #region IUpdatableMap<TKey,TValue> Members
 
         public Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
@@ -134,6 +110,30 @@ namespace Takenet.SimplePersistence.Memory
         {
             return SetRelativeKeyExpirationAsync(key, expiration - DateTimeOffset.UtcNow);
         }
+
+        #endregion
+
+        #region IQueryableStorage<TValue>
+
+        //public Task<QueryResult<TValue>> QueryAsync<TResult>(Expression<Func<TValue, bool>> where,
+        //    Expression<Func<TValue, TResult>> select,
+        //    int skip,
+        //    int take,
+        //    CancellationToken cancellationToken)
+        //{
+        //    var predicate = where.Compile();
+
+        //    var totalValues = _internalDictionary.Where(pair => predicate.Invoke(pair.Value));
+        //    var count = totalValues.Count();
+        //    var resultValues = totalValues
+        //        .Skip(skip)
+        //        .Take(take)
+        //        .Select(pair => pair.Value)
+        //        .ToArray();
+
+        //    var result = new QueryResult<TValue>(resultValues, count);
+        //    return Task.FromResult(result);
+        //}
 
         #endregion
     }
