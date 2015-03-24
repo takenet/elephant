@@ -35,11 +35,11 @@ namespace Takenet.SimplePersistence.Redis
             return database.SetRemoveAsync(_name, _serializer.Serialize(value));
         }
 
-        public async Task<IEnumerable<T>> AsEnumerableAsync()
+        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
         {
             var database = _connectionMultiplexer.GetDatabase();
             var values = await database.SetMembersAsync(_name);
-            return values.Select(value => _serializer.Deserialize(value)).ToList();
+            return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)).ToList());
         }
 
         public Task<bool> ContainsAsync(T value)

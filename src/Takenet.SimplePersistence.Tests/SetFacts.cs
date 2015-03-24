@@ -33,5 +33,50 @@ namespace Takenet.SimplePersistence.Tests
             // Assert
             Check.That(await set.ContainsAsync(item)).IsTrue();
         }
+
+        [Fact(DisplayName = "AddExistingItemSucceeds")]
+        public async Task AddExistingItemSucceeds()
+        {
+            // Arrange
+            var set = Create();
+            var item = _fixture.Create<T>();
+            await set.AddAsync(item);
+
+            // Act
+            await set.AddAsync(item);
+
+            // Assert
+            Check.That(await set.ContainsAsync(item)).IsTrue();
+        }
+
+        [Fact(DisplayName = "TryRemoveExistingItemSucceeds")]
+        public async Task TryRemoveExistingItemSucceeds()
+        {
+            // Arrange
+            var set = Create();
+            var item = _fixture.Create<T>();
+            await set.AddAsync(item);
+
+            // Act
+            var result = await set.TryRemoveAsync(item);
+
+            // Assert
+            Check.That(result).IsTrue();
+            Check.That(await set.ContainsAsync(item)).IsFalse();
+        }
+
+        [Fact(DisplayName = "TryRemoveNonExistingItemFails")]
+        public async Task TryRemoveNonExistingItemFails()
+        {
+            // Arrange
+            var set = Create();
+            var item = _fixture.Create<T>();
+
+            // Act
+            var result = await set.TryRemoveAsync(item);
+
+            // Assert
+            Check.That(result).IsFalse();            
+        }
     }
 }

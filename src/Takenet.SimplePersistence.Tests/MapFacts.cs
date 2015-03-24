@@ -104,8 +104,8 @@ namespace Takenet.SimplePersistence.Tests
             Check.That(actual).IsEqualTo(default(TValue));
         }
 
-        [Fact(DisplayName = "RemoveExistingKeyAndValueSucceeds")]
-        public async Task RemoveExistingKeyAndValueSucceeds()
+        [Fact(DisplayName = "TryRemoveExistingKeyAndValueSucceeds")]
+        public async Task TryRemoveExistingKeyAndValueSucceeds()
         {
             // Arrange
             var map = Create();
@@ -121,8 +121,8 @@ namespace Takenet.SimplePersistence.Tests
             Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(default(TValue));
         }
 
-        [Fact(DisplayName = "RemoveNonExistingKeyReturnsFalse")]
-        public async Task RemoveNonExistingKeyReturnsFalse()
+        [Fact(DisplayName = "TryRemoveNonExistingKeyFails")]
+        public async Task TryRemoveNonExistingKeyFails()
         {
             // Arrange
             var map = Create();

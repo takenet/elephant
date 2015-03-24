@@ -31,7 +31,7 @@ namespace Takenet.SimplePersistence
         /// Gets an IEnumerable with the values of the set.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<T>> AsEnumerableAsync();
+        Task<IAsyncEnumerable<T>> AsEnumerableAsync();
 
         /// <summary>
         /// Checks if the value exists in the set.

@@ -39,9 +39,9 @@ namespace Takenet.SimplePersistence.Memory
             return Task.FromResult(_hashSet.Remove(value));
         }
 
-        public Task<IEnumerable<T>> AsEnumerableAsync()
-        {
-            return Task.FromResult<IEnumerable<T>>(_hashSet);
+        public Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        {            
+            return Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_hashSet));
         }
 
         public Task<bool> ContainsAsync(T value)
