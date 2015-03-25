@@ -20,17 +20,9 @@ namespace Takenet.SimplePersistence.Redis
 
         protected StorageBase(string name, ConnectionMultiplexer connectionMultiplexer)
         {
-            if (name == null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-            _name = name;
-
-            if (connectionMultiplexer == null)
-            {
-                throw new ArgumentNullException(nameof(connectionMultiplexer));
-            }
-
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (connectionMultiplexer == null) throw new ArgumentNullException(nameof(connectionMultiplexer));
+            _name = name;                        
             _connectionMultiplexer = connectionMultiplexer;
         }
 

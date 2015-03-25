@@ -10,7 +10,7 @@ using Takenet.SimplePersistence.Sql.Mapping;
 
 namespace Takenet.SimplePersistence.Sql
 {
-    public sealed class SqlDataReaderAsyncEnumerator<T> : IAsyncEnumerator<T>
+    internal sealed class SqlDataReaderAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
         private readonly SqlDataReader _sqlDataReader;
         private readonly IMapper<T> _mapper;

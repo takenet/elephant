@@ -25,6 +25,7 @@ namespace Takenet.SimplePersistence.Memory
 
         public Task AddAsync(T value)
         {
+            if (value == null) throw new ArgumentNullException(nameof(value));
             if (_hashSet.Contains(value))
             {
                 _hashSet.Remove(value);
@@ -36,6 +37,7 @@ namespace Takenet.SimplePersistence.Memory
 
         public Task<bool> TryRemoveAsync(T value)
         {
+            if (value == null) throw new ArgumentNullException(nameof(value));
             return Task.FromResult(_hashSet.Remove(value));
         }
 
@@ -46,6 +48,7 @@ namespace Takenet.SimplePersistence.Memory
 
         public Task<bool> ContainsAsync(T value)
         {
+            if (value == null) throw new ArgumentNullException(nameof(value));
             return Task.FromResult(_hashSet.Contains(value));
         }
 

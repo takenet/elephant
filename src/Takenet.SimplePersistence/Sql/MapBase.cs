@@ -19,11 +19,6 @@ namespace Takenet.SimplePersistence.Sql
             
         }
 
-
-
-
-
-
         #region Protected Members
 
         protected IDictionary<string, object> GetColumnValues(TKey key, TValue value)
@@ -91,39 +86,20 @@ namespace Takenet.SimplePersistence.Sql
             return new SqlDataReaderAsyncEnumerable<TValue>(command, Mapper, selectColumns);
         }
 
-        protected async Task<bool> TryRemoveAsync(TKey key, SqlConnection connection, CancellationToken cancellationToken)
+        protected Task<bool> TryRemoveAsync(TKey key, SqlConnection connection, CancellationToken cancellationToken)
         {
             var keyValues = KeyMapper.GetColumnValues(key);
-
-            using (var command = connection.CreateTextCommand(
-                SqlTemplates.Delete,
-                new
-                {
-                    tableName = Table.TableName.AsSqlIdentifier(),
-                    filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
-                },
-                keyValues.Select(k => k.ToSqlParameter())))
-            {
-                return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
-            }
+            return TryRemoveAsync(keyValues, connection, cancellationToken);
         }
 
         protected async Task<bool> ContainsKeyAsync(TKey key, SqlConnection connection, CancellationToken cancellationToken)
         {
             var keyValues = KeyMapper.GetColumnValues(key);
 
-            using (var command = connection.CreateTextCommand(
-                SqlTemplates.Exists,
-                new
-                {
-                    tableName = Table.TableName.AsSqlIdentifier(),
-                    filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
-                },
-                keyValues.Select(k => k.ToSqlParameter())))
-            {
-                return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
-            }
+            return await ContainsKeyAsync(keyValues, connection, cancellationToken);
         }
+
+
 
         protected async Task<IEnumerable<TKey>> GetKeysAsync(SqlConnection connection, CancellationToken cancellationToken)
         {

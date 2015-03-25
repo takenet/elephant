@@ -23,7 +23,7 @@ namespace Takenet.SimplePersistence.Tests
         public abstract IMap<TKey, TValue> Create();
 
         [Fact(DisplayName = "AddNewKeyAndValueSucceeds")]
-        public async Task AddNewKeyAndValueSucceeds()
+        public virtual async Task AddNewKeyAndValueSucceeds()
         {
             // Arrange
             var map = Create();
@@ -39,7 +39,7 @@ namespace Takenet.SimplePersistence.Tests
         }
 
         [Fact(DisplayName = "OverwriteExistingKeyAndValueSucceeds")]
-        public async Task OverwriteExistingKeyAndValueSucceeds()
+        public virtual async Task OverwriteExistingKeyAndValueSucceeds()
         {
             // Arrange
             var map = Create();
@@ -57,7 +57,7 @@ namespace Takenet.SimplePersistence.Tests
         }
 
         [Fact(DisplayName = "AddExistingKeyAndValueFails")]
-        public async Task AddExistingKeyAndValueFails()
+        public virtual async Task AddExistingKeyAndValueFails()
         {
             // Arrange
             var map = Create();
@@ -75,7 +75,7 @@ namespace Takenet.SimplePersistence.Tests
         }
 
         [Fact(DisplayName = "GetExistingKeyReturnsValue")]
-        public async Task GetExistingKeyReturnsValue()
+        public virtual async Task GetExistingKeyReturnsValue()
         {
             // Arrange
             var map = Create();
@@ -91,7 +91,7 @@ namespace Takenet.SimplePersistence.Tests
         }
 
         [Fact(DisplayName = "GetNonExistingKeyReturnsDefault")]
-        public async Task GetNonExistingKeyReturnsDefault()
+        public virtual async Task GetNonExistingKeyReturnsDefault()
         {
             // Arrange
             var map = Create();
@@ -105,7 +105,7 @@ namespace Takenet.SimplePersistence.Tests
         }
 
         [Fact(DisplayName = "TryRemoveExistingKeyAndValueSucceeds")]
-        public async Task TryRemoveExistingKeyAndValueSucceeds()
+        public virtual async Task TryRemoveExistingKeyAndValueSucceeds()
         {
             // Arrange
             var map = Create();
@@ -122,7 +122,7 @@ namespace Takenet.SimplePersistence.Tests
         }
 
         [Fact(DisplayName = "TryRemoveNonExistingKeyFails")]
-        public async Task TryRemoveNonExistingKeyFails()
+        public virtual async Task TryRemoveNonExistingKeyFails()
         {
             // Arrange
             var map = Create();
@@ -137,7 +137,7 @@ namespace Takenet.SimplePersistence.Tests
         }
 
         [Fact(DisplayName = "CheckForExistingKeyReturnsTrue")]
-        public async Task CheckForExistingKeyReturnsTrue()
+        public virtual async Task CheckForExistingKeyReturnsTrue()
         {
             // Arrange
             var map = Create();
@@ -153,7 +153,7 @@ namespace Takenet.SimplePersistence.Tests
         }
 
         [Fact(DisplayName = "CheckForNonExistingKeyReturnsFalse")]
-        public async Task CheckForNonExistingKeyReturnsFalse()
+        public virtual async Task CheckForNonExistingKeyReturnsFalse()
         {
             // Arrange
             var map = Create();

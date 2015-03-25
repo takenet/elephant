@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace Takenet.SimplePersistence.Sql.Mapping
 {
-    public static class TableMapperExtensions
+    public static class MapperExtensions
     {
-        //public static IDictionary<string, object> GetKeyColumnValues<TEntity>(this ITable<TEntity> table, TEntity entity)
-        //{
-        //    return table.GetColumnValues(entity, table.KeyColumns.ToArray());
-        //}
+
 
         //public static IDictionary<string, object> GetColumnValues<TExtension, TEntity>(this IExtendedTableMapper<TExtension, TEntity> extendedTableMapper, TExtension extension, TEntity entity)
         //{

@@ -72,8 +72,9 @@
     <Compile Include="Sql\SqlDataReaderAsyncEnumerator.cs" />
     <Compile Include="Sql\SqlMap.cs" />
     <Compile Include="Sql\Mapping\SqlType.cs" />
-    <Compile Include="Sql\Mapping\TableMapperExtensions.cs" />
+    <Compile Include="Sql\Mapping\MapperExtensions.cs" />
     <Compile Include="Sql\SqlConnectionExtensions.cs" />
+    <Compile Include="Sql\SqlSet.cs" />
     <Compile Include="Sql\SqlTemplates.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

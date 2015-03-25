@@ -1,6 +1,6 @@
 namespace Takenet.SimplePersistence.Tests
 {
-    public abstract class StringSetFacts : SetFacts<string>
+    public abstract class StringSetFacts : ClassSetFacts<string>
     {
     }
 }

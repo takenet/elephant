@@ -15,7 +15,7 @@ namespace Takenet.SimplePersistence.Tests.Redis
         {
             if (!File.Exists(@"..\..\..\packages\Redis-64.2.8.19\redis-server.exe"))
             {
-                throw new InvalidOperationException("Please install the 'redis-64' with version '2.8.19' NuGet package to run this test");
+                throw new InvalidOperationException("Please install the 'redis-64' NuGet package with version '2.8.19' to run this test");
             }
 
             var redisProcess = new ProcessStartInfo()

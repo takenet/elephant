@@ -30,6 +30,36 @@ namespace Takenet.SimplePersistence.Sql
 
         #endregion
 
+        protected async Task<bool> TryRemoveAsync(IDictionary<string, object> keyValues, SqlConnection connection, CancellationToken cancellationToken)
+        {
+            using (var command = connection.CreateTextCommand(
+                SqlTemplates.Delete,
+                new
+                {
+                    tableName = Table.TableName.AsSqlIdentifier(),
+                    filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
+                },
+                keyValues.Select(k => k.ToSqlParameter())))
+            {
+                return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
+            }
+        }
+
+        protected async Task<bool> ContainsKeyAsync(IDictionary<string, object> keyValues, SqlConnection connection, CancellationToken cancellationToken)
+        {
+            using (var command = connection.CreateTextCommand(
+                SqlTemplates.Exists,
+                new
+                {
+                    tableName = Table.TableName.AsSqlIdentifier(),
+                    filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
+                },
+                keyValues.Select(k => k.ToSqlParameter())))
+            {
+                return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+            }
+        }
+
         #region IQueryableStorage<TEntity>
 
         public async Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken)
@@ -166,6 +196,11 @@ namespace Takenet.SimplePersistence.Sql
         {
             var translator = new ExpressionTranslator();
             return translator.GetStatement(where);
+        }
+
+        protected IDictionary<string, object> GetKeyColumnValues(TEntity entity)
+        {
+            return Mapper.GetColumnValues(entity, Table.KeyColumns);
         }
 
         #endregion

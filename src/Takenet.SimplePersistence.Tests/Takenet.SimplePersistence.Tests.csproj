@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassSetFacts.cs" />
     <Compile Include="GuidItemMapFacts.cs" />
     <Compile Include="IntegerStringMapFacts.cs" />
     <Compile Include="Item.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Redis\RedisStringGuidItemMapFacts.cs" />
     <Compile Include="Redis\RedisStringIntegerStringMapFacts.cs" />
     <Compile Include="Redis\RedisFixture.cs" />
+    <Compile Include="Redis\RedisStringSetFacts.cs" />
     <Compile Include="SetFacts.cs" />
     <Compile Include="Sql\SqlConnectionFixture.cs" />
     <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
