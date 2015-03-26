@@ -19,13 +19,7 @@ namespace Takenet.SimplePersistence.Tests.Sql
         public override IMap<int, string> Create()
         {
             var table = new IntegerStringTable();
-
-            using (var command = _fixture.Connection.CreateCommand())
-            {
-                command.CommandText = $"IF EXISTS(SELECT * FROM sys.tables WHERE Name = '{table.TableName}') DROP TABLE {table.TableName}";
-                command.ExecuteNonQuery();
-            }
-
+            _fixture.DropTable(table.Name);
             return new IntegerStringSqlMap(table, _fixture.ConnectionString);
         }
 
@@ -45,7 +39,7 @@ namespace Takenet.SimplePersistence.Tests.Sql
 
         private class IntegerStringTable : ITable
         {
-            public string TableName => "IntegerStrings";
+            public string Name => "IntegerStrings";
 
             public string[] KeyColumns { get; } = { "Key" };
 

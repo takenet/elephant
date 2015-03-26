@@ -17,7 +17,8 @@ namespace Takenet.SimplePersistence.Sql.Mapping
 
         public ValueMapper(string columnName)
         {
-            _columnName = columnName;            
+            if (columnName == null) throw new ArgumentNullException(nameof(columnName));
+            _columnName = columnName;
         }
 
         public IDictionary<string, object> GetColumnValues(T value, string[] columns = null, bool returnNullValues = false)

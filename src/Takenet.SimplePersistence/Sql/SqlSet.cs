@@ -19,18 +19,21 @@ namespace Takenet.SimplePersistence.Sql
 
         public async Task AddAsync(T value)
         {
+            if (value == null) throw new ArgumentNullException(nameof(value));
             var cancellationToken = CreateCancellationToken();
             var columnValues = Mapper.GetColumnValues(value);
+            var keyColumnValues = GetKeyColumnValues(columnValues);
 
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
                 using (var command = connection.CreateTextCommand(
-                    SqlTemplates.Insert,
+                    string.Format("{0}; {1}",  SqlTemplates.Delete, SqlTemplates.InsertWhereNotExists),
                     new
                     {
-                        tableName = Table.TableName.AsSqlIdentifier(),
+                        tableName = Table.Name.AsSqlIdentifier(),
                         columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
-                        values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSepparate()
+                        values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSepparate(),
+                        filter = GetAndEqualsStatement(keyColumnValues.Keys.ToArray())
                     },
                     columnValues.Select(c => c.ToSqlParameter())))
                 {
@@ -44,11 +47,12 @@ namespace Takenet.SimplePersistence.Sql
 
         public async Task<bool> TryRemoveAsync(T value)
         {
-            var keyValues = GetKeyColumnValues(value);
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            var keyColumnValues = GetKeyColumnValues(value);
             var cancellationToken = CreateCancellationToken();
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
-                return await TryRemoveAsync(keyValues, connection, cancellationToken).ConfigureAwait(false);
+                return await TryRemoveAsync(keyColumnValues, connection, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -62,7 +66,7 @@ namespace Takenet.SimplePersistence.Sql
                 new
                 {
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
-                    tableName = Table.TableName.AsSqlIdentifier(),
+                    tableName = Table.Name.AsSqlIdentifier(),
                     filter = "1 = 1"
                 });
             return new SqlDataReaderAsyncEnumerable<T>(command, Mapper, selectColumns);
@@ -70,11 +74,12 @@ namespace Takenet.SimplePersistence.Sql
 
         public async Task<bool> ContainsAsync(T value)
         {
-            var keyValues = GetKeyColumnValues(value);
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            var keyColumnValues = GetKeyColumnValues(value);
             var cancellationToken = CreateCancellationToken();
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
-                return await ContainsKeyAsync(keyValues, connection, cancellationToken).ConfigureAwait(false);
+                return await ContainsKeyAsync(keyColumnValues, connection, cancellationToken).ConfigureAwait(false);
             }
         }
 

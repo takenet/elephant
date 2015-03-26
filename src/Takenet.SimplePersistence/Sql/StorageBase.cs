@@ -36,7 +36,7 @@ namespace Takenet.SimplePersistence.Sql
                 SqlTemplates.Delete,
                 new
                 {
-                    tableName = Table.TableName.AsSqlIdentifier(),
+                    tableName = Table.Name.AsSqlIdentifier(),
                     filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
                 },
                 keyValues.Select(k => k.ToSqlParameter())))
@@ -51,7 +51,7 @@ namespace Takenet.SimplePersistence.Sql
                 SqlTemplates.Exists,
                 new
                 {
-                    tableName = Table.TableName.AsSqlIdentifier(),
+                    tableName = Table.Name.AsSqlIdentifier(),
                     filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
                 },
                 keyValues.Select(k => k.ToSqlParameter())))
@@ -74,7 +74,7 @@ namespace Takenet.SimplePersistence.Sql
             var selectColumns = Table.Columns.Keys;
             var selectColumnsCommaSepparate = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate();
             var keysColumnsCommaSepparate = Table.KeyColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate();
-            var tableName = Table.TableName.AsSqlIdentifier();
+            var tableName = Table.Name.AsSqlIdentifier();
             var filters = GetFilters(where);        
             var connection = await GetConnectionAsync(cancellationToken);            
             int totalCount;
@@ -107,6 +107,8 @@ namespace Takenet.SimplePersistence.Sql
         #endregion
 
         #region Protected Members
+
+
 
         protected CancellationToken CreateCancellationToken()
         {
@@ -198,6 +200,14 @@ namespace Takenet.SimplePersistence.Sql
             return translator.GetStatement(where);
         }
 
+        protected IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues)
+        {
+            return Table
+                .KeyColumns
+                .Select(c => new { Key = c, Value = columnValues[c] })
+                .ToDictionary(t => t.Key, t => t.Value);
+        }
+
         protected IDictionary<string, object> GetKeyColumnValues(TEntity entity)
         {
             return Mapper.GetColumnValues(entity, Table.KeyColumns);
@@ -230,7 +240,7 @@ namespace Takenet.SimplePersistence.Sql
                             SqlTemplates.TableExists.Format(
                             new
                             {
-                                tableName = Table.TableName
+                                tableName = Table.Name
                             }),
                             cancellationToken).ConfigureAwait(false);
 
@@ -259,7 +269,7 @@ namespace Takenet.SimplePersistence.Sql
                 command.CommandText = SqlTemplates.GetTableColumns.Format(
                     new
                     {
-                        tableName = Table.TableName
+                        tableName = Table.Name
                     });
 
                 using (var reader = await command.ExecuteReaderAsync(cancellationToken))
@@ -302,7 +312,7 @@ namespace Takenet.SimplePersistence.Sql
             command.CommandText = SqlTemplates.AlterTableAddColumn.Format(
                 new
                 {
-                    tableName = Table.TableName,
+                    tableName = Table.Name,
                     columnDefinition = GetColumnsDefinitionSql(columns).TrimEnd(',')
                 });
 
@@ -330,7 +340,7 @@ namespace Takenet.SimplePersistence.Sql
                 SqlTemplates.PrimaryKeyConstraintDefinition.Format(
                     new
                     {
-                        tableName = Table.TableName,
+                        tableName = Table.Name,
                         columns = Table.KeyColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate()
                     })
             );
@@ -339,7 +349,7 @@ namespace Takenet.SimplePersistence.Sql
             var createTableSql = SqlTemplates.CreateTable.Format(
                 new
                 {
-                    tableName = Table.TableName.AsSqlIdentifier(),
+                    tableName = Table.Name.AsSqlIdentifier(),
                     tableDefinition = createTableSqlBuilder.ToString()
                 });
 

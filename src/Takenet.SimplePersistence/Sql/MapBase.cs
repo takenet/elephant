@@ -29,14 +29,6 @@ namespace Takenet.SimplePersistence.Sql
                 .ToDictionary(t => t.Key, t => t.Value);
         }
 
-        protected IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues)
-        {
-            return Table
-                .KeyColumns
-                .Select(c => new { Key = c, Value = columnValues[c] })
-                .ToDictionary(t => t.Key, t => t.Value);
-        }
-
         protected async Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite, SqlConnection connection, CancellationToken cancellationToken)
         {
             var columnValues = GetColumnValues(key, value);
@@ -57,7 +49,7 @@ namespace Takenet.SimplePersistence.Sql
                 sqlTemplate,
                 new
                 {
-                    tableName = Table.TableName.AsSqlIdentifier(),
+                    tableName = Table.Name.AsSqlIdentifier(),
                     columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
                     values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSepparate(),
                     filter = GetAndEqualsStatement(keyColumnValues.Keys.ToArray())
@@ -78,7 +70,7 @@ namespace Takenet.SimplePersistence.Sql
                 new
                 {
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
-                    tableName = Table.TableName.AsSqlIdentifier(),
+                    tableName = Table.Name.AsSqlIdentifier(),
                     filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
                 },
                 keyValues.Select(k => k.ToSqlParameter()));
@@ -111,7 +103,7 @@ namespace Takenet.SimplePersistence.Sql
                 new
                 {
                     columns = selectColumns.ToCommaSepparate(),
-                    tableName = Table.TableName.AsSqlIdentifier(),
+                    tableName = Table.Name.AsSqlIdentifier(),
                     filter = "1 = 1"
                 }))
             {

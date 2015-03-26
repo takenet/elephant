@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 namespace Takenet.SimplePersistence.Sql.Mapping
 {
     /// <summary>
-    /// Provides scheme for a table.
+    /// Provides scheme information for a SQL table.
     /// </summary>
     public interface ITable
     {
         /// <summary>
         /// Gets the table name.
         /// </summary>
-        string TableName { get; }
+        string Name { get; }
 
         /// <summary>
         /// Gets the names of the table key columns.

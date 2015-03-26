@@ -25,6 +25,15 @@ namespace Takenet.SimplePersistence.Tests.Sql
 
         public string ConnectionString { get; } = @"Server=(localdb)\v12.0;Database=SimplePersistence;Integrated Security=true";
 
+        public void DropTable(string tableName)
+        {
+            using (var command = Connection.CreateCommand())
+            {
+                command.CommandText = $"IF EXISTS(SELECT * FROM sys.tables WHERE Name = '{tableName}') DROP TABLE {tableName}";
+                command.ExecuteNonQuery();
+            }
+        }
+
         public void Dispose()
         {
             Connection.Close();

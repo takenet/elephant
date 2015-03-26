@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 
 namespace Takenet.SimplePersistence.Sql.Mapping
 {
-    public class PropertyMapper<TEntity> : IMapper<TEntity> where TEntity : class, new()
+    public class TypeMapper<TEntity> : IMapper<TEntity> where TEntity : class, new()
     {
         private readonly ITable _table;
         private readonly IDictionary<string, Type> _propertyDictionary;
         private readonly IDictionary<string, Func<TEntity, object>> _propertyGetFuncDictionary;
         private readonly IDictionary<string, Action<TEntity, object>> _propertySetActionDictionary;
 
-        public PropertyMapper(ITable table)
+        public TypeMapper(ITable table)
             : this(table, typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
             
         }
 
-        public PropertyMapper(ITable table, PropertyInfo[] properties)
+        protected TypeMapper(ITable table, PropertyInfo[] properties)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
             if (properties == null || properties.Length == 0) throw new ArgumentNullException(nameof(properties));
@@ -89,15 +88,6 @@ namespace Takenet.SimplePersistence.Sql.Mapping
             }
 
             return entity;
-        }
-    }
-
-    public class DataContractPropertyMapper<TEntity> : PropertyMapper<TEntity> where TEntity : class, new()
-    {
-        public DataContractPropertyMapper(ITable table)
-            : base(table, typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttribute<DataMemberAttribute>() != null).ToArray())
-        {
-
         }
     }
 }
