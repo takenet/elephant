@@ -24,6 +24,14 @@ namespace Takenet.SimplePersistence.Redis
             _useScanOnEnumeration = useScanOnEnumeration;
         }
 
+        protected RedisSet(string setName, ISerializer<T> serializer, ConnectionMultiplexer connectionMultiplexer, bool useScanOnEnumeration = true)
+            : base(setName, connectionMultiplexer)
+        {
+            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
+            _serializer = serializer;
+            _useScanOnEnumeration = useScanOnEnumeration;
+        }
+
         #region ISet<T> Members
 
         public Task AddAsync(T value)

@@ -17,7 +17,7 @@ namespace Takenet.SimplePersistence.Tests
 
         public static Item Parse(string s)
         {
-            if (s == null) throw new ArgumentNullException("s");
+            if (s == null) throw new ArgumentNullException(nameof(s));
 
             var values = s.Split(';');
             return new Item()

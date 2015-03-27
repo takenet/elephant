@@ -33,6 +33,7 @@ namespace Takenet.SimplePersistence.Redis
 
         protected virtual string GetRedisKey(TKey key)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
             return string.Format("{0}:{1}", _name, KeyToString(key));
         }
 

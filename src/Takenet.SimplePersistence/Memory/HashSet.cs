@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 namespace Takenet.SimplePersistence.Memory
 {
     /// <summary>
-    /// Implements the <see cref="ISet{T}"/> interface with the <see cref="HashSet{T}"/> class.
+    /// Implements the <see cref="ISet{T}"/> interface with the <see cref="System.Collections.Generic.HashSet{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class HashSetSet<T> : ISet<T> //, IQueryableStorage<T>
+    public class HashSet<T> : ISet<T> //, IQueryableStorage<T>
     {
-        private readonly HashSet<T> _hashSet;
+        private readonly System.Collections.Generic.HashSet<T> _hashSet;
 
-        public HashSetSet()
+        public HashSet()
         {
-            _hashSet = new HashSet<T>();
+            _hashSet = new System.Collections.Generic.HashSet<T>();
         }
 
         #region ISet<T> Members
