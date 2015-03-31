@@ -13,22 +13,32 @@ namespace Takenet.SimplePersistence.Tests
 {
     public abstract class MapFacts<TKey, TValue>
     {
-        private readonly Fixture _fixture;
+        protected readonly Fixture Fixture;
 
         protected MapFacts()
         {
-            _fixture = new Fixture();
-        } 
+            Fixture = new Fixture();
+        }
 
         public abstract IMap<TKey, TValue> Create();
+
+        public virtual TKey CreateKey()
+        {
+            return Fixture.Create<TKey>();
+        }
+
+        public virtual TValue CreateValue(TKey key)
+        {
+            return Fixture.Create<TValue>();
+        }
 
         [Fact(DisplayName = "AddNewKeyAndValueSucceeds")]
         public virtual async Task AddNewKeyAndValueSucceeds()
         {
             // Arrange
             var map = Create();
-            var key = _fixture.Create<TKey>();
-            var value = _fixture.Create<TValue>();
+            var key = CreateKey();
+            var value = CreateValue(key);
 
             // Act
             var actual = await map.TryAddAsync(key, value, false);
@@ -43,10 +53,10 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var map = Create();
-            var key = _fixture.Create<TKey>();
-            var value = _fixture.Create<TValue>();
+            var key = CreateKey();
+            var value = CreateValue(key);
             await map.TryAddAsync(key, value, false);
-            var newValue = _fixture.Create<TValue>();
+            var newValue = CreateValue(key);
 
             // Act
             var actual = await map.TryAddAsync(key, newValue, true);
@@ -61,10 +71,10 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var map = Create();
-            var key = _fixture.Create<TKey>();
-            var value = _fixture.Create<TValue>();
+            var key = CreateKey();
+            var value = CreateValue(key);
             await map.TryAddAsync(key, value, false);
-            var newValue = _fixture.Create<TValue>();
+            var newValue = CreateValue(key);
 
             // Act
             var actual = await map.TryAddAsync(key, newValue, false);
@@ -79,8 +89,8 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var map = Create();
-            var key = _fixture.Create<TKey>();
-            var value = _fixture.Create<TValue>();
+            var key = CreateKey();
+            var value = CreateValue(key);
             await map.TryAddAsync(key, value, false);
 
             // Act
@@ -95,7 +105,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var map = Create();
-            var key = _fixture.Create<TKey>();
+            var key = CreateKey();
 
             // Act
             var actual = await map.GetValueOrDefaultAsync(key);
@@ -109,8 +119,8 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var map = Create();
-            var key = _fixture.Create<TKey>();
-            var value = _fixture.Create<TValue>();
+            var key = CreateKey();
+            var value = CreateValue(key);
             await map.TryAddAsync(key, value, false);
 
             // Act
@@ -126,8 +136,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var map = Create();
-            var key = _fixture.Create<TKey>();
-            var value = _fixture.Create<TValue>();
+            var key = CreateKey();
 
             // Act
             var actual = await map.TryRemoveAsync(key);
@@ -141,8 +150,8 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var map = Create();
-            var key = _fixture.Create<TKey>();
-            var value = _fixture.Create<TValue>();
+            var key = CreateKey();
+            var value = CreateValue(key);
             await map.TryAddAsync(key, value, false);
 
             // Act
@@ -157,7 +166,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var map = Create();
-            var key = _fixture.Create<TKey>();
+            var key = CreateKey();
 
             // Act
             var actual = await map.ContainsKeyAsync(key);

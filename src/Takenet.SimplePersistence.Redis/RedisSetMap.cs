@@ -40,11 +40,11 @@ namespace Takenet.SimplePersistence.Redis
             {
                 var hashSet = (HashSet<TItem>) value;
                 var set = CreateSet(key);
-
-                foreach (var item in await hashSet.AsEnumerableAsync())
+                foreach (var item in await hashSet.AsEnumerableAsync().ConfigureAwait(false))
                 {
                     await set.AddAsync(item).ConfigureAwait(false);
-                }                
+                }
+                return true;
             }
    
             return false;

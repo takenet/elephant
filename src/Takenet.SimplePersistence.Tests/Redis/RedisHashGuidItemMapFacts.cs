@@ -23,8 +23,8 @@ namespace Takenet.SimplePersistence.Tests.Redis
         public override IMap<Guid, Item> Create()
         {
             _redisFixture.Server.FlushDatabase();
-            const string mapName = "integer-object-hash";
-            return new RedisHashMap<Guid, Item>(mapName, new ItemDictionaryConverter(), "localhost");
+            const string mapName = "guid-item-hash";
+            return new RedisHashMap<Guid, Item>(mapName, new ItemDictionaryConverter(), _redisFixture.Connection.Configuration);
         }
 
         private class ItemDictionaryConverter : IDictionaryConverter<Item>
