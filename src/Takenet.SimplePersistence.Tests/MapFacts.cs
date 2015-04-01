@@ -61,7 +61,7 @@ namespace Takenet.SimplePersistence.Tests
             // Act
             var actual = await map.TryAddAsync(key, newValue, true);
 
-            // Assert
+            // Assert            
             Check.That(actual).IsTrue();
             Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(newValue);
         }
