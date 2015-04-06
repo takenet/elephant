@@ -11,7 +11,7 @@ using Xunit;
 namespace Takenet.SimplePersistence.Tests.Redis
 {
     [Collection("Redis")]
-    public class RedisHashIntegerStringMapFacts : IntegerStringMapFacts, IClassFixture<RedisFixture>
+    public class RedisHashIntegerStringMapFacts : IntegerStringMapFacts
     {
         private readonly RedisFixture _redisFixture;
 

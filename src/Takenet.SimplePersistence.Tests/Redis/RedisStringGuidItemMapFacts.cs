@@ -10,7 +10,7 @@ using Xunit;
 namespace Takenet.SimplePersistence.Tests.Redis
 {
     [Collection("Redis")]
-    public class RedisStringGuidItemMapFacts : GuidItemMapFacts, IClassFixture<RedisFixture>
+    public class RedisStringGuidItemMapFacts : GuidItemMapFacts
     {
         private readonly RedisFixture _redisFixture;
 

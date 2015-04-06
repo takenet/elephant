@@ -13,7 +13,7 @@ using Xunit;
 namespace Takenet.SimplePersistence.Tests.Redis
 {
     [Collection("Redis")]
-    public class RedisIntegerStringSetMapFacts : IntegerStringSetMapFacts, IClassFixture<RedisFixture>
+    public class RedisIntegerStringSetMapFacts : IntegerStringSetMapFacts
     {
         private readonly RedisFixture _redisFixture;
         public const string MapName = "integer-strings";

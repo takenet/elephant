@@ -7,7 +7,7 @@ using Xunit;
 namespace Takenet.SimplePersistence.Tests.Sql
 {
     [Collection("Sql")]
-    public class SqlIntegerStringMapFacts : IntegerStringMapFacts, IClassFixture<SqlConnectionFixture>
+    public class SqlIntegerStringMapFacts : IntegerStringMapFacts
     {
         private readonly SqlConnectionFixture _fixture;
 

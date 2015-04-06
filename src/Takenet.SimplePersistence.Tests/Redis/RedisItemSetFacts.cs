@@ -9,7 +9,7 @@ using Xunit;
 namespace Takenet.SimplePersistence.Tests.Redis
 {
     [Collection("Redis")]
-    public class RedisItemSetFacts : ClassSetFacts<Item>, IClassFixture<RedisFixture>
+    public class RedisItemSetFacts : ClassSetFacts<Item>
     {
         private readonly RedisFixture _redisFixture;
 

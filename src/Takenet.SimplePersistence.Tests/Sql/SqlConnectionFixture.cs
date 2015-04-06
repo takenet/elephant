@@ -12,11 +12,17 @@ namespace Takenet.SimplePersistence.Tests.Sql
             Connection = new SqlConnection(@"Server=(localdb)\v12.0;Database=master;Integrated Security=true");
 
             Connection.Open();
-            using (var command = Connection.CreateCommand())
+            using (var dropDatabaseCommand = Connection.CreateCommand())
             {
-                command.CommandText = $"IF EXISTS(SELECT * FROM sys.databases WHERE Name = '{DatabaseName}') DROP DATABASE {DatabaseName}; CREATE DATABASE {DatabaseName}; USE {DatabaseName}";
-                command.ExecuteNonQuery();
-            }            
+                dropDatabaseCommand.CommandText = $"IF NOT EXISTS(SELECT * FROM sys.databases WHERE Name = '{DatabaseName}') CREATE DATABASE {DatabaseName}";
+                dropDatabaseCommand.ExecuteNonQuery();
+            }
+
+            using (var useDatabaseCommand = Connection.CreateCommand())
+            {
+                useDatabaseCommand.CommandText = $"USE {DatabaseName}";
+                useDatabaseCommand.ExecuteNonQuery();
+            }
         }
 
         public SqlConnection Connection { get; }
