@@ -104,6 +104,10 @@
       <Project>{6895c290-8eaa-468b-8b2f-b1a7cb3cb32a}</Project>
       <Name>Takenet.SimplePersistence.Redis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Takenet.SimplePersistence.Sql\Takenet.SimplePersistence.Sql.csproj">
+      <Project>{fa4ecd2c-454c-48fd-8dc1-678b8a723080}</Project>
+      <Name>Takenet.SimplePersistence.Sql</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Takenet.SimplePersistence\Takenet.SimplePersistence.csproj">
       <Project>{aea9548d-8d87-41ce-8959-81b3361c0298}</Project>
       <Name>Takenet.SimplePersistence</Name>

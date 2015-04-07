@@ -72,7 +72,7 @@ namespace Takenet.SimplePersistence.Tests.Redis
         }
 
         [Fact(DisplayName = "GetExistingKeyReturnsValue")]
-        public virtual async Task GetExistingKeyReturnsValue()
+        public async override Task GetExistingKeyReturnsValue()
         {
             // Arrange
             var map = Create();
@@ -88,7 +88,7 @@ namespace Takenet.SimplePersistence.Tests.Redis
         }
 
         [Fact(DisplayName = "OverwriteExistingKeyAndValueSucceeds")]
-        public virtual async Task OverwriteExistingKeyAndValueSucceeds()
+        public async override Task OverwriteExistingKeyAndValueSucceeds()
         {
             // Arrange
             var map = Create();

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AEA9548D-8D87-41CE-8959-81B3361C0298}</ProjectGuid>
+    <ProjectGuid>{FA4ECD2C-454C-48FD-8DC1-678B8A723080}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Takenet.SimplePersistence</RootNamespace>
-    <AssemblyName>Takenet.SimplePersistence</AssemblyName>
+    <RootNamespace>Takenet.SimplePersistence.Sql</RootNamespace>
+    <AssemblyName>Takenet.SimplePersistence.Sql</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,7 +33,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,31 +40,48 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncEnumerableExtensions.cs" />
-    <Compile Include="IAsyncEnumerable.cs" />
-    <Compile Include="IQueryableStorage.cs" />
-    <Compile Include="IAsyncEnumerator.cs" />
-    <Compile Include="IExpirableKeyMap.cs" />
-    <Compile Include="IItemSetMap.cs" />
-    <Compile Include="IKeysMap.cs" />
-    <Compile Include="IMap.cs" />
-    <Compile Include="INumberMap.cs" />
-    <Compile Include="IPropertyMap.cs" />
-    <Compile Include="IQueue.cs" />
-    <Compile Include="IQueueMap.cs" />
-    <Compile Include="ISet.cs" />
-    <Compile Include="ISetMap.cs" />
-    <Compile Include="IUpdatableMap.cs" />
-    <Compile Include="Memory\DictionaryMap.cs" />
-    <Compile Include="Memory\HashSet.cs" />
-    <Compile Include="Memory\DictionaryHashSetMap.cs" />
-    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="ExpressionTranslator.cs" />
+    <Compile Include="MapBase.cs" />
+    <Compile Include="Mapping\DataContractTypeMapper.cs" />
+    <Compile Include="Mapping\IMapper.cs" />
+    <Compile Include="Mapping\ITable.cs" />
+    <Compile Include="Mapping\KeyValuePropertyInfoTable.cs" />
+    <Compile Include="Mapping\KeyValueTypeTable.cs" />
+    <Compile Include="Mapping\MapperExtensions.cs" />
+    <Compile Include="Mapping\PropertyInfoExtensions.cs" />
+    <Compile Include="Mapping\PropertyInfoTable.cs" />
+    <Compile Include="Mapping\SqlType.cs" />
+    <Compile Include="Mapping\Table.cs" />
+    <Compile Include="Mapping\TypeMapper.cs" />
+    <Compile Include="Mapping\TypeTable.cs" />
+    <Compile Include="Mapping\ValueMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringExtensions.cs" />
-    <Compile Include="TaskUtil.cs" />
-    <Compile Include="TypeUtil.cs" />
+    <Compile Include="SqlConnectionExtensions.cs" />
+    <Compile Include="SqlDataReaderAsyncEnumerable.cs" />
+    <Compile Include="SqlDataReaderAsyncEnumerator.cs" />
+    <Compile Include="SqlExtensions.cs" />
+    <Compile Include="SqlMap.cs" />
+    <Compile Include="SqlSet.cs" />
+    <Compile Include="SqlTemplates.Designer.cs">
+      <DependentUpon>SqlTemplates.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="StorageBase.cs" />
+    <Compile Include="TypeMapper.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Takenet.SimplePersistence\Takenet.SimplePersistence.csproj">
+      <Project>{aea9548d-8d87-41ce-8959-81b3361c0298}</Project>
+      <Name>Takenet.SimplePersistence</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlTemplates.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SqlTemplates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

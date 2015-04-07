@@ -475,7 +475,7 @@ namespace Takenet.SimplePersistence
             throw new InvalidOperationException("The sequence is empty");
         }
 
-        public static async Task<object> FirstAsync(
+        public static Task<object> FirstAsync(
             this IAsyncEnumerable source)
         {
             return FirstAsync(source, CancellationToken.None);
@@ -603,7 +603,7 @@ namespace Takenet.SimplePersistence
             return source.SingleAsync(CancellationToken.None);
         }
 
-        public static async Task<object> SingleAsync(
+        public static Task<object> SingleAsync(
             this IAsyncEnumerable source)
         {
             return source.SingleAsync(CancellationToken.None);
