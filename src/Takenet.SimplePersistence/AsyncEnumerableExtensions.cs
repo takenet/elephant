@@ -79,6 +79,43 @@ namespace Takenet.SimplePersistence
         }
 
         // <summary>
+        // Asynchronously executes the provided action on each element of the <see cref="IAsyncEnumerable{T}" />.
+        // </summary>
+        // <param name="func"> The action to be executed. </param>
+        // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
+        // <returns> A Task representing the asynchronous operation. </returns>
+        public static async Task ForEachAsync<T>(
+            this IAsyncEnumerable<T> source, Func<T, Task> func, CancellationToken cancellationToken)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (func == null) throw new ArgumentNullException("func");
+
+            await ForEachAsync(await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false), func, cancellationToken);
+        }
+
+        private static async Task ForEachAsync<T>(
+            IAsyncEnumerator<T> enumerator, Func<T, Task> func, CancellationToken cancellationToken)
+        {
+            using (enumerator)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                {
+                    Task<bool> moveNextTask;
+                    do
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var current = enumerator.Current;
+                        moveNextTask = enumerator.MoveNextAsync(cancellationToken);
+                        await func(current).ConfigureAwait(false);
+                    }
+                    while (await moveNextTask.ConfigureAwait(continueOnCapturedContext: false));
+                }
+            }
+        }
+
+        // <summary>
         // Asynchronously creates a <see cref="List{T}" /> from the <see cref="IDbAsyncEnumerable" />.
         // </summary>
         // <typeparam name="T"> The type that the elements will be cast to. </typeparam>
@@ -137,7 +174,7 @@ namespace Takenet.SimplePersistence
 
             var tcs = new TaskCompletionSource<List<T>>();
             var list = new List<T>();
-            source.ForEachAsync(list.Add, cancellationToken).ContinueWith(
+            source.ForEachAsync(i => list.Add(i), cancellationToken).ContinueWith(
                 t =>
                 {
                     if (t.IsFaulted)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Takenet.SimplePersistence.Sql.Mapping;
+using static Takenet.SimplePersistence.Sql.SqlHelper;
 
 namespace Takenet.SimplePersistence.Sql
 {
@@ -21,13 +22,13 @@ namespace Takenet.SimplePersistence.Sql
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var cancellationToken = CreateCancellationToken();
-            var columnValues = Mapper.GetColumnValues(value);
+            var columnValues = GetColumnValues(value);
             var keyColumnValues = GetKeyColumnValues(columnValues);
 
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
                 using (var command = connection.CreateTextCommand(
-                    string.Format("{0}; {1}",  SqlTemplates.Delete, SqlTemplates.InsertWhereNotExists),
+                    SqlTemplates.DeleteAndInsertWhereNotExists,
                     new
                     {
                         tableName = Table.Name.AsSqlIdentifier(),
@@ -39,7 +40,7 @@ namespace Takenet.SimplePersistence.Sql
                 {
                     if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
                     {
-                        throw new InvalidOperationException("The database operation failed");
+                        throw new Exception("The database operation failed");
                     }
                 }
             }
@@ -67,7 +68,7 @@ namespace Takenet.SimplePersistence.Sql
                 {
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
                     tableName = Table.Name.AsSqlIdentifier(),
-                    filter = "1 = 1"
+                    filter = "1 = 1"  // Yes, I know.
                 });
             return new SqlDataReaderAsyncEnumerable<T>(command, Mapper, selectColumns);
         }
@@ -79,7 +80,7 @@ namespace Takenet.SimplePersistence.Sql
             var cancellationToken = CreateCancellationToken();
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
-                return await ContainsKeyAsync(keyColumnValues, connection, cancellationToken).ConfigureAwait(false);
+                return await ContainsAsync(keyColumnValues, connection, cancellationToken).ConfigureAwait(false);
             }
         }
 

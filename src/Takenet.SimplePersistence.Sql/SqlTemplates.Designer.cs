@@ -181,6 +181,18 @@ namespace Takenet.SimplePersistence.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DELETE FROM {tableName} WHERE {filter}; 
+        ///INSERT INTO {tableName} ({columns}) 
+        ///SELECT {values}
+        ///WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} ).
+        /// </summary>
+        public static string DeleteAndInsertWhereNotExists {
+            get {
+                return ResourceManager.GetString("DeleteAndInsertWhereNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IF OBJECT_ID(&apos;{tableName}&apos;) IS NOT NULL 
         ///DELETE FROM {tableName}.
         /// </summary>

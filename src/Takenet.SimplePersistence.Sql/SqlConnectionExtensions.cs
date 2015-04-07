@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Takenet.SimplePersistence.Sql.Mapping;
+using static Takenet.SimplePersistence.Sql.SqlHelper;
 
 namespace Takenet.SimplePersistence.Sql
 {
@@ -58,6 +60,63 @@ namespace Takenet.SimplePersistence.Sql
             }
 
             return command;
+        }
+
+        public static SqlCommand CreateDeleteCommand(this SqlConnection connection, string tableName, IDictionary<string, object> filterValues)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.Delete,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    filter = GetAndEqualsStatement(filterValues.Keys.ToArray())
+                },
+                filterValues.Select(k => k.ToSqlParameter()));
+        }
+
+        public static SqlCommand CreateContainsCommand(this SqlConnection connection, string tableName, IDictionary<string, object> filterValues)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.Exists,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    filter = GetAndEqualsStatement(filterValues.Keys.ToArray())
+                },
+                filterValues.Select(k => k.ToSqlParameter()));
+        }
+
+        public static SqlCommand CreateSelectCommand(this SqlConnection connection, string tableName, IDictionary<string, object> filterValues,
+            string[] selectColumns)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.Select,
+                new
+                {
+                    columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
+                    tableName = tableName.AsSqlIdentifier(),
+                    filter = GetAndEqualsStatement(filterValues.Keys.ToArray())
+                },
+                filterValues.Select(k => k.ToSqlParameter()));
+        }
+
+        public static SqlCommand CreateInsertWhereNotExistsCommand(this SqlConnection connection, string tableName,
+            IDictionary<string, object> filterValues, IDictionary<string, object> columnValues, bool deleteBeforeInsert = false)
+        {
+            var sqlTemplate = deleteBeforeInsert ?
+                SqlTemplates.DeleteAndInsertWhereNotExists :
+                SqlTemplates.InsertWhereNotExists;
+
+            return connection.CreateTextCommand(
+                sqlTemplate,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
+                    values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSepparate(),
+                    filter = GetAndEqualsStatement(filterValues.Keys.ToArray())
+                },
+                columnValues.Select(c => c.ToSqlParameter()));
         }
     }
 }

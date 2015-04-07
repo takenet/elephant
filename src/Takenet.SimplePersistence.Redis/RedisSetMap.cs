@@ -52,7 +52,7 @@ namespace Takenet.SimplePersistence.Redis
                 commandTasks.Add(transaction.SetAddAsync(redisKey, _serializer.Serialize(item)));
             }
             var success = await transaction.ExecuteAsync().ConfigureAwait(false);
-            await Task.WhenAll(commandTasks);
+            await Task.WhenAll(commandTasks).ConfigureAwait(false);
             return success;
         }
 

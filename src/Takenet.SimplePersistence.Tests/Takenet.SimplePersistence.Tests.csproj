@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassSetFacts.cs" />
+    <Compile Include="ContentCompareIntegerStringSetMapFacts.cs" />
     <Compile Include="GuidItemMapFacts.cs" />
     <Compile Include="GuidItemSetMapFacts.cs" />
     <Compile Include="IntegerStringMapFacts.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Sql\SqlCollectionFixture.cs" />
     <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
+    <Compile Include="Sql\SqlIntegerStringSetMapFacts.cs" />
     <Compile Include="Sql\SqlItemSetFacts.cs" />
     <Compile Include="Sql\SqlStringSetFacts.cs" />
     <Compile Include="StringSetFacts.cs" />

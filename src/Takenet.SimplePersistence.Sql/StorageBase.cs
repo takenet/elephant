@@ -3,58 +3,40 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Takenet.SimplePersistence.Sql.Mapping;
+using static Takenet.SimplePersistence.Sql.SqlHelper;
+using static Takenet.SimplePersistence.Sql.DatabaseSchema;
 
 namespace Takenet.SimplePersistence.Sql
 {
     public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>
-    {
-        #region Fields
-
-        protected abstract IMapper<TEntity> Mapper { get; }
-        protected readonly ITable Table;
-        private readonly string _connectionString;
-
-        #endregion
-
-        #region Constructor
-
+    {                                                
         protected StorageBase(ITable table,  string connectionString)
         {
             Table = table;
-            _connectionString = connectionString;
+            ConnectionString = connectionString;
         }
 
-        #endregion
+        protected ITable Table { get; }
 
-        protected async Task<bool> TryRemoveAsync(IDictionary<string, object> keyValues, SqlConnection connection, CancellationToken cancellationToken)
-        {
-            using (var command = connection.CreateTextCommand(
-                SqlTemplates.Delete,
-                new
-                {
-                    tableName = Table.Name.AsSqlIdentifier(),
-                    filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
-                },
-                keyValues.Select(k => k.ToSqlParameter())))
+        protected string ConnectionString { get; }
+
+        protected abstract IMapper<TEntity> Mapper { get; }
+
+        protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, SqlConnection connection, CancellationToken cancellationToken, SqlTransaction sqlTransaction = null)
+        {            
+            using (var command = connection.CreateDeleteCommand(Table.Name, filterValues))
             {
+                if (sqlTransaction != null) command.Transaction = sqlTransaction;                
                 return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
             }
         }
 
-        protected async Task<bool> ContainsKeyAsync(IDictionary<string, object> keyValues, SqlConnection connection, CancellationToken cancellationToken)
+        protected async Task<bool> ContainsAsync(IDictionary<string, object> filterValues, SqlConnection connection, CancellationToken cancellationToken)
         {
-            using (var command = connection.CreateTextCommand(
-                SqlTemplates.Exists,
-                new
-                {
-                    tableName = Table.Name.AsSqlIdentifier(),
-                    filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
-                },
-                keyValues.Select(k => k.ToSqlParameter())))
+            using (var command = connection.CreateContainsCommand(Table.Name, filterValues))
             {
                 return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
             }
@@ -70,7 +52,6 @@ namespace Takenet.SimplePersistence.Sql
                 throw new NotImplementedException("The select parameter is not supported yet");
             }
 
-            var result = new List<TEntity>();
             var selectColumns = Table.Columns.Keys;
             var selectColumnsCommaSepparate = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate();
             var keysColumnsCommaSepparate = Table.KeyColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate();
@@ -106,121 +87,43 @@ namespace Takenet.SimplePersistence.Sql
 
         #endregion
 
+        protected async Task<SqlConnection> GetConnectionAsync(CancellationToken cancellationToken)
+        {
+            var connection = new SqlConnection(ConnectionString);
+            await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+            await CheckTableSchemaAsync(connection, cancellationToken).ConfigureAwait(false);
+            return connection;
+        }
+
         #region Protected Members
-
-
 
         protected CancellationToken CreateCancellationToken()
         {
             return CancellationToken.None;
         }
 
-        protected string GetAndEqualsStatement(string[] columns)
+        protected virtual IDictionary<string, object> GetColumnValues(TEntity entity)
         {
-            return GetSeparateEqualsStatement(SqlTemplates.And, columns);
-        }
-
-        protected string GetAndEqualsStatement(string[] columns, string[] parameters)
-        {
-            return GetSeparateEqualsStatement(SqlTemplates.And, columns, parameters);
-        }
-
-        protected string GetCommaEqualsStatement(string[] columns)
-        {
-            return GetSeparateEqualsStatement(",", columns);
-        }
-
-        protected string GetCommaEqualsStatement(string[] columns, string[] parameters)
-        {
-            return GetSeparateEqualsStatement(",", columns, parameters);
-        }
-
-        protected string GetSeparateEqualsStatement(string separator, string[] columns)
-        {
-            return GetSeparateEqualsStatement(separator, columns, columns);
-        }
-
-        protected string GetSeparateEqualsStatement(string separator, string[] columns, string[] parameters)
-        {
-            if (columns.Length == 0)
-            {
-                throw new ArgumentException("The columns are empty");
-            }
-
-            if (parameters.Length == 0)
-            {
-                throw new ArgumentException("The parameters are empty");
-            }
-
-            var filter = new StringBuilder();
-
-            for (int i = 0; i < columns.Length; i++)
-            {
-                var column = columns[i];
-                var parameter = parameters[i];
-
-                filter.Append(
-                    GetEqualsStatement(column, parameter));
-
-                if (i + 1 < columns.Length)
-                {
-                    filter.AppendFormat(" {0} ", separator);
-                }
-            }
-
-            return filter.ToString();
-        }
-
-        protected string GetEqualsStatement(string column)
-        {
-            return GetEqualsStatement(column, column);
-        }
-
-        protected string GetEqualsStatement(string column, string parameter)
-        {
-            return SqlTemplates.QueryEquals.Format(
-                new
-                {
-                    column = column.AsSqlIdentifier(),
-                    value = parameter.AsSqlParameterName()
-                });
-        }
-
-        protected async Task<SqlConnection> GetConnectionAsync(CancellationToken cancellationToken)
-        {
-            var connection = GetConnection();
-            await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
-            await CheckTableSchemaAsync(connection, cancellationToken).ConfigureAwait(false);
-            return connection;
-        }
-
-        protected string GetFilters(Expression<Func<TEntity, bool>> where)
-        {
-            var translator = new ExpressionTranslator();
-            return translator.GetStatement(where);
-        }
-
-        protected IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues)
-        {
-            return Table
-                .KeyColumns
-                .Select(c => new { Key = c, Value = columnValues[c] })
-                .ToDictionary(t => t.Key, t => t.Value);
+            return Mapper.GetColumnValues(entity);
         }
 
         protected IDictionary<string, object> GetKeyColumnValues(TEntity entity)
         {
-            return Mapper.GetColumnValues(entity, Table.KeyColumns);
+            return GetKeyColumnValues(GetColumnValues(entity));
+        }
+
+        protected virtual IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues)
+        {
+            return Table
+                .KeyColumns
+                .Where(columnValues.ContainsKey)
+                .Select(c => new { Key = c, Value = columnValues[c] })
+                .ToDictionary(t => t.Key, t => t.Value);
         }
 
         #endregion
 
         #region Private Methods
-
-        private SqlConnection GetConnection()
-        {
-            return new SqlConnection(_connectionString);
-        }
 
         private bool _schemaChecked;
         private readonly SemaphoreSlim _schemaValidationSemaphore = new SemaphoreSlim(1);
@@ -246,10 +149,10 @@ namespace Takenet.SimplePersistence.Sql
 
                         if (!tableExists)
                         {
-                            await CreateTableAsync(connection, cancellationToken).ConfigureAwait(false);
+                            await CreateTableAsync(connection, Table, cancellationToken).ConfigureAwait(false);
                         }
 
-                        await ValidateTableSchema(connection, cancellationToken).ConfigureAwait(false);
+                        await UpdateTableSchemaAsync(connection, Table, cancellationToken).ConfigureAwait(false);
                         _schemaChecked = true;
                     }
                 }
@@ -258,187 +161,6 @@ namespace Takenet.SimplePersistence.Sql
                     _schemaValidationSemaphore.Release();
                 }
             }
-        }
-
-        private async Task ValidateTableSchema(SqlConnection connection, CancellationToken cancellationToken)
-        {
-            var tableColumnsDictionary = new Dictionary<string, string>();
-
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = SqlTemplates.GetTableColumns.Format(
-                    new
-                    {
-                        tableName = Table.Name
-                    });
-
-                using (var reader = await command.ExecuteReaderAsync(cancellationToken))
-                {
-                    while (await reader.ReadAsync(cancellationToken))
-                    {
-                        tableColumnsDictionary.Add((string)reader[0], (string)reader[1]);
-                    }
-                }
-            }
-
-            var columnsToBeCreated = new List<KeyValuePair<string, SqlType>>();
-
-            foreach (var column in Table.Columns)
-            {
-                // Check if the column exists in the database
-                if (!tableColumnsDictionary.ContainsKey(column.Key))
-                {
-                    columnsToBeCreated.Add(column);
-                }
-                // Checks if the existing column type matches with the definition
-                // The comparion is with startsWith for the NVARCHAR values
-                else if (!GetSqlTypeSql(column.Value).StartsWith(
-                         tableColumnsDictionary[column.Key], StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new InvalidOperationException("The existing column '{columnName}' type '{columnType}' is not compatible with the definition type '{dbType}'".Format(new { columnName = column.Key, columnType = tableColumnsDictionary[column.Key], dbType = column.Value }));
-                }
-            }
-
-            if (columnsToBeCreated.Any())
-            {
-                await CreateColumnsAsync(connection, columnsToBeCreated, cancellationToken);
-            }
-
-        }
-
-        private async Task CreateColumnsAsync(SqlConnection connection, IEnumerable<KeyValuePair<string, SqlType>> columns, CancellationToken cancellationToken)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText = SqlTemplates.AlterTableAddColumn.Format(
-                new
-                {
-                    tableName = Table.Name,
-                    columnDefinition = GetColumnsDefinitionSql(columns).TrimEnd(',')
-                });
-
-            await command.ExecuteNonQueryAsync(cancellationToken);
-        }
-
-        private async Task CreateTableAsync(SqlConnection connection, CancellationToken cancellationToken)
-        {
-            if (Table.Columns.Count == 0)
-            {
-                throw new InvalidOperationException("The table mapper has no defined columns");
-            }
-
-            if (!Table.KeyColumns.Any())
-            {
-                throw new InvalidOperationException("The table mapper has no defined key columns");
-            }
-
-            // Table columns
-            var createTableSqlBuilder = new StringBuilder();
-            createTableSqlBuilder.AppendLine(GetColumnsDefinitionSql(Table.Columns));
-
-            // Constraints
-            createTableSqlBuilder.AppendLine(
-                SqlTemplates.PrimaryKeyConstraintDefinition.Format(
-                    new
-                    {
-                        tableName = Table.Name,
-                        columns = Table.KeyColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate()
-                    })
-            );
-
-            // Create table 
-            var createTableSql = SqlTemplates.CreateTable.Format(
-                new
-                {
-                    tableName = Table.Name.AsSqlIdentifier(),
-                    tableDefinition = createTableSqlBuilder.ToString()
-                });
-
-            await connection.ExecuteNonQueryAsync(
-                createTableSql,
-                cancellationToken).ConfigureAwait(false);
-
-        }
-
-        private string GetColumnsDefinitionSql(IEnumerable<KeyValuePair<string, SqlType>> columns)
-        {
-            var columnSqlBuilder = new StringBuilder();
-
-            foreach (var column in columns)
-            {
-                // All columns, except the key are nullable
-                if (Table.KeyColumns.Contains(column.Key))
-                {
-                    if (column.Value.IsIdentity)
-                    {
-                        columnSqlBuilder.AppendLine(
-                            SqlTemplates.IdentityColumnDefinition.Format(
-                                new
-                                {
-                                    columnName = column.Key.AsSqlIdentifier(),
-                                    sqlType = GetSqlTypeSql(column.Value)
-                                })
-                            );
-                    }
-                    else
-                    {
-                        columnSqlBuilder.AppendLine(
-                            SqlTemplates.ColumnDefinition.Format(
-                                new
-                                {
-                                    columnName = column.Key.AsSqlIdentifier(),
-                                    sqlType = GetSqlTypeSql(column.Value)
-                                })
-                            );
-                    }
-                }
-                else
-                {
-                    columnSqlBuilder.AppendLine(
-                        SqlTemplates.NullableColumnDefinition.Format(
-                            new
-                            {
-                                columnName = column.Key.AsSqlIdentifier(),
-                                sqlType = GetSqlTypeSql(column.Value)
-                            })
-                        );
-                }
-
-                columnSqlBuilder.Append(",");
-            }
-            return columnSqlBuilder.ToString();
-        }
-
-        private static string GetSqlTypeSql(SqlType sqlType)
-        {
-            var typeSql = SqlTemplates.ResourceManager.GetString(
-                string.Format("DbType{0}", sqlType.Type));
-
-            if (sqlType.Length.HasValue)
-            {
-                string lengthValue = sqlType.Length == int.MaxValue ? SqlType.MAX_LENGTH : sqlType.Length.ToString();
-                typeSql = typeSql.Format(new
-                {
-                    length = lengthValue
-                });
-            }
-
-            if (sqlType.Precision.HasValue)
-            {
-                typeSql = typeSql.Format(new
-                {
-                    precision = sqlType.Precision
-                });
-            }
-
-            if (sqlType.Scale.HasValue)
-            {
-                typeSql = typeSql.Format(new
-                {
-                    scale = sqlType.Scale
-                });
-            }
-
-            return typeSql;
         }
 
         #endregion
