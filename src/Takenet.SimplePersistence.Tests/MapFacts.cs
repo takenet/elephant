@@ -11,7 +11,7 @@ using Xunit.Extensions;
 
 namespace Takenet.SimplePersistence.Tests
 {
-    public abstract class MapFacts<TKey, TValue>
+    public abstract class MapFacts<TKey, TValue> : AssertionBase
     {
         protected readonly Fixture Fixture;
 
@@ -44,8 +44,26 @@ namespace Takenet.SimplePersistence.Tests
             var actual = await map.TryAddAsync(key, value, false);
 
             // Assert
-            Check.That(actual).IsTrue();
-            Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(value);
+            AssertIsTrue(actual);
+            AssertEquals(await map.GetValueOrDefaultAsync(key), value);
+        }
+
+        [Fact(DisplayName = "OverwriteExistingKeySucceeds")]
+        public virtual async Task OverwriteExistingKeySucceeds()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var value = CreateValue(key);
+            await map.TryAddAsync(key, value, false);
+            value = await map.GetValueOrDefaultAsync(key);
+
+            // Act
+            var actual = await map.TryAddAsync(key, value, true);
+
+            // Assert            
+            AssertIsTrue(actual);
+            AssertEquals(await map.GetValueOrDefaultAsync(key), value);
         }
 
         [Fact(DisplayName = "OverwriteExistingKeyAndValueSucceeds")]
@@ -62,8 +80,26 @@ namespace Takenet.SimplePersistence.Tests
             var actual = await map.TryAddAsync(key, newValue, true);
 
             // Assert            
-            Check.That(actual).IsTrue();
-            Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(newValue);
+            AssertIsTrue(actual);
+            AssertEquals(await map.GetValueOrDefaultAsync(key), newValue);
+        }
+
+        [Fact(DisplayName = "AddExistingKeyFails")]
+        public virtual async Task AddExistingKeyFails()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var value = CreateValue(key);
+            await map.TryAddAsync(key, value, false);
+            value = await map.GetValueOrDefaultAsync(key);
+
+            // Act
+            var actual = await map.TryAddAsync(key, value, false);
+
+            // Assert
+            AssertIsFalse(actual);
+            AssertEquals(await map.GetValueOrDefaultAsync(key), value);
         }
 
         [Fact(DisplayName = "AddExistingKeyAndValueFails")]
@@ -80,8 +116,8 @@ namespace Takenet.SimplePersistence.Tests
             var actual = await map.TryAddAsync(key, newValue, false);
 
             // Assert
-            Check.That(actual).IsFalse();
-            Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(value);
+            AssertIsFalse(actual);
+            AssertEquals(await map.GetValueOrDefaultAsync(key), value);
         }
 
         [Fact(DisplayName = "GetExistingKeyReturnsValue")]
@@ -97,7 +133,7 @@ namespace Takenet.SimplePersistence.Tests
             var actual = await map.GetValueOrDefaultAsync(key);
 
             // Assert
-            Check.That(actual).IsEqualTo(value);
+            AssertEquals(actual, value);
         }
 
         [Fact(DisplayName = "GetNonExistingKeyReturnsDefault")]
@@ -111,7 +147,7 @@ namespace Takenet.SimplePersistence.Tests
             var actual = await map.GetValueOrDefaultAsync(key);
 
             // Assert
-            Check.That(actual).IsEqualTo(default(TValue));
+            AssertEquals(actual, default(TValue));
         }
 
         [Fact(DisplayName = "TryRemoveExistingKeyAndValueSucceeds")]
@@ -127,8 +163,8 @@ namespace Takenet.SimplePersistence.Tests
             var actual = await map.TryRemoveAsync(key);
 
             // Assert
-            Check.That(actual).IsTrue();
-            Check.That(await map.GetValueOrDefaultAsync(key)).IsEqualTo(default(TValue));
+            AssertIsTrue(actual);
+            AssertEquals(await map.GetValueOrDefaultAsync(key), default(TValue));
         }
 
         [Fact(DisplayName = "TryRemoveNonExistingKeyFails")]
@@ -142,7 +178,7 @@ namespace Takenet.SimplePersistence.Tests
             var actual = await map.TryRemoveAsync(key);
 
             // Assert
-            Check.That(actual).IsFalse();
+            AssertIsFalse(actual);
         }
 
         [Fact(DisplayName = "CheckForExistingKeyReturnsTrue")]
@@ -158,7 +194,7 @@ namespace Takenet.SimplePersistence.Tests
             var actual = await map.ContainsKeyAsync(key);
 
             // Assert
-            Check.That(actual).IsTrue();
+            AssertIsTrue(actual);
         }
 
         [Fact(DisplayName = "CheckForNonExistingKeyReturnsFalse")]
@@ -172,7 +208,7 @@ namespace Takenet.SimplePersistence.Tests
             var actual = await map.ContainsKeyAsync(key);
 
             // Assert
-            Check.That(actual).IsFalse();
+            AssertIsFalse(actual);
         }
     }
 }

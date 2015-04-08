@@ -12,8 +12,16 @@ namespace Takenet.SimplePersistence.Tests.Memory
     {
         public override IMap<int, ISet<string>> Create()
         {
-            Fixture.Register<ISet<string>>(() => new SimplePersistence.Memory.HashSet<string>());
             return new DictionaryHashSetMap<int, string>();
+        }
+
+        public override ISet<string> CreateValue(int key)
+        {
+            var set = new SimplePersistence.Memory.HashSet<string>();
+            set.AddAsync(Fixture.Create<string>()).Wait();
+            set.AddAsync(Fixture.Create<string>()).Wait();
+            set.AddAsync(Fixture.Create<string>()).Wait();
+            return set;
         }
     }
 }

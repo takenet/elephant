@@ -12,12 +12,13 @@ namespace Takenet.SimplePersistence.Sql
 {
     public abstract class SqlSetMap<TKey, TItem> : MapStorageBase<TKey, TItem>, ISetMap<TKey, TItem>
     {
-        protected SqlSetMap(ITable table, string connectionString) 
+        private readonly IsolationLevel _addIsolationLevel;
+
+        protected SqlSetMap(ITable table, string connectionString, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted) 
             : base(table, connectionString)
         {
-
+            _addIsolationLevel = addIsolationLevel;
         }
-
 
         public async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
         {
@@ -40,7 +41,7 @@ namespace Takenet.SimplePersistence.Sql
                     return false;
                 }
 
-                using (var transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted))
+                using (var transaction = connection.BeginTransaction(_addIsolationLevel))
                 {
                     if (overwrite)
                     {

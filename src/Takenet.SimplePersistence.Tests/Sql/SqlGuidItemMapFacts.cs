@@ -25,7 +25,9 @@ namespace Takenet.SimplePersistence.Tests.Sql
 
         public override IMap<Guid, Item> Create()
         {
-            var columns = typeof (Item).GetProperties(BindingFlags.Instance | BindingFlags.Public).ToSqlColumns();
+            var columns = typeof (Item)
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .ToSqlColumns();
             columns.Add("Key", new SqlType(DbType.Guid));
             var table = new Table("GuidItems", new[] { "Key" }, columns);
             _fixture.DropTable(table.Name);
@@ -42,8 +44,6 @@ namespace Takenet.SimplePersistence.Tests.Sql
             protected override IMapper<Item> Mapper => new TypeMapper<Item>(Table);
 
             protected override IMapper<Guid> KeyMapper => new ValueMapper<Guid>("Key");
-        }
-        
-               
+        }                       
     }
 }

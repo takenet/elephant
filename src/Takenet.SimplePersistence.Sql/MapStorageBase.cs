@@ -26,19 +26,19 @@ namespace Takenet.SimplePersistence.Sql
                 .ToDictionary(t => t.Key, t => t.Value);
         }
 
-        protected virtual async Task<bool> TryRemoveAsync(TKey key, SqlConnection connection, CancellationToken cancellationToken, SqlTransaction sqlTransaction = null)
+        protected virtual Task<bool> TryRemoveAsync(TKey key, SqlConnection connection, CancellationToken cancellationToken, SqlTransaction sqlTransaction = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var keyColumnValues = KeyMapper.GetColumnValues(key);
-            return await TryRemoveAsync(keyColumnValues, connection, cancellationToken, sqlTransaction);
+            return TryRemoveAsync(keyColumnValues, connection, cancellationToken, sqlTransaction);
             
         }
 
-        protected virtual async Task<bool> ContainsKeyAsync(TKey key, SqlConnection connection, CancellationToken cancellationToken)
+        protected virtual Task<bool> ContainsKeyAsync(TKey key, SqlConnection connection, CancellationToken cancellationToken)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var keyColumnValues = KeyMapper.GetColumnValues(key);
-            return await ContainsAsync(keyColumnValues, connection, cancellationToken);            
+            return ContainsAsync(keyColumnValues, connection, cancellationToken);            
         }
     }
 }

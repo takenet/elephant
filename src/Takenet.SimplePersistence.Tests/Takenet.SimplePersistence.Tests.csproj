@@ -61,8 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssertionBase.cs" />
     <Compile Include="ClassSetFacts.cs" />
-    <Compile Include="ContentCompareIntegerStringSetMapFacts.cs" />
     <Compile Include="GuidItemMapFacts.cs" />
     <Compile Include="GuidItemSetMapFacts.cs" />
     <Compile Include="IntegerStringMapFacts.cs" />
@@ -81,6 +81,7 @@
     <Compile Include="Redis\RedisCollectionFixture.cs" />
     <Compile Include="Redis\RedisHashGuidItemMapFacts.cs" />
     <Compile Include="Redis\RedisHashIntegerStringMapFacts.cs" />
+    <Compile Include="Redis\RedisGuidItemSetMapFacts.cs" />
     <Compile Include="Redis\RedisIntegerStringSetMapFacts.cs" />
     <Compile Include="Redis\RedisItemSetFacts.cs" />
     <Compile Include="Redis\RedisStringGuidItemMapFacts.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Sql\SqlCollectionFixture.cs" />
     <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemSetMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringSetMapFacts.cs" />
     <Compile Include="Sql\SqlItemSetFacts.cs" />
     <Compile Include="Sql\SqlStringSetFacts.cs" />

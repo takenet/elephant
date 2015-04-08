@@ -12,7 +12,7 @@ using Xunit;
 namespace Takenet.SimplePersistence.Tests.Sql
 {
     [Collection("Sql")]
-    public class SqlIntegerStringSetMapFacts : ContentCompareIntegerStringSetMapFacts
+    public class SqlIntegerStringSetMapFacts : IntegerStringSetMapFacts
     {
         private readonly SqlConnectionFixture _fixture;
 
@@ -31,6 +31,8 @@ namespace Takenet.SimplePersistence.Tests.Sql
         public override ISet<string> CreateValue(int key)
         {
             var set = new SimplePersistence.Memory.HashSet<string>();
+            set.AddAsync(Fixture.Create<string>()).Wait();
+            set.AddAsync(Fixture.Create<string>()).Wait();
             set.AddAsync(Fixture.Create<string>()).Wait();
             return set;
         }
