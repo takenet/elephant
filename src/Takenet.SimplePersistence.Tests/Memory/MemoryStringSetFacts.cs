@@ -11,7 +11,7 @@ namespace Takenet.SimplePersistence.Tests.Memory
     {
         public override ISet<Guid> Create()
         {
-            return new SimplePersistence.Memory.HashSetSet<Guid>();
+            return new Set<Guid>();
         }
     }
 }

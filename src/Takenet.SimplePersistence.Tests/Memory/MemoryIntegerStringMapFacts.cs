@@ -14,7 +14,7 @@ namespace Takenet.SimplePersistence.Tests.Memory
     {
         public override IMap<int, string> Create()
         {
-            return new DictionaryMap<int, string>();            
+            return new Map<int, string>();            
         }
     }
 }

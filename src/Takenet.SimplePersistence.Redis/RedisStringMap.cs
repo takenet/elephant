@@ -27,7 +27,7 @@ namespace Takenet.SimplePersistence.Redis
             _serializer = serializer;
         }
 
-        public RedisStringMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer)
+        internal RedisStringMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer)
             : base(mapName, connectionMultiplexer)
         {
             if (serializer == null)
@@ -42,7 +42,7 @@ namespace Takenet.SimplePersistence.Redis
 
         public override Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.StringSetAsync(
                 GetRedisKey(key),
                 _serializer.Serialize(value),
@@ -51,20 +51,20 @@ namespace Takenet.SimplePersistence.Redis
 
         public override async Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             var redisValue = await database.StringGetAsync(GetRedisKey(key));
             return redisValue.IsNull ? default(TValue) : _serializer.Deserialize(redisValue);
         }
 
         public override Task<bool> TryRemoveAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.KeyDeleteAsync(GetRedisKey(key));
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key));
         }
 

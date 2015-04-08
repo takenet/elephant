@@ -30,7 +30,7 @@ namespace Takenet.SimplePersistence.Tests.Sql
 
         public override ISet<string> CreateValue(int key)
         {
-            var set = new SimplePersistence.Memory.HashSetSet<string>();
+            var set = new SimplePersistence.Memory.Set<string>();
             set.AddAsync(Fixture.Create<string>()).Wait();
             set.AddAsync(Fixture.Create<string>()).Wait();
             set.AddAsync(Fixture.Create<string>()).Wait();

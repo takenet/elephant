@@ -12,12 +12,12 @@ namespace Takenet.SimplePersistence.Tests.Memory
     {
         public override IMap<int, ISet<string>> Create()
         {
-            return new DictionaryHashSetMap<int, string>();
+            return new SetMap<int, string>();
         }
 
         public override ISet<string> CreateValue(int key)
         {
-            var set = new SimplePersistence.Memory.HashSetSet<string>();
+            var set = new SimplePersistence.Memory.Set<string>();
             set.AddAsync(Fixture.Create<string>()).Wait();
             set.AddAsync(Fixture.Create<string>()).Wait();
             set.AddAsync(Fixture.Create<string>()).Wait();

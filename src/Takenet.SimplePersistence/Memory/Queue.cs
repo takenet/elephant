@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Takenet.SimplePersistence.Memory
 {
     /// <summary>
-    /// Implements the <see cref="IQueue{T}"/> interface with the <see cref="System.Collections.Concurrent.ConcurrentQueue{T}"/> class.
+    /// Implements the <see cref="IQueue{T}"/> interface using the <see cref="System.Collections.Concurrent.ConcurrentQueue{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class Queue<T> : IQueue<T>
@@ -16,7 +16,7 @@ namespace Takenet.SimplePersistence.Memory
         private readonly ConcurrentQueue<T> _queue;
 
         public Queue()
-        {
+        {            
             _queue = new ConcurrentQueue<T>();
         }
 
@@ -43,5 +43,19 @@ namespace Takenet.SimplePersistence.Memory
         }
 
         #endregion
+
+        /// <summary>
+        /// Clones this instance.
+        /// </summary>
+        /// <returns></returns>
+        public Queue<T> Clone()
+        {
+            var queue = new Queue<T>();
+            foreach (var item in _queue)
+            {
+                queue._queue.Enqueue(item);
+            }
+            return queue;
+        }
     }
 }

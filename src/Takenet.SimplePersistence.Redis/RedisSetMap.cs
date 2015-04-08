@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 using StackExchange.Redis.KeyspaceIsolation;
+using Takenet.SimplePersistence.Memory;
 
 namespace Takenet.SimplePersistence.Redis
 {
@@ -12,15 +14,15 @@ namespace Takenet.SimplePersistence.Redis
     {
         private readonly ISerializer<TItem> _serializer;
 
-        public RedisSetMap(string name, string configuration, ISerializer<TItem> serializer)
-            : base(name, configuration)
+        public RedisSetMap(string mapName, string configuration, ISerializer<TItem> serializer)
+            : base(mapName, configuration)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             _serializer = serializer;
         }
 
-        public RedisSetMap(string name, ConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer)
-            : base(name, connectionMultiplexer)
+        internal RedisSetMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer)
+            : base(mapName, connectionMultiplexer)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             _serializer = serializer;
@@ -34,23 +36,25 @@ namespace Takenet.SimplePersistence.Redis
             var internalSet = value as InternalSet;
             if (internalSet != null) return internalSet.Key.Equals(key) && overwrite;            
 
-            var hashSet = value as Memory.HashSetSet<TItem>;
-            if (hashSet == null) throw new ArgumentException(@"The specified set type is not supported. Use HashSetSet<TItem> instead.", nameof(value));
+            var set = value as Set<TItem>;
+            if (set == null) throw new ArgumentException($"The specified set type is not supported. Use '{nameof(Set<TItem>)}' instead.", nameof(value));
 
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase() as IDatabase;
+            if (database == null) throw new NotSupportedException("The database instance type is not supported");
+
             var redisKey = GetRedisKey(key);
             if (await database.KeyExistsAsync(redisKey) && !overwrite) return false;
 
             var transaction = database.CreateTransaction();
             var commandTasks = new List<Task>();
-            if (overwrite)
+            if (overwrite) commandTasks.Add(transaction.KeyDeleteAsync(redisKey));
+
+            internalSet = CreateSet(key, transaction);
+
+            foreach (var item in await set.AsEnumerableAsync().ConfigureAwait(false))
             {
-                commandTasks.Add(transaction.KeyDeleteAsync(redisKey));
-            }
-            foreach (var item in await hashSet.AsEnumerableAsync().ConfigureAwait(false))
-            {
-                commandTasks.Add(transaction.SetAddAsync(redisKey, _serializer.Serialize(item)));
-            }
+                commandTasks.Add(internalSet.AddAsync(item));
+            }            
             var success = await transaction.ExecuteAsync().ConfigureAwait(false);
             await Task.WhenAll(commandTasks).ConfigureAwait(false);
             return success;
@@ -58,7 +62,7 @@ namespace Takenet.SimplePersistence.Redis
 
         public override async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             if (await database.KeyExistsAsync(GetRedisKey(key)).ConfigureAwait(false))
             {
                 return CreateSet(key);
@@ -69,31 +73,39 @@ namespace Takenet.SimplePersistence.Redis
 
         public override Task<bool> TryRemoveAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.KeyDeleteAsync(GetRedisKey(key));            
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key));
         }
 
-        protected ISet<TItem> CreateSet(TKey key, bool useScanOnEnumeration = true)
+        protected InternalSet CreateSet(TKey key, ITransaction transaction = null, bool useScanOnEnumeration = true)
         {
-            return new InternalSet(key, GetRedisKey(key), _serializer, _connectionMultiplexer, useScanOnEnumeration);
+            return new InternalSet(key, GetRedisKey(key), _serializer, _connectionMultiplexer, transaction, useScanOnEnumeration);
         }
 
-        private class InternalSet : RedisSet<TItem>
+        protected class InternalSet : RedisSet<TItem>
         {
-            public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, ConnectionMultiplexer connectionMultiplexer, bool useScanOnEnumeration = true)
+            private readonly ITransaction _transaction;
+
+            public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, ConnectionMultiplexer connectionMultiplexer, ITransaction transaction = null, bool useScanOnEnumeration = true)
                 : base(setName, connectionMultiplexer, serializer, useScanOnEnumeration)
-            {
+            {                
                 if (key == null) throw new ArgumentNullException(nameof(key));
                 Key = key;
+                _transaction = transaction;
             }
 
             public TKey Key { get; }
+
+            protected override IDatabaseAsync GetDatabase()
+            {
+                return _transaction ?? base.GetDatabase();
+            }
         }
     }
 }

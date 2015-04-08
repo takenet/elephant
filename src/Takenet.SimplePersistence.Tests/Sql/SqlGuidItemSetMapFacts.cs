@@ -35,7 +35,7 @@ namespace Takenet.SimplePersistence.Tests.Sql
 
         public override ISet<Item> CreateValue(Guid key)
         {
-            var set = new SimplePersistence.Memory.HashSetSet<Item>();
+            var set = new SimplePersistence.Memory.Set<Item>();
             set.AddAsync(Fixture.Create<Item>()).Wait();
             set.AddAsync(Fixture.Create<Item>()).Wait();
             set.AddAsync(Fixture.Create<Item>()).Wait();

@@ -47,6 +47,7 @@
     <Compile Include="MapBase.cs" />
     <Compile Include="RedisHashMap.cs" />
     <Compile Include="RedisQueue.cs" />
+    <Compile Include="RedisQueueMap.cs" />
     <Compile Include="RedisSet.cs" />
     <Compile Include="RedisSetMap.cs" />
     <Compile Include="RedisStringMap.cs" />

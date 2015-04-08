@@ -56,9 +56,10 @@
     <Compile Include="ISet.cs" />
     <Compile Include="ISetMap.cs" />
     <Compile Include="IUpdatableMap.cs" />
-    <Compile Include="Memory\DictionaryMap.cs" />
-    <Compile Include="Memory\HashSetSet.cs" />
-    <Compile Include="Memory\DictionaryHashSetMap.cs" />
+    <Compile Include="Memory\Map.cs" />
+    <Compile Include="Memory\Set.cs" />
+    <Compile Include="Memory\QueueMap.cs" />
+    <Compile Include="Memory\SetMap.cs" />
     <Compile Include="Memory\Queue.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

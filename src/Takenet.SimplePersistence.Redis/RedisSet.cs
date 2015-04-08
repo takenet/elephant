@@ -24,7 +24,7 @@ namespace Takenet.SimplePersistence.Redis
             _useScanOnEnumeration = useScanOnEnumeration;
         }
 
-        protected RedisSet(string setName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, bool useScanOnEnumeration = true)
+        internal RedisSet(string setName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, bool useScanOnEnumeration = true)
             : base(setName, connectionMultiplexer)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
@@ -37,20 +37,22 @@ namespace Takenet.SimplePersistence.Redis
         public Task AddAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.SetAddAsync(_name, _serializer.Serialize(value));
         }
 
         public Task<bool> TryRemoveAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.SetRemoveAsync(_name, _serializer.Serialize(value));
         }
 
         public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase() as IDatabase;
+            if (database == null) throw new NotSupportedException("The database instance is not supported");
+            
             IEnumerable<RedisValue> values;
             if (_useScanOnEnumeration)
             {
@@ -67,7 +69,7 @@ namespace Takenet.SimplePersistence.Redis
         public Task<bool> ContainsAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.SetContainsAsync(_name, _serializer.Serialize(value));
         }
 

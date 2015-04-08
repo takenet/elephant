@@ -32,7 +32,7 @@ namespace Takenet.SimplePersistence.Tests.Redis
 
         public override ISet<Item> CreateValue(Guid key)
         {
-            var set = new HashSetSet<Item>();
+            var set = new Set<Item>();
             set.AddAsync(Fixture.Create<Item>()).Wait();
             set.AddAsync(Fixture.Create<Item>()).Wait();
             set.AddAsync(Fixture.Create<Item>()).Wait();

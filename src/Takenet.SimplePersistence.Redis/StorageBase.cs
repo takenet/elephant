@@ -40,7 +40,12 @@ namespace Takenet.SimplePersistence.Redis
         protected virtual string KeyToString(TKey key)
         {
             return key.ToString();
-        }  
+        }
+
+        protected virtual IDatabaseAsync GetDatabase()
+        {
+            return _connectionMultiplexer.GetDatabase();
+        }
 
         #region IDisposable Members
 

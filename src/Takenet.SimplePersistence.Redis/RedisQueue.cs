@@ -17,7 +17,7 @@ namespace Takenet.SimplePersistence.Redis
             _serializer = serializer;
         }
 
-        public RedisQueue(string queueName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer)
+        internal RedisQueue(string queueName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer)
             : base(queueName, connectionMultiplexer)
         {
             _serializer = serializer;
@@ -28,20 +28,20 @@ namespace Takenet.SimplePersistence.Redis
         public Task EnqueueAsync(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.ListLeftPushAsync(_name, _serializer.Serialize(item));
         }
 
         public async Task<T> DequeueOrDefaultAsync()
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             var result = await database.ListRightPopAsync(_name).ConfigureAwait(false);
             return !result.IsNullOrEmpty ? _serializer.Deserialize((string)result) : default(T);
         }
 
         public Task<long> GetLengthAsync()
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.ListLengthAsync(_name);
         }
 

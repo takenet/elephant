@@ -39,7 +39,7 @@ namespace Takenet.SimplePersistence.Redis
 
         public override async Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             var hashEntries = await database.HashGetAllAsync(GetRedisKey(key));
             if (hashEntries != null &&
                 hashEntries.Length > 0)
@@ -53,13 +53,13 @@ namespace Takenet.SimplePersistence.Redis
 
         public override Task<bool> TryRemoveAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.KeyDeleteAsync(GetRedisKey(key));
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key));
         }
 
@@ -69,13 +69,13 @@ namespace Takenet.SimplePersistence.Redis
 
         public async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
             await database.HashSetAsync(GetRedisKey(key), propertyName, propertyValue.ToRedisValue(), When.Always);
         }
 
         public Task MergeAsync(TKey key, TValue value)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
 
             var dictionary = _dictionaryConverter.ToDictionary(value);
             var hashEntries = dictionary
@@ -87,7 +87,7 @@ namespace Takenet.SimplePersistence.Redis
 
         public async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
         {
-            var database = _connectionMultiplexer.GetDatabase();
+            var database = GetDatabase();
 
             var redisValue = await database.HashGetAsync(GetRedisKey(key), propertyName);
             if (!redisValue.IsNull)

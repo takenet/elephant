@@ -10,23 +10,22 @@ using System.Threading.Tasks;
 namespace Takenet.SimplePersistence.Memory
 {
     /// <summary>
-    /// Implemens the <see cref="IMap{TKey,TValue}"/> interface with a concurrent dictionary. 
-    /// This class should be used only for local data, since the dictionary stores the values in the local process memory.
+    /// Implemens the <see cref="IMap{TKey,TValue}"/> interface using the <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey,TValue}"/> class.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class DictionaryMap<TKey, TValue> : IMap<TKey, TValue>, IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue> //, IQueryableStorage<TValue>
+    public class Map<TKey, TValue> : IMap<TKey, TValue>, IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue> //, IQueryableStorage<TValue>
     {
         protected readonly ConcurrentDictionary<TKey, TValue> _internalDictionary;
         protected readonly Func<TValue> _valueFactory;
 
-        public DictionaryMap()
+        public Map()
             : this(() => (TValue)Activator.CreateInstance(typeof(TValue)))
         {
 
         }
 
-        public DictionaryMap(Func<TValue> valueFactory)
+        public Map(Func<TValue> valueFactory)
         {
             _valueFactory = valueFactory;
 
