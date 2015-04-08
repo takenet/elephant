@@ -11,29 +11,29 @@ using Xunit;
 namespace Takenet.SimplePersistence.Tests.Sql
 {
     [Collection("Sql")]
-    public class SqlStringSetFacts : StringSetFacts
+    public class SqlGuidSetFacts : GuidSetFacts
     {
         private readonly SqlConnectionFixture _fixture;
 
-        public SqlStringSetFacts(SqlConnectionFixture fixture)
+        public SqlGuidSetFacts(SqlConnectionFixture fixture)
         {
             _fixture = fixture;
         }
             
-        public override ISet<string> Create()
+        public override ISet<Guid> Create()
         {
-            var table = new Table("Strings", new [] {"Value"}, new Dictionary<string, SqlType>() { { "Value", new SqlType(DbType.String) }});
+            var table = new Table("Guids", new [] {"Value"}, new Dictionary<string, SqlType>() { { "Value", new SqlType(DbType.Guid) }});
             _fixture.DropTable(table.Name);
-            return new SqlStringSet(table, _fixture.ConnectionString);
+            return new SqlGuidSet(table, _fixture.ConnectionString);
         }
 
-        private class SqlStringSet : SqlSet<string>
+        private class SqlGuidSet : SqlSet<Guid>
         {
-            public SqlStringSet(ITable table, string connectionString) : base(table, connectionString)
+            public SqlGuidSet(ITable table, string connectionString) : base(table, connectionString)
             {
             }
 
-            protected override IMapper<string> Mapper => new ValueMapper<string>("Value");
+            protected override IMapper<Guid> Mapper => new ValueMapper<Guid>("Value");
         }
     }
 }

@@ -12,14 +12,14 @@ namespace Takenet.SimplePersistence.Redis
     {
         private readonly ISerializer<TItem> _serializer;
 
-        public RedisSetMap(string name, string configuration, ISerializer<TItem> serializer) 
+        public RedisSetMap(string name, string configuration, ISerializer<TItem> serializer)
             : base(name, configuration)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             _serializer = serializer;
         }
 
-        public RedisSetMap(string name, ConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer) 
+        public RedisSetMap(string name, ConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer)
             : base(name, connectionMultiplexer)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
@@ -87,7 +87,7 @@ namespace Takenet.SimplePersistence.Redis
         private class InternalSet : RedisSet<TItem>
         {
             public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, ConnectionMultiplexer connectionMultiplexer, bool useScanOnEnumeration = true)
-                : base(setName, serializer, connectionMultiplexer, useScanOnEnumeration)
+                : base(setName, connectionMultiplexer, serializer, useScanOnEnumeration)
             {
                 if (key == null) throw new ArgumentNullException(nameof(key));
                 Key = key;

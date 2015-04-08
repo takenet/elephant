@@ -46,10 +46,12 @@
     <Compile Include="ISerializer.cs" />
     <Compile Include="MapBase.cs" />
     <Compile Include="RedisHashMap.cs" />
+    <Compile Include="RedisQueue.cs" />
     <Compile Include="RedisSet.cs" />
     <Compile Include="RedisSetMap.cs" />
     <Compile Include="RedisStringMap.cs" />
     <Compile Include="RedisValueExtensions.cs" />
+    <Compile Include="Serializers\GuidSerializer.cs" />
     <Compile Include="Serializers\StringSerializer.cs" />
     <Compile Include="StorageBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

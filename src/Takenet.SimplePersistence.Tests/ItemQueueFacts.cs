@@ -1,6 +1,6 @@
 ﻿namespace Takenet.SimplePersistence.Tests
 {
-    public abstract class StringQueueFacts : ClassQueueFacts<string>
+    public abstract class ItemQueueFacts : ClassQueueFacts<Item>
     {
         
     }

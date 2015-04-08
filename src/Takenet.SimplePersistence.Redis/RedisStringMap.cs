@@ -16,7 +16,7 @@ namespace Takenet.SimplePersistence.Redis
     {
         protected readonly ISerializer<TValue> _serializer;
 
-        public RedisStringMap(string mapName, ISerializer<TValue> serializer, string configuration)
+        public RedisStringMap(string mapName, string configuration, ISerializer<TValue> serializer)
             : base(mapName, configuration)
         {
             if (serializer == null)
@@ -27,7 +27,7 @@ namespace Takenet.SimplePersistence.Redis
             _serializer = serializer;
         }
 
-        public RedisStringMap(string mapName, ISerializer<TValue> serializer, ConnectionMultiplexer connectionMultiplexer)
+        public RedisStringMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer)
             : base(mapName, connectionMultiplexer)
         {
             if (serializer == null)

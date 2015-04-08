@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Takenet.SimplePersistence.Tests.Memory
 {
-    public class MemoryStringQueueFacts : StringQueueFacts
+    public class MemoryGuidQueueFacts : GuidQueueFacts
     {
-        public override IQueue<string> Create()
+        public override IQueue<Guid> Create()
         {
-            return new SimplePersistence.Memory.Queue<string>();
+            return new SimplePersistence.Memory.Queue<Guid>();
         }
     }
 }

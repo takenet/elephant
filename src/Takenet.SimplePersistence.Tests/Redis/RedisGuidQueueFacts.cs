@@ -10,20 +10,20 @@ using Xunit;
 namespace Takenet.SimplePersistence.Tests.Redis
 {
     [Collection("Redis")]
-    public class RedisStringIntegerStringMapFacts : IntegerStringMapFacts
+    public class RedisGuidQueueFacts : GuidQueueFacts
     {
         private readonly RedisFixture _redisFixture;
 
-        public RedisStringIntegerStringMapFacts(RedisFixture redisFixture)
+        public RedisGuidQueueFacts(RedisFixture redisFixture)
         {
-            _redisFixture = redisFixture;
+            _redisFixture = redisFixture;            
         }
 
-        public override IMap<int, string> Create()
+        public override IQueue<Guid> Create()
         {
             _redisFixture.Server.FlushDatabase();
-            const string mapName = "integer-object";
-            return new RedisStringMap<int, string>(mapName, "localhost", new StringSerializer());
+            const string setName = "guids";            
+            return new RedisQueue<Guid>(setName, _redisFixture.Connection.Configuration, new GuidSerializer());
         }
     }
 }

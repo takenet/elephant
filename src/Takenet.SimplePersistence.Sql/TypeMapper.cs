@@ -17,41 +17,43 @@ namespace Takenet.SimplePersistence.Sql
 
         static TypeMapper()
         {
-            _typeMap = new Dictionary<Type, DbType>();
-            _typeMap[typeof(byte)] = DbType.Byte;
-            _typeMap[typeof(sbyte)] = DbType.SByte;
-            _typeMap[typeof(short)] = DbType.Int16;
-            _typeMap[typeof(ushort)] = DbType.UInt16;
-            _typeMap[typeof(int)] = DbType.Int32;
-            _typeMap[typeof(uint)] = DbType.UInt32;
-            _typeMap[typeof(long)] = DbType.Int64;
-            _typeMap[typeof(ulong)] = DbType.UInt64;
-            _typeMap[typeof(float)] = DbType.Single;
-            _typeMap[typeof(double)] = DbType.Double;
-            _typeMap[typeof(decimal)] = DbType.Decimal;
-            _typeMap[typeof(bool)] = DbType.Boolean;
-            _typeMap[typeof(string)] = DbType.String;
-            _typeMap[typeof(char)] = DbType.StringFixedLength;
-            _typeMap[typeof(Guid)] = DbType.Guid;
-            _typeMap[typeof(DateTime)] = DbType.DateTime;
-            _typeMap[typeof(DateTimeOffset)] = DbType.DateTimeOffset;
-            _typeMap[typeof(byte[])] = DbType.Binary;
-            _typeMap[typeof(byte?)] = DbType.Byte;
-            _typeMap[typeof(sbyte?)] = DbType.SByte;
-            _typeMap[typeof(short?)] = DbType.Int16;
-            _typeMap[typeof(ushort?)] = DbType.UInt16;
-            _typeMap[typeof(int?)] = DbType.Int32;
-            _typeMap[typeof(uint?)] = DbType.UInt32;
-            _typeMap[typeof(long?)] = DbType.Int64;
-            _typeMap[typeof(ulong?)] = DbType.UInt64;
-            _typeMap[typeof(float?)] = DbType.Single;
-            _typeMap[typeof(double?)] = DbType.Double;
-            _typeMap[typeof(decimal?)] = DbType.Decimal;
-            _typeMap[typeof(bool?)] = DbType.Boolean;
-            _typeMap[typeof(char?)] = DbType.StringFixedLength;
-            _typeMap[typeof(Guid?)] = DbType.Guid;
-            _typeMap[typeof(DateTime?)] = DbType.DateTime;
-            _typeMap[typeof(DateTimeOffset?)] = DbType.DateTimeOffset;
+            _typeMap = new Dictionary<Type, DbType>
+            {
+                {typeof (byte), DbType.Byte},
+                {typeof (sbyte), DbType.SByte},
+                {typeof (short), DbType.Int16},
+                {typeof (ushort), DbType.UInt16},
+                {typeof (int), DbType.Int32},
+                {typeof (uint), DbType.UInt32},
+                {typeof (long), DbType.Int64},
+                {typeof (ulong), DbType.UInt64},
+                {typeof (float), DbType.Single},
+                {typeof (double), DbType.Double},
+                {typeof (decimal), DbType.Decimal},
+                {typeof (bool), DbType.Boolean},
+                {typeof (string), DbType.String},
+                {typeof (char), DbType.StringFixedLength},
+                {typeof (Guid), DbType.Guid},
+                {typeof (DateTime), DbType.DateTime},
+                {typeof (DateTimeOffset), DbType.DateTimeOffset},
+                {typeof (byte[]), DbType.Binary},
+                {typeof (byte?), DbType.Byte},
+                {typeof (sbyte?), DbType.SByte},
+                {typeof (short?), DbType.Int16},
+                {typeof (ushort?), DbType.UInt16},
+                {typeof (int?), DbType.Int32},
+                {typeof (uint?), DbType.UInt32},
+                {typeof (long?), DbType.Int64},
+                {typeof (ulong?), DbType.UInt64},
+                {typeof (float?), DbType.Single},
+                {typeof (double?), DbType.Double},
+                {typeof (decimal?), DbType.Decimal},
+                {typeof (bool?), DbType.Boolean},
+                {typeof (char?), DbType.StringFixedLength},
+                {typeof (Guid?), DbType.Guid},
+                {typeof (DateTime?), DbType.DateTime},
+                {typeof (DateTimeOffset?), DbType.DateTimeOffset},
+            };
         }
 
         public static DbType GetDbType(Type type)

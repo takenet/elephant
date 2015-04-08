@@ -23,7 +23,7 @@ namespace Takenet.SimplePersistence.Tests.Redis
         {
             _redisFixture.Server.FlushDatabase();
             const string mapName = "guid-items";
-            return new RedisStringMap<Guid, Item>(mapName, new ItemSerializer(), _redisFixture.Connection.Configuration);
+            return new RedisStringMap<Guid, Item>(mapName, _redisFixture.Connection.Configuration, new ItemSerializer());
         }
     }
 }

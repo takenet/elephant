@@ -16,7 +16,7 @@ namespace Takenet.SimplePersistence.Redis
         private readonly ISerializer<T> _serializer;
         private readonly bool _useScanOnEnumeration;
 
-        public RedisSet(string setName, ISerializer<T> serializer, string configuration, bool useScanOnEnumeration = true)
+        public RedisSet(string setName, string configuration, ISerializer<T> serializer, bool useScanOnEnumeration = true)
             : base(setName, configuration)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));            
@@ -24,7 +24,7 @@ namespace Takenet.SimplePersistence.Redis
             _useScanOnEnumeration = useScanOnEnumeration;
         }
 
-        protected RedisSet(string setName, ISerializer<T> serializer, ConnectionMultiplexer connectionMultiplexer, bool useScanOnEnumeration = true)
+        protected RedisSet(string setName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, bool useScanOnEnumeration = true)
             : base(setName, connectionMultiplexer)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
