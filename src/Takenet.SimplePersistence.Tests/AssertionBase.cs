@@ -19,5 +19,20 @@ namespace Takenet.SimplePersistence.Tests
         {
             Check.That(actual).IsFalse();
         }
+
+        public virtual void AssertIsDefault<T>(T actual) 
+        {
+            Check.That(actual).Equals(default(T));
+        }
+
+        public virtual void AssertIsNull<T>(T actual) where T : class
+        {
+            Check.That(actual).IsNull();
+        }
+
+        public virtual void AssertIsNotNull<T>(T actual) where T : class
+        {
+            Check.That(actual).IsNotNull();
+        }
     }
 }

@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Takenet.SimplePersistence.Memory;
 
 namespace Takenet.SimplePersistence.Tests.Memory
 {
-    public class MemoryItemSetFacts : ItemSetFacts
+    public class MemoryStringQueueFacts : StringQueueFacts
     {
-        public override ISet<Item> Create()
+        public override IQueue<string> Create()
         {
-            return new SimplePersistence.Memory.HashSetSet<Item>();
+            return new SimplePersistence.Memory.Queue<string>();
         }
-
     }
 }

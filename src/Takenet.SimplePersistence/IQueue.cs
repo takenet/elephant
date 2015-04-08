@@ -26,7 +26,7 @@ namespace Takenet.SimplePersistence
         Task<T> DequeueOrDefaultAsync();
 
         /// <summary>
-        /// Gets the queue length.
+        /// Gets the number of items in the queue.
         /// </summary>
         /// <returns></returns>
         Task<long> GetLengthAsync();

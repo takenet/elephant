@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Takenet.SimplePersistence.Tests
 {
-    public abstract class SetFacts<T>
+    public abstract class SetFacts<T> : AssertionBase
     {
         private readonly Fixture _fixture;
 
@@ -30,7 +30,7 @@ namespace Takenet.SimplePersistence.Tests
             await set.AddAsync(item);
 
             // Assert
-            Check.That(await set.ContainsAsync(item)).IsTrue();
+            AssertIsTrue(await set.ContainsAsync(item));
         }
 
         [Fact(DisplayName = "AddExistingItemSucceeds")]
@@ -45,7 +45,7 @@ namespace Takenet.SimplePersistence.Tests
             await set.AddAsync(item);
 
             // Assert
-            Check.That(await set.ContainsAsync(item)).IsTrue();
+            AssertIsTrue(await set.ContainsAsync(item));
         }
 
         [Fact(DisplayName = "TryRemoveExistingItemSucceeds")]
@@ -60,8 +60,8 @@ namespace Takenet.SimplePersistence.Tests
             var result = await set.TryRemoveAsync(item);
 
             // Assert
-            Check.That(result).IsTrue();
-            Check.That(await set.ContainsAsync(item)).IsFalse();
+            AssertIsTrue(result);
+            AssertIsFalse(await set.ContainsAsync(item));
         }
 
         [Fact(DisplayName = "TryRemoveNonExistingItemFails")]
@@ -75,7 +75,7 @@ namespace Takenet.SimplePersistence.Tests
             var result = await set.TryRemoveAsync(item);
 
             // Assert
-            Check.That(result).IsFalse();            
+            AssertIsFalse(result);
         }
 
         [Fact(DisplayName = "EnumerateExistingItemsSucceeds")]
@@ -94,10 +94,10 @@ namespace Takenet.SimplePersistence.Tests
             var result = await set.AsEnumerableAsync();
 
             // Assert
-            Check.That(await result.CountAsync()).Equals(3);
-            Check.That(await result.ContainsAsync(item1)).IsTrue();
-            Check.That(await result.ContainsAsync(item2)).IsTrue();
-            Check.That(await result.ContainsAsync(item3)).IsTrue();
+            AssertEquals(await result.CountAsync(), 3);
+            AssertIsTrue(await result.ContainsAsync(item1));
+            AssertIsTrue(await result.ContainsAsync(item2));
+            AssertIsTrue(await result.ContainsAsync(item3));
         }
 
         [Fact(DisplayName = "EnumerateAfterRemovingItemsSucceeds")]
@@ -119,10 +119,10 @@ namespace Takenet.SimplePersistence.Tests
             await set.TryRemoveAsync(item3);
 
             // Assert
-            Check.That(await result.CountAsync()).Equals(0);
-            Check.That(await result.ContainsAsync(item1)).IsFalse();
-            Check.That(await result.ContainsAsync(item2)).IsFalse();
-            Check.That(await result.ContainsAsync(item3)).IsFalse();
+            AssertEquals(await result.CountAsync(), 0);
+            AssertIsFalse(await result.ContainsAsync(item1));
+            AssertIsFalse(await result.ContainsAsync(item2));
+            AssertIsFalse(await result.ContainsAsync(item3));
         }
 
         [Fact(DisplayName = "CheckForExistingItemSucceeds")]
@@ -137,7 +137,7 @@ namespace Takenet.SimplePersistence.Tests
             var result = await set.ContainsAsync(item1);
 
             // Assert
-            Check.That(result).IsTrue();
+            AssertIsTrue(result);
         }
 
         [Fact(DisplayName = "CheckForNonExistingItemFails")]
@@ -153,7 +153,7 @@ namespace Takenet.SimplePersistence.Tests
             var result = await set.ContainsAsync(item2);
 
             // Assert
-            Check.That(result).IsFalse();
+            AssertIsFalse(result);
         }
     }
 }

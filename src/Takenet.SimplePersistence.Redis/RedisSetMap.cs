@@ -34,8 +34,8 @@ namespace Takenet.SimplePersistence.Redis
             var internalSet = value as InternalSet;
             if (internalSet != null) return internalSet.Key.Equals(key) && overwrite;            
 
-            var hashSet = value as Memory.HashSet<TItem>;
-            if (hashSet == null) throw new ArgumentException(@"The specified set type is not supported. Use HashSet<TItem> instead.", nameof(value));
+            var hashSet = value as Memory.HashSetSet<TItem>;
+            if (hashSet == null) throw new ArgumentException(@"The specified set type is not supported. Use HashSetSet<TItem> instead.", nameof(value));
 
             var database = _connectionMultiplexer.GetDatabase();
             var redisKey = GetRedisKey(key);

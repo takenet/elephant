@@ -12,7 +12,7 @@ namespace Takenet.SimplePersistence.Tests.Memory
     {
         public override IMap<Guid, ISet<Item>> Create()
         {
-            Fixture.Register<ISet<Item>>(() => new SimplePersistence.Memory.HashSet<Item>());
+            Fixture.Register<ISet<Item>>(() => new SimplePersistence.Memory.HashSetSet<Item>());
             return new DictionaryHashSetMap<Guid, Item>();
         }
     }

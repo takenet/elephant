@@ -11,7 +11,7 @@ namespace Takenet.SimplePersistence.Tests.Memory
     {
         public override ISet<string> Create()
         {
-            return new SimplePersistence.Memory.HashSet<string>();
+            return new SimplePersistence.Memory.HashSetSet<string>();
         }
     }
 }

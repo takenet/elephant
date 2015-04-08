@@ -12,13 +12,13 @@ namespace Takenet.SimplePersistence.Memory
     /// Implements the <see cref="ISet{T}"/> interface with the <see cref="System.Collections.Generic.HashSet{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class HashSet<T> : ISet<T> //, IQueryableStorage<T>
+    public class HashSetSet<T> : ISet<T> //, IQueryableStorage<T>
     {
-        private readonly System.Collections.Generic.HashSet<T> _hashSet;
+        private readonly HashSet<T> _hashSet;
 
-        public HashSet()
+        public HashSetSet()
         {
-            _hashSet = new System.Collections.Generic.HashSet<T>();
+            _hashSet = new HashSet<T>();
         }
 
         #region ISet<T> Members

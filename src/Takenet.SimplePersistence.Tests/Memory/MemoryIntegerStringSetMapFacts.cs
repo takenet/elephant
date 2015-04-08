@@ -17,7 +17,7 @@ namespace Takenet.SimplePersistence.Tests.Memory
 
         public override ISet<string> CreateValue(int key)
         {
-            var set = new SimplePersistence.Memory.HashSet<string>();
+            var set = new SimplePersistence.Memory.HashSetSet<string>();
             set.AddAsync(Fixture.Create<string>()).Wait();
             set.AddAsync(Fixture.Create<string>()).Wait();
             set.AddAsync(Fixture.Create<string>()).Wait();
