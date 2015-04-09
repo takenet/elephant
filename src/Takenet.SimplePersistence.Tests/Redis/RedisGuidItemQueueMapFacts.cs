@@ -16,7 +16,7 @@ namespace Takenet.SimplePersistence.Tests.Redis
     public class RedisGuidItemQueueMapFacts : GuidItemQueueMapFacts
     {
         private readonly RedisFixture _redisFixture;
-        public const string MapName = "guid-items";
+        public const string MapName = "guid-items-queue";
 
         public RedisGuidItemQueueMapFacts(RedisFixture redisFixture)
         {

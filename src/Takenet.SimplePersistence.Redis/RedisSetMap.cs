@@ -36,9 +36,6 @@ namespace Takenet.SimplePersistence.Redis
             var internalSet = value as InternalSet;
             if (internalSet != null) return internalSet.Key.Equals(key) && overwrite;            
 
-            var set = value as Set<TItem>;
-            if (set == null) throw new ArgumentException($"The specified set type is not supported. Use '{nameof(Set<TItem>)}' instead.", nameof(value));
-
             var database = GetDatabase() as IDatabase;
             if (database == null) throw new NotSupportedException("The database instance type is not supported");
 
@@ -51,7 +48,7 @@ namespace Takenet.SimplePersistence.Redis
 
             internalSet = CreateSet(key, transaction);
 
-            foreach (var item in await set.AsEnumerableAsync().ConfigureAwait(false))
+            foreach (var item in await value.AsEnumerableAsync().ConfigureAwait(false))
             {
                 commandTasks.Add(internalSet.AddAsync(item));
             }            
