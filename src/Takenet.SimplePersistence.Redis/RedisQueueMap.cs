@@ -26,10 +26,7 @@ namespace Takenet.SimplePersistence.Redis
 
             var internalQueue = value as InternalQueue;
             if (internalQueue != null) return internalQueue.Key.Equals(key) && overwrite;
-
-            var queue = value as Memory.Queue<TItem>;
-            if (queue == null) throw new ArgumentException($"The specified queue type is not supported. Use '{nameof(Memory.Queue<TItem>)}' instead.", nameof(value));
-            
+           
             var database = GetDatabase() as IDatabase;
             if (database == null) throw new NotSupportedException("The database instance type is not supported");
 
@@ -42,7 +39,7 @@ namespace Takenet.SimplePersistence.Redis
 
             internalQueue = CreateQueue(key, transaction);
 
-            queue = queue.Clone();
+            var queue = await CloneAsync(value).ConfigureAwait(false);
             while (await queue.GetLengthAsync().ConfigureAwait(false) > 0)
             {
                 var item = await queue.DequeueOrDefaultAsync().ConfigureAwait(false);
@@ -82,6 +79,16 @@ namespace Takenet.SimplePersistence.Redis
         protected InternalQueue CreateQueue(TKey key, ITransaction transaction = null)
         {
             return new InternalQueue(key, GetRedisKey(key), _serializer, _connectionMultiplexer, transaction);
+        }
+
+        private async Task<IQueue<TItem>> CloneAsync(IQueue<TItem> queue)
+        {
+            var cloneable = queue as ICloneable;
+            if (cloneable != null) return (IQueue<TItem>) cloneable.Clone();
+            
+            var clone = new Memory.Queue<TItem>();
+            await queue.CopyToAsync(clone).ConfigureAwait(false);
+            return clone;
         }
 
         protected class InternalQueue : RedisQueue<TItem>

@@ -11,7 +11,7 @@ namespace Takenet.SimplePersistence.Memory
     /// Implements the <see cref="IQueue{T}"/> interface using the <see cref="System.Collections.Concurrent.ConcurrentQueue{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Queue<T> : IQueue<T>
+    public class Queue<T> : IQueue<T>, ICloneable
     {
         private readonly ConcurrentQueue<T> _queue;
 
@@ -56,6 +56,11 @@ namespace Takenet.SimplePersistence.Memory
                 queue._queue.Enqueue(item);
             }
             return queue;
+        }
+
+        object ICloneable.Clone()
+        {
+            return Clone();
         }
     }
 }
