@@ -89,6 +89,7 @@
     <Compile Include="Redis\ItemSerializer.cs" />
     <Compile Include="Redis\RedisCollectionFixture.cs" />
     <Compile Include="Redis\RedisGuidItemQueueMapFacts.cs" />
+    <Compile Include="Redis\RedisIntegerStringQueueMapFacts.cs" />
     <Compile Include="Redis\RedisItemQueueFacts.cs" />
     <Compile Include="Redis\RedisGuidQueueFacts.cs" />
     <Compile Include="Redis\RedisHashGuidItemMapFacts.cs" />
