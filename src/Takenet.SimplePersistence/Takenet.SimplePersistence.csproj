@@ -68,6 +68,7 @@
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TaskUtil.cs" />
     <Compile Include="TypeDictionaryConverter.cs" />
+    <Compile Include="TypeExtensions.cs" />
     <Compile Include="TypeUtil.cs" />
   </ItemGroup>
   <ItemGroup>

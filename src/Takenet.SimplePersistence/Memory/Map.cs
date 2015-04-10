@@ -18,10 +18,6 @@ namespace Takenet.SimplePersistence.Memory
     public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue> 
          //, IQueryableStorage<TValue>
     {
-        protected readonly ConcurrentDictionary<TKey, TValue> _internalDictionary;
-        protected readonly Func<TValue> _valueFactory;
-        protected readonly IDictionaryConverter<TValue> _dictionaryConverter;
-
         public Map()
             : this(() => (TValue)Activator.CreateInstance(typeof(TValue)))
         {
@@ -36,10 +32,14 @@ namespace Takenet.SimplePersistence.Memory
 
         public Map(Func<TValue> valueFactory, IDictionaryConverter<TValue> dictionaryConverter)
         {
-            _valueFactory = valueFactory;
-            _dictionaryConverter = dictionaryConverter;
-            _internalDictionary = new ConcurrentDictionary<TKey, TValue>();
+            ValueFactory = valueFactory;
+            DictionaryConverter = dictionaryConverter;
+            InternalDictionary = new ConcurrentDictionary<TKey, TValue>();
         }
+
+        protected ConcurrentDictionary<TKey, TValue> InternalDictionary { get; }
+        protected Func<TValue> ValueFactory { get; }
+        protected IDictionaryConverter<TValue> DictionaryConverter { get; }
 
         #region IMap<TKey,TValue> Members
 
@@ -47,34 +47,28 @@ namespace Takenet.SimplePersistence.Memory
         {
             if (overwrite)
             {
-                _internalDictionary.AddOrUpdate(key, value, (k, v) => value);
+                InternalDictionary.AddOrUpdate(key, value, (k, v) => value);
                 return Task.FromResult(true);
             }
 
-            return Task.FromResult(_internalDictionary.TryAdd(key, value));
+            return Task.FromResult(InternalDictionary.TryAdd(key, value));
         }
 
         public Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
             TValue value;
-
-            if (_internalDictionary.TryGetValue(key, out value))
-            {
-                return Task.FromResult(value);
-            }
-
-            return Task.FromResult(default(TValue));
+            return Task.FromResult(InternalDictionary.TryGetValue(key, out value) ? value : default(TValue));
         }
 
         public Task<bool> TryRemoveAsync(TKey key)
         {
             TValue value;
-            return Task.FromResult(_internalDictionary.TryRemove(key, out value));
+            return Task.FromResult(InternalDictionary.TryRemove(key, out value));
         }
 
         public Task<bool> ContainsKeyAsync(TKey key)
         {
-            return Task.FromResult(_internalDictionary.ContainsKey(key));
+            return Task.FromResult(InternalDictionary.ContainsKey(key));
         }
 
         #endregion
@@ -83,7 +77,7 @@ namespace Takenet.SimplePersistence.Memory
 
         public Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
         {
-            return _internalDictionary.TryUpdate(key, newValue, oldValue).AsCompletedTask();
+            return InternalDictionary.TryUpdate(key, newValue, oldValue).AsCompletedTask();
         }
 
         #endregion
@@ -151,20 +145,43 @@ namespace Takenet.SimplePersistence.Memory
                 propertyName,
                 BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-            property?.SetValue(value, propertyValue);
+            if (property == null) throw new ArgumentException("The property name is invalid", nameof(propertyName));            
+            property.SetValue(value, propertyValue);
+
             return Task.FromResult<object>(null);
+        }
+
+        public Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        {
+            TValue value;
+
+            if (!InternalDictionary.TryGetValue(key, out value))
+                throw new ArgumentException("The property name is invalid", nameof(propertyName));
+
+            var property = typeof(TValue).GetProperty(
+                propertyName,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            TProperty propertyValue = default(TProperty);
+            if (property != null) propertyValue = (TProperty)property.GetValue(value);
+
+            return Task.FromResult(propertyValue);
         }
 
         public Task MergeAsync(TKey key, TValue value)
         {
-            var properties = _dictionaryConverter.ToDictionary(value);
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (value == null) throw new ArgumentNullException(nameof(value));
+
+            var properties = DictionaryConverter.ToDictionary(value);
             var existingValue = GetOrCreateValue(key);
 
             foreach (var propertyKeyValue in properties.Where(p => p.Value != null))
             {
-                var property = typeof(TValue).GetProperty(
-                    propertyKeyValue.Key,
-                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                var property = typeof(TValue)
+                    .GetProperty(
+                        propertyKeyValue.Key,
+                        BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
                 if (property != null)
                 {
@@ -192,7 +209,7 @@ namespace Takenet.SimplePersistence.Memory
                         }
                         else
                         {
-                            throw new InvalidOperationException($"Cannot set value for property {property.Name}");
+                            throw new InvalidOperationException($"Cannot set value for property '{property.Name}'");
                         }
                     }
                 }
@@ -201,34 +218,14 @@ namespace Takenet.SimplePersistence.Memory
             return Task.FromResult<object>(null);
         }
 
-        public Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
-        {
-            TValue value;
-            TProperty propertyValue = default(TProperty);
-
-            if (_internalDictionary.TryGetValue(key, out value))
-            {
-                var property = typeof(TValue).GetProperty(
-                    propertyName,
-                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
-                if (property != null)
-                {
-                    propertyValue = (TProperty)property.GetValue(value);
-                }
-            }
-
-            return Task.FromResult(propertyValue);
-        }
-
         protected TValue GetOrCreateValue(TKey key)
         {
             TValue value;
 
-            if (!_internalDictionary.TryGetValue(key, out value))
+            if (!InternalDictionary.TryGetValue(key, out value))
             {
-                value = _valueFactory();
-                _internalDictionary.TryAdd(key, value);
+                value = ValueFactory();
+                InternalDictionary.TryAdd(key, value);
             }
             return value;
         }

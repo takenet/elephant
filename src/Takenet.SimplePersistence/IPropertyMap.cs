@@ -26,16 +26,6 @@ namespace Takenet.SimplePersistence
         Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue);
 
         /// <summary>
-        /// Merge the properties of the map item.
-        /// Properties with the default values of the property type will be ignored.
-        /// If the map item doesn't exists, it will be created.
-        /// </summary>
-        /// <param name="key">The map item key.</param>
-        /// <param name="value">The partial or complete item value.</param>
-        /// <returns></returns>
-        Task MergeAsync(TKey key, TValue value);
-
-        /// <summary>
         /// Gets a property value for the item in the specific key. 
         /// If the item doesn't exists, returns the default property type value.
         /// </summary>
@@ -44,5 +34,15 @@ namespace Takenet.SimplePersistence
         /// <param name="propertyName"></param>
         /// <returns></returns>
         Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName);
+
+        /// <summary>
+        /// Merge the properties of the map item.
+        /// Properties with the default values of the property type will be ignored.
+        /// If the map item doesn't exists, it will be created.
+        /// </summary>
+        /// <param name="key">The map item key.</param>
+        /// <param name="value">The partial or complete item value.</param>
+        /// <returns></returns>
+        Task MergeAsync(TKey key, TValue value);
     }
 }
