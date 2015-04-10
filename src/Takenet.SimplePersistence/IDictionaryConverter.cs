@@ -9,6 +9,14 @@ namespace Takenet.SimplePersistence
     public interface IDictionaryConverter<T>
     {
         /// <summary>
+        /// Gets the names of the dictionary properties for the type.
+        /// </summary>
+        /// <value>
+        /// The properties.
+        /// </value>
+        IEnumerable<string> Properties { get; }
+
+        /// <summary>
         /// Creates an instance of <see cref="T"/> from the specified dictionary instance.
         /// </summary>
         /// <param name="dictionary"></param>

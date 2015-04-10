@@ -20,7 +20,7 @@ namespace Takenet.SimplePersistence.Redis
             if (type == typeof(bool?)) return (bool?)value;            
             if (type == typeof(byte[])) return (byte[])value;            
             if (type == typeof(string)) return (string)value;            
-            throw new NotSupportedException(string.Format("The property type '{0}'  is not supported", value.GetType()));
+            throw new NotSupportedException($"The property type '{value.GetType()}'  is not supported");
         }
 
         public static T Cast<T>(this RedisValue value)

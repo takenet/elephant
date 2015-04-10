@@ -7,7 +7,7 @@ using Takenet.SimplePersistence.Memory;
 
 namespace Takenet.SimplePersistence.Tests.Memory
 {
-    public class MemoryGuidItemPropertyMapFacts : PropertyMapFacts<Guid, Item, int>
+    public class MemoryGuidItemPropertyMapFacts : GuidItemPropertyMapFacts
     {
         public override IPropertyMap<Guid, Item> Create()
         {

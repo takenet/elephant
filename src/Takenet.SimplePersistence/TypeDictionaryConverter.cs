@@ -32,6 +32,8 @@ namespace Takenet.SimplePersistence
             _valueFactory = valueFactory;
         }
 
+        public IEnumerable<string> Properties => _getFuncsDictionary.Keys;
+
         public T FromDictionary(IDictionary<string, object> dictionary)
         {
             if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));

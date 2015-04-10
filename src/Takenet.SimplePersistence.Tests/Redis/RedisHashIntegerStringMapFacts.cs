@@ -29,6 +29,8 @@ namespace Takenet.SimplePersistence.Tests.Redis
 
         private class StringDictionaryConverter : IDictionaryConverter<string>
         {
+            public IEnumerable<string> Properties => new[] {"value"};
+
             public string FromDictionary(IDictionary<string, object> dictionary)
             {
                 return (RedisValue)dictionary["value"];

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 
@@ -12,6 +14,7 @@ namespace Takenet.SimplePersistence.Redis
     public class RedisHashMap<TKey, TValue> : MapBase<TKey, TValue>, IPropertyMap<TKey, TValue>
     {
         private readonly IDictionaryConverter<TValue> _dictionaryConverter;
+        private readonly HashSet<string> _propertiesNameHashSet;
 
         #region Constructor
 
@@ -19,6 +22,7 @@ namespace Takenet.SimplePersistence.Redis
             : base(mapName, configuration)
         {
             _dictionaryConverter = dictionaryConverter;
+            _propertiesNameHashSet = new HashSet<string>(_dictionaryConverter.Properties);
         }
 
         #endregion
@@ -69,12 +73,21 @@ namespace Takenet.SimplePersistence.Redis
 
         public async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
+            if (!_propertiesNameHashSet.Contains(propertyName)) throw new ArgumentException($"The property '{propertyName}' is invalid");
+            if (propertyValue == null) throw new ArgumentNullException(nameof(propertyValue));
+            
             var database = GetDatabase();
+
             await database.HashSetAsync(GetRedisKey(key), propertyName, propertyValue.ToRedisValue(), When.Always);
         }
 
         public Task MergeAsync(TKey key, TValue value)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (value == null) throw new ArgumentNullException(nameof(value));
+
             var database = GetDatabase();
 
             var dictionary = _dictionaryConverter.ToDictionary(value);
@@ -87,15 +100,16 @@ namespace Takenet.SimplePersistence.Redis
 
         public async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
+            if (!_propertiesNameHashSet.Contains(propertyName)) throw new ArgumentException($"The property '{propertyName}' is invalid");
+
             var database = GetDatabase();
 
             var redisValue = await database.HashGetAsync(GetRedisKey(key), propertyName);
-            if (!redisValue.IsNull)
-            {
-                return redisValue.Cast<TProperty>();
-            }
-
-            return default(TProperty);
+            return !redisValue.IsNull ? 
+                redisValue.Cast<TProperty>() : 
+                default(TProperty);
         }
 
         #endregion            

@@ -65,6 +65,7 @@
     <Compile Include="ClassQueueFacts.cs" />
     <Compile Include="ClassSetFacts.cs" />
     <Compile Include="GuidItemMapFacts.cs" />
+    <Compile Include="GuidItemPropertyMapFacts.cs" />
     <Compile Include="GuidItemQueueMapFacts.cs" />
     <Compile Include="GuidItemSetMapFacts.cs" />
     <Compile Include="IntegerStringMapFacts.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Redis\ItemSerializer.cs" />
     <Compile Include="Redis\RedisCollectionFixture.cs" />
     <Compile Include="Redis\RedisGuidItemQueueMapFacts.cs" />
+    <Compile Include="Redis\RedisHashGuidItemPropertyMapFacts.cs" />
     <Compile Include="Redis\RedisIntegerStringQueueMapFacts.cs" />
     <Compile Include="Redis\RedisItemQueueFacts.cs" />
     <Compile Include="Redis\RedisGuidQueueFacts.cs" />

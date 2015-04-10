@@ -26,28 +26,31 @@ namespace Takenet.SimplePersistence.Tests.Redis
             const string mapName = "guid-item-hash";
             return new RedisHashMap<Guid, Item>(mapName, new ItemDictionaryConverter(), _redisFixture.Connection.Configuration);
         }
+    }
 
-        private class ItemDictionaryConverter : IDictionaryConverter<Item>
-        {            
-            public IDictionary<string, object> ToDictionary(Item value)
-            {
-                return new Dictionary<string, object>()
+    public class ItemDictionaryConverter : IDictionaryConverter<Item>
+    {
+        public IEnumerable<string> Properties => new[] { "IntegerProperty", "StringProperty", "GuidProperty" };
+
+
+        public IDictionary<string, object> ToDictionary(Item value)
+        {
+            return new Dictionary<string, object>()
                 {
                     {nameof(value.IntegerProperty), value.IntegerProperty},
                     {nameof(value.StringProperty), value.StringProperty},
                     {nameof(value.GuidProperty), value.GuidProperty.ToString()}
                 };
-            }         
+        }
 
-            public Item FromDictionary(IDictionary<string, object> dictionary)
+        public Item FromDictionary(IDictionary<string, object> dictionary)
+        {
+            return new Item()
             {
-                return new Item()
-                {
-                    IntegerProperty = (int)(RedisValue) dictionary["IntegerProperty"],
-                    StringProperty = (RedisValue) dictionary["StringProperty"],
-                    GuidProperty = Guid.Parse((string)(RedisValue)dictionary["GuidProperty"])
-                };
-            }
+                IntegerProperty = (int)(RedisValue)dictionary["IntegerProperty"],
+                StringProperty = (RedisValue)dictionary["StringProperty"],
+                GuidProperty = Guid.Parse((string)(RedisValue)dictionary["GuidProperty"])
+            };
         }
     }
 }
