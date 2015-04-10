@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Takenet.SimplePersistence.Redis
+namespace Takenet.SimplePersistence
 {
     /// <summary>
     /// Defines a dictionary converter service.
@@ -16,7 +16,7 @@ namespace Takenet.SimplePersistence.Redis
         T FromDictionary(IDictionary<string, object> dictionary);
 
         /// <summary>
-        /// Creates a dicitonary from the specified <see cref="T"/> instance.
+        /// Creates a dictionary from the specified <see cref="T"/> instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>

@@ -11,7 +11,7 @@ namespace Takenet.SimplePersistence
 {
     public static class TypeUtil
     {
-        private static ConcurrentDictionary<Type, Func<string, object>> _typeParseFuncDictionary;
+        private static readonly ConcurrentDictionary<Type, Func<string, object>> _typeParseFuncDictionary;
 
         static TypeUtil()
         {
@@ -30,18 +30,10 @@ namespace Takenet.SimplePersistence
             var parseMethod = typeof(T)
                 .GetMethod("Parse", BindingFlags.Static | BindingFlags.Public, null, new[] { typeof(string) }, null);
 
-            if (parseMethod == null)
-            {
-                throw new ArgumentException(string.Format("The type '{0}' doesn't contains a static 'Parse' method", type));
-            }
-
-            if (parseMethod.ReturnType != type)
-            {
-                throw new ArgumentException("The Parse method has an invalid return type");
-            }
+            if (parseMethod == null) throw new ArgumentException($"The type '{type}' doesn't contains a static 'Parse' method");            
+            if (parseMethod.ReturnType != type) throw new ArgumentException("The Parse method has an invalid return type");            
 
             var parseFuncType = typeof(Func<,>).MakeGenericType(typeof(string), type);
-
             return (Func<string, T>)Delegate.CreateDelegate(parseFuncType, parseMethod);
         }
 
@@ -52,43 +44,35 @@ namespace Takenet.SimplePersistence
         /// <returns></returns>
         public static Func<string, object> GetParseFuncForType(Type type)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
-
+            if (type == null) throw new ArgumentNullException(nameof(type));
+                        
             Func<string, object> parseFunc;
-
-            if (!_typeParseFuncDictionary.TryGetValue(type, out parseFunc))
+            if (_typeParseFuncDictionary.TryGetValue(type, out parseFunc)) return parseFunc;
+            try
             {
-                try
-                {
-                    var getParseFuncMethod = typeof(TypeUtil)
-                        .GetMethod("GetParseFunc", BindingFlags.Static | BindingFlags.Public)
-                        .MakeGenericMethod(type);
+                var getParseFuncMethod = typeof(TypeUtil)
+                    .GetMethod("GetParseFunc", BindingFlags.Static | BindingFlags.Public)
+                    .MakeGenericMethod(type);
 
-                    var genericGetParseFunc = getParseFuncMethod.Invoke(null, null);
+                var genericGetParseFunc = getParseFuncMethod.Invoke(null, null);
 
-                    var parseFuncAdapterMethod = typeof(TypeUtil)
-                        .GetMethod("ParseFuncAdapter", BindingFlags.Static | BindingFlags.NonPublic)
-                        .MakeGenericMethod(type);
+                var parseFuncAdapterMethod = typeof(TypeUtil)
+                    .GetMethod("ParseFuncAdapter", BindingFlags.Static | BindingFlags.NonPublic)
+                    .MakeGenericMethod(type);
 
-                    parseFunc = (Func<string, object>)parseFuncAdapterMethod.Invoke(null, new[] { genericGetParseFunc });
-                    _typeParseFuncDictionary.TryAdd(type, parseFunc);
-                }
-                catch (TargetInvocationException ex)
-                {
-                    throw ex.InnerException;
-                }
+                parseFunc = (Func<string, object>)parseFuncAdapterMethod.Invoke(null, new[] { genericGetParseFunc });
+                _typeParseFuncDictionary.TryAdd(type, parseFunc);
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.InnerException;
             }
 
             return parseFunc;
         }
 
         /// <summary>
-        /// Build a delegate to
-        /// get a property value
-        /// of a class
+        /// Build a delegate to get a property value of a class.
         /// </summary>
         /// <a href="http://stackoverflow.com/questions/10820453/reflection-performance-create-delegate-properties-c"/>
         /// <param name="methodInfo"></param>
@@ -99,20 +83,14 @@ namespace Takenet.SimplePersistence
         }
 
         /// <summary>
-        /// Build a delegate to
-        /// get a property value
-        /// of a class
+        /// Build a delegate to get a property value of a class.
         /// </summary>
         /// <a href="http://stackoverflow.com/questions/10820453/reflection-performance-create-delegate-properties-c"/>
         /// <param name="methodInfo"></param>
         /// <returns></returns>
         public static Func<object, object> BuildGetAccessor(MethodInfo methodInfo)
         {
-            if (methodInfo == null)
-            {
-                throw new ArgumentNullException("methodInfo");
-            }
-
+            if (methodInfo == null) throw new ArgumentNullException(nameof(methodInfo));            
             var obj = Expression.Parameter(typeof(object), "o");
 
             Expression<Func<object, object>> expr =
@@ -128,9 +106,7 @@ namespace Takenet.SimplePersistence
         }
 
         /// <summary>
-        /// Build a delegate to
-        /// set a property value
-        /// of a class
+        /// Build a delegate to set a property value of a class.
         /// </summary>
         /// <a href="http://stackoverflow.com/questions/10820453/reflection-performance-create-delegate-properties-c"/>
         /// <param name="methodInfo"></param>
@@ -141,19 +117,15 @@ namespace Takenet.SimplePersistence
         }
 
         /// <summary>
-        /// Build a delegate to
-        /// set a property value
-        /// of a class
+        /// Build a delegate to set a property value of a class.
         /// </summary>
         /// <a href="http://stackoverflow.com/questions/10820453/reflection-performance-create-delegate-properties-c"/>
         /// <param name="methodInfo"></param>
         /// <returns></returns>
         public static Action<object, object> BuildSetAccessor(MethodInfo methodInfo)
         {
-            if (methodInfo == null)
-            {
-                throw new ArgumentNullException("methodInfo");
-            }
+            if (methodInfo == null) throw new ArgumentNullException(nameof(methodInfo));
+            
 
             var obj = Expression.Parameter(typeof(object), "o");
             var value = Expression.Parameter(typeof(object));
@@ -168,6 +140,28 @@ namespace Takenet.SimplePersistence
                     value);
 
             return expr.Compile();
+        }
+
+        /// <summary>
+        /// Determine whether a type is simple (String, Decimal, DateTime, etc) 
+        /// or complex (i.e. custom class with public properties and methods).
+        /// </summary>
+        /// <see cref="http://stackoverflow.com/questions/2442534/how-to-test-if-type-is-primitive"/>
+        public static bool IsSimpleType(
+            this Type type)
+        {
+            return
+                type.IsValueType ||
+                type.IsPrimitive ||
+                new Type[] {
+                typeof(String),
+                typeof(Decimal),
+                typeof(DateTime),
+                typeof(DateTimeOffset),
+                typeof(TimeSpan),
+                typeof(Guid)
+                }.Contains(type) ||
+                Convert.GetTypeCode(type) != TypeCode.Object;
         }
     }
 }

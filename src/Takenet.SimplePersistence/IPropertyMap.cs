@@ -36,7 +36,8 @@ namespace Takenet.SimplePersistence
         Task MergeAsync(TKey key, TValue value);
 
         /// <summary>
-        /// Gets a property value for the item in the specific key. If the item doesn't exists, returns the default property type value.
+        /// Gets a property value for the item in the specific key. 
+        /// If the item doesn't exists, returns the default property type value.
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="key"></param>

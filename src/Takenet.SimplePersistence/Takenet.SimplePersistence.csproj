@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="AsyncEnumerableExtensions.cs" />
     <Compile Include="IAsyncEnumerable.cs" />
+    <Compile Include="IDictionaryConverter.cs" />
     <Compile Include="IQueryableStorage.cs" />
     <Compile Include="IAsyncEnumerator.cs" />
     <Compile Include="IExpirableKeyMap.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="QueueExtensions.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TaskUtil.cs" />
+    <Compile Include="TypeDictionaryConverter.cs" />
     <Compile Include="TypeUtil.cs" />
   </ItemGroup>
   <ItemGroup>

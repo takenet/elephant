@@ -81,7 +81,7 @@ namespace Takenet.SimplePersistence.Redis
             return new InternalQueue(key, GetRedisKey(key), _serializer, _connectionMultiplexer, transaction);
         }
 
-        private async Task<IQueue<TItem>> CloneAsync(IQueue<TItem> queue)
+        private static async Task<IQueue<TItem>> CloneAsync(IQueue<TItem> queue)
         {
             var cloneable = queue as ICloneable;
             if (cloneable != null) return (IQueue<TItem>) cloneable.Clone();

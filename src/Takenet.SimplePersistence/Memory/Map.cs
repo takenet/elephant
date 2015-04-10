@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,10 +15,12 @@ namespace Takenet.SimplePersistence.Memory
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class Map<TKey, TValue> : IMap<TKey, TValue>, IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue> //, IQueryableStorage<TValue>
+    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue> 
+         //, IQueryableStorage<TValue>
     {
         protected readonly ConcurrentDictionary<TKey, TValue> _internalDictionary;
         protected readonly Func<TValue> _valueFactory;
+        protected readonly IDictionaryConverter<TValue> _dictionaryConverter;
 
         public Map()
             : this(() => (TValue)Activator.CreateInstance(typeof(TValue)))
@@ -26,9 +29,15 @@ namespace Takenet.SimplePersistence.Memory
         }
 
         public Map(Func<TValue> valueFactory)
+            : this(valueFactory, new TypeDictionaryConverter<TValue>(valueFactory))
+        {
+         
+        }
+
+        public Map(Func<TValue> valueFactory, IDictionaryConverter<TValue> dictionaryConverter)
         {
             _valueFactory = valueFactory;
-
+            _dictionaryConverter = dictionaryConverter;
             _internalDictionary = new ConcurrentDictionary<TKey, TValue>();
         }
 
@@ -62,7 +71,6 @@ namespace Takenet.SimplePersistence.Memory
             TValue value;
             return Task.FromResult(_internalDictionary.TryRemove(key, out value));
         }
-
 
         public Task<bool> ContainsKeyAsync(TKey key)
         {
@@ -135,5 +143,94 @@ namespace Takenet.SimplePersistence.Memory
         //}
 
         #endregion
+
+        public Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
+        {
+            TValue value = GetOrCreateValue(key);
+            var property = typeof(TValue).GetProperty(
+                propertyName,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            property?.SetValue(value, propertyValue);
+            return Task.FromResult<object>(null);
+        }
+
+        public Task MergeAsync(TKey key, TValue value)
+        {
+            var properties = _dictionaryConverter.ToDictionary(value);
+            var existingValue = GetOrCreateValue(key);
+
+            foreach (var propertyKeyValue in properties.Where(p => p.Value != null))
+            {
+                var property = typeof(TValue).GetProperty(
+                    propertyKeyValue.Key,
+                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+                if (property != null)
+                {
+                    try
+                    {
+                        if (property.PropertyType.IsEnum)
+                        {
+                            property.SetValue(
+                                existingValue, 
+                                Enum.Parse(property.PropertyType, propertyKeyValue.Value.ToString(), true));
+                        }
+                        else
+                        {
+                            property.SetValue(
+                                existingValue, 
+                                propertyKeyValue.Value);
+                        }
+                    }
+                    catch
+                    {
+                        var parse = TypeUtil.GetParseFuncForType(property.PropertyType);
+                        if (parse != null)
+                        {
+                            property.SetValue(existingValue, parse(propertyKeyValue.Value.ToString()));
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException($"Cannot set value for property {property.Name}");
+                        }
+                    }
+                }
+            }
+
+            return Task.FromResult<object>(null);
+        }
+
+        public Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        {
+            TValue value;
+            TProperty propertyValue = default(TProperty);
+
+            if (_internalDictionary.TryGetValue(key, out value))
+            {
+                var property = typeof(TValue).GetProperty(
+                    propertyName,
+                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+                if (property != null)
+                {
+                    propertyValue = (TProperty)property.GetValue(value);
+                }
+            }
+
+            return Task.FromResult(propertyValue);
+        }
+
+        protected TValue GetOrCreateValue(TKey key)
+        {
+            TValue value;
+
+            if (!_internalDictionary.TryGetValue(key, out value))
+            {
+                value = _valueFactory();
+                _internalDictionary.TryAdd(key, value);
+            }
+            return value;
+        }
     }
 }
