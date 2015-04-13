@@ -8,15 +8,8 @@ using Xunit;
 
 namespace Takenet.SimplePersistence.Tests
 {
-    public abstract class SetFacts<T> : AssertionBase
+    public abstract class SetFacts<T> : FactsBase
     {
-        private readonly Fixture _fixture;
-
-        protected SetFacts()
-        {
-            _fixture = new Fixture();
-        }
-
         public abstract ISet<T> Create();
 
         [Fact(DisplayName = "AddNewItemSucceeds")]
@@ -24,7 +17,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var set = Create();
-            var item = _fixture.Create<T>();
+            var item = Fixture.Create<T>();
 
             // Act
             await set.AddAsync(item);
@@ -38,7 +31,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var set = Create();
-            var item = _fixture.Create<T>();
+            var item = Fixture.Create<T>();
             await set.AddAsync(item);
 
             // Act
@@ -53,7 +46,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var set = Create();
-            var item = _fixture.Create<T>();
+            var item = Fixture.Create<T>();
             await set.AddAsync(item);
 
             // Act
@@ -69,7 +62,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var set = Create();
-            var item = _fixture.Create<T>();
+            var item = Fixture.Create<T>();
 
             // Act
             var result = await set.TryRemoveAsync(item);
@@ -83,9 +76,9 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var set = Create();
-            var item1 = _fixture.Create<T>();
-            var item2 = _fixture.Create<T>();
-            var item3 = _fixture.Create<T>();
+            var item1 = Fixture.Create<T>();
+            var item2 = Fixture.Create<T>();
+            var item3 = Fixture.Create<T>();
             await set.AddAsync(item1);
             await set.AddAsync(item2);
             await set.AddAsync(item3);
@@ -105,9 +98,9 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var set = Create();
-            var item1 = _fixture.Create<T>();
-            var item2 = _fixture.Create<T>();
-            var item3 = _fixture.Create<T>();
+            var item1 = Fixture.Create<T>();
+            var item2 = Fixture.Create<T>();
+            var item3 = Fixture.Create<T>();
             await set.AddAsync(item1);
             await set.AddAsync(item2);
             await set.AddAsync(item3);
@@ -130,7 +123,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var set = Create();
-            var item1 = _fixture.Create<T>();
+            var item1 = Fixture.Create<T>();
             await set.AddAsync(item1);
 
             // Act
@@ -145,8 +138,8 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var set = Create();
-            var item1 = _fixture.Create<T>();
-            var item2 = _fixture.Create<T>();
+            var item1 = Fixture.Create<T>();
+            var item2 = Fixture.Create<T>();
             await set.AddAsync(item1);
 
             // Act

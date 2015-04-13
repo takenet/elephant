@@ -8,15 +8,8 @@ using Xunit;
 
 namespace Takenet.SimplePersistence.Tests
 {
-    public abstract class QueueFacts<T> : AssertionBase
+    public abstract class QueueFacts<T> : FactsBase
     {
-        private readonly Fixture _fixture;
-
-        protected QueueFacts()
-        {
-            _fixture = new Fixture();
-        }
-
         public abstract IQueue<T> Create();
 
         [Fact(DisplayName = "EnqueueNewItemSucceeds")]
@@ -24,7 +17,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var queue = Create();
-            var item = _fixture.Create<T>();
+            var item = Fixture.Create<T>();
 
             // Act
             await queue.EnqueueAsync(item);
@@ -39,7 +32,7 @@ namespace Takenet.SimplePersistence.Tests
         {
             // Arrange
             var queue = Create();
-            var item = _fixture.Create<T>();
+            var item = Fixture.Create<T>();
             await queue.EnqueueAsync(item);
 
             // Act

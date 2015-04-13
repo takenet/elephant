@@ -1,10 +1,18 @@
 using System.Collections.Generic;
 using NFluent;
+using Ploeh.AutoFixture;
 
 namespace Takenet.SimplePersistence.Tests
 {
-    public class AssertionBase
+    public class FactsBase
     {
+        public FactsBase()
+        {
+            Fixture = new Fixture();
+        }
+
+        protected readonly Fixture Fixture;
+       
         public virtual void AssertEquals<T>(T actual, T expected)
         {
             Check.That(actual).IsEqualTo(expected);

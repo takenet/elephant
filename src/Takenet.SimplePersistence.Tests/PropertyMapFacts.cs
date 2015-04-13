@@ -9,14 +9,8 @@ using Xunit;
 
 namespace Takenet.SimplePersistence.Tests
 {
-    public abstract class PropertyMapFacts<TKey, TValue, TProperty> : AssertionBase
+    public abstract class PropertyMapFacts<TKey, TValue, TProperty> : FactsBase
     {
-        protected readonly Fixture Fixture;
-
-        protected PropertyMapFacts()
-        {
-            Fixture = new Fixture();
-        }
 
         public abstract IPropertyMap<TKey, TValue> Create();
 

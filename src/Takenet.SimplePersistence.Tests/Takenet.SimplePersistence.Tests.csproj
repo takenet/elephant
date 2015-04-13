@@ -61,7 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssertionBase.cs" />
+    <Compile Include="FactsBase.cs" />
     <Compile Include="ClassQueueFacts.cs" />
     <Compile Include="ClassSetFacts.cs" />
     <Compile Include="GuidItemMapFacts.cs" />

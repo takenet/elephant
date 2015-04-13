@@ -11,15 +11,8 @@ using Xunit.Extensions;
 
 namespace Takenet.SimplePersistence.Tests
 {
-    public abstract class MapFacts<TKey, TValue> : AssertionBase
+    public abstract class MapFacts<TKey, TValue> : FactsBase
     {
-        protected readonly Fixture Fixture;
-
-        protected MapFacts()
-        {
-            Fixture = new Fixture();
-        }
-
         public abstract IMap<TKey, TValue> Create();
 
         public virtual TKey CreateKey()
