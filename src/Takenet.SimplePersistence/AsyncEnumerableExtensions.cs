@@ -621,7 +621,7 @@ namespace Takenet.SimplePersistence
 
             using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
             {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
                 {
                     if (predicate(e.Current))
                     {

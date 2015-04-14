@@ -10,7 +10,7 @@ using Takenet.SimplePersistence.Sql.Mapping;
 
 namespace Takenet.SimplePersistence.Sql
 {
-    public abstract class SqlSetMap<TKey, TItem> : MapStorageBase<TKey, TItem>, ISetMap<TKey, TItem>
+    public abstract class SqlSetMap<TKey, TItem> : MapStorageBase<TKey, TItem>, ISetMap<TKey, TItem>, IItemSetMap<TKey, TItem>
     {
         private readonly IsolationLevel _addIsolationLevel;
 
@@ -19,6 +19,8 @@ namespace Takenet.SimplePersistence.Sql
         {
             _addIsolationLevel = addIsolationLevel;
         }
+
+        #region ISetMap<TKey, TItem> Members
 
         public async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
         {
@@ -29,10 +31,10 @@ namespace Takenet.SimplePersistence.Sql
 
             var internalSet = value as InternalSet;
             if (internalSet != null)
-            {                
+            {
                 return keyColumnValues.SequenceEqual(internalSet.MapKeyColumnValues) && overwrite;
             }
-            
+
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
                 if (!overwrite &&
@@ -49,7 +51,7 @@ namespace Takenet.SimplePersistence.Sql
                             TryRemoveAsync(keyColumnValues, connection, cancellationToken, transaction)
                                 .ConfigureAwait(false);
                     }
-                                        
+
                     var success = true;
                     var items = await value.AsEnumerableAsync().ConfigureAwait(false);
                     await items.ForEachAsync(
@@ -86,7 +88,7 @@ namespace Takenet.SimplePersistence.Sql
 
         public async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));            
+            if (key == null) throw new ArgumentNullException(nameof(key));
             var cancellationToken = CreateCancellationToken();
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
@@ -116,6 +118,28 @@ namespace Takenet.SimplePersistence.Sql
                 return await ContainsKeyAsync(key, connection, cancellationToken);
             }
         }
+
+        #endregion
+
+
+        #region IItemSetMap<TKey, TItem> Members
+
+        public virtual async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem value)
+        {
+            var cancellationToken = CreateCancellationToken();
+            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            {
+                var keyColumnValues = GetKeyColumnValues(GetColumnValues(key, value));
+                var selectColumns = Table.Columns.Keys.ToArray();
+                var command = connection.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns);
+                using (var values = new SqlDataReaderAsyncEnumerable<TItem>(command, Mapper, selectColumns))
+                {
+                    return await values.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+                }
+            }
+        }
+
+        #endregion
 
         private class InternalSet : SqlSet<TItem>
         {

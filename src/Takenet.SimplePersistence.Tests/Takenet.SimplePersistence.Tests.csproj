@@ -66,6 +66,7 @@
     <Compile Include="ClassQueueFacts.cs" />
     <Compile Include="ClassSetFacts.cs" />
     <Compile Include="GuidItemExpirableKeyMapFacts.cs" />
+    <Compile Include="GuidItemItemSetMapFacts.cs" />
     <Compile Include="GuidItemMapFacts.cs" />
     <Compile Include="GuidItemPropertyMapFacts.cs" />
     <Compile Include="GuidItemQueueMapFacts.cs" />
@@ -75,8 +76,10 @@
     <Compile Include="IntegerStringSetMapFacts.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="ItemSetFacts.cs" />
+    <Compile Include="ItemSetMapFacts.cs" />
     <Compile Include="MapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemExpirableKeyMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemItemSetMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemPropertyMapFacts.cs" />
     <Compile Include="Memory\MemoryIntegerStringQueueMapFacts.cs" />
@@ -114,6 +117,7 @@
     <Compile Include="SetMapFacts.cs" />
     <Compile Include="Sql\SqlConnectionFixture.cs" />
     <Compile Include="Sql\SqlCollectionFixture.cs" />
+    <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemSetMapFacts.cs" />

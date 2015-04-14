@@ -41,17 +41,17 @@ namespace Takenet.SimplePersistence.Tests.Sql
             set.AddAsync(Fixture.Create<Item>()).Wait();
             return set;
         }
+    }
 
-        private class SqlGuidItemSetMap : SqlSetMap<Guid, Item>
+    public class SqlGuidItemSetMap : SqlSetMap<Guid, Item>
+    {
+        public SqlGuidItemSetMap(ITable table, string connectionString)
+            : base(table, connectionString)
         {
-            public SqlGuidItemSetMap(ITable table, string connectionString) 
-                : base(table, connectionString)
-            {
-                                
-            }
-            protected override IMapper<Item> Mapper => new TypeMapper<Item>(Table);
 
-            protected override IMapper<Guid> KeyMapper => new ValueMapper<Guid>("Key");
         }
+        protected override IMapper<Item> Mapper => new TypeMapper<Item>(Table);
+
+        protected override IMapper<Guid> KeyMapper => new ValueMapper<Guid>("Key");
     }
 }

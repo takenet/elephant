@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Takenet.SimplePersistence
 {
     /// <summary>
-    /// Defines a <see cref="ISetMap"/> that allows to get a specific item in the set.
+    /// Defines a <see cref="ISetMap{TKey,TItem}"/> that allows to get a specific item in the set.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TItem">The type of the value.</typeparam>

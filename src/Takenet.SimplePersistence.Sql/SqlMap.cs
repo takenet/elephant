@@ -49,8 +49,10 @@ namespace Takenet.SimplePersistence.Sql
                 var keyColumnValues = KeyMapper.GetColumnValues(key);
                 var selectColumns = Table.Columns.Keys.ToArray();
                 var command = connection.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns);
-                var values = new SqlDataReaderAsyncEnumerable<TValue>(command, Mapper, selectColumns);
-                return await values.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+                using (var values = new SqlDataReaderAsyncEnumerable<TValue>(command, Mapper, selectColumns))
+                {
+                    return await values.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+                }
             }
         }
 
