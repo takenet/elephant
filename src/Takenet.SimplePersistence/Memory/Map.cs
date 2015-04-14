@@ -15,8 +15,8 @@ namespace Takenet.SimplePersistence.Memory
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>
-         //, IQueryableStorage<TValue>
+    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>
+    //, IQueryableStorage<TValue>
     {
         public Map()
             : this(() => (TValue)Activator.CreateInstance(typeof(TValue)))
@@ -197,6 +197,15 @@ namespace Takenet.SimplePersistence.Memory
             }
 
             return Task.FromResult<object>(null);
+        }
+
+        #endregion
+
+        #region IKeysMap<TKey, TValue> Members
+
+        public Task<IAsyncEnumerable<TKey>> GetKeysAsync()
+        {
+            return Task.FromResult<IAsyncEnumerable<TKey>>(new AsyncEnumerableWrapper<TKey>(InternalDictionary.Keys));
         }
 
         #endregion

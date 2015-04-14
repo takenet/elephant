@@ -95,9 +95,9 @@ namespace Takenet.SimplePersistence.Sql
                 {
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
                     tableName = tableName.AsSqlIdentifier(),
-                    filter = GetAndEqualsStatement(filterValues.Keys.ToArray())
+                    filter = filterValues != null ? GetAndEqualsStatement(filterValues.Keys.ToArray()) : "1 = 1"
                 },
-                filterValues.Select(k => k.ToSqlParameter()));
+                filterValues?.Select(k => k.ToSqlParameter()));
         }
 
         public static SqlCommand CreateInsertWhereNotExistsCommand(this SqlConnection connection, string tableName,

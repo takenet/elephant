@@ -40,5 +40,13 @@ namespace Takenet.SimplePersistence.Sql
             var keyColumnValues = KeyMapper.GetColumnValues(key);
             return ContainsAsync(keyColumnValues, connection, cancellationToken);            
         }
+
+        protected virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync(SqlConnection connection, CancellationToken cancellationToken)
+        {
+            var selectColumns = Table.KeyColumns;
+            var command = connection.CreateSelectCommand(Table.Name, null, selectColumns);            
+            return Task.FromResult<IAsyncEnumerable<TKey>>(
+                new SqlDataReaderAsyncEnumerable<TKey>(command, KeyMapper, selectColumns));
+        }
     }
 }

@@ -10,7 +10,7 @@ using Takenet.SimplePersistence.Sql.Mapping;
 
 namespace Takenet.SimplePersistence.Sql
 {
-    public abstract class SqlSetMap<TKey, TItem> : MapStorageBase<TKey, TItem>, ISetMap<TKey, TItem>, IItemSetMap<TKey, TItem>
+    public abstract class SqlSetMap<TKey, TItem> : MapStorageBase<TKey, TItem>, ISetMap<TKey, TItem>, IItemSetMap<TKey, TItem>, IKeysMap<TKey, ISet<TItem>>
     {
         private readonly IsolationLevel _addIsolationLevel;
 
@@ -137,6 +137,17 @@ namespace Takenet.SimplePersistence.Sql
                     return await values.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
                 }
             }
+        }
+
+        #endregion
+
+        #region IKeysMap<TKey, ISet<TItem>> Members
+
+        public async Task<IAsyncEnumerable<TKey>> GetKeysAsync()
+        {
+            var cancellationToken = CreateCancellationToken();
+            var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);
+            return await GetKeysAsync(connection, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion

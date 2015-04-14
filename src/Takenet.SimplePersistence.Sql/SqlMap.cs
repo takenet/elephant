@@ -15,7 +15,7 @@ namespace Takenet.SimplePersistence.Sql
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public abstract class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IMap<TKey, TValue> 
+    public abstract class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IMap<TKey, TValue>, IKeysMap<TKey, TValue>
     {
         protected SqlMap(ITable table, string connectionString)
             : base(table, connectionString)
@@ -72,6 +72,17 @@ namespace Takenet.SimplePersistence.Sql
             {
                 return await ContainsKeyAsync(key, connection, cancellationToken);
             }
+        }
+
+        #endregion
+
+        #region IKeysMap<TKey, TValue> Members
+
+        public async Task<IAsyncEnumerable<TKey>> GetKeysAsync()
+        {
+            var cancellationToken = CreateCancellationToken();
+            var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);
+            return await GetKeysAsync(connection, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion
@@ -228,43 +239,6 @@ namespace Takenet.SimplePersistence.Sql
 
         #endregion
 
-        #region IKeysMap<TKey,TValue> Members
-
-        public async Task<IEnumerable<TKey>> GetKeysAsync()
-        {
-            var cancellationToken = CreateCancellationToken();
-
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-            {
-                var selectColumns = Table.KeyColumns.ToArray();
-                var result = new List<TKey>();
-
-                using (var command = connection.CreateTextCommand(
-                    SqlTemplates.Select,
-                    new
-                    {
-                        columns = selectColumns.ToCommaSepparate(),
-                        tableName = Table.Name.AsSqlIdentifier(),
-                        filter = "1 = 1"
-                    }))
-                {
-
-                    using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
-                    {
-                        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
-                        {
-                            result.Add(KeyMapper.Create(reader, selectColumns));
-                        }
-                    }
-                }
-
-                return result;           
-            }
-        }
-
-        #endregion
-
-
 
 
         //#region IQueryableStorage<TKey, TValue>
@@ -374,5 +348,6 @@ namespace Takenet.SimplePersistence.Sql
         //        }
         //    }
         //}
+
     }
 }

@@ -26,17 +26,8 @@ namespace Takenet.SimplePersistence.Sql
             var keyColumnValues = GetKeyColumnValues(columnValues);
 
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-            {
-                using (var command = connection.CreateTextCommand(
-                    SqlTemplates.DeleteAndInsertWhereNotExists,
-                    new
-                    {
-                        tableName = Table.Name.AsSqlIdentifier(),
-                        columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
-                        values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSepparate(),
-                        filter = GetAndEqualsStatement(keyColumnValues.Keys.ToArray())
-                    },
-                    columnValues.Select(c => c.ToSqlParameter())))
+            {                
+                using (var command = connection.CreateInsertWhereNotExistsCommand(Table.Name, keyColumnValues, columnValues, true))
                 {
                     if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
                     {
@@ -62,14 +53,7 @@ namespace Takenet.SimplePersistence.Sql
             var cancellationToken = CreateCancellationToken();
             var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);            
             var selectColumns = Table.Columns.Keys.ToArray();
-            var command = connection.CreateTextCommand(
-                SqlTemplates.Select,
-                new
-                {
-                    columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
-                    tableName = Table.Name.AsSqlIdentifier(),
-                    filter = "1 = 1"  // Yes, I know.
-                });
+            var command = connection.CreateSelectCommand(Table.Name, null, selectColumns);
             return new SqlDataReaderAsyncEnumerable<T>(command, Mapper, selectColumns);
         }
 
