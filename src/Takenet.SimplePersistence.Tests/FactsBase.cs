@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NFluent;
 using Ploeh.AutoFixture;
+using Xunit;
 
 namespace Takenet.SimplePersistence.Tests
 {
@@ -41,6 +44,11 @@ namespace Takenet.SimplePersistence.Tests
         public virtual void AssertIsNotNull<T>(T actual) where T : class
         {
             Check.That(actual).IsNotNull();
+        }
+
+        public virtual Task AssertThrowsAsync<TException>(Func<Task> func) where TException : Exception
+        {
+            return Assert.ThrowsAsync<TException>(func);
         }
     }
 }

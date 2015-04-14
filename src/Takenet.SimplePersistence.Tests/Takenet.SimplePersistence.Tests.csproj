@@ -61,9 +61,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExpirableKeyMapFacts.cs" />
     <Compile Include="FactsBase.cs" />
     <Compile Include="ClassQueueFacts.cs" />
     <Compile Include="ClassSetFacts.cs" />
+    <Compile Include="GuidItemExpirableKeyMapFacts.cs" />
     <Compile Include="GuidItemMapFacts.cs" />
     <Compile Include="GuidItemPropertyMapFacts.cs" />
     <Compile Include="GuidItemQueueMapFacts.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="ItemSetFacts.cs" />
     <Compile Include="MapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemExpirableKeyMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemPropertyMapFacts.cs" />
     <Compile Include="Memory\MemoryIntegerStringQueueMapFacts.cs" />
@@ -92,6 +95,7 @@
     <Compile Include="QueueMapFacts.cs" />
     <Compile Include="Redis\ItemSerializer.cs" />
     <Compile Include="Redis\RedisCollectionFixture.cs" />
+    <Compile Include="Redis\RedisGuidItemExpirableKeyMapFacts.cs" />
     <Compile Include="Redis\RedisGuidItemQueueMapFacts.cs" />
     <Compile Include="Redis\RedisHashGuidItemPropertyMapFacts.cs" />
     <Compile Include="Redis\RedisIntegerStringQueueMapFacts.cs" />

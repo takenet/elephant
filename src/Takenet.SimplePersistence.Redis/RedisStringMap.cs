@@ -21,7 +21,7 @@ namespace Takenet.SimplePersistence.Redis
         {
             if (serializer == null)
             {
-                throw new ArgumentNullException("serializer");
+                throw new ArgumentNullException(nameof(serializer));
             }
 
             _serializer = serializer;
@@ -32,7 +32,7 @@ namespace Takenet.SimplePersistence.Redis
         {
             if (serializer == null)
             {
-                throw new ArgumentNullException("serializer");
+                throw new ArgumentNullException(nameof(serializer));
             }
 
             _serializer = serializer;

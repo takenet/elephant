@@ -88,6 +88,9 @@ namespace Takenet.SimplePersistence.Memory
 
         public Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (!InternalDictionary.ContainsKey(key)) throw new ArgumentException("Invalid key", nameof(key));
+
             Tuple<Task, CancellationTokenSource> expirationTaskWithCts;
             if (_expirationTaskDictionary.TryRemove(key, out expirationTaskWithCts))
             {
@@ -97,8 +100,8 @@ namespace Takenet.SimplePersistence.Memory
             var cancellationTokenSource = new CancellationTokenSource();
             var expirationTask = Task.Run(async () =>
             {
-                await Task.Delay(ttl, cancellationTokenSource.Token);
-                await TryRemoveAsync(key);
+                await Task.Delay(ttl, cancellationTokenSource.Token).ConfigureAwait(false);
+                await TryRemoveAsync(key).ConfigureAwait(false);
                 _expirationTaskDictionary.TryRemove(key, out expirationTaskWithCts);
             }, cancellationTokenSource.Token);
 
@@ -114,29 +117,7 @@ namespace Takenet.SimplePersistence.Memory
 
         #endregion
 
-        #region IQueryableStorage<TValue>
-
-        //public Task<QueryResult<TValue>> QueryAsync<TResult>(Expression<Func<TValue, bool>> where,
-        //    Expression<Func<TValue, TResult>> select,
-        //    int skip,
-        //    int take,
-        //    CancellationToken cancellationToken)
-        //{
-        //    var predicate = where.Compile();
-
-        //    var totalValues = _internalDictionary.Where(pair => predicate.Invoke(pair.Value));
-        //    var count = totalValues.Count();
-        //    var resultValues = totalValues
-        //        .Skip(skip)
-        //        .Take(take)
-        //        .Select(pair => pair.Value)
-        //        .ToArray();
-
-        //    var result = new QueryResult<TValue>(resultValues, count);
-        //    return Task.FromResult(result);
-        //}
-
-        #endregion
+        #region IPropertyMap<TKey, TValue> Members
 
         public Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
@@ -145,7 +126,7 @@ namespace Takenet.SimplePersistence.Memory
                 propertyName,
                 BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-            if (property == null) throw new ArgumentException("The property name is invalid", nameof(propertyName));            
+            if (property == null) throw new ArgumentException("The property name is invalid", nameof(propertyName));
             property.SetValue(value, propertyValue);
 
             return Task.FromResult<object>(null);
@@ -190,13 +171,13 @@ namespace Takenet.SimplePersistence.Memory
                         if (property.PropertyType.IsEnum)
                         {
                             property.SetValue(
-                                existingValue, 
+                                existingValue,
                                 Enum.Parse(property.PropertyType, propertyKeyValue.Value.ToString(), true));
                         }
                         else
                         {
                             property.SetValue(
-                                existingValue, 
+                                existingValue,
                                 propertyKeyValue.Value);
                         }
                     }
@@ -217,6 +198,8 @@ namespace Takenet.SimplePersistence.Memory
 
             return Task.FromResult<object>(null);
         }
+
+        #endregion
 
         protected TValue GetOrCreateValue(TKey key)
         {
