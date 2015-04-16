@@ -11,23 +11,22 @@ namespace Takenet.SimplePersistence.Sql
     {
         public static string AsSqlParameterName(this string columnName)
         {
-            return string.Format("@{0}", columnName);
+            return $"@{columnName}";
         }
 
         public static string AsSqlIdentifier(this string identifier)
         {
-            return string.Format("[{0}]", identifier);
+            return $"[{identifier}]";
         }
 
         /// <summary>
-        /// Transform to a flat string
-        /// with comma sepparate values.
+        /// Transform to a flat string with comma separate values.
         /// </summary>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static string ToCommaSepparate(this IEnumerable<string> values)
+        public static string ToCommaSeparate(this IEnumerable<string> values)
         {
-            return values.Aggregate((a, b) => string.Format("{0},{1}", a, b)).TrimEnd(',');
+            return values.Aggregate((a, b) => $"{a},{b}").TrimEnd(',');
         }
 
         public static SqlParameter ToSqlParameter(this KeyValuePair<string, object> keyValuePair)

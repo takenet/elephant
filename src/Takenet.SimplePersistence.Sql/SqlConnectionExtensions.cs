@@ -93,7 +93,7 @@ namespace Takenet.SimplePersistence.Sql
                 SqlTemplates.Select,
                 new
                 {
-                    columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
+                    columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     tableName = tableName.AsSqlIdentifier(),
                     filter = filterValues != null ? GetAndEqualsStatement(filterValues.Keys.ToArray()) : "1 = 1"
                 },
@@ -112,11 +112,38 @@ namespace Takenet.SimplePersistence.Sql
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSepparate(),
-                    values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSepparate(),
+                    columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
+                    values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate(),
                     filter = GetAndEqualsStatement(filterValues.Keys.ToArray())
                 },
                 columnValues.Select(c => c.ToSqlParameter()));
+        }
+
+        public static SqlCommand CreateSelectCountCommand(this SqlConnection connection, string tableName, string filter)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.SelectCount,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    filter = filter
+                });
+        }
+
+        public static SqlCommand CreateSelectSkipTakeCommand(this SqlConnection connection, string tableName, string[] selectColumns,
+            string filter, int skip, int take, string[] orderByColumns)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.SelectSkipTake,
+                new
+                {
+                    columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
+                    tableName = tableName.AsSqlIdentifier(),
+                    filter = filter,
+                    skip = skip,
+                    take = take,
+                    orderBy = orderByColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate()
+                });
         }
     }
 }

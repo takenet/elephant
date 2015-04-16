@@ -342,7 +342,7 @@ namespace Takenet.SimplePersistence.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {keys} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY.
+        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY.
         /// </summary>
         public static string SelectSkipTake {
             get {

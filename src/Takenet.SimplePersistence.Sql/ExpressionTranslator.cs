@@ -45,7 +45,8 @@ namespace Takenet.SimplePersistence.Sql
                     break;
 
                 default:
-                    throw new NotImplementedException(string.Format("BinaryExpression operator '{0}' is not support at this time", node.NodeType));
+                    throw new NotImplementedException(
+                        $"BinaryExpression operator '{node.NodeType}' is not support at this time");
             }
 
             _filter.AppendFormat(" {0} ", @operator);
@@ -57,21 +58,27 @@ namespace Takenet.SimplePersistence.Sql
 
         protected override Expression VisitMember(MemberExpression node)
         {
-            if (node.Expression == null)
-            {
-                throw new NotSupportedException(string.Format("The member '{0}' is not supported", node.Member.Name));
-            }
+            if (node.Expression == null) throw new NotSupportedException($"The member '{node.Member.Name}' is not supported");
 
+            object value;
             switch (node.Expression.NodeType)
             {
                 case ExpressionType.Parameter:
                     _filter.Append(node.Member.Name.AsSqlIdentifier());
                     return node;
 
+                case ExpressionType.MemberAccess:
+                    var objectMember = Expression.Convert(node, typeof(object));
+                    var getterLambda = Expression.Lambda<Func<object>>(objectMember);
+                    var getter = getterLambda.Compile();
+                    value = getter();
+                    _filter.Append(ConvertSqlLiteral(value, node.Type));
+                    return node;
+    
                 case ExpressionType.Constant:
                     var constantExpression = (ConstantExpression)node.Expression;
                     var member = node.Member;
-                    object value = null;
+                    value = null;
                     if (member is FieldInfo)
                     {
                         value = ((FieldInfo)member).GetValue(constantExpression.Value);
@@ -85,9 +92,7 @@ namespace Takenet.SimplePersistence.Sql
                     return node;
             }
 
-
-            throw new NotSupportedException(string.Format("The member '{0}' is not supported", node.Member.Name));
-
+            throw new NotSupportedException($"The expression member '{node.Member.Name}' with node type '{node.Expression.NodeType}' is not supported");
         }
 
         protected override Expression VisitConstant(ConstantExpression node)
@@ -134,9 +139,14 @@ namespace Takenet.SimplePersistence.Sql
             var dbType = TypeMapper.GetDbType(type);
 
             if (dbType == DbType.String ||
-                dbType == DbType.StringFixedLength)
+                dbType == DbType.StringFixedLength ||
+                dbType == DbType.Guid ||
+                dbType == DbType.Date ||
+                dbType == DbType.DateTime ||
+                dbType == DbType.DateTime2 ||
+                dbType == DbType.DateTimeOffset)
             {
-                return string.Format("'{0}'", value.ToString());
+                return $"'{value}'";
             }
 
             return value.ToString();

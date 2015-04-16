@@ -16,7 +16,7 @@ namespace Takenet.SimplePersistence
     public interface IQueryableStorage<T>
     {
         /// <summary>
-        /// Queries the storage
+        /// Queries the storage.
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="where"></param>
@@ -38,7 +38,7 @@ namespace Takenet.SimplePersistence
         Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> where, Expression<Func<TKey, TResult>> select, int skip, int take, CancellationToken cancellationToken);
     }
 
-    public sealed class QueryResult<T> : IAsyncEnumerable<T>
+    public sealed class QueryResult<T> : IAsyncEnumerable<T>, IDisposable
     {
         public QueryResult(IAsyncEnumerable<T> items, int total)
         {
@@ -69,6 +69,11 @@ namespace Takenet.SimplePersistence
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable)Items).GetEnumerator();
+        }
+
+        public void Dispose()
+        {
+            
         }
 
         #endregion

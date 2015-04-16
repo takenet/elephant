@@ -33,7 +33,7 @@ namespace Takenet.SimplePersistence.Sql
                     new
                     {
                         tableName = table.Name,
-                        columns = table.KeyColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate()
+                        columns = table.KeyColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate()
                     })
             );
 

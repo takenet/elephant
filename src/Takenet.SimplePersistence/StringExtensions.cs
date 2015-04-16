@@ -17,11 +17,7 @@ namespace Takenet.SimplePersistence
         /// <returns></returns>
         public static string Format(this string format, object source)
         {
-            if (format == null)
-            {
-                throw new ArgumentNullException("format");
-            }
-
+            if (format == null) throw new ArgumentNullException(nameof(format));            
             StringBuilder result = new StringBuilder(format.Length * 2);
 
             using (var reader = new StringReader(format))

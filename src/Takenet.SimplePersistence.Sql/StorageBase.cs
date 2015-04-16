@@ -46,43 +46,27 @@ namespace Takenet.SimplePersistence.Sql
 
         public async Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken)
         {
-            if (select != null &&
+            if (select != null && 
                 select.ReturnType != typeof(TEntity))
             {
                 throw new NotImplementedException("The select parameter is not supported yet");
             }
 
-            var selectColumns = Table.Columns.Keys;
-            var selectColumnsCommaSepparate = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate();
-            var keysColumnsCommaSepparate = Table.KeyColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate();
-            var tableName = Table.Name.AsSqlIdentifier();
-            var filters = GetFilters(where);        
+            var selectColumns = Table.Columns.Keys.ToArray();
+            var orderByColumns = Table.KeyColumns;
+            var filter = GetFilters(where);        
             var connection = await GetConnectionAsync(cancellationToken);            
             int totalCount;
-            using (var countCommand = connection.CreateTextCommand(
-                SqlTemplates.SelectCount,
-                new
-                {
-                    tableName = tableName,
-                    filter = filters
-                }))
+            using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
             {
                 totalCount = Convert.ToInt32(await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
             }
 
-            var command = connection.CreateTextCommand(
-                SqlTemplates.SelectSkipTake,
-                new
-                {
-                    columns = selectColumnsCommaSepparate,
-                    tableName = tableName,
-                    filter = filters,
-                    skip = skip,
-                    take = take,
-                    keys = keysColumnsCommaSepparate
-                });
+            var command = connection.CreateSelectSkipTakeCommand(
+                Table.Name, selectColumns, filter, skip, take, orderByColumns);
                                             
-            return new QueryResult<TEntity>(new SqlDataReaderAsyncEnumerable<TEntity>(command, Mapper, selectColumns.ToArray()), totalCount);            
+            return new QueryResult<TEntity>(
+                new SqlDataReaderAsyncEnumerable<TEntity>(command, Mapper, selectColumns), totalCount);
         }
 
         #endregion

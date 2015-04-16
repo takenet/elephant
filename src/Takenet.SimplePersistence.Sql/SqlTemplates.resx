@@ -219,7 +219,7 @@ WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
     <value>SELECT COUNT(*) FROM {tableName} WHERE {filter}</value>
   </data>
   <data name="SelectSkipTake" xml:space="preserve">
-    <value>SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {keys} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY</value>
+    <value>SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY</value>
   </data>
   <data name="SelectTop1" xml:space="preserve">
     <value>SELECT TOP 1 {columns} FROM {tableName} WHERE {filter}</value>
