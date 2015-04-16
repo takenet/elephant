@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StackExchange.Redis;
 using Takenet.SimplePersistence.Redis;
+using Takenet.SimplePersistence.Redis.Converters;
 using Takenet.SimplePersistence.Redis.Serializers;
 using Xunit;
 
@@ -24,25 +23,7 @@ namespace Takenet.SimplePersistence.Tests.Redis
         {
             _redisFixture.Server.FlushDatabase();
             const string mapName = "integer-object-hash";
-            return new RedisHashMap<int, string>(mapName, new StringDictionaryConverter(), "localhost");
-        }
-
-        private class StringDictionaryConverter : IDictionaryConverter<string>
-        {
-            public IEnumerable<string> Properties => new[] {"value"};
-
-            public string FromDictionary(IDictionary<string, object> dictionary)
-            {
-                return (RedisValue)dictionary["value"];
-            }
-
-            public IDictionary<string, object> ToDictionary(string value)
-            {
-                return new Dictionary<string, object>()
-                {
-                    {"value", value}
-                };
-            }
+            return new RedisHashMap<int, string>(mapName, new StringRedisValueDictionaryConverter(), "localhost");
         }
     }
 }

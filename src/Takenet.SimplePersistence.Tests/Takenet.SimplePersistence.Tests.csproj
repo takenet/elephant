@@ -72,6 +72,7 @@
     <Compile Include="GuidItemPropertyMapFacts.cs" />
     <Compile Include="GuidItemQueueMapFacts.cs" />
     <Compile Include="GuidItemSetMapFacts.cs" />
+    <Compile Include="GuidNumberMapFacts.cs" />
     <Compile Include="IntegerStringMapFacts.cs" />
     <Compile Include="IntegerStringQueueMapFacts.cs" />
     <Compile Include="IntegerStringSetMapFacts.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Memory\MemoryGuidItemKeysMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemPropertyMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidNumberMapFacts.cs" />
     <Compile Include="Memory\MemoryIntegerStringQueueMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemQueueMapFacts.cs" />
     <Compile Include="Memory\MemoryIntegerStringMapFacts.cs" />
@@ -94,6 +96,7 @@
     <Compile Include="Memory\MemoryItemQueueFacts.cs" />
     <Compile Include="Memory\MemoryGuidQueueFacts.cs" />
     <Compile Include="Memory\MemoryStringSetFacts.cs" />
+    <Compile Include="NumberMapFacts.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyMapFacts.cs" />
@@ -103,6 +106,7 @@
     <Compile Include="Redis\RedisCollectionFixture.cs" />
     <Compile Include="Redis\RedisGuidItemExpirableKeyMapFacts.cs" />
     <Compile Include="Redis\RedisGuidItemQueueMapFacts.cs" />
+    <Compile Include="Redis\RedisGuidNumberMapFacts.cs" />
     <Compile Include="Redis\RedisHashGuidItemPropertyMapFacts.cs" />
     <Compile Include="Redis\RedisIntegerStringQueueMapFacts.cs" />
     <Compile Include="Redis\RedisItemQueueFacts.cs" />

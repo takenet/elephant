@@ -14,8 +14,7 @@ namespace Takenet.SimplePersistence
     {
         /// <summary>
         /// Atomically increments the value of the key by one.
-        /// If the key does not exists, it will be created
-        /// with the value 0.
+        /// If the key does not exists, it will be created with the value 0.
         /// </summary>
         /// <param name="key">The item key.</param>
         /// <returns>The number updated value.</returns>
@@ -23,8 +22,7 @@ namespace Takenet.SimplePersistence
 
         /// <summary>
         /// Atomically increments the value of the key.
-        /// If the key does not exists, it will be created
-        /// with the value 0.
+        /// If the key does not exists, it will be created with the value 0.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
@@ -33,8 +31,7 @@ namespace Takenet.SimplePersistence
 
         /// <summary>
         /// Atomically decrements the value of the key by one.
-        /// If the key does not exists, it will be created
-        /// with the value 0.
+        /// If the key does not exists, it will be created with the value 0.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>The number updated value.</returns>
@@ -42,8 +39,7 @@ namespace Takenet.SimplePersistence
 
         /// <summary>
         /// Atomically decrements the value of the key.
-        /// If the key does not exists, it will be created
-        /// with the value 0.
+        /// If the key does not exists, it will be created with the value 0.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value"></param>

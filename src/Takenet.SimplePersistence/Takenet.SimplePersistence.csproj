@@ -58,6 +58,7 @@
     <Compile Include="ISetMap.cs" />
     <Compile Include="IUpdatableMap.cs" />
     <Compile Include="Memory\Map.cs" />
+    <Compile Include="Memory\NumberMap.cs" />
     <Compile Include="Memory\Set.cs" />
     <Compile Include="Memory\QueueMap.cs" />
     <Compile Include="Memory\SetMap.cs" />

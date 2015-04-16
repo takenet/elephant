@@ -42,17 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\LongRedisValueDictionaryConverter.cs" />
+    <Compile Include="Converters\StringRedisValueDictionaryConverter.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="MapBase.cs" />
     <Compile Include="RedisHashMap.cs" />
+    <Compile Include="RedisNumberMap.cs" />
     <Compile Include="RedisQueue.cs" />
     <Compile Include="RedisQueueMap.cs" />
     <Compile Include="RedisSet.cs" />
     <Compile Include="RedisSetMap.cs" />
     <Compile Include="RedisStringMap.cs" />
     <Compile Include="RedisValueExtensions.cs" />
-    <Compile Include="Serializers\GuidSerializer.cs" />
     <Compile Include="Serializers\StringSerializer.cs" />
+    <Compile Include="Serializers\ValueSerializer.cs" />
     <Compile Include="StorageBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -65,9 +68,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
