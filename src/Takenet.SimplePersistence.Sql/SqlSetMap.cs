@@ -97,7 +97,7 @@ namespace Takenet.SimplePersistence.Sql
                 {
                     return null;
                 }
-                return new InternalSet(keyColumnValues, Mapper, Table, ConnectionString);
+                return new InternalSet(keyColumnValues, Mapper, DatabaseDriver, Table, ConnectionString);
             }
         }
 
@@ -132,7 +132,7 @@ namespace Takenet.SimplePersistence.Sql
                 var keyColumnValues = GetKeyColumnValues(GetColumnValues(key, value));
                 var selectColumns = Table.Columns.Keys.ToArray();
                 var command = connection.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns);
-                using (var values = new SqlDataReaderAsyncEnumerable<TItem>(command, Mapper, selectColumns))
+                using (var values = new DbDataReaderAsyncEnumerable<TItem>(command, Mapper, selectColumns))
                 {
                     return await values.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
                 }
@@ -156,14 +156,16 @@ namespace Takenet.SimplePersistence.Sql
         {
             public IDictionary<string, object> MapKeyColumnValues { get; }
 
-            public InternalSet(IDictionary<string, object> mapKeyColumnValues, IMapper<TItem> mapper, ITable table, string connectionString) 
+            public InternalSet(IDictionary<string, object> mapKeyColumnValues, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, ITable table, string connectionString) 
                 : base(table, connectionString)
             {
                 MapKeyColumnValues = mapKeyColumnValues;
                 Mapper = mapper;
+                DatabaseDriver = databaseDriver;
             }
 
             protected override IMapper<TItem> Mapper { get; }
+            protected override IDatabaseDriver DatabaseDriver { get; }
 
             protected override IDictionary<string, object> GetColumnValues(TItem entity)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,19 +14,21 @@ namespace Takenet.SimplePersistence.Sql
 {
     public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>
     {                                                
-        protected StorageBase(ITable table,  string connectionString)
+        protected StorageBase(ITable table, string connectionString)
         {
             Table = table;
             ConnectionString = connectionString;
         }
 
-        protected ITable Table { get; }
+        protected ITable Table { get; }        
 
         protected string ConnectionString { get; }
 
         protected abstract IMapper<TEntity> Mapper { get; }
 
-        protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, SqlConnection connection, CancellationToken cancellationToken, SqlTransaction sqlTransaction = null)
+        protected abstract IDatabaseDriver DatabaseDriver { get; }
+
+        protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken, DbTransaction sqlTransaction = null)
         {            
             using (var command = connection.CreateDeleteCommand(Table.Name, filterValues))
             {
@@ -34,7 +37,7 @@ namespace Takenet.SimplePersistence.Sql
             }
         }
 
-        protected async Task<bool> ContainsAsync(IDictionary<string, object> filterValues, SqlConnection connection, CancellationToken cancellationToken)
+        protected async Task<bool> ContainsAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken)
         {
             using (var command = connection.CreateContainsCommand(Table.Name, filterValues))
             {
@@ -66,14 +69,14 @@ namespace Takenet.SimplePersistence.Sql
                 Table.Name, selectColumns, filter, skip, take, orderByColumns);
                                             
             return new QueryResult<TEntity>(
-                new SqlDataReaderAsyncEnumerable<TEntity>(command, Mapper, selectColumns), totalCount);
+                new DbDataReaderAsyncEnumerable<TEntity>(command, Mapper, selectColumns), totalCount);
         }
 
         #endregion
 
-        protected async Task<SqlConnection> GetConnectionAsync(CancellationToken cancellationToken)
+        protected async Task<DbConnection> GetConnectionAsync(CancellationToken cancellationToken)
         {
-            var connection = new SqlConnection(ConnectionString);
+            var connection = DatabaseDriver.CreateConnection(ConnectionString);
             await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
             await CheckTableSchemaAsync(connection, cancellationToken).ConfigureAwait(false);
             return connection;
@@ -112,7 +115,7 @@ namespace Takenet.SimplePersistence.Sql
         private bool _schemaChecked;
         private readonly SemaphoreSlim _schemaValidationSemaphore = new SemaphoreSlim(1);
 
-        private async Task CheckTableSchemaAsync(SqlConnection connection, CancellationToken cancellationToken)
+        private async Task CheckTableSchemaAsync(DbConnection connection, CancellationToken cancellationToken)
         {
             if (!_schemaChecked)
             {
@@ -124,7 +127,7 @@ namespace Takenet.SimplePersistence.Sql
                     {
                         // Check if the table exists
                         var tableExists = await connection.ExecuteScalarAsync<bool>(
-                            SqlTemplates.TableExists.Format(
+                            DatabaseDriver.GetSqlStatementTemplate(SqlStatement.TableExists).Format(
                             new
                             {
                                 tableName = Table.Name
@@ -133,10 +136,10 @@ namespace Takenet.SimplePersistence.Sql
 
                         if (!tableExists)
                         {
-                            await CreateTableAsync(connection, Table, cancellationToken).ConfigureAwait(false);
+                            await CreateTableAsync(DatabaseDriver, connection, Table, cancellationToken).ConfigureAwait(false);
                         }
 
-                        await UpdateTableSchemaAsync(connection, Table, cancellationToken).ConfigureAwait(false);
+                        await UpdateTableSchemaAsync(DatabaseDriver, connection, Table, cancellationToken).ConfigureAwait(false);
                         _schemaChecked = true;
                     }
                 }

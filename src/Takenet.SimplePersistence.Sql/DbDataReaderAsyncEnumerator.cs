@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -10,13 +11,13 @@ using Takenet.SimplePersistence.Sql.Mapping;
 
 namespace Takenet.SimplePersistence.Sql
 {
-    internal sealed class SqlDataReaderAsyncEnumerator<T> : IAsyncEnumerator<T>
+    internal sealed class DbDataReaderAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
-        private readonly SqlDataReader _sqlDataReader;
+        private readonly DbDataReader _sqlDataReader;
         private readonly IMapper<T> _mapper;
         private readonly string[] _selectColumns;
 
-        public SqlDataReaderAsyncEnumerator(SqlDataReader sqlDataReader, IMapper<T> mapper, string[] selectColumns)
+        public DbDataReaderAsyncEnumerator(DbDataReader sqlDataReader, IMapper<T> mapper, string[] selectColumns)
         {
             if (sqlDataReader == null) throw new ArgumentNullException(nameof(sqlDataReader));
             if (mapper == null) throw new ArgumentNullException(nameof(mapper));

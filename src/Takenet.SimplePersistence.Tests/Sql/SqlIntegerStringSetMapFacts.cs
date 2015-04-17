@@ -47,6 +47,7 @@ namespace Takenet.SimplePersistence.Tests.Sql
             }
 
             protected override IMapper<string> Mapper { get; }
+            protected override IDatabaseDriver DatabaseDriver => new SqlDatabaseDriver();
             protected override IMapper<int> KeyMapper { get; }
         }
 

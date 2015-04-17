@@ -54,7 +54,7 @@ namespace Takenet.SimplePersistence.Sql
             var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);            
             var selectColumns = Table.Columns.Keys.ToArray();
             var command = connection.CreateSelectCommand(Table.Name, null, selectColumns);
-            return new SqlDataReaderAsyncEnumerable<T>(command, Mapper, selectColumns);
+            return new DbDataReaderAsyncEnumerable<T>(command, Mapper, selectColumns);
         }
 
         public async Task<bool> ContainsAsync(T value)

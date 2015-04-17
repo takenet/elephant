@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,9 @@ using static Takenet.SimplePersistence.Sql.SqlHelper;
 
 namespace Takenet.SimplePersistence.Sql
 {
-    public static class SqlConnectionExtensions
+    public static class DbConnectionExtensions
     {
-        public static Task<int> ExecuteNonQueryAsync(this SqlConnection connection, string commandText, CancellationToken cancellationToken, SqlParameter[] sqlParameters = null)
+        public static Task<int> ExecuteNonQueryAsync(this DbConnection connection, string commandText, CancellationToken cancellationToken, SqlParameter[] sqlParameters = null)
         {
             using (var command = connection.CreateCommand())
             {
@@ -28,7 +29,7 @@ namespace Takenet.SimplePersistence.Sql
             }
         }
 
-        public static async Task<TResult> ExecuteScalarAsync<TResult>(this SqlConnection connection, string commandText, CancellationToken cancellationToken, SqlParameter[] sqlParameters = null)
+        public static async Task<TResult> ExecuteScalarAsync<TResult>(this DbConnection connection, string commandText, CancellationToken cancellationToken, SqlParameter[] sqlParameters = null)
         {
             using (var command = connection.CreateCommand())
             {
@@ -45,7 +46,7 @@ namespace Takenet.SimplePersistence.Sql
             }
         }
 
-        public static SqlCommand CreateTextCommand(this SqlConnection connection, string commandTemplate, object format, IEnumerable<SqlParameter> sqlParameters = null)
+        public static DbCommand CreateTextCommand(this DbConnection connection, string commandTemplate, object format, IEnumerable<SqlParameter> sqlParameters = null)
         {
             var command = connection.CreateCommand();
             command.CommandText = commandTemplate.Format(format);
@@ -62,7 +63,7 @@ namespace Takenet.SimplePersistence.Sql
             return command;
         }
 
-        public static SqlCommand CreateDeleteCommand(this SqlConnection connection, string tableName, IDictionary<string, object> filterValues)
+        public static DbCommand CreateDeleteCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues)
         {
             return connection.CreateTextCommand(
                 SqlTemplates.Delete,
@@ -74,7 +75,7 @@ namespace Takenet.SimplePersistence.Sql
                 filterValues.Select(k => k.ToSqlParameter()));
         }
 
-        public static SqlCommand CreateContainsCommand(this SqlConnection connection, string tableName, IDictionary<string, object> filterValues)
+        public static DbCommand CreateContainsCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues)
         {
             return connection.CreateTextCommand(
                 SqlTemplates.Exists,
@@ -86,7 +87,7 @@ namespace Takenet.SimplePersistence.Sql
                 filterValues.Select(k => k.ToSqlParameter()));
         }
 
-        public static SqlCommand CreateSelectCommand(this SqlConnection connection, string tableName, IDictionary<string, object> filterValues,
+        public static DbCommand CreateSelectCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues,
             string[] selectColumns)
         {
             return connection.CreateTextCommand(
@@ -100,7 +101,7 @@ namespace Takenet.SimplePersistence.Sql
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
 
-        public static SqlCommand CreateInsertWhereNotExistsCommand(this SqlConnection connection, string tableName,
+        public static DbCommand CreateInsertWhereNotExistsCommand(this DbConnection connection, string tableName,
             IDictionary<string, object> filterValues, IDictionary<string, object> columnValues, bool deleteBeforeInsert = false)
         {
             var sqlTemplate = deleteBeforeInsert ?
@@ -119,7 +120,7 @@ namespace Takenet.SimplePersistence.Sql
                 columnValues.Select(c => c.ToSqlParameter()));
         }
 
-        public static SqlCommand CreateSelectCountCommand(this SqlConnection connection, string tableName, string filter)
+        public static DbCommand CreateSelectCountCommand(this DbConnection connection, string tableName, string filter)
         {
             return connection.CreateTextCommand(
                 SqlTemplates.SelectCount,
@@ -130,7 +131,7 @@ namespace Takenet.SimplePersistence.Sql
                 });
         }
 
-        public static SqlCommand CreateSelectSkipTakeCommand(this SqlConnection connection, string tableName, string[] selectColumns,
+        public static DbCommand CreateSelectSkipTakeCommand(this DbConnection connection, string tableName, string[] selectColumns,
             string filter, int skip, int take, string[] orderByColumns)
         {
             return connection.CreateTextCommand(

@@ -33,6 +33,7 @@ namespace Takenet.SimplePersistence.Tests.Sql
             }
 
             protected override IMapper<Item> Mapper => new TypeMapper<Item>(Table);
+            protected override IDatabaseDriver DatabaseDriver => new SqlDatabaseDriver();
         }
     }
 }

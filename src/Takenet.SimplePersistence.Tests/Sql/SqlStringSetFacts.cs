@@ -34,6 +34,7 @@ namespace Takenet.SimplePersistence.Tests.Sql
             }
 
             protected override IMapper<Guid> Mapper => new ValueMapper<Guid>("Value");
+            protected override IDatabaseDriver DatabaseDriver => new SqlDatabaseDriver();
         }
     }
 }

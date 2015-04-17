@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
@@ -26,7 +27,7 @@ namespace Takenet.SimplePersistence.Sql
                 .ToDictionary(t => t.Key, t => t.Value);
         }
 
-        protected virtual Task<bool> TryRemoveAsync(TKey key, SqlConnection connection, CancellationToken cancellationToken, SqlTransaction sqlTransaction = null)
+        protected virtual Task<bool> TryRemoveAsync(TKey key, DbConnection connection, CancellationToken cancellationToken, SqlTransaction sqlTransaction = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var keyColumnValues = KeyMapper.GetColumnValues(key);
@@ -34,19 +35,19 @@ namespace Takenet.SimplePersistence.Sql
             
         }
 
-        protected virtual Task<bool> ContainsKeyAsync(TKey key, SqlConnection connection, CancellationToken cancellationToken)
+        protected virtual Task<bool> ContainsKeyAsync(TKey key, DbConnection connection, CancellationToken cancellationToken)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var keyColumnValues = KeyMapper.GetColumnValues(key);
             return ContainsAsync(keyColumnValues, connection, cancellationToken);            
         }
 
-        protected virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync(SqlConnection connection, CancellationToken cancellationToken)
+        protected virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync(DbConnection connection, CancellationToken cancellationToken)
         {
             var selectColumns = Table.KeyColumns;
             var command = connection.CreateSelectCommand(Table.Name, null, selectColumns);            
             return Task.FromResult<IAsyncEnumerable<TKey>>(
-                new SqlDataReaderAsyncEnumerable<TKey>(command, KeyMapper, selectColumns));
+                new DbDataReaderAsyncEnumerable<TKey>(command, KeyMapper, selectColumns));
         }
     }
 }

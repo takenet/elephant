@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Takenet.SimplePersistence.Sql
 {
     internal static class DatabaseSchema
     {
-        internal static async Task CreateTableAsync(SqlConnection connection, ITable table, CancellationToken cancellationToken)
+        internal static async Task CreateTableAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, CancellationToken cancellationToken)
         {
             if (table.Columns.Count == 0)
             {
@@ -25,11 +26,11 @@ namespace Takenet.SimplePersistence.Sql
 
             // Table columns
             var createTableSqlBuilder = new StringBuilder();
-            createTableSqlBuilder.AppendLine(GetColumnsDefinitionSql(table, table.Columns));
+            createTableSqlBuilder.AppendLine(GetColumnsDefinitionSql(databaseDriver, table, table.Columns));
 
             // Constraints
             createTableSqlBuilder.AppendLine(
-                SqlTemplates.PrimaryKeyConstraintDefinition.Format(
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.PrimaryKeyConstraintDefinition).Format(
                     new
                     {
                         tableName = table.Name,
@@ -38,7 +39,7 @@ namespace Takenet.SimplePersistence.Sql
             );
 
             // Create table 
-            var createTableSql = SqlTemplates.CreateTable.Format(
+            var createTableSql = databaseDriver.GetSqlStatementTemplate(SqlStatement.CreateTable).Format(
                 new
                 {
                     tableName = table.Name.AsSqlIdentifier(),
@@ -51,13 +52,13 @@ namespace Takenet.SimplePersistence.Sql
 
         }
 
-        internal static async Task UpdateTableSchemaAsync(SqlConnection connection, ITable table, CancellationToken cancellationToken)
+        internal static async Task UpdateTableSchemaAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, CancellationToken cancellationToken)
         {
             var tableColumnsDictionary = new Dictionary<string, string>();
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = SqlTemplates.GetTableColumns.Format(
+                command.CommandText = databaseDriver.GetSqlStatementTemplate(SqlStatement.GetTableColumns).Format(
                     new
                     {
                         tableName = table.Name
@@ -83,7 +84,7 @@ namespace Takenet.SimplePersistence.Sql
                 }
                 // Checks if the existing column type matches with the definition
                 // The comparion is with startsWith for the NVARCHAR values
-                else if (!GetSqlTypeSql(column.Value).StartsWith(
+                else if (!GetSqlTypeSql(databaseDriver, column.Value).StartsWith(
                          tableColumnsDictionary[column.Key], StringComparison.OrdinalIgnoreCase))
                 {
                     throw new InvalidOperationException("The existing column '{columnName}' type '{columnType}' is not compatible with the definition type '{dbType}'".Format(new { columnName = column.Key, columnType = tableColumnsDictionary[column.Key], dbType = column.Value }));
@@ -92,24 +93,24 @@ namespace Takenet.SimplePersistence.Sql
 
             if (columnsToBeCreated.Any())
             {
-                await CreateColumnsAsync(connection, table, columnsToBeCreated, cancellationToken);
+                await CreateColumnsAsync(databaseDriver, connection, table, columnsToBeCreated, cancellationToken);
             }
         }
 
-        private static async Task CreateColumnsAsync(SqlConnection connection, ITable table, IEnumerable<KeyValuePair<string, SqlType>> columns, CancellationToken cancellationToken)
+        private static async Task CreateColumnsAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, IEnumerable<KeyValuePair<string, SqlType>> columns, CancellationToken cancellationToken)
         {
             var command = connection.CreateCommand();
-            command.CommandText = SqlTemplates.AlterTableAddColumn.Format(
+            command.CommandText = databaseDriver.GetSqlStatementTemplate(SqlStatement.AlterTableAddColumn).Format(
                 new
                 {
                     tableName = table.Name,
-                    columnDefinition = GetColumnsDefinitionSql(table, columns).TrimEnd(',')
+                    columnDefinition = GetColumnsDefinitionSql(databaseDriver, table, columns).TrimEnd(',')
                 });
 
             await command.ExecuteNonQueryAsync(cancellationToken);
         }
 
-        private static string GetColumnsDefinitionSql(ITable table, IEnumerable<KeyValuePair<string, SqlType>> columns)
+        private static string GetColumnsDefinitionSql(IDatabaseDriver databaseDriver, ITable table, IEnumerable<KeyValuePair<string, SqlType>> columns)
         {
             var columnSqlBuilder = new StringBuilder();
 
@@ -121,22 +122,22 @@ namespace Takenet.SimplePersistence.Sql
                     if (column.Value.IsIdentity)
                     {
                         columnSqlBuilder.AppendLine(
-                            SqlTemplates.IdentityColumnDefinition.Format(
+                            databaseDriver.GetSqlStatementTemplate(SqlStatement.IdentityColumnDefinition).Format(
                                 new
                                 {
                                     columnName = column.Key.AsSqlIdentifier(),
-                                    sqlType = GetSqlTypeSql(column.Value)
+                                    sqlType = GetSqlTypeSql(databaseDriver, column.Value)
                                 })
                             );
                     }
                     else
                     {
                         columnSqlBuilder.AppendLine(
-                            SqlTemplates.ColumnDefinition.Format(
+                            databaseDriver.GetSqlStatementTemplate(SqlStatement.ColumnDefinition).Format(
                                 new
                                 {
                                     columnName = column.Key.AsSqlIdentifier(),
-                                    sqlType = GetSqlTypeSql(column.Value)
+                                    sqlType = GetSqlTypeSql(databaseDriver, column.Value)
                                 })
                             );
                     }
@@ -144,11 +145,11 @@ namespace Takenet.SimplePersistence.Sql
                 else
                 {
                     columnSqlBuilder.AppendLine(
-                        SqlTemplates.NullableColumnDefinition.Format(
+                        databaseDriver.GetSqlStatementTemplate(SqlStatement.NullableColumnDefinition).Format(
                             new
                             {
                                 columnName = column.Key.AsSqlIdentifier(),
-                                sqlType = GetSqlTypeSql(column.Value)
+                                sqlType = GetSqlTypeSql(databaseDriver, column.Value)
                             })
                         );
                 }
@@ -158,10 +159,9 @@ namespace Takenet.SimplePersistence.Sql
             return columnSqlBuilder.ToString();
         }
 
-        private static string GetSqlTypeSql(SqlType sqlType)
+        private static string GetSqlTypeSql(IDatabaseDriver databaseDriver, SqlType sqlType)
         {
-            var typeSql = SqlTemplates.ResourceManager.GetString(
-                $"DbType{sqlType.Type}");
+            var typeSql = databaseDriver.GetSqlTypeName(sqlType.Type);
 
             if (sqlType.Length.HasValue)
             {
