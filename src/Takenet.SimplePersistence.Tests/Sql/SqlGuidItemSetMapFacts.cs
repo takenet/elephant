@@ -24,13 +24,16 @@ namespace Takenet.SimplePersistence.Tests.Sql
 
         public override IMap<Guid, ISet<Item>> Create()
         {
+            var databaseDriver = new SqlDatabaseDriver();
             var columns = typeof(Item)
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .ToSqlColumns();
             columns.Add("Key", new SqlType(DbType.Guid));
             var table = new Table("GuidItems", new[] { "Key", nameof(Item.GuidProperty) }, columns);
             _fixture.DropTable(table.Name);
-            return new SqlGuidItemSetMap(table, _fixture.ConnectionString);
+            var keyMapper = new ValueMapper<Guid>("Key");
+            var valueMapper = new TypeMapper<Item>(table);
+            return new SqlSetMap<Guid, Item>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
         }
 
         public override ISet<Item> CreateValue(Guid key)
@@ -41,18 +44,5 @@ namespace Takenet.SimplePersistence.Tests.Sql
             set.AddAsync(Fixture.Create<Item>()).Wait();
             return set;
         }
-    }
-
-    public class SqlGuidItemSetMap : SqlSetMap<Guid, Item>
-    {
-        public SqlGuidItemSetMap(ITable table, string connectionString)
-            : base(table, connectionString)
-        {
-
-        }
-        protected override IMapper<Item> Mapper => new TypeMapper<Item>(Table);
-        protected override IDatabaseDriver DatabaseDriver => new SqlDatabaseDriver();
-
-        protected override IMapper<Guid> KeyMapper => new ValueMapper<Guid>("Key");
     }
 }

@@ -22,19 +22,11 @@ namespace Takenet.SimplePersistence.Tests.Sql
             
         public override ISet<Guid> Create()
         {
+            var databaseDriver = new SqlDatabaseDriver();
             var table = new Table("Guids", new [] {"Value"}, new Dictionary<string, SqlType>() { { "Value", new SqlType(DbType.Guid) }});
             _fixture.DropTable(table.Name);
-            return new SqlGuidSet(table, _fixture.ConnectionString);
-        }
-
-        private class SqlGuidSet : SqlSet<Guid>
-        {
-            public SqlGuidSet(ITable table, string connectionString) : base(table, connectionString)
-            {
-            }
-
-            protected override IMapper<Guid> Mapper => new ValueMapper<Guid>("Value");
-            protected override IDatabaseDriver DatabaseDriver => new SqlDatabaseDriver();
+            var mapper = new ValueMapper<Guid>("Value");
+            return new SqlSet<Guid>(databaseDriver, _fixture.ConnectionString, table, mapper);
         }
     }
 }

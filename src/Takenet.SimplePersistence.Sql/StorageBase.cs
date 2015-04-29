@@ -14,19 +14,21 @@ namespace Takenet.SimplePersistence.Sql
 {
     public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>
     {                                                
-        protected StorageBase(ITable table, string connectionString)
+        protected StorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TEntity> mapper)
         {
-            Table = table;
             ConnectionString = connectionString;
+            Table = table;            
+            Mapper = mapper;
+            DatabaseDriver = databaseDriver;
         }
 
-        protected ITable Table { get; }        
+        protected IDatabaseDriver DatabaseDriver { get; }
 
         protected string ConnectionString { get; }
 
-        protected abstract IMapper<TEntity> Mapper { get; }
+        protected ITable Table { get; }                
 
-        protected abstract IDatabaseDriver DatabaseDriver { get; }
+        protected IMapper<TEntity> Mapper { get; }
 
         protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken, DbTransaction sqlTransaction = null)
         {            

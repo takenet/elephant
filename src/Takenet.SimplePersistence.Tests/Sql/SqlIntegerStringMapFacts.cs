@@ -18,38 +18,19 @@ namespace Takenet.SimplePersistence.Tests.Sql
 
         public override IMap<int, string> Create()
         {
-            var table = new IntegerStringTable();
+            var databaseDriver = new SqlDatabaseDriver();
+            var table = new Table(
+                "IntegerStrings", 
+                new[] { "Key"}, 
+                new Dictionary<string, SqlType>
+                {
+                    {"Key", new SqlType(DbType.Int32)},
+                    {"Value", new SqlType(DbType.String)}
+                });        
             _fixture.DropTable(table.Name);
-            return new IntegerStringSqlMap(table, _fixture.ConnectionString);
+            var keyMapper = new ValueMapper<int>("Key");
+            var valueMapper = new ValueMapper<string>("Value");
+            return new SqlMap<int, string>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
         }
-
-        private class IntegerStringSqlMap : SqlMap<int, string>
-        {
-            public IntegerStringSqlMap(ITable table, string connectionString) 
-                : base(table, connectionString)
-                
-            {
-                KeyMapper = new ValueMapper<int>("Key");
-                Mapper = new ValueMapper<string>("Value");                
-            }
-
-            protected override IMapper<string> Mapper { get; }
-            protected override IDatabaseDriver DatabaseDriver => new SqlDatabaseDriver();
-            protected override IMapper<int> KeyMapper { get; }
-        }
-
-        private class IntegerStringTable : ITable
-        {
-            public string Name => "IntegerStrings";
-
-            public string[] KeyColumns { get; } = { "Key" };
-
-            public IDictionary<string, SqlType> Columns { get; } = new Dictionary<string, SqlType>
-            {
-                {"Key", new SqlType(DbType.Int32)},
-                {"Value", new SqlType(DbType.String)}
-            };
-        }
-
     }
 }

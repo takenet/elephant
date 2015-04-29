@@ -15,13 +15,14 @@ namespace Takenet.SimplePersistence.Sql
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public abstract class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IMap<TKey, TValue>, IKeysMap<TKey, TValue>
+    public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IMap<TKey, TValue>, IKeysMap<TKey, TValue>
     {
-        protected SqlMap(ITable table, string connectionString)
-            : base(table, connectionString)
+        public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper) 
+            : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
         {
 
-        }  
+        }
+
 
         #region IMap<TKey,TValue> Members
 

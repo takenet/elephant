@@ -136,7 +136,7 @@
     <Compile Include="Sql\SqlIntegerStringSetMapFacts.cs" />
     <Compile Include="Sql\SqlItemSetFacts.cs" />
     <Compile Include="Sql\SqlGuidItemMapQueryableStorageFacts.cs" />
-    <Compile Include="Sql\SqlStringSetFacts.cs" />
+    <Compile Include="Sql\SqlGuidSetFacts.cs" />
     <Compile Include="ItemQueueFacts.cs" />
     <Compile Include="GuidQueueFacts.cs" />
     <Compile Include="GuidSetFacts.cs" />

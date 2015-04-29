@@ -21,19 +21,11 @@ namespace Takenet.SimplePersistence.Tests.Sql
 
         public override ISet<Item> Create()
         {
+            var databaseDriver = new SqlDatabaseDriver();
             var table = new TypeTable<Item>("Items", typeof(Item).GetProperties().Select(p => p.Name).ToArray());
             _fixture.DropTable(table.Name);
-            return new SqlItemSet(table, _fixture.ConnectionString);
-        }
-
-        private class SqlItemSet : SqlSet<Item>
-        {
-            public SqlItemSet(ITable table, string connectionString) : base(table, connectionString)
-            {
-            }
-
-            protected override IMapper<Item> Mapper => new TypeMapper<Item>(Table);
-            protected override IDatabaseDriver DatabaseDriver => new SqlDatabaseDriver();
+            var mapper = new TypeMapper<Item>(table);
+            return new SqlSet<Item>(databaseDriver, _fixture.ConnectionString, table, mapper);
         }
     }
 }

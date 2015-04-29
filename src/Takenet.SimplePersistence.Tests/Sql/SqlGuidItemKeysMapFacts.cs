@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Takenet.SimplePersistence.Sql;
 using Takenet.SimplePersistence.Sql.Mapping;
 using Xunit;
 
@@ -21,6 +22,7 @@ namespace Takenet.SimplePersistence.Tests.Sql
 
         public override IKeysMap<Guid, Item> Create()
         {
+            var databaseDriver = new SqlDatabaseDriver();
             var columns = typeof(Item)
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .ToSqlColumns();
@@ -28,7 +30,9 @@ namespace Takenet.SimplePersistence.Tests.Sql
             var table = new Table("GuidItems", new[] { "Key" }, columns);
             _fixture.DropTable(table.Name);
 
-            return new GuidItemSqlMap(table, _fixture.ConnectionString);
+            var keyMapper = new ValueMapper<Guid>("Key");
+            var valueMapper = new TypeMapper<Item>(table);
+            return new SqlMap<Guid, Item>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
         }
     }
 }

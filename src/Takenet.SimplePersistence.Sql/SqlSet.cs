@@ -8,12 +8,11 @@ using static Takenet.SimplePersistence.Sql.SqlHelper;
 
 namespace Takenet.SimplePersistence.Sql
 {
-    public abstract class SqlSet<T> : StorageBase<T>, ISet<T>
+    public class SqlSet<T> : StorageBase<T>, ISet<T>
     {
-        protected SqlSet(ITable table, string connectionString)
-            : base(table, connectionString)
+        public SqlSet(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<T> mapper)
+            : base(databaseDriver, connectionString, table, mapper)
         {
-
         }
 
         #region ISet<T> Members

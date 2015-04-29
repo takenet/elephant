@@ -11,13 +11,13 @@ namespace Takenet.SimplePersistence.Sql
 {
     public abstract class MapStorageBase<TKey, TValue> : StorageBase<TValue>
     {
-        protected MapStorageBase(ITable table, string connectionString) 
-            : base(table, connectionString)
+        protected MapStorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper) 
+            : base(databaseDriver, connectionString, table, valueMapper)
         {
-
+            KeyMapper = keyMapper;
         }
 
-        protected abstract IMapper<TKey> KeyMapper { get; }
+        protected IMapper<TKey> KeyMapper { get; }
 
         protected virtual IDictionary<string, object> GetColumnValues(TKey key, TValue value)
         {

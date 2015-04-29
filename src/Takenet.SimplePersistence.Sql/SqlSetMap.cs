@@ -10,12 +10,12 @@ using Takenet.SimplePersistence.Sql.Mapping;
 
 namespace Takenet.SimplePersistence.Sql
 {
-    public abstract class SqlSetMap<TKey, TItem> : MapStorageBase<TKey, TItem>, ISetMap<TKey, TItem>, IItemSetMap<TKey, TItem>, IKeysMap<TKey, ISet<TItem>>
+    public class SqlSetMap<TKey, TItem> : MapStorageBase<TKey, TItem>, ISetMap<TKey, TItem>, IItemSetMap<TKey, TItem>, IKeysMap<TKey, ISet<TItem>>
     {
         private readonly IsolationLevel _addIsolationLevel;
 
-        protected SqlSetMap(ITable table, string connectionString, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted) 
-            : base(table, connectionString)
+        public SqlSetMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TItem> valueMapper, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted)
+            : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
         {
             _addIsolationLevel = addIsolationLevel;
         }
@@ -97,7 +97,7 @@ namespace Takenet.SimplePersistence.Sql
                 {
                     return null;
                 }
-                return new InternalSet(keyColumnValues, Mapper, DatabaseDriver, Table, ConnectionString);
+                return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues);
             }
         }
 
@@ -156,16 +156,11 @@ namespace Takenet.SimplePersistence.Sql
         {
             public IDictionary<string, object> MapKeyColumnValues { get; }
 
-            public InternalSet(IDictionary<string, object> mapKeyColumnValues, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, ITable table, string connectionString) 
-                : base(table, connectionString)
+            public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues) 
+                : base(databaseDriver, connectionString, table, mapper)
             {
                 MapKeyColumnValues = mapKeyColumnValues;
-                Mapper = mapper;
-                DatabaseDriver = databaseDriver;
             }
-
-            protected override IMapper<TItem> Mapper { get; }
-            protected override IDatabaseDriver DatabaseDriver { get; }
 
             protected override IDictionary<string, object> GetColumnValues(TItem entity)
             {
