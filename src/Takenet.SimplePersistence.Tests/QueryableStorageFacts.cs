@@ -42,5 +42,26 @@ namespace Takenet.SimplePersistence.Tests
             AssertEquals(actualList.Count, 1);
             Check.That(actualList).Contains(value2);
         }
+
+
+        [Fact(DisplayName = "QueryNonExistingValueReturnsNone")]
+        public virtual async Task QueryNonExistingValueReturnsNone()
+        {
+            // Arrange            
+            var value1 = CreateValue();
+            var value2 = CreateValue();
+            var value3 = CreateValue();
+            var cancellationToken = CancellationToken.None;
+            var skip = 0;
+            var take = 10;
+            var storage = await CreateAsync(value1, value3);
+
+            // Act
+            var actual = await storage.QueryAsync<T>(CreateFilter(value2), null, skip, take, cancellationToken);
+
+            // Assert
+            var actualList = await actual.ToListAsync();
+            AssertEquals(actualList.Count, 0);            
+        }
     }
 }

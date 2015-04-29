@@ -64,7 +64,7 @@ namespace Takenet.SimplePersistence.Sql
             int totalCount;
             using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
             {
-                totalCount = Convert.ToInt32(await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
+                totalCount = (int)await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
             }
 
             var command = connection.CreateSelectSkipTakeCommand(
