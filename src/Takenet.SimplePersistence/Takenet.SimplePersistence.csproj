@@ -42,9 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncEnumerableExtensions.cs" />
+    <Compile Include="AsyncEnumerableWrapper.cs" />
     <Compile Include="IAsyncEnumerable.cs" />
     <Compile Include="IDictionaryConverter.cs" />
-    <Compile Include="IKeyQueryableStorage.cs" />
+    <Compile Include="IKeyQueryableMap.cs" />
     <Compile Include="IQueryableStorage.cs" />
     <Compile Include="IAsyncEnumerator.cs" />
     <Compile Include="IExpirableKeyMap.cs" />

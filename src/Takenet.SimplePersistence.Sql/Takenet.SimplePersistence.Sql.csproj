@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseSchema.cs" />
-    <Compile Include="ExpressionTranslator.cs" />
+    <Compile Include="SqlExpressionTranslator.cs" />
     <Compile Include="IDatabaseDriver.cs" />
     <Compile Include="Mapping\DataContractTypeMapper.cs" />
     <Compile Include="Mapping\IMapper.cs" />

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Takenet.SimplePersistence
 {
+    /// <summary>
+    /// Represents a query result.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public sealed class QueryResult<T> : IAsyncEnumerable<T>, IDisposable
     {
         public QueryResult(IAsyncEnumerable<T> items, int total)

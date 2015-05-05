@@ -59,7 +59,7 @@ namespace Takenet.SimplePersistence.Sql
 
             var selectColumns = Table.Columns.Keys.ToArray();
             var orderByColumns = Table.KeyColumns;
-            var filter = GetFilters(where);        
+            var filter = TranslateToSqlWhereClause(where);        
             var connection = await GetConnectionAsync(cancellationToken);            
             int totalCount;
             using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
@@ -71,7 +71,8 @@ namespace Takenet.SimplePersistence.Sql
                 Table.Name, selectColumns, filter, skip, take, orderByColumns);
                                             
             return new QueryResult<TEntity>(
-                new DbDataReaderAsyncEnumerable<TEntity>(command, Mapper, selectColumns), totalCount);
+                new DbDataReaderAsyncEnumerable<TEntity>(command, Mapper, selectColumns), 
+                totalCount);
         }
 
         #endregion

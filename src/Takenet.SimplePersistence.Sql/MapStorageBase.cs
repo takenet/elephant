@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Takenet.SimplePersistence.Sql.Mapping;
+using static Takenet.SimplePersistence.Sql.SqlHelper;
 
 namespace Takenet.SimplePersistence.Sql
 {
@@ -48,6 +50,36 @@ namespace Takenet.SimplePersistence.Sql
             var command = connection.CreateSelectCommand(Table.Name, null, selectColumns);            
             return Task.FromResult<IAsyncEnumerable<TKey>>(
                 new DbDataReaderAsyncEnumerable<TKey>(command, KeyMapper, selectColumns));
+        }
+
+        protected virtual async Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(
+            DbConnection connection,
+            Expression<Func<TValue, bool>> where,
+            Expression<Func<TKey, TResult>> select,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
+        {
+            if (select != null &&
+                select.ReturnType != typeof(TKey))
+            {
+                throw new NotImplementedException("The 'select' parameter is not supported yet");
+            }
+
+            var selectColumns = Table.KeyColumns;
+            var filter = TranslateToSqlWhereClause(where);
+            int totalCount;
+            using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
+            {
+                totalCount = (int)await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            var command = connection.CreateSelectSkipTakeCommand(
+                Table.Name, selectColumns, filter, skip, take, selectColumns);
+
+            return new QueryResult<TKey>(
+                new DbDataReaderAsyncEnumerable<TKey>(command, KeyMapper, selectColumns), 
+                totalCount);            
         }
     }
 }

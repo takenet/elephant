@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Takenet.SimplePersistence.Sql.Mapping;
@@ -15,7 +16,7 @@ namespace Takenet.SimplePersistence.Sql
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IMap<TKey, TValue>, IKeysMap<TKey, TValue>
+    public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IMap<TKey, TValue>, IKeysMap<TKey, TValue>, IKeyQueryableMap<TKey, TValue>
     {
         public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper) 
             : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
@@ -240,115 +241,17 @@ namespace Takenet.SimplePersistence.Sql
 
         #endregion
 
+        #region IKeyQueryableMap<TKey, TValue> Members
 
+        public async Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take,
+            CancellationToken cancellationToken)
+        {
+            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            {
+                return await QueryForKeysAsync(connection, where, @select, skip, take, cancellationToken);
+            }
+        }
 
-        //#region IQueryableStorage<TKey, TValue>
-
-        //public async Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> where,
-        //    Expression<Func<TKey, TResult>> select,
-        //    int skip,
-        //    int take,
-        //    CancellationToken cancellationToken)
-        //{
-        //    if (select != null &&
-        //        select.ReturnType != typeof(TKey))
-        //    {
-        //        throw new NotImplementedException("The select parameter is not supported yet");
-        //    }
-
-        //    var result = new List<TKey>();
-
-        //    var selectColumns = _extendedTableMapper.ExtensionColumns.ToArray();
-        //    if (selectColumns.Length == 0)
-        //    {
-        //        // The keys is not part of the extension
-        //        selectColumns = _extendedTableMapper.KeyColumns.ToArray();
-        //    }
-
-        //    var selectColumnsCommaSepareted = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSepparate();
-        //    var tableName = _extendedTableMapper.TableName.AsSqlIdentifier();
-        //    var filters = GetFilters(where);
-
-        //    using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-        //    {
-        //        var totalCount = -1;
-        //        using (var countCommand = connection.CreateTextCommand(
-        //            SqlTemplates.SelectCount,
-        //            new
-        //            {
-        //                tableName = tableName,
-        //                filter = filters
-        //            }))
-        //        {
-        //            totalCount = Convert.ToInt32(await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
-        //        }
-
-        //        using (var command = connection.CreateTextCommand(
-        //            SqlTemplates.SelectSkipTake,
-        //            new
-        //            {
-        //                columns = selectColumnsCommaSepareted,
-        //                tableName = tableName,
-        //                filter = filters,
-        //                skip = skip,
-        //                take = take,
-        //                keys = selectColumnsCommaSepareted
-        //            }))
-        //        {
-        //            using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
-        //            {
-        //                while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
-        //                {
-        //                    // TODO Apply select parameter
-        //                    result.Add(_extendedTableMapper.CreateExtension(reader, selectColumns));
-        //                }
-        //            }
-        //        }
-        //        return new QueryResult<TKey>(result, totalCount);
-        //    }
-        //}
-
-        //#endregion
-
-        //public async Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
-        //{
-        //    var cancellationToken = CreateCancellationToken();
-
-        //    using (var connection = await GetConnectionAsync(cancellationToken))
-        //    {
-        //        // Key value update is not supported
-        //        var keyValues = _extendedTableMapper.GetKeyColumnValues(key, oldValue);
-
-        //        var newColumnValues = _extendedTableMapper.GetColumnValues(key, newValue);
-        //        var oldColumnValues = _extendedTableMapper.GetColumnValues(key, oldValue);
-
-        //        var filterColumnNames = keyValues
-        //            .Keys
-        //            .Concat(oldColumnValues.Keys)
-        //            .ToArray();
-
-        //        var filterColumnValues = keyValues
-        //            .Concat(
-        //                oldColumnValues
-        //                    .Select(kv => new KeyValuePair<string, object>("Old" + kv.Key, kv.Value)))
-        //            .ToDictionary(t => t.Key, t => t.Value);
-
-        //        var sqlTemplate = SqlTemplates.Update;
-
-        //        using (var command = connection.CreateTextCommand(
-        //            sqlTemplate,
-        //            new
-        //            {
-        //                tableName = _extendedTableMapper.TableName.AsSqlIdentifier(),
-        //                columnValues = GetCommaEqualsStatement(newColumnValues.Keys.ToArray()),
-        //                filter = GetAndEqualsStatement(filterColumnNames, filterColumnValues.Keys.ToArray())
-        //            },
-        //            newColumnValues.Concat(filterColumnValues).Select(c => c.ToSqlParameter())))
-        //        {
-        //            return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
-        //        }
-        //    }
-        //}
-
+        #endregion
     }
 }

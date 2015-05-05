@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22609.0
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.SimplePersistence", "Takenet.SimplePersistence\Takenet.SimplePersistence.csproj", "{AEA9548D-8D87-41CE-8959-81B3361C0298}"
 EndProject
@@ -15,6 +15,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.SimplePersistence.Redis", "Takenet.SimplePersistence.Redis\Takenet.SimplePersistence.Redis.csproj", "{6895C290-8EAA-468B-8B2F-B1A7CB3CB32A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.SimplePersistence.Sql", "Takenet.SimplePersistence.Sql\Takenet.SimplePersistence.Sql.csproj", "{FA4ECD2C-454C-48FD-8DC1-678B8A723080}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6A6D0432-F3B4-4DBE-B07F-05D2901D0237}"
+	ProjectSection(SolutionItems) = preProject
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

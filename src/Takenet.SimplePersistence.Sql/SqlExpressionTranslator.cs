@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Takenet.SimplePersistence.Sql
 {
-    internal class ExpressionTranslator : ExpressionVisitor
+    internal class SqlExpressionTranslator : ExpressionVisitor
     {
         private readonly StringBuilder _filter = new StringBuilder();
 
@@ -26,7 +26,7 @@ namespace Takenet.SimplePersistence.Sql
             _filter.Append("(");
             this.Visit(node.Left);
 
-            var @operator = string.Empty;
+            string @operator;
 
             switch (node.NodeType)
             {
@@ -124,7 +124,8 @@ namespace Takenet.SimplePersistence.Sql
             }
             else
             {
-                throw new NotImplementedException(string.Format("Translation not implemented for method {0} of type {1}", node.Method.Name, node.Method.DeclaringType));
+                throw new NotImplementedException(
+                    $"Translation not implemented for method {node.Method.Name} of type {node.Method.DeclaringType}");
             }
 
             return node;
@@ -134,7 +135,7 @@ namespace Takenet.SimplePersistence.Sql
 
         #region Private Methods
 
-        private string ConvertSqlLiteral(object value, Type type)
+        private static string ConvertSqlLiteral(object value, Type type)
         {
             var dbType = TypeMapper.GetDbType(type);
 

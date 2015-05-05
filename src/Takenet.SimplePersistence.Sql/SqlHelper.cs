@@ -80,9 +80,9 @@ namespace Takenet.SimplePersistence.Sql
                 });
         }
 
-        internal static string GetFilters<TEntity>(Expression<Func<TEntity, bool>> where)
+        internal static string TranslateToSqlWhereClause<TEntity>(Expression<Func<TEntity, bool>> where)
         {
-            var translator = new ExpressionTranslator();
+            var translator = new SqlExpressionTranslator();
             return translator.GetStatement(where);
         }
     }

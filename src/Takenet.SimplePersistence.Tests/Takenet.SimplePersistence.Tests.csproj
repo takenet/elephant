@@ -80,6 +80,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="ItemSetFacts.cs" />
     <Compile Include="ItemSetMapFacts.cs" />
+    <Compile Include="KeyQueryableMapFacts.cs" />
     <Compile Include="KeysMapFacts.cs" />
     <Compile Include="MapFacts.cs" />
     <Compile Include="MapQueryableStorageFacts.cs" />
