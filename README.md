@@ -36,11 +36,21 @@ IQueueMap<TKey, TValue> | Map that contains a queue of items.
 
 ### Extended structures
 
-Name                            | Parent               | Description
---------------------------------|----------------------|--------------------------------
-IExpirableKeyMap<TKey, TValue>  | IMap<TKey, TValue>   | Map that supports key expiration.
-IItemSetMap<TKey, TItem>        | ISetMap<TKey, TValue>   | SetMap that allows to get a specific item in the set.
+Name                            | Parent                | Description
+--------------------------------|-----------------------|--------------------------------
+IExpirableKeyMap<TKey, TValue>  | IMap<TKey, TValue>    | Map that supports key expiration.
+IItemSetMap<TKey, TItem>        | ISetMap<TKey, TValue> | SetMap that allows to get a specific item in the set.
+IKeyQueryableMap<TKey, TItem>   | IMap<TKey, TValue>    | Map that supports queries for its keys.
+IKeysMap<TKey, TItem>           | IMap<TKey, TValue>    | Map service that provides direct access to the stored keys.
+INumberMap<TKey>                | IMap<TKey, long>      | Map for number values with atomic increment and decrement support.
+IPropertyMap<TKey, TValue>      | IMap<TKey, long>      | Map that allows the insertion and update of specific properties of the value document.
+IUpdatableMap<TKey, TValue>     | IMap<TKey, long>      | Map that supports value updates under specific conditions.
 
+### Other
+
+Name                 | Description
+---------------------|-----------------------------------------
+IAsyncEnumerable<T>  | Async implementation of the IEnumerable<T> interface
 
 ## Current supported storage engines
 
