@@ -11,7 +11,7 @@ namespace Takenet.SimplePersistence.Sql.Mapping
     /// Provides information about a SQL type.
     /// </summary>
     public sealed class SqlType
-    {
+    { 
         public const string MAX_LENGTH = "MAX";
         public const int DEFAULT_STRING_LENGTH = 250;
         private readonly int? _length;
@@ -54,5 +54,31 @@ namespace Takenet.SimplePersistence.Sql.Mapping
         public int? Scale { get; }
 
         public bool IsIdentity { get; }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is SqlType && Equals((SqlType) obj);
+        }
+
+        private bool Equals(SqlType other)
+        {
+            return _length == other._length && Type == other.Type && Precision == other.Precision && Scale == other.Scale && IsIdentity == other.IsIdentity;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = _length.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int)Type;
+                hashCode = (hashCode * 397) ^ Precision.GetHashCode();
+                hashCode = (hashCode * 397) ^ Scale.GetHashCode();
+                hashCode = (hashCode * 397) ^ IsIdentity.GetHashCode();
+                return hashCode;
+            }
+        }
+
     }
 }

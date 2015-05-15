@@ -26,11 +26,11 @@ namespace Takenet.SimplePersistence.Tests.Sql
         public override IMap<Guid, Item> Create()
         {
             var databaseDriver = new SqlDatabaseDriver();
-            var columns = typeof (Item)
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .ToSqlColumns();
-            columns.Add("Key", new SqlType(DbType.Guid));
-            var table = new Table("GuidItems", new[] { "Key" }, columns);
+            var table = TableBuilder
+                .WithName("GuidItems")
+                .WithColumnsFromTypeProperties<Item>()
+                .WithKeyColumnFromType<Guid>("Key")
+                .Build();
             _fixture.DropTable(table.Name);
 
             var keyMapper = new ValueMapper<Guid>("Key");

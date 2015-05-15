@@ -41,20 +41,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseSchema.cs" />
+    <Compile Include="Mapping\TableBuilder.cs" />
     <Compile Include="SqlExpressionTranslator.cs" />
     <Compile Include="IDatabaseDriver.cs" />
-    <Compile Include="Mapping\DataContractTypeMapper.cs" />
     <Compile Include="Mapping\IMapper.cs" />
     <Compile Include="Mapping\ITable.cs" />
-    <Compile Include="Mapping\KeyValuePropertyInfoTable.cs" />
-    <Compile Include="Mapping\KeyValueTypeTable.cs" />
     <Compile Include="Mapping\MapperExtensions.cs" />
     <Compile Include="Mapping\PropertyInfoExtensions.cs" />
-    <Compile Include="Mapping\PropertyInfoTable.cs" />
     <Compile Include="Mapping\SqlType.cs" />
     <Compile Include="Mapping\Table.cs" />
     <Compile Include="Mapping\TypeMapper.cs" />
-    <Compile Include="Mapping\TypeTable.cs" />
     <Compile Include="Mapping\ValueMapper.cs" />
     <Compile Include="MapStorageBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

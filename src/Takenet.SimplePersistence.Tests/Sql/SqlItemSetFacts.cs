@@ -22,7 +22,7 @@ namespace Takenet.SimplePersistence.Tests.Sql
         public override ISet<Item> Create()
         {
             var databaseDriver = new SqlDatabaseDriver();
-            var table = new TypeTable<Item>("Items", typeof(Item).GetProperties().Select(p => p.Name).ToArray());
+            var table = TableBuilder.WithName("Items").WithKeyColumnsFromTypeProperties<Item>().Build();
             _fixture.DropTable(table.Name);
             var mapper = new TypeMapper<Item>(table);
             return new SqlSet<Item>(databaseDriver, _fixture.ConnectionString, table, mapper);
