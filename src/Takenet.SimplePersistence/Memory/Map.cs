@@ -15,7 +15,7 @@ namespace Takenet.SimplePersistence.Memory
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>
+    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>, IKeyQueryableMap<TKey, TValue>
     {
         public Map()
             : this(() => (TValue)Activator.CreateInstance(typeof(TValue)))
@@ -209,6 +209,22 @@ namespace Takenet.SimplePersistence.Memory
 
         #endregion
 
+        #region IKeyQueryableMap<TValue> Members
+
+        public Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        {
+            var totalValues = InternalDictionary                
+                .Where(pair => where.Compile().Invoke(pair.Value));
+            var resultValues = totalValues
+                .Skip(skip)
+                .Take(take)
+                .Select(pair => pair.Key);
+            return Task.FromResult(
+                new QueryResult<TKey>(new AsyncEnumerableWrapper<TKey>(resultValues), totalValues.Count()));
+        }
+
+        #endregion
+
         #region IQueryableStorage<TValue> Members
 
         public Task<QueryResult<TValue>> QueryAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TValue, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
@@ -236,5 +252,7 @@ namespace Takenet.SimplePersistence.Memory
             }
             return value;
         }
+
+
     }
 }

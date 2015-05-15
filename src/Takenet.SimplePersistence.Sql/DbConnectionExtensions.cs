@@ -101,6 +101,19 @@ namespace Takenet.SimplePersistence.Sql
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
 
+        public static DbCommand CreateInsertCommand(this DbConnection connection, string tableName, IDictionary<string, object> columnValues)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.Insert,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
+                    values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate()
+                },
+                columnValues.Select(c => c.ToSqlParameter()));
+        }
+
         public static DbCommand CreateInsertWhereNotExistsCommand(this DbConnection connection, string tableName,
             IDictionary<string, object> filterValues, IDictionary<string, object> columnValues, bool deleteBeforeInsert = false)
         {
@@ -145,6 +158,20 @@ namespace Takenet.SimplePersistence.Sql
                     take = take,
                     orderBy = orderByColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate()
                 });
+        }
+
+        public static DbCommand CreateUpdateCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.Update,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
+                    values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate(),
+                    filter = GetAndEqualsStatement(filterValues.Keys.ToArray())
+                },
+                columnValues.Select(c => c.ToSqlParameter()));
         }
     }
 }
