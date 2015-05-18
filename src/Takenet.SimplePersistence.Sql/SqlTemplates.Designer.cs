@@ -270,11 +270,35 @@ namespace Takenet.SimplePersistence.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MERGE {tableName} AS target
+        ///USING (SELECT {columnNamesAndValues}) as source
+        ///ON ({on})
+        ///WHEN MATCHED THEN
+        ///UPDATE SET {columnValues}
+        ///WHEN NOT MATCHED THEN
+        ///INSERT ({columns}) VALUES ({values});.
+        /// </summary>
+        public static string Merge {
+            get {
+                return ResourceManager.GetString("Merge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {columnName} {sqlType} NULL.
         /// </summary>
         public static string NullableColumnDefinition {
             get {
                 return ResourceManager.GetString("NullableColumnDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ON {condition}.
+        /// </summary>
+        public static string On {
+            get {
+                return ResourceManager.GetString("On", resourceCulture);
             }
         }
         
@@ -376,6 +400,15 @@ namespace Takenet.SimplePersistence.Sql {
         public static string Update {
             get {
                 return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {value} AS {column}.
+        /// </summary>
+        public static string ValueAsColumn {
+            get {
+                return ResourceManager.GetString("ValueAsColumn", resourceCulture);
             }
         }
     }

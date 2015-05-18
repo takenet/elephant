@@ -132,6 +132,7 @@
     <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemKeysMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemPropertyMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemSetMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringSetMapFacts.cs" />

@@ -116,6 +116,26 @@ namespace Takenet.SimplePersistence.Tests
             // Assert
             var actual = await map.GetPropertyValueOrDefaultAsync<TProperty>(key, property.Key);
             AssertEquals(actual, changedProperty.Value);
-        }        
+        }
+
+        [Fact(DisplayName = "MergeWithNonExistingValueSucceeds")]
+        public async Task MergeWithNonExistingValueSucceeds()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var value = CreateValue(key);
+            var property = CreateProperty();
+            var clonedValue = value.Clone();
+            var changedProperty = CreateProperty();
+            typeof(TValue).GetProperty(property.Key).SetValue(clonedValue, changedProperty.Value);
+
+            // Act
+            await map.MergeAsync(key, clonedValue);
+
+            // Assert
+            var actual = await map.GetPropertyValueOrDefaultAsync<TProperty>(key, property.Key);
+            AssertEquals(actual, changedProperty.Value);
+        }
     }
 }

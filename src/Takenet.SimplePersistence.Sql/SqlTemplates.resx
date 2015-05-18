@@ -194,8 +194,20 @@ WHERE TABLE_NAME = '{tableName}'</value>
 SELECT {values}
 WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
   </data>
+  <data name="Merge" xml:space="preserve">
+    <value>MERGE {tableName} AS target
+USING (SELECT {columnNamesAndValues}) as source
+ON ({on})
+WHEN MATCHED THEN
+UPDATE SET {columnValues}
+WHEN NOT MATCHED THEN
+INSERT ({columns}) VALUES ({values});</value>
+  </data>
   <data name="NullableColumnDefinition" xml:space="preserve">
     <value>{columnName} {sqlType} NULL</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>ON {condition}</value>
   </data>
   <data name="Or" xml:space="preserve">
     <value>OR</value>
@@ -231,5 +243,8 @@ WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
     <value>UPDATE {tableName}
 SET {columnValues}
 WHERE {filter}</value>
+  </data>
+  <data name="ValueAsColumn" xml:space="preserve">
+    <value>{value} AS {column}</value>
   </data>
 </root>

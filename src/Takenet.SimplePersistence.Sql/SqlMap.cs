@@ -94,38 +94,18 @@ namespace Takenet.SimplePersistence.Sql
 
         public async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));           
+            if (Table.KeyColumns.Contains(propertyName)) throw new ArgumentException(@"A key property cannot be changed", nameof(propertyName));
+
             var cancellationToken = CreateCancellationToken();
 
-            if (!Table.Columns.ContainsKey(propertyName))
-            {
-                throw new ArgumentException(@"Invalid property", nameof(propertyName));
-            }
-
-            if (Table.KeyColumns.Contains(propertyName))
-            {
-                throw new ArgumentException(@"A key property cannot be changed", nameof(propertyName));
-            }
-
-            var dbPropertyValue = TypeMapper.ToDbType(propertyValue, Table.Columns[propertyName].Type);
-
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-            {
-                DbCommand command;
+            {                                
                 var keyColumnValues = KeyMapper.GetColumnValues(key);
+                var columnValues = new Dictionary<string, object> {{propertyName, TypeMapper.ToDbType(propertyValue, Table.Columns[propertyName].Type) } };
 
-                // TODO Make this work atomically?
-                if (await ContainsKeyAsync(key).ConfigureAwait(false))
-                {
-                    command = connection.CreateUpdateCommand(
-                        Table.Name, keyColumnValues, new Dictionary<string, object> { { propertyName, dbPropertyValue} });
-                }
-                else
-                {
-                    keyColumnValues.Add(propertyName, dbPropertyValue);
-                    command = connection.CreateInsertCommand(Table.Name, keyColumnValues);
-                }
-
-                using (command)
+                using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
                 {
                     if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
                     {
@@ -137,91 +117,51 @@ namespace Takenet.SimplePersistence.Sql
 
         public async Task MergeAsync(TKey key, TValue value)
         {
-            throw new NotImplementedException();
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
-            //var cancellationToken = CreateCancellationToken();
+            var cancellationToken = CreateCancellationToken();
 
-            //if (await ContainsKeyAsync(key).ConfigureAwait(false))
-            //{
-            //    var columnValues = _extendedTableMapper.GetColumnValues(value);
+            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            {
+                var keyColumnValues = KeyMapper.GetColumnValues(key);
+                var columnValues = GetColumnValues(value);
 
-            //    if (columnValues.Any())
-            //    {
-            //        using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-            //        {
-            //            var keyValues = _extendedTableMapper.GetExtensionColumnValues(key);
-
-            //            using (var command = connection.CreateTextCommand(
-            //                SqlTemplates.Update,
-            //                new
-            //                {
-            //                    tableName = _extendedTableMapper.TableName,
-            //                    columnValues = columnValues.Keys.Select(c =>
-            //                        SqlTemplates.QueryEquals.Format(
-            //                        new
-            //                        {
-            //                            column = c.AsSqlIdentifier(),
-            //                            value = c.AsSqlParameterName()
-            //                        })).ToCommaSepparate(),
-            //                    filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
-            //                },
-            //                columnValues.Union(keyValues).Select(c => c.ToSqlParameter())))
-            //            {
-
-            //                if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
-            //                {
-            //                    throw new Exception("The database operation failed");
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            //else if (!await TryAddAsync(key, value, true).ConfigureAwait(false))
-            //{
-            //    throw new Exception("The database operation failed");
-            //}
+                using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
+                {
+                    if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
+                    {
+                        throw new Exception("The database operation failed");
+                    }
+                }
+            }
         }
 
         public async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
         {
-            throw new NotImplementedException();
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));
 
-            //var cancellationToken = CreateCancellationToken();
+            var cancellationToken = CreateCancellationToken();
+            
+            using (var connection = await GetConnectionAsync(cancellationToken))
+            {
+                var keyColumnValues = KeyMapper.GetColumnValues(key);
 
-            //if (!_extendedTableMapper.Columns.ContainsKey(propertyName))
-            //{
-            //    throw new ArgumentException("Invalid property");
-            //}
+                using (var command = connection.CreateSelectTop1Command(Table.Name, new[] { propertyName }, keyColumnValues))
+                {
+                    var dbValue = await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                    if (dbValue != null && !(dbValue is DBNull))
+                    {
+                        return (TProperty)TypeMapper.FromDbType(
+                            dbValue,
+                            Table.Columns[propertyName].Type,
+                            typeof(TValue).GetProperty(propertyName).PropertyType);
+                    }
+                }
+            }
 
-            //using (var connection = await GetConnectionAsync(cancellationToken))
-            //{
-            //    var keyValues = _extendedTableMapper.GetExtensionColumnValues(key);
-
-            //    using (var command = connection.CreateTextCommand(
-            //        SqlTemplates.SelectTop1,
-            //        new
-            //        {
-            //            tableName = _extendedTableMapper.TableName.AsSqlIdentifier(),
-            //            columns = propertyName.AsSqlIdentifier(),
-            //            filter = GetAndEqualsStatement(keyValues.Keys.ToArray())
-            //        },
-            //        keyValues.Select(k => k.ToSqlParameter())))
-            //    {
-
-            //        var dbValue = await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
-
-            //        if (dbValue != null &&
-            //            !(dbValue is DBNull))
-            //        {
-            //            return (TProperty)TypeMapper.FromDbType(
-            //                dbValue,
-            //                _extendedTableMapper.Columns[propertyName].Type,
-            //                typeof(TValue).GetProperty(propertyName).PropertyType);
-            //        }
-            //    }
-            //}
-
-            //return default(TProperty);
+            return default(TProperty);
         }
 
         #endregion

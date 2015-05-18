@@ -167,11 +167,45 @@ namespace Takenet.SimplePersistence.Sql
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
-                    values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate(),
+                    columnValues = GetCommaEqualsStatement(columnValues.Keys.ToArray()),
                     filter = GetAndEqualsStatement(filterValues.Keys.ToArray())
                 },
-                columnValues.Select(c => c.ToSqlParameter()));
+                filterValues.Union(columnValues).Select(c => c.ToSqlParameter()));
         }
+
+        public static DbCommand CreateSelectTop1Command(this DbConnection connection, string tableName, string[] selectColumns, IDictionary<string, object> filterValues)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.SelectTop1,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
+                    filter = GetAndEqualsStatement(filterValues.Keys.ToArray())
+                },
+                filterValues.Select(k => k.ToSqlParameter()));
+        }
+
+        public static DbCommand CreateMergeCommand(this DbConnection connection, string tableName,
+            IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
+        {
+            var filterAndColumnValues = filterValues
+                .Union(columnValues)
+                .ToDictionary(c => c.Key, c => c.Value);
+
+            return connection.CreateTextCommand(
+                SqlTemplates.Merge,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    columnNamesAndValues = GetCommaValueAsColumnStatement(filterAndColumnValues.Keys.ToArray()),
+                    on = GetLiteralJoinConditionStatement(filterValues.Keys.ToArray(), "source", "target"),
+                    columnValues = GetCommaEqualsStatement(columnValues.Keys.ToArray()),
+                    columns = filterAndColumnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
+                    values = filterAndColumnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate()
+                },
+                filterAndColumnValues.Select(k => k.ToSqlParameter()));
+        }
+
     }
 }
