@@ -21,7 +21,7 @@ The idea behind this library is expose a common layer that can be used with mult
 ### Primitive structures
 
 Name             | Description                                        | Implementations
------------------|----------------------------------------------------|--------------- 
+-----------------|----------------------------------------------------|----------------
 Map              | Mapper that provides fast access to a value using a key. | Memory, Redis, SQL
 Set              | Set of unique items. | Memory, Redis, SQL
 Queue            | FIFO storage container. | Memory, Redis
@@ -36,14 +36,14 @@ QueueMap | Map that contains a queue of items.      | Memory, Redis
 
 ### Extended structures
 
-Name             | Parent | Description                            | Implementations
------------------|--------|----------------------------------------|---------
-ExpirableKeyMap  | Map    | Map that supports key expiration.      | Memory, Redis
-ItemSetMap       | SetMap | SetMap that allows to get a specific item in the set. | Memory, Redis, SQL
-KeyQueryableMap  | Map    | Map that supports queries for its keys. | Memory, SQL
+Name             | Parent | Description												| Implementations
+-----------------|--------|---------------------------------------------------------|----------------
+ExpirableKeyMap  | Map    | Map that supports key expiration.						| Memory, Redis
+ItemSetMap       | SetMap | SetMap that allows to get a specific item in the set.	| Memory, Redis, SQL
+KeyQueryableMap  | Map    | Map that supports queries for its keys.					| Memory, SQL
 KeysMap          | Map    | Map service that provides direct access to the stored keys. | Memory, SQL
 NumberMap        | Map    | Map for number values with atomic increment and decrement support. | Memory, Redis
-PropertyMap      | Map    | Map that allows the insertion and update of specific properties of the value document. | Memory, Redis
+PropertyMap      | Map    | Map that allows the insertion and update of specific properties of the value document. | Memory, Redis, SQL
 UpdatableMap     | Map    | Map that supports value updates under specific conditions. | Memory
 
 ### Other

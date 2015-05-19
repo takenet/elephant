@@ -17,7 +17,7 @@ namespace Takenet.SimplePersistence.Sql
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IKeysMap<TKey, TValue>, IKeyQueryableMap<TKey, TValue>, IPropertyMap<TKey, TValue>
+    public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IKeysMap<TKey, TValue>, IKeyQueryableMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IUpdatableMap<TKey, TValue>
     {
         public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper) 
             : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
@@ -144,7 +144,7 @@ namespace Takenet.SimplePersistence.Sql
 
             var cancellationToken = CreateCancellationToken();
             
-            using (var connection = await GetConnectionAsync(cancellationToken))
+            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
                 var keyColumnValues = KeyMapper.GetColumnValues(key);
 
@@ -178,5 +178,38 @@ namespace Takenet.SimplePersistence.Sql
         }
 
         #endregion
+
+        #region IUpdatableMap<TKey, TValue> Members
+
+        public async Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
+        {
+            var cancellationToken = CreateCancellationToken();
+
+            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            {               
+                var oldColumnValues = GetColumnValues(key, oldValue);
+                var filterOldColumnValues = oldColumnValues
+                    .Select(kv => new KeyValuePair<string, object>($"Old{kv.Key}", kv.Value))
+                    .ToDictionary(t => t.Key, t => t.Value);
+
+                var newColumnValues = GetColumnValues(key, newValue);
+
+                using (var command = connection.CreateTextCommand(
+                    SqlTemplates.Update,
+                    new
+                    {
+                        tableName = Table.Name.AsSqlIdentifier(),
+                        columnValues = GetCommaEqualsStatement(newColumnValues.Keys.ToArray()),
+                        filter = GetAndEqualsStatement(oldColumnValues.Keys.ToArray(), filterOldColumnValues.Keys.ToArray())
+                    },
+                    newColumnValues.Concat(filterOldColumnValues).Select(c => c.ToSqlParameter())))
+                {
+                    return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 1;
+                }
+            }
+        }
+
+        #endregion
+
     }
 }
