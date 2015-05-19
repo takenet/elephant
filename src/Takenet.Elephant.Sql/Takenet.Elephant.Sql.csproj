@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FA4ECD2C-454C-48FD-8DC1-678B8A723080}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Takenet.Elephant.Sql</RootNamespace>
+    <AssemblyName>Takenet.Elephant.Sql</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DatabaseSchema.cs" />
+    <Compile Include="Mapping\TableBuilder.cs" />
+    <Compile Include="SqlExpressionTranslator.cs" />
+    <Compile Include="IDatabaseDriver.cs" />
+    <Compile Include="Mapping\IMapper.cs" />
+    <Compile Include="Mapping\ITable.cs" />
+    <Compile Include="Mapping\MapperExtensions.cs" />
+    <Compile Include="Mapping\PropertyInfoExtensions.cs" />
+    <Compile Include="Mapping\SqlType.cs" />
+    <Compile Include="Mapping\Table.cs" />
+    <Compile Include="Mapping\TypeMapper.cs" />
+    <Compile Include="Mapping\ValueMapper.cs" />
+    <Compile Include="MapStorageBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DbConnectionExtensions.cs" />
+    <Compile Include="DbDataReaderAsyncEnumerable.cs" />
+    <Compile Include="DbDataReaderAsyncEnumerator.cs" />
+    <Compile Include="SqlDatabaseDriver.cs" />
+    <Compile Include="SqlExtensions.cs" />
+    <Compile Include="SqlHelper.cs" />
+    <Compile Include="SqlMap.cs" />
+    <Compile Include="SqlSet.cs" />
+    <Compile Include="SqlSetMap.cs" />
+    <Compile Include="SqlTemplates.Designer.cs">
+      <DependentUpon>SqlTemplates.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="StorageBase.cs" />
+    <Compile Include="TypeMapper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
+      <Project>{aea9548d-8d87-41ce-8959-81b3361c0298}</Project>
+      <Name>Takenet.Elephant</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlTemplates.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SqlTemplates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

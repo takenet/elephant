@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22609.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant", "Takenet.Elephant\Takenet.Elephant.csproj", "{AEA9548D-8D87-41CE-8959-81B3361C0298}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Tests", "Takenet.Elephant.Tests\Takenet.Elephant.Tests.csproj", "{5288FBD3-4FE6-42A2-8256-D004C17A86F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{862796A0-87AD-46A1-91B6-B8E7FFEB4C3B}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Redis", "Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj", "{6895C290-8EAA-468B-8B2F-B1A7CB3CB32A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Sql", "Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj", "{FA4ECD2C-454C-48FD-8DC1-678B8A723080}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6A6D0432-F3B4-4DBE-B07F-05D2901D0237}"
+	ProjectSection(SolutionItems) = preProject
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AEA9548D-8D87-41CE-8959-81B3361C0298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEA9548D-8D87-41CE-8959-81B3361C0298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEA9548D-8D87-41CE-8959-81B3361C0298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEA9548D-8D87-41CE-8959-81B3361C0298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5288FBD3-4FE6-42A2-8256-D004C17A86F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5288FBD3-4FE6-42A2-8256-D004C17A86F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5288FBD3-4FE6-42A2-8256-D004C17A86F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5288FBD3-4FE6-42A2-8256-D004C17A86F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6895C290-8EAA-468B-8B2F-B1A7CB3CB32A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6895C290-8EAA-468B-8B2F-B1A7CB3CB32A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6895C290-8EAA-468B-8B2F-B1A7CB3CB32A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6895C290-8EAA-468B-8B2F-B1A7CB3CB32A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA4ECD2C-454C-48FD-8DC1-678B8A723080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA4ECD2C-454C-48FD-8DC1-678B8A723080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA4ECD2C-454C-48FD-8DC1-678B8A723080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA4ECD2C-454C-48FD-8DC1-678B8A723080}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

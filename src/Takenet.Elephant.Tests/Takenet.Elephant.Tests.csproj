@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\xunit.runner.visualstudio.2.0.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.0.0\build\net20\xunit.runner.visualstudio.props')" />
+  <Import Project="..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props" Condition="Exists('..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5288FBD3-4FE6-42A2-8256-D004C17A86F1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Takenet.Elephant.Tests</RootNamespace>
+    <AssemblyName>Takenet.Elephant.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>755f160a</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NFluent">
+      <HintPath>..\packages\NFluent.1.3.1.0\lib\net40\NFluent.dll</HintPath>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture">
+      <HintPath>..\packages\AutoFixture.3.24.3\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.0.316.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\StackExchange.Redis.1.0.414\lib\net45\StackExchange.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="xunit.abstractions">
+      <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.assert">
+      <HintPath>..\packages\xunit.assert.2.0.0\lib\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.assert.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.core">
+      <HintPath>..\packages\xunit.extensibility.core.2.0.0\lib\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExpirableKeyMapFacts.cs" />
+    <Compile Include="FactsBase.cs" />
+    <Compile Include="ClassQueueFacts.cs" />
+    <Compile Include="ClassSetFacts.cs" />
+    <Compile Include="GuidItemExpirableKeyMapFacts.cs" />
+    <Compile Include="GuidItemItemSetMapFacts.cs" />
+    <Compile Include="GuidItemKeysMapFacts.cs" />
+    <Compile Include="GuidItemMapFacts.cs" />
+    <Compile Include="GuidItemKeyQueryableMapFacts.cs" />
+    <Compile Include="GuidItemMapQueryableStorageFacts.cs" />
+    <Compile Include="GuidItemPropertyMapFacts.cs" />
+    <Compile Include="GuidItemQueueMapFacts.cs" />
+    <Compile Include="GuidItemSetMapFacts.cs" />
+    <Compile Include="GuidItemUpdatableMapFacts.cs" />
+    <Compile Include="GuidNumberMapFacts.cs" />
+    <Compile Include="IntegerStringMapFacts.cs" />
+    <Compile Include="IntegerStringQueueMapFacts.cs" />
+    <Compile Include="IntegerStringSetMapFacts.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="ItemSetFacts.cs" />
+    <Compile Include="ItemSetMapFacts.cs" />
+    <Compile Include="KeyQueryableMapFacts.cs" />
+    <Compile Include="KeysMapFacts.cs" />
+    <Compile Include="MapFacts.cs" />
+    <Compile Include="MapQueryableStorageFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemExpirableKeyMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemItemSetMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemKeysMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemKeyQueryableMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemUpdatableMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemPropertyMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidNumberMapFacts.cs" />
+    <Compile Include="Memory\MemoryIntegerStringQueueMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemQueueMapFacts.cs" />
+    <Compile Include="Memory\MemoryIntegerStringMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemSetMapFacts.cs" />
+    <Compile Include="Memory\MemoryIntegerStringSetMapFacts.cs" />
+    <Compile Include="Memory\MemoryItemSetFacts.cs" />
+    <Compile Include="Memory\MemoryItemQueueFacts.cs" />
+    <Compile Include="Memory\MemoryGuidQueueFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemMapQueryableStorageFacts.cs" />
+    <Compile Include="Memory\MemoryStringSetFacts.cs" />
+    <Compile Include="NumberMapFacts.cs" />
+    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyMapFacts.cs" />
+    <Compile Include="QueryableStorageFacts.cs" />
+    <Compile Include="QueueFacts.cs" />
+    <Compile Include="QueueMapFacts.cs" />
+    <Compile Include="Redis\ItemSerializer.cs" />
+    <Compile Include="Redis\RedisCollectionFixture.cs" />
+    <Compile Include="Redis\RedisGuidItemExpirableKeyMapFacts.cs" />
+    <Compile Include="Redis\RedisGuidItemQueueMapFacts.cs" />
+    <Compile Include="Redis\RedisGuidNumberMapFacts.cs" />
+    <Compile Include="Redis\RedisHashGuidItemPropertyMapFacts.cs" />
+    <Compile Include="Redis\RedisIntegerStringQueueMapFacts.cs" />
+    <Compile Include="Redis\RedisItemQueueFacts.cs" />
+    <Compile Include="Redis\RedisGuidQueueFacts.cs" />
+    <Compile Include="Redis\RedisHashGuidItemMapFacts.cs" />
+    <Compile Include="Redis\RedisHashIntegerStringMapFacts.cs" />
+    <Compile Include="Redis\RedisGuidItemSetMapFacts.cs" />
+    <Compile Include="Redis\RedisIntegerStringSetMapFacts.cs" />
+    <Compile Include="Redis\RedisItemSetFacts.cs" />
+    <Compile Include="Redis\RedisStringGuidItemMapFacts.cs" />
+    <Compile Include="Redis\RedisStringIntegerStringMapFacts.cs" />
+    <Compile Include="Redis\RedisFixture.cs" />
+    <Compile Include="Redis\RedisGuidSetFacts.cs" />
+    <Compile Include="SetFacts.cs" />
+    <Compile Include="SetMapFacts.cs" />
+    <Compile Include="Sql\SqlConnectionFixture.cs" />
+    <Compile Include="Sql\SqlCollectionFixture.cs" />
+    <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemKeysMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemKeyQueryableMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemPropertyMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemUpdatableMapFacts.cs" />
+    <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemSetMapFacts.cs" />
+    <Compile Include="Sql\SqlIntegerStringSetMapFacts.cs" />
+    <Compile Include="Sql\SqlItemSetFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemMapQueryableStorageFacts.cs" />
+    <Compile Include="Sql\SqlGuidSetFacts.cs" />
+    <Compile Include="ItemQueueFacts.cs" />
+    <Compile Include="GuidQueueFacts.cs" />
+    <Compile Include="GuidSetFacts.cs" />
+    <Compile Include="UpdatableMapFacts.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj">
+      <Project>{6895c290-8eaa-468b-8b2f-b1a7cb3cb32a}</Project>
+      <Name>Takenet.Elephant.Redis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj">
+      <Project>{fa4ecd2c-454c-48fd-8dc1-678b8a723080}</Project>
+      <Name>Takenet.Elephant.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
+      <Project>{aea9548d-8d87-41ce-8959-81b3361c0298}</Project>
+      <Name>Takenet.Elephant</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props'))" />
+    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.0.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.0.0\build\net20\xunit.runner.visualstudio.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
