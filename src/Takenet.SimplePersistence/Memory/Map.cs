@@ -213,6 +213,9 @@ namespace Takenet.SimplePersistence.Memory
 
         public Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
+            if (@where == null) @where = value => true;
+            if (@select != null) throw new NotSupportedException("The select clause is not supported");
+
             var totalValues = InternalDictionary                
                 .Where(pair => where.Compile().Invoke(pair.Value));
             var resultValues = totalValues
@@ -229,6 +232,9 @@ namespace Takenet.SimplePersistence.Memory
 
         public Task<QueryResult<TValue>> QueryAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TValue, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
+            if (@where == null) @where = value => true;            
+            if (@select != null) throw new NotSupportedException("The select clause is not supported");
+
             var totalValues = InternalDictionary
                 .Where(pair => where.Compile().Invoke(pair.Value));
             var resultValues = totalValues

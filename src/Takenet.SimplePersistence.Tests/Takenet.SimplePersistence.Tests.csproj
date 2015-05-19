@@ -69,6 +69,7 @@
     <Compile Include="GuidItemItemSetMapFacts.cs" />
     <Compile Include="GuidItemKeysMapFacts.cs" />
     <Compile Include="GuidItemMapFacts.cs" />
+    <Compile Include="GuidItemKeyQueryableMapFacts.cs" />
     <Compile Include="GuidItemMapQueryableStorageFacts.cs" />
     <Compile Include="GuidItemPropertyMapFacts.cs" />
     <Compile Include="GuidItemQueueMapFacts.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Memory\MemoryGuidItemItemSetMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemKeysMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemKeyQueryableMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemUpdatableMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemPropertyMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidNumberMapFacts.cs" />
@@ -134,6 +136,7 @@
     <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemKeysMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemKeyQueryableMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemPropertyMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemUpdatableMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />

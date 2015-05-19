@@ -7,7 +7,7 @@ Today's applications stores data in different places like the own process memory
 
 For instance, there's no semantic difference between a repository ```GetById``` method and a ```Dictionary``` (hash table) ```TryGetValue``` method. But even if the application only uses the first method, probably the developer will implement something like the repository pattern for SQL data access. But what happens if the persistence layer needs to be moved to Redis or Mongodb? Probably, the developer will implement the repository pattern for the target engine, leaving some methods that are not supported empty (like queries on Redis). Or maybe, he will need to refactor the code that uses the storage class...
 
-The idea behind this library is expose a common layer that can be used with multiple storage engines, while isolating the specific capabilities of each one, allowing the developer compose the application storage infrastructure accordingly to the its needs. It starts from common data structures, expanding according to the capabilities of each target engine. 
+The idea behind this library is expose a common layer that can be used with multiple storage engines, while isolating the specific capabilities of each one, allowing the developer compose the application storage infrastructure accordingly to its needs. It starts from common data structures, expanding according to the capabilities of each target engine. 
 
 ## When to use it?
 
@@ -20,37 +20,37 @@ The idea behind this library is expose a common layer that can be used with mult
 
 ### Primitive structures
 
-Name             | Description                                        | Implementations
------------------|----------------------------------------------------|----------------
+Name             | Description												| Implementations
+-----------------|----------------------------------------------------------|----------------
 Map              | Mapper that provides fast access to a value using a key. | Memory, Redis, SQL
-Set              | Set of unique items. | Memory, Redis, SQL
-Queue            | FIFO storage container. | Memory, Redis
-QueryableStorage | Storage that supports queries. | Memory, SQL
+Set              | Set of unique items.										| Memory, Redis, SQL
+Queue            | FIFO storage container.									| Memory, Redis
+QueryableStorage | Storage that supports queries.							| Memory, SQL
 
 ### Composite structures
 
 Name     | Description                              | Implementations
----------|------------------------------------------|--------------- 
+---------|------------------------------------------|----------------
 SetMap   | Map that contains a set on unique items. | Memory, Redis, SQL
 QueueMap | Map that contains a queue of items.      | Memory, Redis
 
 ### Extended structures
 
-Name             | Parent | Description												| Implementations
------------------|--------|---------------------------------------------------------|----------------
-ExpirableKeyMap  | Map    | Map that supports key expiration.						| Memory, Redis
-ItemSetMap       | SetMap | SetMap that allows to get a specific item in the set.	| Memory, Redis, SQL
-KeyQueryableMap  | Map    | Map that supports queries for its keys.					| Memory, SQL
-KeysMap          | Map    | Map service that provides direct access to the stored keys. | Memory, SQL
+Name             | Parent | Description													| Implementations
+-----------------|--------|-------------------------------------------------------------|----------------
+ExpirableKeyMap  | Map    | Map that supports key expiration.							| Memory, Redis
+ItemSetMap       | SetMap | SetMap that allows to get an specific item in the set.		| Memory, Redis, SQL
+KeyQueryableMap  | Map    | Map that supports queries for its keys.						| Memory, SQL
+KeysMap          | Map    | Map service that provides direct access to stored keys.		| Memory, SQL
 NumberMap        | Map    | Map for number values with atomic increment and decrement support. | Memory, Redis
 PropertyMap      | Map    | Map that allows the insertion and update of specific properties of the value document. | Memory, Redis, SQL
-UpdatableMap     | Map    | Map that supports value updates under specific conditions. | Memory
+UpdatableMap     | Map    | Map that supports value updates under specific conditions.	| Memory, SQL
 
 ### Other
 
 Name             | Description                                        
 -----------------|------------------------------------------------------------
-AsyncEnumerable  | Async implementation of the ```IEnumerable<T>``` interface 
+AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface 
 
 ## Current supported storage engines
 

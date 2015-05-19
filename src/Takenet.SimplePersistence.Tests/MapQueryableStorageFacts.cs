@@ -16,7 +16,6 @@ namespace Takenet.SimplePersistence.Tests
             return Fixture.Create<TKey>();
         }
 
-
         public override async Task<IQueryableStorage<TValue>> CreateAsync(params TValue[] values)
         {
             var map = Create();

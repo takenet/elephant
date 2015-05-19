@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Takenet.SimplePersistence
 {
     /// <summary>
-    /// Defines a map that supports queries for its keys.
+    /// Defines a map that supports queries for its keys by the values.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>

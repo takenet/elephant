@@ -123,6 +123,7 @@ namespace Takenet.SimplePersistence.Sql
 
         internal static string TranslateToSqlWhereClause<TEntity>(Expression<Func<TEntity, bool>> where)
         {
+            if (where == null) return "1 = 1";
             var translator = new SqlExpressionTranslator();
             return translator.GetStatement(where);
         }
