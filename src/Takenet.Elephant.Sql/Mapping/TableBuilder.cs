@@ -11,37 +11,57 @@ namespace Takenet.Elephant.Sql.Mapping
     /// </summary>
     public sealed class TableBuilder
     {
-        private readonly string _name;
-        private readonly List<KeyValuePair<string, SqlType>> _columns;
-        private readonly List<string> _keyColumns;
+        /// <summary>
+        /// Gets the table name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public string Name { get; }
+
+        /// <summary>
+        /// Gets the table columns.
+        /// </summary>
+        /// <value>
+        /// The columns.
+        /// </value>
+        public List<KeyValuePair<string, SqlType>> Columns { get; }
+
+        /// <summary>
+        /// Gets the table key columns names.
+        /// </summary>
+        /// <value>
+        /// The key columns.
+        /// </value>
+        public List<string> KeyColumns { get; }
 
         private TableBuilder(string name)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
-            _name = name;
-            _columns = new List<KeyValuePair<string, SqlType>>();
-            _keyColumns = new List<string>();
+            Name = name;
+            Columns = new List<KeyValuePair<string, SqlType>>();
+            KeyColumns = new List<string>();
         }
 
         /// <summary>
         /// Creates a table builder using the specified table name.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="columnName"></param>
         /// <returns></returns>
-        public static TableBuilder WithName(string name)
+        public static TableBuilder WithName(string columnName)
         {            
-            return new TableBuilder(name);
+            return new TableBuilder(columnName);
         }
 
         /// <summary>
         /// Adds a column to the table with the specified name and type.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="columnName"></param>
         /// <param name="sqlType"></param>
         /// <returns></returns>
-        public TableBuilder WithColumn(string name, SqlType sqlType)
+        public TableBuilder WithColumn(string columnName, SqlType sqlType)
         {
-            _columns.Add(new KeyValuePair<string, SqlType>(name, sqlType));
+            Columns.Add(new KeyValuePair<string, SqlType>(columnName, sqlType));
             return this;
         }
 
@@ -52,7 +72,52 @@ namespace Takenet.Elephant.Sql.Mapping
         /// <returns></returns>
         public TableBuilder WithColumns(params KeyValuePair<string, SqlType>[] columns)
         {
-            _columns.AddRange(columns);
+            Columns.AddRange(columns);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a key column to the table from the specified type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        public TableBuilder WithColumnFromType<T>(string columnName)
+        {
+            if (columnName == null) throw new ArgumentNullException(nameof(columnName));
+            var column = new KeyValuePair<string, SqlType>(columnName, new SqlType(TypeMapper.GetDbType(typeof(T))));
+            Columns.Add(column);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a key column to the table from the specified type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="columnName"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public TableBuilder WithColumnFromType<T>(string columnName, int length)
+        {
+            if (columnName == null) throw new ArgumentNullException(nameof(columnName));
+            var column = new KeyValuePair<string, SqlType>(columnName, new SqlType(TypeMapper.GetDbType(typeof(T)), length));
+            Columns.Add(column);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a key column to the table from the specified type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="columnName"></param>
+        /// <param name="precision"></param>
+        /// <param name="scale"></param>
+        /// <returns></returns>
+        public TableBuilder WithColumnFromType<T>(string columnName, int precision, int scale)
+        {
+            if (columnName == null) throw new ArgumentNullException(nameof(columnName));
+            var column = new KeyValuePair<string, SqlType>(columnName, new SqlType(TypeMapper.GetDbType(typeof(T)), precision, scale));
+            Columns.Add(column);
             return this;
         }
 
@@ -84,7 +149,7 @@ namespace Takenet.Elephant.Sql.Mapping
         /// <returns></returns>
         public TableBuilder WithColumnsFromTypeProperties<T>(Func<PropertyInfo, bool> filter)
         {
-            _columns.AddRange(
+            Columns.AddRange(
                 typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(filter).ToSqlColumns());
             return this;
         }
@@ -118,8 +183,8 @@ namespace Takenet.Elephant.Sql.Mapping
         public TableBuilder WithKeyColumnsFromTypeProperties<T>(Func<PropertyInfo, bool> filter)
         {
             var columns = typeof (T).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(filter).ToSqlColumns();
-            _columns.AddRange(columns);
-            _keyColumns.AddRange(columns.Keys);            
+            Columns.AddRange(columns);
+            KeyColumns.AddRange(columns.Keys);            
             return this;
         }
 
@@ -127,25 +192,26 @@ namespace Takenet.Elephant.Sql.Mapping
         /// Adds a key column to the table from the specified type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="keyColumn"></param>
+        /// <param name="keyColumnName"></param>
+        /// <param name="isIdentity"></param>
         /// <returns></returns>
-        public TableBuilder WithKeyColumnFromType<T>(string keyColumn)
+        public TableBuilder WithKeyColumnFromType<T>(string keyColumnName, bool isIdentity = false)
         {
-            if (keyColumn == null) throw new ArgumentNullException(nameof(keyColumn));
-            var column = new KeyValuePair<string, SqlType>(keyColumn, new SqlType(TypeMapper.GetDbType(typeof (T))));
-            _columns.Add(column);
-            _keyColumns.Add(keyColumn);
+            if (keyColumnName == null) throw new ArgumentNullException(nameof(keyColumnName));
+            var column = new KeyValuePair<string, SqlType>(keyColumnName, new SqlType(TypeMapper.GetDbType(typeof (T)), isIdentity));
+            Columns.Add(column);
+            KeyColumns.Add(keyColumnName);
             return this;
         }
 
         /// <summary>
         /// Adds key columns names to the table. The specified columns must exists on the table.
         /// </summary>
-        /// <param name="keyColumns"></param>
+        /// <param name="keyColumnsNames"></param>
         /// <returns></returns>
-        public TableBuilder WithKeyColumns(params string[] keyColumns)
+        public TableBuilder WithKeyColumnsNames(params string[] keyColumnsNames)
         {
-            _keyColumns.AddRange(keyColumns);
+            KeyColumns.AddRange(keyColumnsNames);
             return this;
         }
 
@@ -155,7 +221,7 @@ namespace Takenet.Elephant.Sql.Mapping
         /// <returns></returns>
         public ITable Build()
         {
-            return new Table(_name, _keyColumns.ToArray(), _columns.ToDictionary(c => c.Key, c => c.Value));            
+            return new Table(Name, KeyColumns.ToArray(), Columns.ToDictionary(c => c.Key, c => c.Value));            
         }
     }
 }

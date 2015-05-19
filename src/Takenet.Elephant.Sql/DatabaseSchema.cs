@@ -18,7 +18,7 @@ namespace Takenet.Elephant.Sql
                 throw new InvalidOperationException("The table mapper has no defined columns");
             }
 
-            if (!table.KeyColumns.Any())
+            if (!table.KeyColumnsNames.Any())
             {
                 throw new InvalidOperationException("The table mapper has no defined key columns");
             }
@@ -33,7 +33,7 @@ namespace Takenet.Elephant.Sql
                     new
                     {
                         tableName = table.Name,
-                        columns = table.KeyColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate()
+                        columns = table.KeyColumnsNames.Select(c => c.AsSqlIdentifier()).ToCommaSeparate()
                     })
             );
 
@@ -116,7 +116,7 @@ namespace Takenet.Elephant.Sql
             foreach (var column in columns)
             {
                 // All columns, except the key are nullable
-                if (table.KeyColumns.Contains(column.Key))
+                if (table.KeyColumnsNames.Contains(column.Key))
                 {
                     if (column.Value.IsIdentity)
                     {

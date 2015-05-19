@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Memory
@@ -7,7 +10,7 @@ namespace Takenet.Elephant.Memory
     /// Implements the <see cref="ISet{T}"/> interface using the <see cref="System.Collections.Generic.HashSet{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Set<T> : ISet<T> //, IQueryableStorage<T>
+    public class Set<T> : ISet<T>, IQueryableStorage<T>
     {
         private readonly System.Collections.Generic.HashSet<T> _hashSet;
 
@@ -51,26 +54,26 @@ namespace Takenet.Elephant.Memory
 
         #region IQueryableStorage<T> Members
 
-        //public Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> where,
-        //    Expression<Func<T, TResult>> select,
-        //    int skip,
-        //    int take,
-        //    CancellationToken cancellationToken)
-        //{
-        //    var predicate = where.Compile();
+        public Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> where,
+            Expression<Func<T, TResult>> select,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
+        {
+            var predicate = where.Compile();
 
-        //    var totalValues = this._hashSet
-        //        .Where(predicate.Invoke);
+            var totalValues = this._hashSet
+                .Where(predicate.Invoke);
 
-        //    var resultValues = totalValues
-        //        .Skip(skip)
-        //        .Take(take)
-        //        .ToArray();
+            var resultValues = totalValues
+                .Skip(skip)
+                .Take(take)
+                .ToArray();
 
-        //    var result = new QueryResult<T>(resultValues, totalValues.Count());
+            var result = new QueryResult<T>(new AsyncEnumerableWrapper<T>(resultValues), totalValues.Count());
 
-        //    return Task.FromResult(result);
-        //}
+            return Task.FromResult(result);
+        }
 
         #endregion
     }

@@ -14,20 +14,21 @@ namespace Takenet.Elephant.Sql.Mapping
         private readonly IDictionary<string, Action<TEntity, object>> _propertySetActionDictionary;
 
         public TypeMapper(ITable table)
-            : this(table, typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            : this(table, p => true)
         {
             
+        }
+
+        public TypeMapper(ITable table, Func<PropertyInfo, bool> propertyFilter)
+            : this(table, typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(propertyFilter).ToArray())
+        {
+
         }
 
         protected TypeMapper(ITable table, PropertyInfo[] properties)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
             if (properties == null || properties.Length == 0) throw new ArgumentNullException(nameof(properties));
-            var missingColumnProperty = properties.Select(p => p.Name).FirstOrDefault(p => !table.Columns.ContainsKey(p));
-            if (missingColumnProperty != null)
-            {
-                throw new ArgumentException($"The table doesn't contains a column for the property '{missingColumnProperty}'");
-            }
 
             _table = table;            
             _propertyDictionary = properties.ToDictionary(p => p.Name, p => p.PropertyType);
@@ -36,6 +37,11 @@ namespace Takenet.Elephant.Sql.Mapping
 
             foreach (var property in properties)
             {
+                if (!_table.Columns.ContainsKey(property.Name))
+                {
+                    throw new ArgumentException($"The table doesn't contains a column for property '{property.Name}'");
+                }
+
                 if (!_table.Columns[property.Name].IsIdentity)
                 {
                     _propertyGetFuncDictionary.Add(

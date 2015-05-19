@@ -55,7 +55,7 @@ namespace Takenet.Elephant.Sql
             }
 
             var selectColumns = Table.Columns.Keys.ToArray();
-            var orderByColumns = Table.KeyColumns;
+            var orderByColumns = Table.KeyColumnsNames;
             var filter = SqlHelper.TranslateToSqlWhereClause(where);        
             var connection = await GetConnectionAsync(cancellationToken);            
             int totalCount;
@@ -102,7 +102,7 @@ namespace Takenet.Elephant.Sql
         protected virtual IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues)
         {
             return Table
-                .KeyColumns
+                .KeyColumnsNames
                 .Where(columnValues.ContainsKey)
                 .Select(c => new { Key = c, Value = columnValues[c] })
                 .ToDictionary(t => t.Key, t => t.Value);

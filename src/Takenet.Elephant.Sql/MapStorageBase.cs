@@ -45,7 +45,7 @@ namespace Takenet.Elephant.Sql
 
         protected virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync(DbConnection connection, CancellationToken cancellationToken)
         {
-            var selectColumns = Table.KeyColumns;
+            var selectColumns = Table.KeyColumnsNames;
             var command = connection.CreateSelectCommand(Table.Name, null, selectColumns);            
             return Task.FromResult<IAsyncEnumerable<TKey>>(
                 new DbDataReaderAsyncEnumerable<TKey>(command, KeyMapper, selectColumns));
@@ -65,7 +65,7 @@ namespace Takenet.Elephant.Sql
                 throw new NotImplementedException("The 'select' parameter is not supported yet");
             }
 
-            var selectColumns = Table.KeyColumns;
+            var selectColumns = Table.KeyColumnsNames;
             var filter = SqlHelper.TranslateToSqlWhereClause(where);
             int totalCount;
             using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))

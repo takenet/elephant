@@ -16,7 +16,7 @@
 
         //public static IDictionary<string, object> GetKeyColumnValues<TExtension, TEntity>(this IExtendedTableMapper<TExtension, TEntity> extendedTableMapper, TExtension extension, TEntity entity)
         //{
-        //    var keyColumns = extendedTableMapper.KeyColumns.ToArray();
+        //    var keyColumns = extendedTableMapper.KeyColumnsNames.ToArray();
 
         //    var keyColumnValues = extendedTableMapper.GetColumnValues(entity, columns: keyColumns);
         //    var extensionKeyColumnValues = extendedTableMapper.GetExtensionColumnValues(extension, columns: keyColumns);
@@ -32,7 +32,7 @@
         //public static IDictionary<string, object> GetExtensionKeyColumnValues<TExtension, TEntity>(this IExtendedTableMapper<TExtension, TEntity> extendedTableMapper, TExtension extension)
         //{
         //    var keyColumns = extendedTableMapper
-        //        .KeyColumns
+        //        .KeyColumnsNames
         //        .Where(c => extendedTableMapper.ExtensionColumns.Contains(c))
         //        .ToArray();
 

@@ -91,12 +91,12 @@ namespace Takenet.Elephant.Sql
         {
             if (columns.Length == 0)
             {
-                throw new ArgumentException("The columns are empty");
+                throw new ArgumentException("The columns are empty", nameof(columns));
             }
 
             if (parameters.Length == 0)
             {
-                throw new ArgumentException("The parameters are empty");
+                throw new ArgumentException("The parameters are empty", nameof(parameters));
             }
 
             var filter = new StringBuilder();
@@ -120,7 +120,7 @@ namespace Takenet.Elephant.Sql
 
         internal static string TranslateToSqlWhereClause<TEntity>(Expression<Func<TEntity, bool>> where)
         {
-            if (where == null) return "1 = 1";
+            if (where == null) return SqlTemplates.OneEqualsOne;
             var translator = new SqlExpressionTranslator();
             return translator.GetStatement(where);
         }

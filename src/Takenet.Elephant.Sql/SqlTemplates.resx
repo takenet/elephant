@@ -169,6 +169,9 @@ WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
     <value>IF OBJECT_ID('{tableName}') IS NOT NULL 
 DELETE FROM {tableName}</value>
   </data>
+  <data name="DummyEqualsZero" xml:space="preserve">
+    <value>@dummy = 0</value>
+  </data>
   <data name="Equal" xml:space="preserve">
     <value>=</value>
   </data>
@@ -195,7 +198,8 @@ SELECT {values}
 WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
   </data>
   <data name="Merge" xml:space="preserve">
-    <value>MERGE {tableName} AS target
+    <value>DECLARE @dummy int;
+MERGE {tableName} AS target
 USING (SELECT {columnNamesAndValues}) as source
 ON ({on})
 WHEN MATCHED THEN
@@ -208,6 +212,12 @@ INSERT ({columns}) VALUES ({values});</value>
   </data>
   <data name="On" xml:space="preserve">
     <value>ON {condition}</value>
+  </data>
+  <data name="OneEqualsOne" xml:space="preserve">
+    <value>1 = 1</value>
+  </data>
+  <data name="OneEqualsZero" xml:space="preserve">
+    <value>1 = 0</value>
   </data>
   <data name="Or" xml:space="preserve">
     <value>OR</value>

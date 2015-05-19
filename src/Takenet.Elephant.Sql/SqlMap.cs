@@ -93,7 +93,7 @@ namespace Takenet.Elephant.Sql
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));           
-            if (Table.KeyColumns.Contains(propertyName)) throw new ArgumentException(@"A key property cannot be changed", nameof(propertyName));
+            if (Table.KeyColumnsNames.Contains(propertyName)) throw new ArgumentException(@"A key property cannot be changed", nameof(propertyName));
 
             var cancellationToken = CreateCancellationToken();
 
@@ -130,7 +130,7 @@ namespace Takenet.Elephant.Sql
                     {
                         throw new Exception("The database operation failed");
                     }
-                }
+                }                
             }
         }
 

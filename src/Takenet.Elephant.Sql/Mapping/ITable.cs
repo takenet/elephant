@@ -15,7 +15,7 @@ namespace Takenet.Elephant.Sql.Mapping
         /// <summary>
         /// Gets the names of the table key columns.
         /// </summary>
-        string[] KeyColumns { get; }
+        string[] KeyColumnsNames { get; }
 
         /// <summary>
         /// Gets the columns of the table with its types.

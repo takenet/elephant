@@ -203,6 +203,15 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to @dummy = 0.
+        /// </summary>
+        public static string DummyEqualsZero {
+            get {
+                return ResourceManager.GetString("DummyEqualsZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to =.
         /// </summary>
         public static string Equal {
@@ -270,7 +279,8 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MERGE {tableName} AS target
+        ///   Looks up a localized string similar to DECLARE @dummy int;
+        ///MERGE {tableName} AS target
         ///USING (SELECT {columnNamesAndValues}) as source
         ///ON ({on})
         ///WHEN MATCHED THEN
@@ -299,6 +309,24 @@ namespace Takenet.Elephant.Sql {
         public static string On {
             get {
                 return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 = 1.
+        /// </summary>
+        public static string OneEqualsOne {
+            get {
+                return ResourceManager.GetString("OneEqualsOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 = 0.
+        /// </summary>
+        public static string OneEqualsZero {
+            get {
+                return ResourceManager.GetString("OneEqualsZero", resourceCulture);
             }
         }
         

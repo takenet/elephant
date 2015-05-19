@@ -92,7 +92,7 @@ namespace Takenet.Elephant.Sql
                 {
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     tableName = tableName.AsSqlIdentifier(),
-                    filter = filterValues != null ? SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray()) : "1 = 1"
+                    filter = filterValues != null ? SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray()) : SqlTemplates.OneEqualsOne
                 },
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
@@ -124,7 +124,7 @@ namespace Takenet.Elephant.Sql
                     tableName = tableName.AsSqlIdentifier(),
                     columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
+                    filter = filterValues == null || !filterValues.Any() ? SqlTemplates.OneEqualsZero : SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
                 },
                 columnValues.Select(c => c.ToSqlParameter()));
         }
@@ -196,7 +196,7 @@ namespace Takenet.Elephant.Sql
                     tableName = tableName.AsSqlIdentifier(),
                     columnNamesAndValues = SqlHelper.GetCommaValueAsColumnStatement(filterAndColumnValues.Keys.ToArray()),
                     on = SqlHelper.GetLiteralJoinConditionStatement(filterValues.Keys.ToArray(), "source", "target"),
-                    columnValues = SqlHelper.GetCommaEqualsStatement(columnValues.Keys.ToArray()),
+                    columnValues = columnValues.Any() ? SqlHelper.GetCommaEqualsStatement(columnValues.Keys.ToArray()) : SqlTemplates.DummyEqualsZero,
                     columns = filterAndColumnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     values = filterAndColumnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate()
                 },
