@@ -16,7 +16,7 @@ namespace Takenet.Elephant
             return
                 type.IsValueType ||
                 type.IsPrimitive ||
-                new Type[] {
+                new [] {
                     typeof(String),
                     typeof(Decimal),
                     typeof(DateTime),
@@ -25,6 +25,18 @@ namespace Takenet.Elephant
                     typeof(Guid)
                 }.Contains(type) ||
                 Convert.GetTypeCode(type) != TypeCode.Object;
+        }
+
+        /// <summary>
+        /// Gets the default value for the Type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static object GetDefaultValue(this Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (type.IsValueType) return Activator.CreateInstance(type);
+            return null;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Takenet.Elephant
 {
@@ -16,6 +17,20 @@ namespace Takenet.Elephant
         public static Task<T> AsCompletedTask<T>(this T value)
         {
             return Task.FromResult(value);
+        }
+
+        /// <summary>
+        /// Determines if the value is a default value of the specified type.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="ignoreIfEnum">if set to <c>true</c> [ignore if enum].</param>
+        /// <returns></returns>
+        public static bool IsDefaultValueOfType(this object value, Type type, bool ignoreIfEnum = true)
+        {
+            if (value == null) return true;
+            if (ignoreIfEnum && type.IsEnum) return false;
+            return value.Equals(type.GetDefaultValue());
         }
     }
 }

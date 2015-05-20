@@ -22,7 +22,8 @@ namespace Takenet.Elephant
             while ((set = await setMap.GetValueOrDefaultAsync(key).ConfigureAwait(false)) == null)
             {                
                 set = new Set<TItem>();
-                if (await setMap.TryAddAsync(key, set).ConfigureAwait(false)) break;                
+                await set.AddAsync(item).ConfigureAwait(false);
+                if (await setMap.TryAddAsync(key, set, false).ConfigureAwait(false)) return;                
             }
 
             await set.AddAsync(item).ConfigureAwait(false);

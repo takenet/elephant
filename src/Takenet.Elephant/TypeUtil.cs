@@ -155,17 +155,5 @@ namespace Takenet.Elephant
             // Compile and return the value.
             return e.Compile()();
         }
-
-        /// <summary>
-        /// Gets the default value for the Type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static object GetDefaultValue(Type type)
-        {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-            if (type.IsValueType) return Activator.CreateInstance(type);
-            return null;
-        }
     }
 }

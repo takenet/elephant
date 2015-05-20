@@ -55,7 +55,7 @@ namespace Takenet.Elephant.Sql.Mapping
             }
         }
 
-        public IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool returnDefaultValues = false)
+        public IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool emitDefaultValues = false)
         {
             return _propertyGetFuncDictionary
                 .Where(
@@ -67,8 +67,7 @@ namespace Takenet.Elephant.Sql.Mapping
                 .Where(
                     p =>
                     {
-                        return returnDefaultValues ||
-                        (p.Value != null && !p.Value.Equals(TypeUtil.GetDefaultValue(_propertyDictionary[p.Key])));
+                        return emitDefaultValues || !p.Value.IsDefaultValueOfType(_propertyDictionary[p.Key]);
                     })
                 .ToDictionary(
                     p => p.Key,

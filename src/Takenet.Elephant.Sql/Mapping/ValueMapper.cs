@@ -21,7 +21,7 @@ namespace Takenet.Elephant.Sql.Mapping
             _columnName = columnName;
         }
 
-        public IDictionary<string, object> GetColumnValues(T value, string[] columns = null, bool returnDefaultValues = false)
+        public IDictionary<string, object> GetColumnValues(T value, string[] columns = null, bool emitDefaultValues = false)
         {
             return new Dictionary<string, object>()
             {

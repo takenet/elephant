@@ -6,7 +6,8 @@ using System.Reflection;
 namespace Takenet.Elephant
 {
     public class DictionaryConverter<T> : IDictionaryConverter<T>
-    {        
+    {
+        private static readonly IDictionary<string, Type> _propertyDictionary;
         private static readonly Dictionary<string, Func<object, object>> _getFuncsDictionary;
         private static readonly Dictionary<string, Action<object, object>> _setActionsDictionary;
         private static readonly bool _isSimpleType;
@@ -20,19 +21,22 @@ namespace Takenet.Elephant
             if (!_isSimpleType)
             {
                 var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                _propertyDictionary = properties.ToDictionary(p => p.Name, p => p.PropertyType);
                 _getFuncsDictionary = properties.ToDictionary(p => p.Name, TypeUtil.BuildGetAccessor);
                 _setActionsDictionary = properties.ToDictionary(p => p.Name, TypeUtil.BuildSetAccessor);
             }
         }
 
         private readonly Func<T> _valueFactory;
+        private readonly bool _emitDefaultValues;
 
-        public DictionaryConverter(Func<T> valueFactory)
+        public DictionaryConverter(Func<T> valueFactory, bool emitDefaultValues = false)
         {
             _valueFactory = valueFactory;
+            _emitDefaultValues = emitDefaultValues;
         }
 
-        public IEnumerable<string> Properties => _getFuncsDictionary.Keys;
+        public IEnumerable<string> Properties => _propertyDictionary.Keys;
 
         public T FromDictionary(IDictionary<string, object> dictionary)
         {
@@ -68,7 +72,7 @@ namespace Takenet.Elephant
             if (value == null) throw new ArgumentNullException(nameof(value));
             return _getFuncsDictionary
                 .ToDictionary(i => i.Key, i => i.Value(value))
-                .Where(i => i.Value != null && !i.Value.Equals(TypeUtil.GetDefaultValue(i.Value.GetType())))
+                .Where(i => _emitDefaultValues || !i.Value.IsDefaultValueOfType(_propertyDictionary[i.Key]))
                 .ToDictionary(i => i.Key, i => i.Value);
         }
     }
