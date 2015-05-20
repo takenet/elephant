@@ -10,9 +10,9 @@ namespace Takenet.Elephant.Sql.Mapping
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="columns">The columns to be returned.</param>
-        /// <param name="returnNullValues">indicates if null column values should be returned.</param>
+        /// <param name="returnDefaultValues">indicates if null or default column values should be returned.</param>
         /// <returns></returns>
-        IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool returnNullValues = false);
+        IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool returnDefaultValues = false);
 
         /// <summary>
         /// Creates an entity for the specified data record.

@@ -12,7 +12,7 @@ namespace Takenet.Elephant.Tests
 
         public override string ToString()
         {
-            return string.Format("{0};{1};{2}", StringProperty, IntegerProperty, GuidProperty);
+            return $"{StringProperty};{IntegerProperty};{GuidProperty}";
         }
 
         public static Item Parse(string s)

@@ -18,7 +18,7 @@ namespace Takenet.Elephant.Tests.Redis
         {
             _redisFixture.Server.FlushDatabase();
             const string mapName = "integer-object-hash";
-            return new RedisHashMap<int, string>(mapName, new StringRedisValueDictionaryConverter(), "localhost");
+            return new RedisHashMap<int, string>(mapName, new ValueRedisDictionaryConverter<string>(), "localhost");
         }
     }
 }

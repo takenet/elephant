@@ -42,8 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\LongRedisValueDictionaryConverter.cs" />
-    <Compile Include="Converters\StringRedisValueDictionaryConverter.cs" />
+    <Compile Include="Converters\TypeRedisDictionaryConverter.cs" />
+    <Compile Include="Converters\ValueRedisDictionaryConverter.cs" />
+    <Compile Include="IRedisDictionaryConverter.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="MapBase.cs" />
     <Compile Include="RedisHashMap.cs" />

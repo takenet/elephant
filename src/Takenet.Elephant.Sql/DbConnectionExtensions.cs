@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
@@ -61,18 +62,21 @@ namespace Takenet.Elephant.Sql
 
         public static DbCommand CreateDeleteCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues)
         {
+            if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
             return connection.CreateTextCommand(
                 SqlTemplates.Delete,
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
+                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
                 },
                 filterValues.Select(k => k.ToSqlParameter()));
         }
 
         public static DbCommand CreateUpdateCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
         {
+            if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
+            if (columnValues == null) throw new ArgumentNullException(nameof(columnValues));
             return connection.CreateTextCommand(
                 SqlTemplates.Update,
                 new
@@ -91,9 +95,9 @@ namespace Takenet.Elephant.Sql
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
+                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
                 },
-                filterValues.Select(k => k.ToSqlParameter()));
+                filterValues?.Select(k => k.ToSqlParameter()));
         }        
 
         public static DbCommand CreateInsertCommand(this DbConnection connection, string tableName, IDictionary<string, object> columnValues)
@@ -130,15 +134,16 @@ namespace Takenet.Elephant.Sql
 
         public static DbCommand CreateSelectCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues, string[] selectColumns)
         {
+            if (selectColumns == null) throw new ArgumentNullException(nameof(selectColumns));
             return connection.CreateTextCommand(
                 SqlTemplates.Select,
                 new
                 {
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     tableName = tableName.AsSqlIdentifier(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
+                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
                 },
-                filterValues.Select(k => k.ToSqlParameter()));
+                filterValues?.Select(k => k.ToSqlParameter()));
         }
 
         public static DbCommand CreateSelectCountCommand(this DbConnection connection, string tableName, string filter)
@@ -176,9 +181,9 @@ namespace Takenet.Elephant.Sql
                 {
                     tableName = tableName.AsSqlIdentifier(),
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
+                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
                 },
-                filterValues.Select(k => k.ToSqlParameter()));
+                filterValues?.Select(k => k.ToSqlParameter()));
         }
 
         public static DbCommand CreateMergeCommand(this DbConnection connection, string tableName, IDictionary<string, object> keyValues, IDictionary<string, object> columnValues)

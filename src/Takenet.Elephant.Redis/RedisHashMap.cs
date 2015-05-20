@@ -13,12 +13,12 @@ namespace Takenet.Elephant.Redis
     /// <typeparam name="TValue"></typeparam>
     public class RedisHashMap<TKey, TValue> : MapBase<TKey, TValue>, IPropertyMap<TKey, TValue>
     {
-        private readonly IDictionaryConverter<TValue> _dictionaryConverter;
+        private readonly IRedisDictionaryConverter<TValue> _dictionaryConverter;
         private readonly HashSet<string> _propertiesNameHashSet;
 
         #region Constructor
 
-        public RedisHashMap(string mapName, IDictionaryConverter<TValue> dictionaryConverter, string configuration)
+        public RedisHashMap(string mapName, IRedisDictionaryConverter<TValue> dictionaryConverter, string configuration)
             : base(mapName, configuration)
         {
             _dictionaryConverter = dictionaryConverter;
@@ -48,7 +48,7 @@ namespace Takenet.Elephant.Redis
             if (hashEntries != null &&
                 hashEntries.Length > 0)
             {
-                var entriesDictionary = hashEntries.ToDictionary(t => (string)t.Name, t => (object)t.Value);
+                var entriesDictionary = hashEntries.ToDictionary(t => (string)t.Name, t => t.Value);
                 return _dictionaryConverter.FromDictionary(entriesDictionary);
             }
 
@@ -92,10 +92,12 @@ namespace Takenet.Elephant.Redis
 
             var dictionary = _dictionaryConverter.ToDictionary(value);
             var hashEntries = dictionary
-                .Select(i => new HashEntry(i.Key, i.Value.ToRedisValue()))
+                .Select(i => new HashEntry(i.Key, i.Value))
                 .ToArray();
 
-            return database.HashSetAsync(GetRedisKey(key), hashEntries);
+            return hashEntries.Any() ? 
+                database.HashSetAsync(GetRedisKey(key), hashEntries) : 
+                TaskUtil.CompletedTask;
         }
 
         public async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)

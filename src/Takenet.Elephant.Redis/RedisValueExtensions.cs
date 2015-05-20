@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using StackExchange.Redis;
 
 namespace Takenet.Elephant.Redis
@@ -15,7 +16,10 @@ namespace Takenet.Elephant.Redis
             if (type == typeof(bool)) return (bool)value;            
             if (type == typeof(bool?)) return (bool?)value;            
             if (type == typeof(byte[])) return (byte[])value;            
-            if (type == typeof(string)) return (string)value;            
+            if (type == typeof(string)) return (string)value;
+            if (type == typeof(Guid)) return Guid.Parse(value);
+            if (type == typeof(DateTimeOffset)) return DateTimeOffset.Parse(value, DateTimeFormatInfo.InvariantInfo);
+            if (type == typeof(DateTime)) return DateTime.Parse(value, DateTimeFormatInfo.InvariantInfo);            
             throw new NotSupportedException($"The property type '{value.GetType()}'  is not supported");
         }
 
@@ -26,36 +30,16 @@ namespace Takenet.Elephant.Redis
 
         public static RedisValue ToRedisValue(this object value)
         {
-            RedisValue redisValue;
-
-            if (value is int)
-            {
-                redisValue = (int)value;
-            }
-            else if (value is long)
-            {
-                redisValue = (long)value;
-            }
-            else if (value is bool)
-            {
-                redisValue = (bool)value;
-            }
-            else if (value is byte[])
-            {
-                redisValue = (byte[])value;
-            }
-            else if (value is string)
-            {
-                redisValue = (string)value;
-            }
-            else
-            {
-                throw new NotSupportedException(string.Format("The property type '{0}'  is not supported", value.GetType()));
-            }
-
-            return redisValue;
-
+            if (value == null) return RedisValue.Null;            
+            if (value is int) return (int)value;            
+            if (value is long) return (long)value;            
+            if (value is bool) return (bool)value;            
+            if (value is byte[]) return (byte[])value;            
+            if (value is string) return (string)value;
+            if (value is Guid) return value.ToString();
+            if (value is DateTimeOffset) return ((DateTimeOffset)value).ToString(DateTimeFormatInfo.InvariantInfo);
+            if (value is DateTime) return ((DateTime)value).ToString(DateTimeFormatInfo.InvariantInfo);
+            throw new NotSupportedException($"The property type '{value.GetType()}'  is not supported");
         }
-
     }
 }

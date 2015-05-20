@@ -137,5 +137,35 @@ namespace Takenet.Elephant
 
             return expr.Compile();
         }
+
+        /// <summary>
+        /// Gets the default value for the Type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T GetDefaultValue<T>()
+        {
+            // We want an Func<T> which returns the default.
+            // Create that expression here.
+            Expression<Func<T>> e = Expression.Lambda<Func<T>>(
+                // The default value, always get what the *code* tells us.
+                Expression.Default(typeof(T))
+            );
+
+            // Compile and return the value.
+            return e.Compile()();
+        }
+
+        /// <summary>
+        /// Gets the default value for the Type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static object GetDefaultValue(Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (type.IsValueType) return Activator.CreateInstance(type);
+            return null;
+        }
     }
 }

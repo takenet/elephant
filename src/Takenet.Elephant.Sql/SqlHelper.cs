@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -6,6 +9,12 @@ namespace Takenet.Elephant.Sql
 {
     internal static class SqlHelper
     {
+        internal static string GetAndEqualsStatement(IDictionary<string, object> filterValues)
+        {
+            if (filterValues == null) return SqlTemplates.OneEqualsOne;
+            return GetAndEqualsStatement(filterValues.Keys.ToArray());
+        }
+
         internal static string GetAndEqualsStatement(string[] columns)
         {
             return GetAndEqualsStatement(columns, columns);

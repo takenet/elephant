@@ -22,7 +22,7 @@ namespace Takenet.Elephant.Memory
         }
 
         public Map(Func<TValue> valueFactory)
-            : this(valueFactory, new TypeDictionaryConverter<TValue>(valueFactory))
+            : this(valueFactory, new DictionaryConverter<TValue>(valueFactory))
         {
          
         }
@@ -152,9 +152,10 @@ namespace Takenet.Elephant.Memory
             if (value == null) throw new ArgumentNullException(nameof(value));
 
             var properties = DictionaryConverter.ToDictionary(value);
+            if (!properties.Any()) return TaskUtil.CompletedTask;
             var existingValue = GetOrCreateValue(key);
 
-            foreach (var propertyKeyValue in properties.Where(p => p.Value != null))
+            foreach (var propertyKeyValue in properties)
             {
                 var property = typeof(TValue)
                     .GetProperty(

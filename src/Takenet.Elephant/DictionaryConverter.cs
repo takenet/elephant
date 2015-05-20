@@ -5,14 +5,14 @@ using System.Reflection;
 
 namespace Takenet.Elephant
 {
-    public class TypeDictionaryConverter<T> : IDictionaryConverter<T>
+    public class DictionaryConverter<T> : IDictionaryConverter<T>
     {        
         private static readonly Dictionary<string, Func<object, object>> _getFuncsDictionary;
         private static readonly Dictionary<string, Action<object, object>> _setActionsDictionary;
         private static readonly bool _isSimpleType;
         private const string VALUE_KEY = "Value";        
         
-        static TypeDictionaryConverter()
+        static DictionaryConverter()
         {
             var type = typeof (T);
             _isSimpleType = type.IsSimpleType();
@@ -27,7 +27,7 @@ namespace Takenet.Elephant
 
         private readonly Func<T> _valueFactory;
 
-        public TypeDictionaryConverter(Func<T> valueFactory)
+        public DictionaryConverter(Func<T> valueFactory)
         {
             _valueFactory = valueFactory;
         }
@@ -37,9 +37,13 @@ namespace Takenet.Elephant
         public T FromDictionary(IDictionary<string, object> dictionary)
         {
             if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
+
             if (_isSimpleType)
             {
-                return (T)dictionary[VALUE_KEY];
+                object objectValue;
+                dictionary.TryGetValue(VALUE_KEY, out objectValue);
+                if (objectValue != null) return (T) objectValue;
+                return default(T);
             }
             var value = _valueFactory();
             foreach (var item in dictionary)
@@ -52,16 +56,20 @@ namespace Takenet.Elephant
         }
 
         public IDictionary<string, object> ToDictionary(T value)
-        {
-            if (value == null) throw new ArgumentNullException(nameof(value));
+        {                                    
             if (_isSimpleType)
             {
+                if (value == null || value.Equals(TypeUtil.GetDefaultValue<T>())) return new Dictionary<string, object>();
                 return new Dictionary<string, object>()
                 {
                     {VALUE_KEY, value}
                 };
             }
-            return _getFuncsDictionary.ToDictionary(i => i.Key, i => i.Value(value));
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            return _getFuncsDictionary
+                .ToDictionary(i => i.Key, i => i.Value(value))
+                .Where(i => i.Value != null && !i.Value.Equals(TypeUtil.GetDefaultValue(i.Value.GetType())))
+                .ToDictionary(i => i.Key, i => i.Value);
         }
     }
 }

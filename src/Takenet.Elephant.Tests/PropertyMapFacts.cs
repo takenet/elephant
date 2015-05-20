@@ -136,5 +136,51 @@ namespace Takenet.Elephant.Tests
             var actual = await map.GetPropertyValueOrDefaultAsync<TProperty>(key, property.Key);
             AssertEquals(actual, changedProperty.Value);
         }
+
+
+        [Fact(DisplayName = "MergeNewValueWithDefaultValuePropertiesSucceeds")]
+        public async Task MergeNewValueWithDefaultValuePropertiesSucceeds()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var value = CreateValue(key);
+            foreach (var property in typeof(TValue).GetProperties())
+            {
+                var propertyDefaultValue = property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
+                property.SetValue(value, propertyDefaultValue);
+            }
+            
+            // Act
+            await map.MergeAsync(key, value);
+
+            // Assert
+            var actual = await map.GetValueOrDefaultAsync(key);
+            AssertIsDefault(actual);
+        }
+
+        [Fact(DisplayName = "MergeExistingValueWithDefaultValuePropertiesSucceeds")]
+        public async Task MergeExistingValueWithDefaultValuePropertiesSucceeds()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var value = CreateValue(key);
+            await map.TryAddAsync(key, value, false);
+            var clonedValue = value.Clone();
+
+            foreach (var property in typeof(TValue).GetProperties())
+            {
+                var propertyDefaultValue = property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
+                property.SetValue(clonedValue, propertyDefaultValue);
+            }
+
+            // Act
+            await map.MergeAsync(key, clonedValue);
+
+            // Assert
+            var actual = await map.GetValueOrDefaultAsync(key);
+            AssertEquals(actual, value);
+        }
     }
 }

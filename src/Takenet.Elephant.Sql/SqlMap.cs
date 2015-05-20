@@ -124,13 +124,16 @@ namespace Takenet.Elephant.Sql
                 var keyColumnValues = KeyMapper.GetColumnValues(key);
                 var columnValues = GetColumnValues(value);
 
-                using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
+                if (columnValues.Any())
                 {
-                    if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
+                    using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
                     {
-                        throw new Exception("The database operation failed");
+                        if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
+                        {
+                            throw new Exception("The database operation failed");
+                        }
                     }
-                }                
+                }
             }
         }
 
