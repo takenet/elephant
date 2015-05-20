@@ -57,7 +57,7 @@ namespace Takenet.Elephant.Sql
         protected override Expression VisitMember(MemberExpression node)
         {
             if (node.Expression == null) throw new NotSupportedException($"The member '{node.Member.Name}' is not supported");
-
+            
             object value;
             switch (node.Expression.NodeType)
             {
@@ -66,7 +66,19 @@ namespace Takenet.Elephant.Sql
                     return node;
 
                 case ExpressionType.MemberAccess:
-                    var objectMember = Expression.Convert(node, typeof(object));
+
+                    var memberExpression = (MemberExpression) node.Expression;
+
+                    //// System.InvalidOperationException: variable 'i' of type 'System.Collections.Generic.KeyValuePair`2[System.Guid,Takenet.Elephant.Tests.Item]' referenced from scope '', but it is not defined
+
+                    //if (memberExpression.Member is PropertyInfo)
+                    //{
+                    //    objectMember = Expression.Convert(memberExpression, typeof(object));
+                    //    objectMember = Expression.Convert(node, typeof(object));
+
+                    //}
+
+                    UnaryExpression objectMember = Expression.Convert(node, typeof(object));                                        
                     var getterLambda = Expression.Lambda<Func<object>>(objectMember);
                     var getter = getterLambda.Compile();
                     value = getter();

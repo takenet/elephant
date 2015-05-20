@@ -68,6 +68,7 @@
     <Compile Include="GuidItemExpirableKeyMapFacts.cs" />
     <Compile Include="GuidItemItemSetMapFacts.cs" />
     <Compile Include="GuidItemKeysMapFacts.cs" />
+    <Compile Include="GuidItemKeyValueMapQueryableStorageFacts.cs" />
     <Compile Include="GuidItemMapFacts.cs" />
     <Compile Include="GuidItemKeyQueryableMapFacts.cs" />
     <Compile Include="GuidItemMapQueryableStorageFacts.cs" />
@@ -85,10 +86,12 @@
     <Compile Include="KeyQueryableMapFacts.cs" />
     <Compile Include="KeysMapFacts.cs" />
     <Compile Include="MapFacts.cs" />
+    <Compile Include="KeyValueMapQueryableStorageFacts.cs" />
     <Compile Include="MapQueryableStorageFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemExpirableKeyMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemItemSetMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemKeysMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemKeyValueMapQueryableStorageFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemKeyQueryableMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemUpdatableMapFacts.cs" />
@@ -134,6 +137,7 @@
     <Compile Include="Sql\SqlConnectionFixture.cs" />
     <Compile Include="Sql\SqlCollectionFixture.cs" />
     <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidItemKeyValueMapQueryableStorageFacts.cs" />
     <Compile Include="Sql\SqlGuidItemKeysMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemKeyQueryableMapFacts.cs" />

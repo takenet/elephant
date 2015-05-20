@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -13,7 +14,7 @@ namespace Takenet.Elephant.Memory
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>, IKeyQueryableMap<TKey, TValue>
+    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>, IQueryableStorage<KeyValuePair<TKey, TValue>>, IKeyQueryableMap<TKey, TValue>
     {
         public Map()
             : this(() => (TValue)Activator.CreateInstance(typeof(TValue)))
@@ -258,6 +259,19 @@ namespace Takenet.Elephant.Memory
             return value;
         }
 
+        public Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TValue>, bool>> @where, Expression<Func<KeyValuePair<TKey, TValue>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        {
+            if (@where == null) @where = value => true;
+            if (@select != null) throw new NotSupportedException("The select clause is not supported");
 
+            var totalValues = InternalDictionary
+                .Where(pair => where.Compile().Invoke(pair));
+            var resultValues = totalValues
+                .Skip(skip)
+                .Take(take);
+
+            return Task.FromResult(
+                new QueryResult<KeyValuePair<TKey, TValue>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TValue>>(resultValues), totalValues.Count()));
+        }
     }
 }
