@@ -8,27 +8,24 @@ namespace Takenet.Elephant.Sql
     {
         internal static string GetAndEqualsStatement(string[] columns)
         {
-            return GetSeparateEqualsStatement(SqlTemplates.And, columns);
+            return GetAndEqualsStatement(columns, columns);
         }
 
         internal static string GetAndEqualsStatement(string[] columns, string[] parameters)
         {
-            return GetSeparateEqualsStatement(SqlTemplates.And, columns, parameters);
+            return columns.Length == 0 ? 
+                SqlTemplates.OneEqualsOne : 
+                GetSeparateEqualsStatement(SqlTemplates.And, columns, parameters);
         }
 
         internal static string GetCommaEqualsStatement(string[] columns)
         {
-            return GetSeparateEqualsStatement(",", columns);
+            return GetCommaEqualsStatement(columns, columns);
         }
 
         internal static string GetCommaEqualsStatement(string[] columns, string[] parameters)
         {
             return GetSeparateEqualsStatement(",", columns, parameters);
-        }
-
-        internal static string GetSeparateEqualsStatement(string separator, string[] columns)
-        {
-            return GetSeparateEqualsStatement(separator, columns, columns);
         }
 
         internal static string GetSeparateEqualsStatement(string separator, string[] columns, string[] parameters)

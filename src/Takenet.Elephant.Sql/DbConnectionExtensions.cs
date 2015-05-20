@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Sql
 {
-    public static class DbConnectionExtensions
+    internal static class DbConnectionExtensions
     {
         public static Task<int> ExecuteNonQueryAsync(this DbConnection connection, string commandText, CancellationToken cancellationToken, SqlParameter[] sqlParameters = null)
         {
@@ -71,6 +71,19 @@ namespace Takenet.Elephant.Sql
                 filterValues.Select(k => k.ToSqlParameter()));
         }
 
+        public static DbCommand CreateUpdateCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.Update,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    columnValues = SqlHelper.GetCommaEqualsStatement(columnValues.Keys.ToArray()),
+                    filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
+                },
+                filterValues.Union(columnValues).Select(c => c.ToSqlParameter()));
+        }
+
         public static DbCommand CreateContainsCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues)
         {
             return connection.CreateTextCommand(
@@ -81,21 +94,7 @@ namespace Takenet.Elephant.Sql
                     filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
                 },
                 filterValues.Select(k => k.ToSqlParameter()));
-        }
-
-        public static DbCommand CreateSelectCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues,
-            string[] selectColumns)
-        {
-            return connection.CreateTextCommand(
-                SqlTemplates.Select,
-                new
-                {
-                    columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
-                    tableName = tableName.AsSqlIdentifier(),
-                    filter = filterValues != null ? SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray()) : SqlTemplates.OneEqualsOne
-                },
-                filterValues?.Select(k => k.ToSqlParameter()));
-        }
+        }        
 
         public static DbCommand CreateInsertCommand(this DbConnection connection, string tableName, IDictionary<string, object> columnValues)
         {
@@ -129,6 +128,19 @@ namespace Takenet.Elephant.Sql
                 columnValues.Select(c => c.ToSqlParameter()));
         }
 
+        public static DbCommand CreateSelectCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues, string[] selectColumns)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.Select,
+                new
+                {
+                    columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
+                    tableName = tableName.AsSqlIdentifier(),
+                    filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
+                },
+                filterValues.Select(k => k.ToSqlParameter()));
+        }
+
         public static DbCommand CreateSelectCountCommand(this DbConnection connection, string tableName, string filter)
         {
             return connection.CreateTextCommand(
@@ -156,19 +168,6 @@ namespace Takenet.Elephant.Sql
                 });
         }
 
-        public static DbCommand CreateUpdateCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
-        {
-            return connection.CreateTextCommand(
-                SqlTemplates.Update,
-                new
-                {
-                    tableName = tableName.AsSqlIdentifier(),
-                    columnValues = SqlHelper.GetCommaEqualsStatement(columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
-                },
-                filterValues.Union(columnValues).Select(c => c.ToSqlParameter()));
-        }
-
         public static DbCommand CreateSelectTop1Command(this DbConnection connection, string tableName, string[] selectColumns, IDictionary<string, object> filterValues)
         {
             return connection.CreateTextCommand(
@@ -182,10 +181,9 @@ namespace Takenet.Elephant.Sql
                 filterValues.Select(k => k.ToSqlParameter()));
         }
 
-        public static DbCommand CreateMergeCommand(this DbConnection connection, string tableName,
-            IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
+        public static DbCommand CreateMergeCommand(this DbConnection connection, string tableName, IDictionary<string, object> keyValues, IDictionary<string, object> columnValues)
         {
-            var filterAndColumnValues = filterValues
+            var keyAndColumnValues = keyValues
                 .Union(columnValues)
                 .ToDictionary(c => c.Key, c => c.Value);
 
@@ -194,14 +192,13 @@ namespace Takenet.Elephant.Sql
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    columnNamesAndValues = SqlHelper.GetCommaValueAsColumnStatement(filterAndColumnValues.Keys.ToArray()),
-                    on = SqlHelper.GetLiteralJoinConditionStatement(filterValues.Keys.ToArray(), "source", "target"),
+                    columnNamesAndValues = SqlHelper.GetCommaValueAsColumnStatement(keyAndColumnValues.Keys.ToArray()),
+                    on = SqlHelper.GetLiteralJoinConditionStatement(keyValues.Keys.ToArray(), "source", "target"),
                     columnValues = columnValues.Any() ? SqlHelper.GetCommaEqualsStatement(columnValues.Keys.ToArray()) : SqlTemplates.DummyEqualsZero,
-                    columns = filterAndColumnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
-                    values = filterAndColumnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate()
+                    columns = keyAndColumnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
+                    values = keyAndColumnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate()
                 },
-                filterAndColumnValues.Select(k => k.ToSqlParameter()));
+                keyAndColumnValues.Select(k => k.ToSqlParameter()));
         }
-
     }
 }
