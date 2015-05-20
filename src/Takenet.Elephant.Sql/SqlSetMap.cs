@@ -161,7 +161,9 @@ namespace Takenet.Elephant.Sql
 
             protected override IDictionary<string, object> GetColumnValues(TItem entity)
             {
-                return MapKeyColumnValues.Concat(base.GetColumnValues(entity)).ToDictionary(k => k.Key, k => k.Value);
+                return MapKeyColumnValues
+                    .Union(base.GetColumnValues(entity))
+                    .ToDictionary(k => k.Key, k => k.Value);
             }
         }
     }

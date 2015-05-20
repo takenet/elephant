@@ -11,7 +11,7 @@ using Takenet.Elephant.Sql.Mapping;
 namespace Takenet.Elephant.Sql
 {
     public abstract class MapStorageBase<TKey, TValue> : StorageBase<TValue>
-    {
+    {        
         protected MapStorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper) 
             : base(databaseDriver, connectionString, table, valueMapper)
         {
@@ -24,7 +24,7 @@ namespace Takenet.Elephant.Sql
         {
             return KeyMapper
                 .GetColumnValues(key)
-                .Concat(GetColumnValues(value))
+                .Union(GetColumnValues(value))
                 .ToDictionary(t => t.Key, t => t.Value);
         }
 

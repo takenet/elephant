@@ -47,13 +47,13 @@ namespace Takenet.Elephant
             try
             {
                 var getParseFuncMethod = typeof(TypeUtil)
-                    .GetMethod("GetParseFunc", BindingFlags.Static | BindingFlags.Public)
+                    .GetMethod(nameof(GetParseFunc), BindingFlags.Static | BindingFlags.Public)
                     .MakeGenericMethod(type);
 
                 var genericGetParseFunc = getParseFuncMethod.Invoke(null, null);
-
+                
                 var parseFuncAdapterMethod = typeof(TypeUtil)
-                    .GetMethod("ParseFuncAdapter", BindingFlags.Static | BindingFlags.NonPublic)
+                    .GetMethod(nameof(ParseFuncAdapter), BindingFlags.Static | BindingFlags.NonPublic)
                     .MakeGenericMethod(type);
 
                 parseFunc = (Func<string, object>)parseFuncAdapterMethod.Invoke(null, new[] { genericGetParseFunc });
@@ -65,6 +65,11 @@ namespace Takenet.Elephant
             }
 
             return parseFunc;
+        }
+
+        private static Func<string, object> ParseFuncAdapter<T>(Func<string, T> parseFunc)
+        {
+            return (s) => (object)parseFunc(s);
         }
 
         /// <summary>
