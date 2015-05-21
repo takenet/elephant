@@ -30,9 +30,10 @@ namespace Takenet.Elephant.Tests
             var skip = 0;
             var take = 10;
             var storage = await CreateAsync(value1, value2, value3);
+            Expression<Func<T, T>> selectFunc = v => v;
 
             // Act
-            var actual = await storage.QueryAsync<T>(null, null, skip, take, cancellationToken);
+            var actual = await storage.QueryAsync<T>(null, selectFunc, skip, take, cancellationToken);
 
             // Assert            
             var actualList = await actual.ToListAsync();

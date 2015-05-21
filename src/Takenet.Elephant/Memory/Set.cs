@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -12,11 +13,16 @@ namespace Takenet.Elephant.Memory
     /// <typeparam name="T"></typeparam>
     public class Set<T> : ISet<T>, IQueryableStorage<T>
     {
-        private readonly System.Collections.Generic.HashSet<T> _hashSet;
+        private readonly HashSet<T> _hashSet;
 
         public Set()
+            : this(EqualityComparer<T>.Default)
         {
-            _hashSet = new System.Collections.Generic.HashSet<T>();
+        }
+
+        public Set(IEqualityComparer<T> equalityComparer)
+        {
+            _hashSet = new HashSet<T>(equalityComparer);
         }
 
         #region ISet<T> Members
@@ -62,7 +68,7 @@ namespace Takenet.Elephant.Memory
         {
             var predicate = where.Compile();
 
-            var totalValues = this._hashSet
+            var totalValues = _hashSet
                 .Where(predicate.Invoke);
 
             var resultValues = totalValues

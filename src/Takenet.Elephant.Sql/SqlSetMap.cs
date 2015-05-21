@@ -2,20 +2,26 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql
 {
-    public class SqlSetMap<TKey, TItem> : MapStorageBase<TKey, TItem>, ISetMap<TKey, TItem>, IItemSetMap<TKey, TItem>, IKeysMap<TKey, ISet<TItem>>
+    public class SqlSetMap<TKey, TItem> : MapStorageBase<TKey, TItem>, IItemSetMap<TKey, TItem>, IKeysMap<TKey, ISet<TItem>>
     {
         private readonly IsolationLevel _addIsolationLevel;
+
+        #region Constructor
 
         public SqlSetMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TItem> valueMapper, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted)
             : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
         {
             _addIsolationLevel = addIsolationLevel;
         }
+
+        #endregion
 
         #region ISetMap<TKey, TItem> Members
 
@@ -117,7 +123,6 @@ namespace Takenet.Elephant.Sql
         }
 
         #endregion
-
 
         #region IItemSetMap<TKey, TItem> Members
 

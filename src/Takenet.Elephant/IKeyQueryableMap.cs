@@ -10,7 +10,7 @@ namespace Takenet.Elephant
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public interface IKeyQueryableMap<TKey, TValue> : IMap<TKey, TValue>
+    public interface IKeyQueryableMap<TKey, TValue>
     {
         Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> where, Expression<Func<TKey, TResult>> select, int skip, int take, CancellationToken cancellationToken);
     }

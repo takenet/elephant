@@ -14,14 +14,13 @@ namespace Takenet.Elephant.Sql
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IKeysMap<TKey, TValue>, IKeyQueryableMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IUpdatableMap<TKey, TValue>, IQueryableStorage<KeyValuePair<TKey, TValue>>
+    public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IKeysMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IUpdatableMap<TKey, TValue>
     {
         public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper) 
             : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
         {
 
         }
-
 
         #region IMap<TKey,TValue> Members
 
@@ -166,19 +165,6 @@ namespace Takenet.Elephant.Sql
 
         #endregion
 
-        #region IKeyQueryableMap<TKey, TValue> Members
-
-        public async Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take,
-            CancellationToken cancellationToken)
-        {
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-            {
-                return await QueryForKeysAsync(connection, where, @select, skip, take, cancellationToken);
-            }
-        }
-
-        #endregion
-
         #region IUpdatableMap<TKey, TValue> Members
 
         public async Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
@@ -210,39 +196,5 @@ namespace Takenet.Elephant.Sql
         }
 
         #endregion
-
-        public async Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TValue>, bool>> @where, Expression<Func<KeyValuePair<TKey, TValue>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
-        {
-            if (select != null) throw new NotImplementedException("The select parameter is not supported yet");
-            var selectColumns = Table.Columns.Keys.ToArray();
-            var orderByColumns = Table.KeyColumnsNames;
-
-            var expressionParameterReplacementDictionary = new Dictionary<string, string>();
-
-            if (KeyMapper is ValueMapper<TKey>)
-            {
-                expressionParameterReplacementDictionary.Add("Key", ((ValueMapper<TKey>)KeyMapper).ColumnName);
-            }
-
-            if (Mapper is ValueMapper<TValue>)
-            {
-                expressionParameterReplacementDictionary.Add("Value", ((ValueMapper<TValue>)Mapper).ColumnName);
-            }
-
-            var filter = SqlHelper.TranslateToSqlWhereClause(where, expressionParameterReplacementDictionary);
-            var connection = await GetConnectionAsync(cancellationToken);
-            int totalCount;
-            using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
-            {
-                totalCount = (int)await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
-            }
-
-            var command = connection.CreateSelectSkipTakeCommand(
-                Table.Name, selectColumns, filter, skip, take, orderByColumns);
-
-            return new QueryResult<KeyValuePair<TKey, TValue>>(
-                new DbDataReaderAsyncEnumerable<KeyValuePair<TKey, TValue>>(command, new KeyValuePairMapper<TKey, TValue>(KeyMapper, Mapper), selectColumns),
-                totalCount);
-        }
     }
 }

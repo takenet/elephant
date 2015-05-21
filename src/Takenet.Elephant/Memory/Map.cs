@@ -41,7 +41,7 @@ namespace Takenet.Elephant.Memory
 
         #region IMap<TKey,TValue> Members
 
-        public Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
+        public virtual Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
         {
             if (overwrite)
             {
@@ -214,8 +214,11 @@ namespace Takenet.Elephant.Memory
         public Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
-            if (@select != null) throw new NotSupportedException("The select clause is not supported");
-
+            if (select != null &&
+                select.ReturnType != typeof(TKey))
+            {
+                throw new NotImplementedException("The select parameter is not supported yet");
+            }
             var totalValues = InternalDictionary                
                 .Where(pair => where.Compile().Invoke(pair.Value));
             var resultValues = totalValues
@@ -232,8 +235,12 @@ namespace Takenet.Elephant.Memory
 
         public Task<QueryResult<TValue>> QueryAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TValue, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
-            if (@where == null) @where = value => true;            
-            if (@select != null) throw new NotSupportedException("The select clause is not supported");
+            if (@where == null) @where = value => true;
+            if (select != null && 
+                select.ReturnType != typeof(TValue))
+            {
+                throw new NotImplementedException("The select parameter is not supported yet");
+            }
 
             var totalValues = InternalDictionary
                 .Where(pair => where.Compile().Invoke(pair.Value));
@@ -262,8 +269,11 @@ namespace Takenet.Elephant.Memory
         public Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TValue>, bool>> @where, Expression<Func<KeyValuePair<TKey, TValue>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
-            if (@select != null) throw new NotSupportedException("The select clause is not supported");
-
+            if (select != null &&
+                select.ReturnType != typeof(KeyValuePair<TKey, TValue>))
+            {
+                throw new NotImplementedException("The select parameter is not supported yet");
+            }
             var totalValues = InternalDictionary
                 .Where(pair => where.Compile().Invoke(pair));
             var resultValues = totalValues

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Takenet.Elephant.Tests
 {
     public abstract class KeyQueryableMapFacts<TKey, TValue> : FactsBase
     {
-        public abstract IKeyQueryableMap<TKey, TValue> Create();
+        public abstract Task<IKeyQueryableMap<TKey, TValue>> CreateAsync(params KeyValuePair<TKey, TValue>[] values);
 
         public abstract Expression<Func<TValue, bool>> CreateFilter(TValue value);
 
@@ -34,15 +35,16 @@ namespace Takenet.Elephant.Tests
             var value1 = CreateValue(key1);
             var value2 = CreateValue(key2);
             var value3 = CreateValue(key3);
-            var map = Create();
-            await map.TryAddAsync(key1, value1);
-            await map.TryAddAsync(key2, value2);
-            await map.TryAddAsync(key3, value3);
+            var map = await CreateAsync(
+                new KeyValuePair<TKey, TValue>(key1, value1),
+                new KeyValuePair<TKey, TValue>(key2, value2),
+                new KeyValuePair<TKey, TValue>(key3, value3));
             var skip = 0;
             var take = 5;
+            Expression<Func<TKey, TKey>> selectFunc = v => v;
 
             // Act
-            var actual = await map.QueryForKeysAsync<TKey>(null, null, skip, take, CancellationToken.None);
+            var actual = await map.QueryForKeysAsync<TKey>(null, selectFunc, skip, take, CancellationToken.None);
 
             // Assert
             AssertEquals(actual.Total, 3);
@@ -63,10 +65,10 @@ namespace Takenet.Elephant.Tests
             var value1 = CreateValue(key1);
             var value2 = CreateValue(key2);
             var value3 = CreateValue(key3);
-            var map = Create();
-            await map.TryAddAsync(key1, value1);
-            await map.TryAddAsync(key2, value2);
-            await map.TryAddAsync(key3, value3);
+            var map = await CreateAsync(
+                new KeyValuePair<TKey, TValue>(key1, value1),
+                new KeyValuePair<TKey, TValue>(key2, value2),
+                new KeyValuePair<TKey, TValue>(key3, value3));
             var skip = 0;
             var take = 5;
 
@@ -87,14 +89,15 @@ namespace Takenet.Elephant.Tests
             var key1 = CreateKey();
             var key2 = CreateKey();
             var key3 = CreateKey();
-            var value = CreateValue(key1);            
-            var map = Create();
-            await map.TryAddAsync(key1, value);
-            await map.TryAddAsync(key2, value);
-            await map.TryAddAsync(key3, value);
+            var value = CreateValue(key1);
             var key4 = CreateKey();
             var anyValue = CreateValue(key4);
-            await map.TryAddAsync(key4, anyValue);
+            var map = await CreateAsync(
+                new KeyValuePair<TKey, TValue>(key1, value),
+                new KeyValuePair<TKey, TValue>(key2, value),
+                new KeyValuePair<TKey, TValue>(key3, value),
+                new KeyValuePair<TKey, TValue>(key4, anyValue));
+            
             var skip = 0;
             var take = 5;
 
@@ -120,9 +123,9 @@ namespace Takenet.Elephant.Tests
             var value1 = CreateValue(key1);
             var value2 = CreateValue(key2);
             var value3 = CreateValue(key3);
-            var map = Create();
-            await map.TryAddAsync(key1, value1);            
-            await map.TryAddAsync(key3, value3);
+            var map = await CreateAsync(
+                new KeyValuePair<TKey, TValue>(key1, value1),
+                new KeyValuePair<TKey, TValue>(key3, value3));
             var skip = 0;
             var take = 5;
 
@@ -149,12 +152,12 @@ namespace Takenet.Elephant.Tests
             var value3 = CreateValue(key3);
             var value4 = CreateValue(key3);
             var value5 = CreateValue(key3);
-            var map = Create();
-            await map.TryAddAsync(key1, value1);
-            await map.TryAddAsync(key2, value2);
-            await map.TryAddAsync(key3, value3);
-            await map.TryAddAsync(key4, value4);
-            await map.TryAddAsync(key5, value5);
+            var map = await CreateAsync(
+                new KeyValuePair<TKey, TValue>(key1, value1),
+                new KeyValuePair<TKey, TValue>(key2, value2),
+                new KeyValuePair<TKey, TValue>(key3, value3),
+                new KeyValuePair<TKey, TValue>(key4, value4),
+                new KeyValuePair<TKey, TValue>(key5, value5));
             var skip = 0;
             var take = 3;
 
@@ -181,12 +184,12 @@ namespace Takenet.Elephant.Tests
             var value3 = CreateValue(key3);
             var value4 = CreateValue(key3);
             var value5 = CreateValue(key3);
-            var map = Create();
-            await map.TryAddAsync(key1, value1);
-            await map.TryAddAsync(key2, value2);
-            await map.TryAddAsync(key3, value3);
-            await map.TryAddAsync(key4, value4);
-            await map.TryAddAsync(key5, value5);
+            var map = await CreateAsync(
+                new KeyValuePair<TKey, TValue>(key1, value1),
+                new KeyValuePair<TKey, TValue>(key2, value2),
+                new KeyValuePair<TKey, TValue>(key3, value3),
+                new KeyValuePair<TKey, TValue>(key4, value4),
+                new KeyValuePair<TKey, TValue>(key5, value5));
             var skip = 3;
             var take = 3;
 

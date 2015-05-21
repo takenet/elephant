@@ -10,11 +10,11 @@ using Xunit;
 namespace Takenet.Elephant.Tests.Sql
 {
     [Collection("Sql")]
-    public class SqlGuidItemKeyQueryableMapFacts : GuidItemKeyQueryableMapFacts
+    public class SqlGuidItemKeyQueryableSetMapFacts : GuidItemKeyQueryableMapFacts
     {
         private readonly SqlConnectionFixture _fixture;
 
-        public SqlGuidItemKeyQueryableMapFacts(SqlConnectionFixture fixture)
+        public SqlGuidItemKeyQueryableSetMapFacts(SqlConnectionFixture fixture)
         {
             _fixture = fixture;
         }
@@ -31,11 +31,11 @@ namespace Takenet.Elephant.Tests.Sql
 
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            var map = new SqlMap<Guid, Item>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            var map = new SqlSetMap<Guid, Item>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
 
             foreach (var value in values)
             {
-                await map.TryAddAsync(value.Key, value.Value);
+                await map.AddItemAsync(value.Key, value.Value);
             }
 
             return map;
