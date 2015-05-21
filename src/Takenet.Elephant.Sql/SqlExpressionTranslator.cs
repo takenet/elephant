@@ -66,23 +66,36 @@ namespace Takenet.Elephant.Sql
                     return node;
 
                 case ExpressionType.MemberAccess:
-
                     var memberExpression = (MemberExpression) node.Expression;
+                    Expression deepExpression = memberExpression;
+                    while (deepExpression is MemberExpression)
+                    {
+                        deepExpression = ((MemberExpression) deepExpression).Expression;
+                    }
 
-                    //// System.InvalidOperationException: variable 'i' of type 'System.Collections.Generic.KeyValuePair`2[System.Guid,Takenet.Elephant.Tests.Item]' referenced from scope '', but it is not defined
+                    if (deepExpression is ConstantExpression)
+                    {
+                        var constantExpression2 = (ConstantExpression)deepExpression;
+                        var fieldInfoValue = ((FieldInfo)memberExpression.Member).GetValue(constantExpression2.Value);
+                        value = ((PropertyInfo)node.Member).GetValue(fieldInfoValue, null);                        
+                        _filter.Append(ConvertSqlLiteral(value, node.Type));                        
+                        return node;
+                    }
+
+                    _filter.Append(node.Member.Name.AsSqlIdentifier());
+
 
                     //if (memberExpression.Member is PropertyInfo)
                     //{
-                    //    objectMember = Expression.Convert(memberExpression, typeof(object));
-                    //    objectMember = Expression.Convert(node, typeof(object));
-
+                    //    _filter.Append(node.Member.Name.AsSqlIdentifier());
+                    //    return Visit(memberExpression.Expression);
                     //}
 
-                    UnaryExpression objectMember = Expression.Convert(node, typeof(object));                                        
-                    var getterLambda = Expression.Lambda<Func<object>>(objectMember);
-                    var getter = getterLambda.Compile();
-                    value = getter();
-                    _filter.Append(ConvertSqlLiteral(value, node.Type));
+                    //var objectMember = Expression.Convert(node, typeof(object));
+                    //var getterLambda = Expression.Lambda<Func<object>>(objectMember);
+                    //var getter = getterLambda.Compile();
+                    //value = getter();
+                    //_filter.Append(ConvertSqlLiteral(value, node.Type));
                     return node;
     
                 case ExpressionType.Constant:
