@@ -72,7 +72,7 @@ namespace Takenet.Elephant.Sql
                     {
                         deepExpression = ((MemberExpression) deepExpression).Expression;
                     }
-
+                    http://stackoverflow.com/questions/19718560/how-to-get-property-value-from-memberexpression-without-compile
                     if (deepExpression is ConstantExpression)
                     {
                         var constantExpression2 = (ConstantExpression)deepExpression;
