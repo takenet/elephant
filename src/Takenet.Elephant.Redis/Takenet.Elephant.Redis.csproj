@@ -55,6 +55,7 @@
     <Compile Include="RedisSetMap.cs" />
     <Compile Include="RedisStringMap.cs" />
     <Compile Include="RedisValueExtensions.cs" />
+    <Compile Include="Serializers\LowerValueSerializer.cs" />
     <Compile Include="Serializers\StringSerializer.cs" />
     <Compile Include="Serializers\ValueSerializer.cs" />
     <Compile Include="StorageBase.cs" />
