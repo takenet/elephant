@@ -24,12 +24,15 @@ namespace Takenet.Elephant.Tests.Redis
             return setMap;
         }
 
-        public override ISet<Item> CreateValue(Guid key)
+        public override ISet<Item> CreateValue(Guid key, bool populate)
         {
             var set = new Set<Item>();
-            set.AddAsync(Fixture.Create<Item>()).Wait();
-            set.AddAsync(Fixture.Create<Item>()).Wait();
-            set.AddAsync(Fixture.Create<Item>()).Wait();
+            if (populate)
+            {
+                set.AddAsync(Fixture.Create<Item>()).Wait();
+                set.AddAsync(Fixture.Create<Item>()).Wait();
+                set.AddAsync(Fixture.Create<Item>()).Wait();
+            }
             return set;
         }
     }

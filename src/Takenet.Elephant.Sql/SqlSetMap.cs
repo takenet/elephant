@@ -170,6 +170,15 @@ namespace Takenet.Elephant.Sql
                     .Union(base.GetColumnValues(entity))
                     .ToDictionary(k => k.Key, k => k.Value);
             }
+
+            public override async Task<IAsyncEnumerable<TItem>> AsEnumerableAsync()
+            {
+                var cancellationToken = CreateCancellationToken();
+                var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);
+                var selectColumns = Table.Columns.Keys.ToArray();
+                var command = connection.CreateSelectCommand(Table.Name, MapKeyColumnValues, selectColumns);
+                return new DbDataReaderAsyncEnumerable<TItem>(command, Mapper, selectColumns);
+            }
         }
     }
 }

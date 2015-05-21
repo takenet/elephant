@@ -14,7 +14,7 @@ namespace Takenet.Elephant.Sql
 
         #region ISet<T> Members
 
-        public async Task AddAsync(T value)
+        public virtual async Task AddAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var cancellationToken = CreateCancellationToken();
@@ -33,7 +33,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<bool> TryRemoveAsync(T value)
+        public virtual async Task<bool> TryRemoveAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(value);
@@ -44,7 +44,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public virtual async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
         {
             var cancellationToken = CreateCancellationToken();
             var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);            
@@ -53,7 +53,7 @@ namespace Takenet.Elephant.Sql
             return new DbDataReaderAsyncEnumerable<T>(command, Mapper, selectColumns);
         }
 
-        public async Task<bool> ContainsAsync(T value)
+        public virtual async Task<bool> ContainsAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(value);

@@ -35,12 +35,15 @@ namespace Takenet.Elephant.Tests.Sql
             return new SqlSetMap<int, string>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
         }
 
-        public override ISet<string> CreateValue(int key)
+        public override ISet<string> CreateValue(int key, bool populate)
         {
             var set = new Set<string>();
-            set.AddAsync(Fixture.Create<string>()).Wait();
-            set.AddAsync(Fixture.Create<string>()).Wait();
-            set.AddAsync(Fixture.Create<string>()).Wait();
+            if (populate)
+            {
+                set.AddAsync(Fixture.Create<string>()).Wait();
+                set.AddAsync(Fixture.Create<string>()).Wait();
+                set.AddAsync(Fixture.Create<string>()).Wait();
+            }
             return set;
         }
     }
