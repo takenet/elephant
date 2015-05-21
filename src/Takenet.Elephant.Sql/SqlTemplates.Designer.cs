@@ -295,6 +295,15 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;&gt;.
+        /// </summary>
+        public static string NotEqual {
+            get {
+                return ResourceManager.GetString("NotEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {columnName} {sqlType} NULL.
         /// </summary>
         public static string NullableColumnDefinition {

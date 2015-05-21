@@ -13,19 +13,19 @@ namespace Takenet.Elephant.Sql.Mapping
             _dbType = TypeMapper.GetDbType(typeof(T));
         }
 
-        private readonly string _columnName;
+        internal string ColumnName { get; }
 
         public ValueMapper(string columnName)
         {
             if (columnName == null) throw new ArgumentNullException(nameof(columnName));
-            _columnName = columnName;
+            ColumnName = columnName;
         }
 
         public IDictionary<string, object> GetColumnValues(T value, string[] columns = null, bool emitDefaultValues = false)
         {
             return new Dictionary<string, object>()
             {
-                { _columnName, TypeMapper.ToDbType(value, _dbType) }
+                { ColumnName, TypeMapper.ToDbType(value, _dbType) }
             };
         }
 
@@ -35,14 +35,14 @@ namespace Takenet.Elephant.Sql.Mapping
 
             for (var i = 0; i < columns.Length; i++)
             {
-                if (columns[i].Equals(_columnName, StringComparison.OrdinalIgnoreCase))
+                if (columns[i].Equals(ColumnName, StringComparison.OrdinalIgnoreCase))
                 {
                     index = i;
                     break;
                 }
             }
 
-            if (index < 0) throw new ArgumentException($"The column '{_columnName}' was not found", nameof(columns));            
+            if (index < 0) throw new ArgumentException($"The column '{ColumnName}' was not found", nameof(columns));            
             return (T)TypeMapper.FromDbType(record[index], _dbType, typeof (T));
         }
     }

@@ -124,10 +124,10 @@ namespace Takenet.Elephant.Sql
             return filter.ToString();
         }
 
-        internal static string TranslateToSqlWhereClause<TEntity>(Expression<Func<TEntity, bool>> where)
+        internal static string TranslateToSqlWhereClause<TEntity>(Expression<Func<TEntity, bool>> where, IDictionary<string, string> parameterReplacementDictionary = null)
         {
             if (where == null) return SqlTemplates.OneEqualsOne;
-            var translator = new SqlExpressionTranslator();
+            var translator = new SqlExpressionTranslator(parameterReplacementDictionary);
             return translator.GetStatement(where);
         }
     }

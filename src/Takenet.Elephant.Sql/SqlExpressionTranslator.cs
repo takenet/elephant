@@ -10,6 +10,12 @@ namespace Takenet.Elephant.Sql
     internal class SqlExpressionTranslator : ExpressionVisitor
     {
         private readonly StringBuilder _filter = new StringBuilder();
+        private readonly IDictionary<string, string> _parameterReplacementDictionary;
+
+        public SqlExpressionTranslator(IDictionary<string, string> parameterReplacementDictionary = null)
+        {
+            _parameterReplacementDictionary = parameterReplacementDictionary;
+        }
 
         public string GetStatement(Expression expression)
         {
@@ -30,6 +36,10 @@ namespace Takenet.Elephant.Sql
             {
                 case ExpressionType.Equal:
                     @operator = SqlTemplates.Equal;
+                    break;
+
+                case ExpressionType.NotEqual:
+                    @operator = SqlTemplates.NotEqual;
                     break;
 
                 case ExpressionType.And:
@@ -62,7 +72,15 @@ namespace Takenet.Elephant.Sql
             switch (node.Expression.NodeType)
             {
                 case ExpressionType.Parameter:
-                    _filter.Append(node.Member.Name.AsSqlIdentifier());
+                    var parameterName = node.Member.Name;
+                    // Used for the KeyValuePair expressions, to replace the Key / Value in cases
+                    // of non complex types on these properties
+                    if (_parameterReplacementDictionary != null &&
+                        _parameterReplacementDictionary.ContainsKey(parameterName))
+                    {
+                        parameterName = _parameterReplacementDictionary[parameterName];
+                    }
+                    _filter.Append(parameterName.AsSqlIdentifier());
                     return node;
 
                 case ExpressionType.MemberAccess:
@@ -71,31 +89,38 @@ namespace Takenet.Elephant.Sql
                     while (deepExpression is MemberExpression)
                     {
                         deepExpression = ((MemberExpression) deepExpression).Expression;
-                    }
-                    http://stackoverflow.com/questions/19718560/how-to-get-property-value-from-memberexpression-without-compile
+                    }                    
                     if (deepExpression is ConstantExpression)
                     {
-                        var constantExpression2 = (ConstantExpression)deepExpression;
-                        var fieldInfoValue = ((FieldInfo)memberExpression.Member).GetValue(constantExpression2.Value);
-                        value = ((PropertyInfo)node.Member).GetValue(fieldInfoValue, null);                        
-                        _filter.Append(ConvertSqlLiteral(value, node.Type));                        
-                        return node;
+                        var deepConstantExpression = (ConstantExpression)deepExpression;                        
+                        if (node.Member is PropertyInfo)
+                        {
+                            if (memberExpression.Member is FieldInfo)
+                            {
+                                var fieldInfoValue =
+                                    ((FieldInfo) memberExpression.Member).GetValue(deepConstantExpression.Value);
+                                value = ((PropertyInfo) node.Member).GetValue(fieldInfoValue, null);
+                                _filter.Append(ConvertSqlLiteral(value, node.Type));
+                                return node;
+                            }
+
+                            if (memberExpression.Member is PropertyInfo)
+                            {
+                                var objectMember = Expression.Convert(node, typeof(object));
+                                var getterLambda = Expression.Lambda<Func<object>>(objectMember);
+                                var getter = getterLambda.Compile();
+                                value = getter();
+                                _filter.Append(ConvertSqlLiteral(value, node.Type));
+                                return node;
+                            }
+                        }
+                        else
+                        {
+                            throw new NotSupportedException();
+                        }
                     }
 
                     _filter.Append(node.Member.Name.AsSqlIdentifier());
-
-
-                    //if (memberExpression.Member is PropertyInfo)
-                    //{
-                    //    _filter.Append(node.Member.Name.AsSqlIdentifier());
-                    //    return Visit(memberExpression.Expression);
-                    //}
-
-                    //var objectMember = Expression.Convert(node, typeof(object));
-                    //var getterLambda = Expression.Lambda<Func<object>>(objectMember);
-                    //var getter = getterLambda.Compile();
-                    //value = getter();
-                    //_filter.Append(ConvertSqlLiteral(value, node.Type));
                     return node;
     
                 case ExpressionType.Constant:

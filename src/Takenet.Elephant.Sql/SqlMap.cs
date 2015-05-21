@@ -214,20 +214,22 @@ namespace Takenet.Elephant.Sql
         public async Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TValue>, bool>> @where, Expression<Func<KeyValuePair<TKey, TValue>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
             if (select != null) throw new NotImplementedException("The select parameter is not supported yet");
-
-            //if (@where != null)
-            //{
-
-            //    var func = @where.Compile();
-            //    Expression<Func<TKey, bool>> exp1 = k => func(new KeyValuePair<TKey, TValue>(k, default(TValue)));
-            //    var filter1 = SqlHelper.TranslateToSqlWhereClause(exp1);
-            //    Expression<Func<TValue, bool>> exp2 = v => func(new KeyValuePair<TKey, TValue>(default(TKey), v));
-            //    var filter2 = SqlHelper.TranslateToSqlWhereClause(exp2);
-            //}
-
             var selectColumns = Table.Columns.Keys.ToArray();
-            var orderByColumns = Table.KeyColumnsNames;            
-            var filter = SqlHelper.TranslateToSqlWhereClause(where);
+            var orderByColumns = Table.KeyColumnsNames;
+
+            var expressionParameterReplacementDictionary = new Dictionary<string, string>();
+
+            if (KeyMapper is ValueMapper<TKey>)
+            {
+                expressionParameterReplacementDictionary.Add("Key", ((ValueMapper<TKey>)KeyMapper).ColumnName);
+            }
+
+            if (Mapper is ValueMapper<TValue>)
+            {
+                expressionParameterReplacementDictionary.Add("Value", ((ValueMapper<TValue>)Mapper).ColumnName);
+            }
+
+            var filter = SqlHelper.TranslateToSqlWhereClause(where, expressionParameterReplacementDictionary);
             var connection = await GetConnectionAsync(cancellationToken);
             int totalCount;
             using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
