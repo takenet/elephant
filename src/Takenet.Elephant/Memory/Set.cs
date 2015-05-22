@@ -15,15 +15,31 @@ namespace Takenet.Elephant.Memory
     {
         private readonly HashSet<T> _hashSet;
 
+        #region Constructor
+
         public Set()
             : this(EqualityComparer<T>.Default)
         {
+
         }
 
         public Set(IEqualityComparer<T> equalityComparer)
         {
             _hashSet = new HashSet<T>(equalityComparer);
         }
+
+        public Set(IEnumerable<T> collection)
+            : this(collection, EqualityComparer<T>.Default)
+        {
+
+        }
+
+        public Set(IEnumerable<T> collection, IEqualityComparer<T> equalityComparer)
+        {
+            _hashSet = new HashSet<T>(collection, equalityComparer);
+        }
+
+        #endregion
 
         #region ISet<T> Members
 
