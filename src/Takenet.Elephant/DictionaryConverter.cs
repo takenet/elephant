@@ -30,6 +30,12 @@ namespace Takenet.Elephant
         private readonly Func<T> _valueFactory;
         private readonly bool _emitDefaultValues;
 
+        public DictionaryConverter(bool emitDefaultValues = false)
+            : this(Activator.CreateInstance<T>, emitDefaultValues)
+        {
+            
+        }
+
         public DictionaryConverter(Func<T> valueFactory, bool emitDefaultValues = false)
         {
             _valueFactory = valueFactory;
