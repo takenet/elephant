@@ -17,12 +17,13 @@ namespace Takenet.Elephant
                 type.IsValueType ||
                 type.IsPrimitive ||
                 new [] {
-                    typeof(String),
-                    typeof(Decimal),
+                    typeof(string),
+                    typeof(decimal),
                     typeof(DateTime),
                     typeof(DateTimeOffset),
                     typeof(TimeSpan),
-                    typeof(Guid)
+                    typeof(Guid),
+                    typeof(Uri)
                 }.Contains(type) ||
                 Convert.GetTypeCode(type) != TypeCode.Object;
         }

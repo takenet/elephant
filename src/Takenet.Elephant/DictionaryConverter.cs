@@ -7,24 +7,17 @@ namespace Takenet.Elephant
 {
     public class DictionaryConverter<T> : IDictionaryConverter<T>
     {
-        private static readonly IDictionary<string, Type> _propertyDictionary;
-        private static readonly Dictionary<string, Func<object, object>> _getFuncsDictionary;
-        private static readonly Dictionary<string, Action<object, object>> _setActionsDictionary;
+        private readonly IDictionary<string, Type> _propertyDictionary;
+        private readonly Dictionary<string, Func<object, object>> _getFuncsDictionary;
+        private readonly Dictionary<string, Action<object, object>> _setActionsDictionary;
+
         private static readonly bool _isSimpleType;
-        private const string VALUE_KEY = "Value";        
+        private const string VALUE_KEY = "Value";
         
         static DictionaryConverter()
         {
             var type = typeof (T);
             _isSimpleType = type.IsSimpleType();
-
-            if (!_isSimpleType)
-            {
-                var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-                _propertyDictionary = properties.ToDictionary(p => p.Name, p => p.PropertyType);
-                _getFuncsDictionary = properties.ToDictionary(p => p.Name, TypeUtil.BuildGetAccessor);
-                _setActionsDictionary = properties.ToDictionary(p => p.Name, TypeUtil.BuildSetAccessor);
-            }
         }
 
         private readonly Func<T> _valueFactory;
@@ -36,10 +29,30 @@ namespace Takenet.Elephant
             
         }
 
+        public DictionaryConverter(Func<PropertyInfo, bool> propertyFilter, bool emitDefaultValues = false)
+            : this(Activator.CreateInstance<T>, propertyFilter, emitDefaultValues)
+        {
+
+        }
+
         public DictionaryConverter(Func<T> valueFactory, bool emitDefaultValues = false)
+            : this(valueFactory, p => true, emitDefaultValues)
+        {
+            
+        }
+
+        public DictionaryConverter(Func<T> valueFactory, Func<PropertyInfo, bool> propertyFilter, bool emitDefaultValues = false)
         {
             _valueFactory = valueFactory;
             _emitDefaultValues = emitDefaultValues;
+                        
+            if (!_isSimpleType)
+            {
+                var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(propertyFilter);
+                _propertyDictionary = properties.ToDictionary(p => p.Name, p => p.PropertyType);
+                _getFuncsDictionary = properties.ToDictionary(p => p.Name, TypeUtil.BuildGetAccessor);
+                _setActionsDictionary = properties.ToDictionary(p => p.Name, TypeUtil.BuildSetAccessor);
+            }
         }
 
         public IEnumerable<string> Properties => _propertyDictionary.Keys;

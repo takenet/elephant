@@ -28,8 +28,16 @@ namespace Takenet.Elephant.Memory
          
         }
 
+        public Map(IDictionaryConverter<TValue> dictionaryConverter)
+            : this(() => (TValue)Activator.CreateInstance(typeof(TValue)), dictionaryConverter)
+        {
+
+        }
+
         public Map(Func<TValue> valueFactory, IDictionaryConverter<TValue> dictionaryConverter)
         {
+            if (valueFactory == null) throw new ArgumentNullException(nameof(valueFactory));
+            if (dictionaryConverter == null) throw new ArgumentNullException(nameof(dictionaryConverter));
             ValueFactory = valueFactory;
             DictionaryConverter = dictionaryConverter;
             InternalDictionary = new ConcurrentDictionary<TKey, TValue>();
