@@ -57,3 +57,10 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 * Memory (System.Collections)
 * SQL Server
 * Redis
+
+### NuGet
+
+* [Takenet.Elephant](https://nuget.org/packages/Takenet.Elephant/)
+* [Takenet.Elephant.Redis](https://nuget.org/packages/Takenet.Elephant.Redis/)
+* [Takenet.Elephant.Sql](https://nuget.org/packages/Takenet.Elephant.Sql/)
+
