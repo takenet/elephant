@@ -64,3 +64,36 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 * [Takenet.Elephant.Redis](https://nuget.org/packages/Takenet.Elephant.Redis/)
 * [Takenet.Elephant.Sql](https://nuget.org/packages/Takenet.Elephant.Sql/)
 
+### Samples
+
+```csharp
+// Creates an in-memory map
+IMap<Guid, Data> map = new Map<Guid, Data>();
+
+var id = Guid.NewGuid();
+var data = new Data() {Name = "A name", Value = 5};
+
+// Adds without overwrite any existing value in the key
+if (await map.TryAddAsync(id, data))
+    Console.WriteLine($"A value for key '{id}' was set successfully");
+
+var newData = new Data() {Name = "A new name", Value = 1};
+
+// Adds the value, overwriting if the key is already set
+if (await map.TryAddAsync(id, newData, true))
+    Console.WriteLine($"A new value for the key '{id}' was set successfully");
+
+// Gets the value (or the type default) for the key
+var existingData = await map.GetValueOrDefaultAsync(id);
+
+// Checks if the key exists
+if (await map.ContainsKeyAsync(id))
+    Console.WriteLine($"The key '{id}' exists in the map");
+
+// Removes the value defined in the key
+if (await map.TryRemoveAsync(id))
+    Console.WriteLine($"The value for the key '{id}' was removed");
+
+```
+
+Please check the project ```Takenet.Elephant.Samples``` for more samples of how to use this library.
