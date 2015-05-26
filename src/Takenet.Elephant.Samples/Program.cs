@@ -41,7 +41,7 @@ namespace Takenet.Elephant.Samples
             var id = Guid.NewGuid();
             var data = new Data() {Name = "A name", Value = 5};
 
-            // Adds without overwrite any existing value in the key
+            // Adds without overwriting any existing value in the key
             if (await map.TryAddAsync(id, data))
                 Console.WriteLine($"A value for key '{id}' was set successfully");
 
