@@ -1,3 +1,5 @@
+using System;
+
 namespace Takenet.Elephant.Samples
 {
     public class Data
@@ -32,6 +34,19 @@ namespace Takenet.Elephant.Samples
         public override string ToString()
         {
             return $"{Name}:{Value}";
+        }
+
+        public static Data Parse(string value)
+        {
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            var values = value.Split(':');
+            if (values.Length < 2) throw new ArgumentException(@"Invalid data value", nameof(value));
+
+            return new Data()
+            {
+                Name = values[0],
+                Value = int.Parse(values[1])
+            };
         }
     }
 }

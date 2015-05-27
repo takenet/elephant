@@ -2,6 +2,10 @@
 
 namespace Takenet.Elephant.Redis.Serializers
 {
+    /// <summary>
+    /// Provides serialization using the type's ToString() and static Parse(string value) methods.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ValueSerializer<T> : ISerializer<T>
     {
         private readonly bool _valueToLower;
@@ -9,7 +13,14 @@ namespace Takenet.Elephant.Redis.Serializers
 
         static ValueSerializer()
         {
-            _parseFunc = TypeUtil.GetParseFunc<T>();                        
+            try
+            {
+                _parseFunc = TypeUtil.GetParseFunc<T>();
+            }
+            catch (ArgumentException ex)
+            {
+                throw new NotSupportedException("The type must define a static 'Parse(string)' method", ex);
+            }
         }
        
         public virtual string Serialize(T value)

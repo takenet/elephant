@@ -44,12 +44,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data.cs" />
-    <Compile Include="IDataMap.cs" />
-    <Compile Include="IDataSet.cs" />
-    <Compile Include="IDataSetMap.cs" />
+    <Compile Include="Map\IDataMap.cs" />
+    <Compile Include="Map\MemoryDataMap.cs" />
+    <Compile Include="Map\RedisDataMap.cs" />
+    <Compile Include="Map\SqlDataMap.cs" />
+    <Compile Include="SetMap\MemoryDataSetMap.cs" />
+    <Compile Include="SetMap\RedisDataSetMap.cs" />
+    <Compile Include="SetMap\SqlDataSetMap.cs" />
+    <Compile Include="Set\IDataSet.cs" />
+    <Compile Include="SetMap\IDataSetMap.cs" />
     <Compile Include="Implementation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Set\MemoryDataSet.cs" />
+    <Compile Include="Set\RedisDataset.cs" />
+    <Compile Include="Set\SqlDataSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

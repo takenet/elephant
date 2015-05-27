@@ -66,6 +66,9 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 
 ### Samples
 
+
+#### Map
+
 ```csharp
 // Creates an in-memory map
 IMap<Guid, Data> map = new Map<Guid, Data>();
@@ -95,5 +98,53 @@ if (await map.TryRemoveAsync(id))
     Console.WriteLine($"The value for the key '{id}' was removed");
 
 ```
+#### SetMap
 
-Please check the project ```Takenet.Elephant.Samples``` for more samples of how to use this library.
+```csharp
+// Creates an in-memory map
+ISet<Data> set = new Set<Data>();
+
+// A set is a collection of unique items
+await set.AddAsync(data);
+
+// Adding the same item again overwrites the existing. 
+// Usually this doesn't makes any difference, but depend of how the implementation compares the values.
+// For instance, the memory set uses an equality comparer, and the SQL uses the item's primary key values.
+await set.AddAsync(data);
+
+if (await set.ContainsAsync(data))
+    Console.WriteLine($"The value '{data}' exists in the set");
+
+// The set also supports the IAsyncEnumerable interface, that allows async enumeration of the items.
+IAsyncEnumerable<Data> enumerable = await set.AsEnumerableAsync();
+
+// Some async extensions are available
+Console.WriteLine($"There are '{await enumerable.CountAsync()}' items in the set, which are:");
+await enumerable.ForEachAsync(i => Console.WriteLine($"- {i}"), CancellationToken.None);
+
+```
+
+#### SetMap
+
+```csharp
+// Creates an in-memory set map
+ISetMap<Guid, Data> setMap = new SetMap<Guid, Data>();
+
+var id = Guid.NewGuid();
+var data = new Data() { Name = "A name", Value = 5 };
+
+// A SetMap is a map of sets with special extensions methods
+
+// Uses an extension method that adds an item to a set in the key
+await setMap.AddItemAsync(id, data);
+var set = await setMap.GetValueOrDefaultAsync(id);
+if (await set.ContainsAsync(data))
+    Console.WriteLine($"The value '{data}' is present in the set");
+
+// Removes the item from the set map
+if (await setMap.TryRemoveItemAsync(id, data))
+    Console.WriteLine($"The item of the set in the key '{id}' was removed");
+
+```
+
+Please check the project ```Takenet.Elephant.Samples``` for more samples and the ```Takenet.Elephant.Tests``` project for details of each supported structure.
