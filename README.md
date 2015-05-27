@@ -98,10 +98,10 @@ if (await map.TryRemoveAsync(id))
     Console.WriteLine($"The value for the key '{id}' was removed");
 
 ```
-#### SetMap
+#### Set
 
 ```csharp
-// Creates an in-memory map
+// Creates an in-memory set
 ISet<Data> set = new Set<Data>();
 
 // A set is a collection of unique items
@@ -133,7 +133,7 @@ ISetMap<Guid, Data> setMap = new SetMap<Guid, Data>();
 var id = Guid.NewGuid();
 var data = new Data() { Name = "A name", Value = 5 };
 
-// A SetMap is a map of sets with special extensions methods
+// A SetMap is just a map of sets with special extensions methods
 
 // Uses an extension method that adds an item to a set in the key
 await setMap.AddItemAsync(id, data);
