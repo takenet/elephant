@@ -58,6 +58,9 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 * SQL Server
 * Redis
 
+## Requirements (to build from source)
+* C# 6 (Visual Studio 2015 or better)
+
 ### NuGet
 
 * [Takenet.Elephant](https://nuget.org/packages/Takenet.Elephant/)
