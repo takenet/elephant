@@ -13,7 +13,7 @@
     <copyright>Copyright © 2015 Curupira S/A</copyright>
     <tags>elephant</tags>
     <dependencies>
-      <dependency id="Takenet.Elephant" version="0.1.0" />
+      <dependency id="Takenet.Elephant" version="0.2.0" />
       <dependency id="StackExchange.Redis" version="1.0.414" />
     </dependencies>
   </metadata>
