@@ -46,6 +46,7 @@
     <Compile Include="AsyncEnumerableWrapper.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="IAsyncEnumerable.cs" />
+    <Compile Include="IBlockingQueue.cs" />
     <Compile Include="IDictionaryConverter.cs" />
     <Compile Include="IKeyQueryableMap.cs" />
     <Compile Include="IQueryableStorage.cs" />

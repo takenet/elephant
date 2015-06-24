@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Takenet.Elephant.Sql</id>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <title>Elephant SQL Server</title>
     <authors>takenet</authors>
     <owners>takenet,andrebires</owners>

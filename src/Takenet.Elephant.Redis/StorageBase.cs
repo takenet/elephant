@@ -45,6 +45,11 @@ namespace Takenet.Elephant.Redis
             return _connectionMultiplexer.GetDatabase(_db);
         }
 
+        protected virtual ISubscriber GetSubscriber()
+        {
+            return _connectionMultiplexer.GetSubscriber();
+        }
+
         #region IDisposable Members
 
         protected virtual void Dispose(bool disposing)

@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockingQueueFacts.cs" />
     <Compile Include="ExpirableKeyMapFacts.cs" />
     <Compile Include="FactsBase.cs" />
     <Compile Include="ClassQueueFacts.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="IntegerStringQueueMapFacts.cs" />
     <Compile Include="IntegerStringSetMapFacts.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="ItemBlockingQueueFacts.cs" />
     <Compile Include="ItemSetFacts.cs" />
     <Compile Include="ItemSetMapFacts.cs" />
     <Compile Include="KeyQueryableMapFacts.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="Memory\MemoryIntegerStringMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemSetMapFacts.cs" />
     <Compile Include="Memory\MemoryIntegerStringSetMapFacts.cs" />
+    <Compile Include="Memory\MemoryItemBlockingQueueFacts.cs" />
     <Compile Include="Memory\MemoryItemSetFacts.cs" />
     <Compile Include="Memory\MemoryItemQueueFacts.cs" />
     <Compile Include="Memory\MemoryGuidQueueFacts.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="Redis\RedisGuidNumberMapFacts.cs" />
     <Compile Include="Redis\RedisHashGuidItemPropertyMapFacts.cs" />
     <Compile Include="Redis\RedisIntegerStringQueueMapFacts.cs" />
+    <Compile Include="Redis\RedisItemBlockingQueueFacts.cs" />
     <Compile Include="Redis\RedisItemQueueFacts.cs" />
     <Compile Include="Redis\RedisGuidQueueFacts.cs" />
     <Compile Include="Redis\RedisHashGuidItemMapFacts.cs" />
