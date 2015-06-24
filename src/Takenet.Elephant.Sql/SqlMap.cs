@@ -16,11 +16,21 @@ namespace Takenet.Elephant.Sql
     /// <typeparam name="TValue"></typeparam>
     public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IKeysMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IUpdatableMap<TKey, TValue>
     {
-        public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper) 
+        #region Constructors
+
+        public SqlMap(string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper)
+            : this(new SqlDatabaseDriver(), connectionString, table, keyMapper, valueMapper)
+        {
+
+        }
+
+        public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper)
             : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
         {
 
         }
+
+        #endregion
 
         #region IMap<TKey,TValue> Members
 

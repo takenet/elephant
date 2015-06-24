@@ -15,6 +15,12 @@ namespace Takenet.Elephant.Sql
 
         #region Constructor
 
+        public SqlSetMap(string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TItem> valueMapper, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted)
+            : this(new SqlDatabaseDriver(), connectionString, table, keyMapper, valueMapper)
+        {
+            _addIsolationLevel = addIsolationLevel;
+        }
+
         public SqlSetMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TItem> valueMapper, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted)
             : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
         {

@@ -7,10 +7,19 @@ namespace Takenet.Elephant.Sql
 {
     public class SqlSet<T> : StorageBase<T>, ISet<T>
     {
+        #region Constructors
+
+        public SqlSet(string connectionString, ITable table, IMapper<T> mapper)
+            : this(new SqlDatabaseDriver(), connectionString, table, mapper)
+        {
+        }
+
         public SqlSet(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<T> mapper)
             : base(databaseDriver, connectionString, table, mapper)
         {
-        }
+        } 
+
+        #endregion
 
         #region ISet<T> Members
 
