@@ -6,14 +6,14 @@ namespace Takenet.Elephant.Redis
 {
     public abstract class MapBase<TKey, TValue> : StorageBase<TKey>, IExpirableKeyMap<TKey, TValue>
     {
-        protected MapBase(string mapName, string configuration)
-            : base(mapName, configuration)
+        protected MapBase(string mapName, string configuration, int db)
+            : base(mapName, configuration, db)
         {
 
         }
 
-        protected MapBase(string mapName, ConnectionMultiplexer connectionMultiplexer)
-            : base(mapName, connectionMultiplexer)
+        protected MapBase(string mapName, ConnectionMultiplexer connectionMultiplexer, int db)
+            : base(mapName, connectionMultiplexer, db)
         {
 
         }

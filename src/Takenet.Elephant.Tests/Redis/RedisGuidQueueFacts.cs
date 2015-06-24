@@ -17,9 +17,10 @@ namespace Takenet.Elephant.Tests.Redis
 
         public override IQueue<Guid> Create()
         {
-            _redisFixture.Server.FlushDatabase();
+            int db = 2;
+            _redisFixture.Server.FlushDatabase(db);
             const string setName = "guids";            
-            return new RedisQueue<Guid>(setName, _redisFixture.Connection.Configuration, new ValueSerializer<Guid>());
+            return new RedisQueue<Guid>(setName, _redisFixture.Connection.Configuration, new ValueSerializer<Guid>(), db);
         }
     }
 }

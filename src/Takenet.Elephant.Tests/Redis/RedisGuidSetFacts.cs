@@ -17,9 +17,10 @@ namespace Takenet.Elephant.Tests.Redis
 
         public override ISet<Guid> Create()
         {
-            _redisFixture.Server.FlushDatabase();
+            var db = 1;
+            _redisFixture.Server.FlushDatabase(db);
             const string setName = "guids";            
-            return new RedisSet<Guid>(setName, _redisFixture.Connection.Configuration, new ValueSerializer<Guid>());
+            return new RedisSet<Guid>(setName, _redisFixture.Connection.Configuration, new ValueSerializer<Guid>(), db);
         }
     }
 }

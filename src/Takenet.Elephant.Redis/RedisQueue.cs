@@ -8,14 +8,14 @@ namespace Takenet.Elephant.Redis
     {
         private readonly ISerializer<T> _serializer;    
 
-        public RedisQueue(string queueName, string configuration, ISerializer<T> serializer)
-            : base(queueName, configuration)
+        public RedisQueue(string queueName, string configuration, ISerializer<T> serializer, int db = 0)
+            : base(queueName, configuration, db)
         {
             _serializer = serializer;
         }
 
-        internal RedisQueue(string queueName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer)
-            : base(queueName, connectionMultiplexer)
+        internal RedisQueue(string queueName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db)
+            : base(queueName, connectionMultiplexer, db)
         {
             _serializer = serializer;
         }

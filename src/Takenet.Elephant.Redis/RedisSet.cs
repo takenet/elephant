@@ -15,16 +15,16 @@ namespace Takenet.Elephant.Redis
         private readonly ISerializer<T> _serializer;
         private readonly bool _useScanOnEnumeration;
 
-        public RedisSet(string setName, string configuration, ISerializer<T> serializer, bool useScanOnEnumeration = true)
-            : base(setName, configuration)
+        public RedisSet(string setName, string configuration, ISerializer<T> serializer, int db = 0, bool useScanOnEnumeration = true)
+            : base(setName, configuration, db)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));            
             _serializer = serializer;
             _useScanOnEnumeration = useScanOnEnumeration;
         }
 
-        internal RedisSet(string setName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, bool useScanOnEnumeration = true)
-            : base(setName, connectionMultiplexer)
+        internal RedisSet(string setName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, bool useScanOnEnumeration = true)
+            : base(setName, connectionMultiplexer, db)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             _serializer = serializer;

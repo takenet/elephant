@@ -18,9 +18,10 @@ namespace Takenet.Elephant.Tests.Redis
         }
 
         public override IMap<Guid, ISet<Item>> Create()
-        {            
-            _redisFixture.Server.FlushDatabase();            
-            var setMap = new RedisSetMap<Guid, Item>(MapName, _redisFixture.Connection.Configuration, new ItemSerializer());
+        {
+            var db = 1;
+            _redisFixture.Server.FlushDatabase(db);            
+            var setMap = new RedisSetMap<Guid, Item>(MapName, _redisFixture.Connection.Configuration, new ItemSerializer(), db);
             return setMap;
         }
 

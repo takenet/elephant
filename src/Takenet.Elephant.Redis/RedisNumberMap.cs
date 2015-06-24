@@ -5,13 +5,13 @@ namespace Takenet.Elephant.Redis
 {
     public class RedisNumberMap<TKey> : RedisStringMap<TKey, long>, INumberMap<TKey>
     {
-        public RedisNumberMap(string mapName, string configuration, ISerializer<long> serializer) 
-            : base(mapName, configuration, serializer)
+        public RedisNumberMap(string mapName, string configuration, ISerializer<long> serializer, int db = 0) 
+            : base(mapName, configuration, serializer, db)
         {
         }
 
-        internal RedisNumberMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<long> serializer) 
-            : base(mapName, connectionMultiplexer, serializer)
+        internal RedisNumberMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<long> serializer, int db) 
+            : base(mapName, connectionMultiplexer, serializer, db)
         {
         }
 

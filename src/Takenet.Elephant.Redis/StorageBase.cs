@@ -4,22 +4,24 @@ using StackExchange.Redis;
 namespace Takenet.Elephant.Redis
 {
     public class StorageBase<TKey> : IDisposable
-    {
+    {        
         protected readonly ConnectionMultiplexer _connectionMultiplexer;
         protected readonly string _name;
+        protected readonly int _db;
 
-        public StorageBase(string name, string configuration)
-            : this(name, ConnectionMultiplexer.Connect(ConfigurationOptions.Parse(configuration)))
+        public StorageBase(string name, string configuration, int db)
+            : this(name, ConnectionMultiplexer.Connect(ConfigurationOptions.Parse(configuration)), db)
         {
-
+            
         }
 
-        protected StorageBase(string name, ConnectionMultiplexer connectionMultiplexer)
+        protected StorageBase(string name, ConnectionMultiplexer connectionMultiplexer, int db)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (connectionMultiplexer == null) throw new ArgumentNullException(nameof(connectionMultiplexer));
             _name = name;                        
             _connectionMultiplexer = connectionMultiplexer;
+            _db = db;
         }
 
         ~StorageBase()
@@ -40,7 +42,7 @@ namespace Takenet.Elephant.Redis
 
         protected virtual IDatabaseAsync GetDatabase()
         {
-            return _connectionMultiplexer.GetDatabase();
+            return _connectionMultiplexer.GetDatabase(_db);
         }
 
         #region IDisposable Members

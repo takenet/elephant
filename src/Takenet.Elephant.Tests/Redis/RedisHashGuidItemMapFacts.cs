@@ -19,9 +19,10 @@ namespace Takenet.Elephant.Tests.Redis
 
         public override IMap<Guid, Item> Create()
         {
-            _redisFixture.Server.FlushDatabase();
+            int db = 0;
+            _redisFixture.Server.FlushDatabase(db);
             const string mapName = "guid-item-hash";
-            return new RedisHashMap<Guid, Item>(mapName, new TypeRedisDictionaryConverter<Item>(), _redisFixture.Connection.Configuration);
+            return new RedisHashMap<Guid, Item>(mapName, new TypeRedisDictionaryConverter<Item>(), _redisFixture.Connection.Configuration, db);
         }
     }
 

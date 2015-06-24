@@ -9,8 +9,8 @@ namespace Takenet.Elephant.Redis
     {
         private readonly ISerializer<TItem> _serializer;
 
-        public RedisQueueMap(string mapName, string configuration, ISerializer<TItem> serializer)
-            : base(mapName, configuration)
+        public RedisQueueMap(string mapName, string configuration, ISerializer<TItem> serializer, int db = 0)
+            : base(mapName, configuration, db)
         {
             _serializer = serializer;
         }
@@ -76,7 +76,7 @@ namespace Takenet.Elephant.Redis
 
         protected InternalQueue CreateQueue(TKey key, ITransaction transaction = null)
         {
-            return new InternalQueue(key, GetRedisKey(key), _serializer, _connectionMultiplexer, transaction);
+            return new InternalQueue(key, GetRedisKey(key), _serializer, _connectionMultiplexer, _db, transaction);
         }
 
         private static async Task<IQueue<TItem>> CloneAsync(IQueue<TItem> queue)
@@ -93,8 +93,8 @@ namespace Takenet.Elephant.Redis
         {
             private readonly ITransaction _transaction;
 
-            public InternalQueue(TKey key, string queueName, ISerializer<TItem> serializer, ConnectionMultiplexer connectionMultiplexer, ITransaction transaction = null)
-                : base(queueName, connectionMultiplexer, serializer)
+            public InternalQueue(TKey key, string queueName, ISerializer<TItem> serializer, ConnectionMultiplexer connectionMultiplexer, int db, ITransaction transaction = null)
+                : base(queueName, connectionMultiplexer, serializer, db)
             {
                 _transaction = transaction;
                 if (key == null) throw new ArgumentNullException(nameof(key));

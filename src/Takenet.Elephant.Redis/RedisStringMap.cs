@@ -13,8 +13,8 @@ namespace Takenet.Elephant.Redis
     {
         protected readonly ISerializer<TValue> _serializer;
 
-        public RedisStringMap(string mapName, string configuration, ISerializer<TValue> serializer)
-            : base(mapName, configuration)
+        public RedisStringMap(string mapName, string configuration, ISerializer<TValue> serializer, int db = 0)
+            : base(mapName, configuration, db)
         {
             if (serializer == null)
             {
@@ -24,8 +24,8 @@ namespace Takenet.Elephant.Redis
             _serializer = serializer;
         }
 
-        internal RedisStringMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer)
-            : base(mapName, connectionMultiplexer)
+        internal RedisStringMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer, int db)
+            : base(mapName, connectionMultiplexer, db)
         {
             if (serializer == null)
             {

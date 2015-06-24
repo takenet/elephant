@@ -18,8 +18,8 @@ namespace Takenet.Elephant.Redis
 
         #region Constructor
 
-        public RedisHashMap(string mapName, IRedisDictionaryConverter<TValue> dictionaryConverter, string configuration)
-            : base(mapName, configuration)
+        public RedisHashMap(string mapName, IRedisDictionaryConverter<TValue> dictionaryConverter, string configuration, int db = 0)
+            : base(mapName, configuration, db)
         {
             _dictionaryConverter = dictionaryConverter;
             _propertiesNameHashSet = new HashSet<string>(_dictionaryConverter.Properties);

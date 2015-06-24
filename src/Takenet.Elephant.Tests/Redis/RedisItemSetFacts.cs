@@ -16,9 +16,10 @@ namespace Takenet.Elephant.Tests.Redis
    
         public override ISet<Item> Create()
         {
-            _redisFixture.Server.FlushDatabase();
+            var db = 1;
+            _redisFixture.Server.FlushDatabase(db);
             const string setName = "items";
-            return new RedisSet<Item>(setName, _redisFixture.Connection.Configuration, new ItemSerializer());
+            return new RedisSet<Item>(setName, _redisFixture.Connection.Configuration, new ItemSerializer(), db);
         }
     }
 }

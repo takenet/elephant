@@ -18,9 +18,10 @@ namespace Takenet.Elephant.Tests.Redis
         }
 
         public override IMap<int, IQueue<string>> Create()
-        {            
-            _redisFixture.Server.FlushDatabase();            
-            var setMap = new RedisQueueMap<int, string>(MapName, _redisFixture.Connection.Configuration, new StringSerializer());
+        {
+            int db = 2;
+            _redisFixture.Server.FlushDatabase(db);            
+            var setMap = new RedisQueueMap<int, string>(MapName, _redisFixture.Connection.Configuration, new StringSerializer(), db);
             return setMap;
         }
 

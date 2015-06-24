@@ -9,15 +9,15 @@ namespace Takenet.Elephant.Redis
     {
         private readonly ISerializer<TItem> _serializer;
 
-        public RedisSetMap(string mapName, string configuration, ISerializer<TItem> serializer)
-            : base(mapName, configuration)
+        public RedisSetMap(string mapName, string configuration, ISerializer<TItem> serializer, int db = 0)
+            : base(mapName, configuration, db)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             _serializer = serializer;
         }
 
-        internal RedisSetMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer)
-            : base(mapName, connectionMultiplexer)
+        internal RedisSetMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db)
+            : base(mapName, connectionMultiplexer, db)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             _serializer = serializer;
@@ -77,15 +77,15 @@ namespace Takenet.Elephant.Redis
 
         protected InternalSet CreateSet(TKey key, ITransaction transaction = null, bool useScanOnEnumeration = true)
         {
-            return new InternalSet(key, GetRedisKey(key), _serializer, _connectionMultiplexer, transaction, useScanOnEnumeration);
+            return new InternalSet(key, GetRedisKey(key), _serializer, _connectionMultiplexer, _db, transaction, useScanOnEnumeration);
         }
 
         protected class InternalSet : RedisSet<TItem>
         {
             private readonly ITransaction _transaction;
 
-            public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, ConnectionMultiplexer connectionMultiplexer, ITransaction transaction = null, bool useScanOnEnumeration = true)
-                : base(setName, connectionMultiplexer, serializer, useScanOnEnumeration)
+            public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, ConnectionMultiplexer connectionMultiplexer, int db, ITransaction transaction = null, bool useScanOnEnumeration = true)
+                : base(setName, connectionMultiplexer, serializer, db, useScanOnEnumeration)
             {                
                 if (key == null) throw new ArgumentNullException(nameof(key));
                 Key = key;
