@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using StackExchange.Redis;
@@ -88,8 +89,7 @@ namespace Takenet.Elephant.Redis
             var tcs = new TaskCompletionSource<T>();
             cancellationToken.Register(() => tcs.TrySetCanceled());
             _promisesQueue.Enqueue(tcs);
-            var subscriber = GetSubscriber();
-            subscriber.Publish(_channelName, string.Empty, CommandFlags.FireAndForget);
+            GetSubscriber().Publish(_channelName, string.Empty, CommandFlags.FireAndForget);
             return tcs.Task;
         }
 
@@ -116,13 +116,17 @@ namespace Takenet.Elephant.Redis
                             }
                             else
                             {
-                                var item = _serializer.Deserialize((string)result);
+                                var item = _serializer.Deserialize((string) result);
                                 if (!tcs.TrySetResult(item))
                                 {
                                     await EnqueueAsync(item).ConfigureAwait(false);
                                 }
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.TraceError(ex.ToString());
                     }
                     finally
                     {

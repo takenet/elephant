@@ -17,26 +17,22 @@ namespace Takenet.Elephant.Redis
 
         public Task<long> IncrementAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
-            return database.StringIncrementAsync(GetRedisKey(key));
+            return GetDatabase().StringIncrementAsync(GetRedisKey(key));
         }
 
         public Task<long> IncrementAsync(TKey key, long value)
         {
-            var database = _connectionMultiplexer.GetDatabase();
-            return database.StringIncrementAsync(GetRedisKey(key), value);
+            return GetDatabase().StringIncrementAsync(GetRedisKey(key), value);
         }
 
         public Task<long> DecrementAsync(TKey key)
         {
-            var database = _connectionMultiplexer.GetDatabase();
-            return database.StringDecrementAsync(GetRedisKey(key));
+            return GetDatabase().StringDecrementAsync(GetRedisKey(key));
         }
 
         public Task<long> DecrementAsync(TKey key, long value)
         {
-            var database = _connectionMultiplexer.GetDatabase();
-            return database.StringDecrementAsync(GetRedisKey(key), value);
+            return GetDatabase().StringDecrementAsync(GetRedisKey(key), value);
         }  
     }
 }

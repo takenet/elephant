@@ -21,6 +21,7 @@ namespace Takenet.Elephant.Redis
             if (connectionMultiplexer == null) throw new ArgumentNullException(nameof(connectionMultiplexer));
             _name = name;                        
             _connectionMultiplexer = connectionMultiplexer;
+            _connectionMultiplexer.PreserveAsyncOrder = false;
             _db = db;
         }
 
@@ -32,7 +33,7 @@ namespace Takenet.Elephant.Redis
         protected virtual string GetRedisKey(TKey key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            return string.Format("{0}:{1}", _name, KeyToString(key));
+            return $"{_name}:{KeyToString(key)}";
         }
 
         protected virtual string KeyToString(TKey key)
