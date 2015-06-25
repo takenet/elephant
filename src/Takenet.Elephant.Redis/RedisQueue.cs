@@ -11,10 +11,14 @@ namespace Takenet.Elephant.Redis
         private readonly ISerializer<T> _serializer;
         private readonly ConcurrentQueue<TaskCompletionSource<T>> _promisesQueue = new ConcurrentQueue<TaskCompletionSource<T>>();
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+        private readonly string _channelName;
+
+        private ISubscriber _subscriber;
 
         public RedisQueue(string queueName, string configuration, ISerializer<T> serializer, int db = 0)
             : base(queueName, configuration, db)
         {
+            _channelName = $"{db}:{queueName}";
             _serializer = serializer;
             SubscribeChannel();
         }
@@ -22,21 +26,44 @@ namespace Takenet.Elephant.Redis
         internal RedisQueue(string queueName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db)
             : base(queueName, connectionMultiplexer, db)
         {
+            _channelName = $"{db}:{queueName}";
             _serializer = serializer;
             SubscribeChannel();
         }
 
         #region IQueue<T> Members
 
-        public Task EnqueueAsync(T item)
+        public async Task EnqueueAsync(T item)
         {            
             if (item == null) throw new ArgumentNullException(nameof(item));
             var database = GetDatabase();
-            var subscriber = GetSubscriber();
+            var shouldCommit = false;
 
-            return Task.WhenAll(
-                database.ListLeftPushAsync(_name, _serializer.Serialize(item)),
-                subscriber.PublishAsync(_name, string.Empty, CommandFlags.FireAndForget));
+            ITransaction transaction;
+            if (database is ITransaction)
+            {
+                transaction = (ITransaction)database;                
+            }
+            else if (database is IDatabase)
+            {
+                transaction = ((IDatabase) database).CreateTransaction();
+                shouldCommit = true;
+            }
+            else
+            {
+                throw new NotSupportedException("The database instance type is not supported");
+            }
+
+            var enqueueTask = transaction.ListLeftPushAsync(_name, _serializer.Serialize(item));
+            var publishTask = transaction.PublishAsync(_channelName, string.Empty, CommandFlags.FireAndForget);
+
+            if (shouldCommit &&
+                !await transaction.ExecuteAsync().ConfigureAwait(false))
+            {
+                throw new Exception("The transaction has failed");                    
+            }
+                    
+            await Task.WhenAll(enqueueTask, publishTask).ConfigureAwait(false);
         }
 
         public async Task<T> DequeueOrDefaultAsync()
@@ -62,7 +89,7 @@ namespace Takenet.Elephant.Redis
             cancellationToken.Register(() => tcs.TrySetCanceled());
             _promisesQueue.Enqueue(tcs);
             var subscriber = GetSubscriber();
-            subscriber.Publish(_name, string.Empty, CommandFlags.FireAndForget);
+            subscriber.Publish(_channelName, string.Empty, CommandFlags.FireAndForget);
             return tcs.Task;
         }
 
@@ -70,9 +97,9 @@ namespace Takenet.Elephant.Redis
 
         private void SubscribeChannel()
         {
-            var subscriber = GetSubscriber();
-            subscriber.Subscribe(
-                _name,
+            _subscriber = GetSubscriber();
+            _subscriber.Subscribe(
+                _channelName,
                 async (c, v) =>
                 {
                     await _semaphore.WaitAsync().ConfigureAwait(false);
@@ -102,6 +129,6 @@ namespace Takenet.Elephant.Redis
                         _semaphore.Release();
                     }
                 });
-        }
+        }        
     }
 }
