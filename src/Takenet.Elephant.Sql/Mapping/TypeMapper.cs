@@ -44,9 +44,24 @@ namespace Takenet.Elephant.Sql.Mapping
 
                 if (!_table.Columns[property.Name].IsIdentity)
                 {
+                    Func<object, object> getAccessor = TypeUtil.BuildGetAccessor(property);
+
+                    if (typeof (string) == property.PropertyType &&
+                        _table.Columns[property.Name].Length != null &&
+                        _table.Columns[property.Name].Length != int.MaxValue)
+                    {
+                        var closureGetAccessor = getAccessor;
+                        var closureColumnLength = _table.Columns[property.Name].Length.Value;
+                        getAccessor = p =>
+                        {
+                            var value = (string)closureGetAccessor(p);
+                            return value?.Left(closureColumnLength);
+                        };
+                    }                    
+
                     _propertyGetFuncDictionary.Add(
                         property.Name,
-                        TypeUtil.BuildGetAccessor(property));
+                        getAccessor);
                 }
 
                 _propertySetActionDictionary.Add(
@@ -65,10 +80,7 @@ namespace Takenet.Elephant.Sql.Mapping
                     p => p.Key,
                     p => p.Value(value))
                 .Where(
-                    p =>
-                    {
-                        return emitDefaultValues || !p.Value.IsDefaultValueOfType(_propertyDictionary[p.Key]);
-                    })
+                    p => emitDefaultValues || !p.Value.IsDefaultValueOfType(_propertyDictionary[p.Key]))
                 .ToDictionary(
                     p => p.Key,
                     p => TypeMapper.ToDbType(p.Value, _table.Columns[p.Key].Type));
