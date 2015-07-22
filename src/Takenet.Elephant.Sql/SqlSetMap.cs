@@ -132,30 +132,28 @@ namespace Takenet.Elephant.Sql
 
         #region IItemSetMap<TKey, TItem> Members
 
-        public virtual async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem value)
+        public virtual Task<TItem> GetItemOrDefaultAsync(TKey key, TItem value)
         {
-            var cancellationToken = CreateCancellationToken();
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-            {
-                var keyColumnValues = GetKeyColumnValues(GetColumnValues(key, value));
-                var selectColumns = Table.Columns.Keys.ToArray();
-                var command = connection.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns);
-                using (var values = new DbDataReaderAsyncEnumerable<TItem>(command, Mapper, selectColumns))
-                {
-                    return await values.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
-                }
-            }
+            var cancellationToken = CreateCancellationToken();            
+            var keyColumnValues = GetKeyColumnValues(GetColumnValues(key, value));
+            var selectColumns = Table.Columns.Keys.ToArray();                
+            return new DbDataReaderAsyncEnumerable<TItem>(
+                GetConnectionAsync, 
+                c => c.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns), 
+                Mapper, 
+                selectColumns)
+                .FirstOrDefaultAsync(cancellationToken);                            
         }
 
         #endregion
 
         #region IKeysMap<TKey, ISet<TItem>> Members
 
-        public async Task<IAsyncEnumerable<TKey>> GetKeysAsync()
+        public Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
-            var cancellationToken = CreateCancellationToken();
-            var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);
-            return await GetKeysAsync(connection, cancellationToken).ConfigureAwait(false);
+            var selectColumns = Table.KeyColumnsNames;
+            return Task.FromResult<IAsyncEnumerable<TKey>>(
+                new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(Table.Name, null, selectColumns), KeyMapper, selectColumns));
         }
 
         #endregion
@@ -177,13 +175,15 @@ namespace Takenet.Elephant.Sql
                     .ToDictionary(k => k.Key, k => k.Value);
             }
 
-            public override async Task<IAsyncEnumerable<TItem>> AsEnumerableAsync()
-            {
-                var cancellationToken = CreateCancellationToken();
-                var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);
-                var selectColumns = Table.Columns.Keys.ToArray();
-                var command = connection.CreateSelectCommand(Table.Name, MapKeyColumnValues, selectColumns);
-                return new DbDataReaderAsyncEnumerable<TItem>(command, Mapper, selectColumns);
+            public override Task<IAsyncEnumerable<TItem>> AsEnumerableAsync()
+            {                                
+                var selectColumns = Table.Columns.Keys.ToArray();                
+                return Task.FromResult<IAsyncEnumerable<TItem>>(
+                    new DbDataReaderAsyncEnumerable<TItem>(
+                        GetConnectionAsync, 
+                        c => c.CreateSelectCommand(Table.Name, MapKeyColumnValues, selectColumns), 
+                        Mapper, 
+                        selectColumns));
             }
         }
     }

@@ -57,11 +57,15 @@ namespace Takenet.Elephant.Sql
             {
                 var keyColumnValues = KeyMapper.GetColumnValues(key);
                 var selectColumns = Table.Columns.Keys.ToArray();
-                var command = connection.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns);
-                using (var values = new DbDataReaderAsyncEnumerable<TValue>(command, Mapper, selectColumns))
-                {
-                    return await values.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
-                }
+                
+                return await new DbDataReaderAsyncEnumerable<TValue>(
+                    // ReSharper disable once AccessToDisposedClosure
+                    t => connection.AsCompletedTask(), 
+                    c => c.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns), 
+                    Mapper, 
+                    selectColumns)
+                    .FirstOrDefaultAsync(cancellationToken)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -87,11 +91,11 @@ namespace Takenet.Elephant.Sql
 
         #region IKeysMap<TKey, TValue> Members
 
-        public async Task<IAsyncEnumerable<TKey>> GetKeysAsync()
+        public Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
-            var cancellationToken = CreateCancellationToken();
-            var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);
-            return await GetKeysAsync(connection, cancellationToken).ConfigureAwait(false);
+            var selectColumns = Table.KeyColumnsNames;
+            return Task.FromResult<IAsyncEnumerable<TKey>>(
+                new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(Table.Name, null, selectColumns), KeyMapper, selectColumns));
         }
 
         #endregion

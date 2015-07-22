@@ -56,20 +56,23 @@ namespace Takenet.Elephant.Sql
 
             var selectColumns = Table.Columns.Keys.ToArray();
             var orderByColumns = Table.KeyColumnsNames;
-            var filter = SqlHelper.TranslateToSqlWhereClause(where);        
-            var connection = await GetConnectionAsync(cancellationToken);            
-            int totalCount;
-            using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
+            var filter = SqlHelper.TranslateToSqlWhereClause(where);
+            using (var connection = await GetConnectionAsync(cancellationToken))
             {
-                totalCount = (int)await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                int totalCount;
+                using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
+                {
+                    totalCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                }
+                
+                return new QueryResult<TEntity>(                    
+                    new DbDataReaderAsyncEnumerable<TEntity>(
+                        GetConnectionAsync, 
+                        c => c.CreateSelectSkipTakeCommand(Table.Name, selectColumns, filter, skip, take, orderByColumns), 
+                        Mapper, 
+                        selectColumns),
+                    totalCount);
             }
-
-            var command = connection.CreateSelectSkipTakeCommand(
-                Table.Name, selectColumns, filter, skip, take, orderByColumns);
-                                            
-            return new QueryResult<TEntity>(
-                new DbDataReaderAsyncEnumerable<TEntity>(command, Mapper, selectColumns), 
-                totalCount);
         }
 
         #endregion
@@ -80,7 +83,7 @@ namespace Takenet.Elephant.Sql
             await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
             await CheckTableSchemaAsync(connection, cancellationToken).ConfigureAwait(false);
             return connection;
-        }
+        }        
 
         #region Protected Members
 

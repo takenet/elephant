@@ -49,20 +49,23 @@ namespace Takenet.Elephant.Sql
             }
 
             var filter = SqlHelper.TranslateToSqlWhereClause(where, expressionParameterReplacementDictionary);
-            var connection = await GetConnectionAsync(cancellationToken);
-            int totalCount;
-            using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
+            using (var connection = await GetConnectionAsync(cancellationToken))
             {
-                totalCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                int totalCount;
+                using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
+                {
+                    totalCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                }
+
+                return new QueryResult<KeyValuePair<TKey, TValue>>(
+                    new DbDataReaderAsyncEnumerable<KeyValuePair<TKey, TValue>>(
+                        GetConnectionAsync,
+                        c =>
+                            c.CreateSelectSkipTakeCommand(Table.Name, selectColumns, filter, skip, take, orderByColumns),
+                        new KeyValuePairMapper<TKey, TValue>(KeyMapper, Mapper),
+                        selectColumns),
+                    totalCount);
             }
-
-            var command = connection.CreateSelectSkipTakeCommand(
-                Table.Name, selectColumns, filter, skip, take, orderByColumns);
-
-            return new QueryResult<KeyValuePair<TKey, TValue>>(
-                new DbDataReaderAsyncEnumerable<KeyValuePair<TKey, TValue>>(command,
-                    new KeyValuePairMapper<TKey, TValue>(KeyMapper, Mapper), selectColumns),
-                totalCount);
         }
 
         #endregion
@@ -73,9 +76,31 @@ namespace Takenet.Elephant.Sql
             Expression<Func<TKey, TResult>> @select, int skip, int take,
             CancellationToken cancellationToken)
         {
-            var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);            
-            return await QueryForKeysAsync(connection, where, @select, skip, take, cancellationToken);
-            
+            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            {
+                if (select != null &&
+                    select.ReturnType != typeof (TKey))
+                {
+                    throw new NotImplementedException("The 'select' parameter is not supported yet");
+                }
+
+                var selectColumns = Table.KeyColumnsNames;
+                var filter = SqlHelper.TranslateToSqlWhereClause(where);
+                int totalCount;
+                using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
+                {
+                    totalCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                }
+
+                
+                return new QueryResult<TKey>(
+                    new DbDataReaderAsyncEnumerable<TKey>(
+                        GetConnectionAsync, 
+                        c => c.CreateSelectSkipTakeCommand(Table.Name, selectColumns, filter, skip, take, selectColumns), 
+                        KeyMapper, 
+                        selectColumns),
+                    totalCount);
+            }
         }
 
         #endregion
@@ -105,45 +130,6 @@ namespace Takenet.Elephant.Sql
             if (key == null) throw new ArgumentNullException(nameof(key));
             var keyColumnValues = KeyMapper.GetColumnValues(key);
             return ContainsAsync(keyColumnValues, connection, cancellationToken);
-        }
-
-        protected virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync(DbConnection connection,
-            CancellationToken cancellationToken)
-        {
-            var selectColumns = Table.KeyColumnsNames;
-            var command = connection.CreateSelectCommand(Table.Name, null, selectColumns);
-            return Task.FromResult<IAsyncEnumerable<TKey>>(
-                new DbDataReaderAsyncEnumerable<TKey>(command, KeyMapper, selectColumns));
-        }
-
-        protected virtual async Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(
-            DbConnection connection,
-            Expression<Func<TValue, bool>> where,
-            Expression<Func<TKey, TResult>> select,
-            int skip,
-            int take,
-            CancellationToken cancellationToken)
-        {
-            if (select != null &&
-                select.ReturnType != typeof (TKey))
-            {
-                throw new NotImplementedException("The 'select' parameter is not supported yet");
-            }
-
-            var selectColumns = Table.KeyColumnsNames;
-            var filter = SqlHelper.TranslateToSqlWhereClause(where);
-            int totalCount;
-            using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
-            {
-                totalCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
-            }
-
-            var command = connection.CreateSelectSkipTakeCommand(
-                Table.Name, selectColumns, filter, skip, take, selectColumns);
-
-            return new QueryResult<TKey>(
-                new DbDataReaderAsyncEnumerable<TKey>(command, KeyMapper, selectColumns),
-                totalCount);
         }
     }
 }

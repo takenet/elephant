@@ -53,13 +53,15 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public virtual async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync()
         {
-            var cancellationToken = CreateCancellationToken();
-            var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false);            
             var selectColumns = Table.Columns.Keys.ToArray();
-            var command = connection.CreateSelectCommand(Table.Name, null, selectColumns);
-            return new DbDataReaderAsyncEnumerable<T>(command, Mapper, selectColumns);
+            return Task.FromResult<IAsyncEnumerable<T>>(
+                new DbDataReaderAsyncEnumerable<T>(
+                    GetConnectionAsync, 
+                    c => c.CreateSelectCommand(Table.Name, null, selectColumns),
+                    Mapper, 
+                    selectColumns));
         }
 
         public virtual async Task<bool> ContainsAsync(T value)

@@ -9,14 +9,16 @@ namespace Takenet.Elephant.Sql
 {
     internal sealed class DbDataReaderAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
+        private readonly DbCommand _dbCommand;
         private readonly DbDataReader _sqlDataReader;
         private readonly IMapper<T> _mapper;
         private readonly string[] _selectColumns;
 
-        public DbDataReaderAsyncEnumerator(DbDataReader sqlDataReader, IMapper<T> mapper, string[] selectColumns)
+        public DbDataReaderAsyncEnumerator(DbCommand dbCommand, DbDataReader sqlDataReader, IMapper<T> mapper, string[] selectColumns)
         {
             if (sqlDataReader == null) throw new ArgumentNullException(nameof(sqlDataReader));
             if (mapper == null) throw new ArgumentNullException(nameof(mapper));
+            _dbCommand = dbCommand;
             _sqlDataReader = sqlDataReader;
             _mapper = mapper;
             _selectColumns = selectColumns;
@@ -44,6 +46,8 @@ namespace Takenet.Elephant.Sql
         public void Dispose()
         {
             _sqlDataReader.Dispose();
+            _dbCommand.Dispose();
+            _dbCommand.Connection.Dispose();
         }
     }
 }
