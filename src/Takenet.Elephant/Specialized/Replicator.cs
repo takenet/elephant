@@ -56,11 +56,12 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected async Task<TResult> ExecuteAsync<TResult>(Func<T, Task<TResult>> func)
         {
+            var isMasterUp = false;
             TResult value;
             try
             {
                 value = await func(_master).ConfigureAwait(false);
-                if (_isMasterDown) await CheckSynchronizationAsync().ConfigureAwait(false);                
+                isMasterUp = true;
             }
             catch (Exception ex)
             {
@@ -68,6 +69,7 @@ namespace Takenet.Elephant.Specialized
                 value = await func(_slave).ConfigureAwait(false);
             }
 
+            if (isMasterUp && _isMasterDown) await CheckSynchronizationAsync().ConfigureAwait(false);
             return value;
         }
 
