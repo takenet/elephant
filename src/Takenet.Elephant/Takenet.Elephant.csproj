@@ -75,10 +75,12 @@
     <Compile Include="SetExtensions.cs" />
     <Compile Include="SetMapExtensions.cs" />
     <Compile Include="Specialized\ExceptionEventArgs.cs" />
-    <Compile Include="Specialized\FallbackExecutor.cs" />
-    <Compile Include="Specialized\FallbackMap.cs" />
-    <Compile Include="Specialized\FallbackPropertyMap.cs" />
-    <Compile Include="Specialized\FallbackSetMap.cs" />
+    <Compile Include="Specialized\ISynchronizer.cs" />
+    <Compile Include="Specialized\MapSynchronizer.cs" />
+    <Compile Include="Specialized\Replicator.cs" />
+    <Compile Include="Specialized\ReplicationMap.cs" />
+    <Compile Include="Specialized\ReplicationPropertyMap.cs" />
+    <Compile Include="Specialized\ReplicationSetMap.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TaskUtil.cs" />
     <Compile Include="DictionaryConverter.cs" />

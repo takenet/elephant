@@ -5,7 +5,7 @@ using StackExchange.Redis;
 namespace Takenet.Elephant.Redis
 {
     /// <summary>
-    /// Implements the <see cref="IMap{TKey,TValue}"/> interface using Redis stardard key/value data structure.
+    /// Implements the <see cref="IMap{TKey,TValue}"/> interface using Redis standard key/value data structure.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
