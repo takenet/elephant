@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Moq;
 using Takenet.Elephant.Memory;
-using Takenet.Elephant.Specialized;
+using Takenet.Elephant.Specialized.Replication;
 using Xunit;
 
-namespace Takenet.Elephant.Tests.Specialized
+namespace Takenet.Elephant.Tests.Replication
 {
     public abstract class ReplicationMapFacts<TKey, TValue> : MapFacts<TKey, TValue>
     {

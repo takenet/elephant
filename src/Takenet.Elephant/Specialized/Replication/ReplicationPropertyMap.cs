@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Takenet.Elephant.Specialized
+namespace Takenet.Elephant.Specialized.Replication
 {
     /// <summary>
     /// Implements a replication mechanism with a primary and slave maps. 
@@ -11,7 +11,13 @@ namespace Takenet.Elephant.Specialized
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     public class ReplicationPropertyMap<TKey, TValue> : Replicator<IPropertyMap<TKey, TValue>>, IPropertyMap<TKey, TValue>
-    {        
+    {
+        public ReplicationPropertyMap(IPropertyMap<TKey, TValue> master, IPropertyMap<TKey, TValue> slave, TimeSpan synchronizationTimeout)
+            : this(master, slave, new MapSynchronizer<TKey, TValue>(synchronizationTimeout))
+        {
+
+        }
+
         public ReplicationPropertyMap(IPropertyMap<TKey, TValue> master, IPropertyMap<TKey, TValue> slave, ISynchronizer<IPropertyMap<TKey, TValue>> synchronizer) 
             : base(master, slave, synchronizer)
         {

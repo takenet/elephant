@@ -74,13 +74,13 @@
     <Compile Include="QueueExtensions.cs" />
     <Compile Include="SetExtensions.cs" />
     <Compile Include="SetMapExtensions.cs" />
-    <Compile Include="Specialized\ExceptionEventArgs.cs" />
-    <Compile Include="Specialized\ISynchronizer.cs" />
-    <Compile Include="Specialized\MapSynchronizer.cs" />
-    <Compile Include="Specialized\Replicator.cs" />
-    <Compile Include="Specialized\ReplicationMap.cs" />
-    <Compile Include="Specialized\ReplicationPropertyMap.cs" />
-    <Compile Include="Specialized\ReplicationSetMap.cs" />
+    <Compile Include="Specialized\Replication\ExceptionEventArgs.cs" />
+    <Compile Include="Specialized\Replication\ISynchronizer.cs" />
+    <Compile Include="Specialized\Replication\MapSynchronizer.cs" />
+    <Compile Include="Specialized\Replication\Replicator.cs" />
+    <Compile Include="Specialized\Replication\ReplicationMap.cs" />
+    <Compile Include="Specialized\Replication\ReplicationPropertyMap.cs" />
+    <Compile Include="Specialized\Replication\ReplicationSetMap.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TaskUtil.cs" />
     <Compile Include="DictionaryConverter.cs" />
@@ -89,6 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Takenet.Elephant.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Specialized\Fallback\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

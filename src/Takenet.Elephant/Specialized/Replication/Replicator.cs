@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Takenet.Elephant.Specialized
+namespace Takenet.Elephant.Specialized.Replication
 {
     /// <summary>
     /// Implements a replication mechanism with master and slave actors where when the first fails, it falls back to the second.

@@ -1,6 +1,6 @@
 using System;
 
-namespace Takenet.Elephant.Specialized
+namespace Takenet.Elephant.Specialized.Replication
 {
     public class ExceptionEventArgs : EventArgs
     {
