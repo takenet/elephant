@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Takenet.Elephant.Specialized.Replication
+namespace Takenet.Elephant.Specialized
 {
     /// <summary>
     /// Implements a replication mechanism with a master and slave maps. 

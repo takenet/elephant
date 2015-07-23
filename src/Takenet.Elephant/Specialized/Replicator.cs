@@ -2,11 +2,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Takenet.Elephant.Specialized.Replication
+namespace Takenet.Elephant.Specialized
 {
     /// <summary>
     /// Implements a replication mechanism with master and slave actors where when the first fails, it falls back to the second.
-    /// When the first actor recovers, it allows the synchronization between they.
+    /// When the first actor recovers, it allows the synchronization between them.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class Replicator<T> : IDisposable
@@ -35,13 +35,13 @@ namespace Takenet.Elephant.Specialized.Replication
         }
 
         /// <summary>
-        /// Executes a query method where if the master fails, the slave take its place. 
+        /// Executes an action where if the master fails, the slave take its place. 
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        protected Task ExecuteAsync(Func<T, Task> func)
+        protected Task ExecuteWithFallbackAsync(Func<T, Task> func)
         {
-            return ExecuteAsync<object>(async arg =>
+            return ExecuteWithFallbackAsync<object>(async arg =>
             {
                 await func(arg).ConfigureAwait(false);
                 return null;
@@ -49,12 +49,12 @@ namespace Takenet.Elephant.Specialized.Replication
         }
 
         /// <summary>
-        /// Executes a query method where if the master fails, the slave take its place. 
+        /// Executes an action where if the master fails, the slave take its place. 
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        protected async Task<TResult> ExecuteAsync<TResult>(Func<T, Task<TResult>> func)
+        protected async Task<TResult> ExecuteWithFallbackAsync<TResult>(Func<T, Task<TResult>> func)
         {
             var isMasterUp = false;
             TResult value;
@@ -69,6 +69,46 @@ namespace Takenet.Elephant.Specialized.Replication
                 value = await func(_slave).ConfigureAwait(false);
             }
 
+            if (isMasterUp && _isMasterDown) await CheckSynchronizationAsync().ConfigureAwait(false);
+            return value;
+        }
+
+        /// <summary>
+        /// Executes an action in both master and slave, even if the first fails.
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        protected Task ExecuteWithReplicationAsync(Func<T, Task> func)
+        {
+            return ExecuteWithReplicationAsync<object>(async arg =>
+            {
+                await func(arg).ConfigureAwait(false);
+                return null;
+            });
+        }
+
+        /// <summary>
+        /// Executes an action in both master and slave, even if the first fails.
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        protected async Task<TResult> ExecuteWithReplicationAsync<TResult>(Func<T, Task<TResult>> func)
+        {
+            var isMasterUp = false;
+            TResult value = default(TResult);
+            try
+            {
+                value = await func(_master).ConfigureAwait(false);
+                isMasterUp = true;
+            }
+            catch (Exception ex)
+            {
+                await RaiseMasterFailedAsync(ex).ConfigureAwait(false);                
+            }
+
+            TResult slaveValue = await func(_slave).ConfigureAwait(false);
+            if (!isMasterUp) value = slaveValue;
             if (isMasterUp && _isMasterDown) await CheckSynchronizationAsync().ConfigureAwait(false);
             return value;
         }
@@ -150,6 +190,7 @@ namespace Takenet.Elephant.Specialized.Replication
             await OnMasterRecoveredAsync().ConfigureAwait(false);
             MasterRecovered?.Invoke(this, EventArgs.Empty);
         }
+
         private async Task CheckSynchronizationAsync()
         {
             await _masterStatusSemaphore.WaitAsync().ConfigureAwait(false);

@@ -147,8 +147,8 @@
     <Compile Include="Redis\RedisGuidSetFacts.cs" />
     <Compile Include="SetFacts.cs" />
     <Compile Include="SetMapFacts.cs" />
-    <Compile Include="Replication\GuidItemReplicationMapFacts.cs" />
-    <Compile Include="Replication\ReplicationMapFacts.cs" />
+    <Compile Include="Specialized\GuidItemReplicationMapFacts.cs" />
+    <Compile Include="Specialized\ReplicationMapFacts.cs" />
     <Compile Include="Sql\SqlConnectionFixture.cs" />
     <Compile Include="Sql\SqlCollectionFixture.cs" />
     <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />

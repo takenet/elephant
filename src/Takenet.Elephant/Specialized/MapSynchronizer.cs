@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Takenet.Elephant.Specialized.Replication
+namespace Takenet.Elephant.Specialized
 {
     internal class MapSynchronizer<TKey, TValue> : ISynchronizer<IMap<TKey, TValue>>
     {

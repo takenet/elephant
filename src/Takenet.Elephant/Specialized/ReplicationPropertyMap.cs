@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Takenet.Elephant.Specialized.Replication
+namespace Takenet.Elephant.Specialized
 {
     /// <summary>
     /// Implements a replication mechanism with a primary and slave maps. 
@@ -26,37 +26,37 @@ namespace Takenet.Elephant.Specialized.Replication
 
         public Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
         {
-            return ExecuteAsync(m => m.TryAddAsync(key, value, overwrite));
+            return ExecuteWithReplicationAsync(m => m.TryAddAsync(key, value, overwrite));
         }
 
         public Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
-            return ExecuteAsync(m => m.GetValueOrDefaultAsync(key));
+            return ExecuteWithFallbackAsync(m => m.GetValueOrDefaultAsync(key));
         }
 
         public Task<bool> TryRemoveAsync(TKey key)
         {
-            return ExecuteAsync(m => m.TryRemoveAsync(key));
+            return ExecuteWithReplicationAsync(m => m.TryRemoveAsync(key));
         }
 
         public Task<bool> ContainsKeyAsync(TKey key)
         {
-            return ExecuteAsync(m => m.ContainsKeyAsync(key));
+            return ExecuteWithFallbackAsync(m => m.ContainsKeyAsync(key));
         }
 
         public Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
-            return ExecuteAsync(m => m.SetPropertyValueAsync(key, propertyName, propertyValue));
+            return ExecuteWithReplicationAsync(m => m.SetPropertyValueAsync(key, propertyName, propertyValue));
         }
 
         public Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
         {
-            return ExecuteAsync(m => m.GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName));
+            return ExecuteWithFallbackAsync(m => m.GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName));
         }
 
         public Task MergeAsync(TKey key, TValue value)
         {
-            return ExecuteAsync(m => m.MergeAsync(key, value));
+            return ExecuteWithReplicationAsync(m => m.MergeAsync(key, value));
         }
     }
 }
