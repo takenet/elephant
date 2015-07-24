@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized
 {
-    internal sealed class CopyQueueSynchronizer<T> : ISynchronizer<IQueue<T>>
+    public sealed class CopyQueueSynchronizer<T> : ISynchronizer<IQueue<T>>
     {
-        public async Task SynchronizeAsync(IQueue<T> first, IQueue<T> second)
+        public async Task SynchronizeAsync(IQueue<T> source, IQueue<T> target)
         {
-            while (await second.GetLengthAsync().ConfigureAwait(false) > 0)
+            while (await source.GetLengthAsync().ConfigureAwait(false) > 0)
             {
-                var value = await second.DequeueOrDefaultAsync().ConfigureAwait(false);
-                if (value != null && !value.Equals(default(T))) await first.EnqueueAsync(value).ConfigureAwait(false);
+                var value = await source.DequeueOrDefaultAsync().ConfigureAwait(false);
+                if (value != null && !value.Equals(default(T))) await target.EnqueueAsync(value).ConfigureAwait(false);
             }            
         }
     }

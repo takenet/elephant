@@ -15,7 +15,14 @@ namespace Takenet.Elephant.Specialized
     /// <typeparam name="TValue"></typeparam>
     public class BackupSetMap<TKey, TValue> : BackupMap<TKey, ISet<TValue>>, ISetMap<TKey, TValue>
     {
-        public BackupSetMap(ISetMap<TKey, TValue> primary, ISetMap<TKey, TValue> backup) : base(primary, backup)
+        public BackupSetMap(ISetMap<TKey, TValue> primary, ISetMap<TKey, TValue> backup, TimeSpan synchronizationTimeout)
+            : base(primary, backup, synchronizationTimeout)
+        {
+
+        }
+
+        public BackupSetMap(ISetMap<TKey, TValue> primary, ISetMap<TKey, TValue> backup, ISynchronizer<IMap<TKey, ISet<TValue>>> synchronizer)
+            : base(primary, backup, synchronizer)
         {
         }
     }

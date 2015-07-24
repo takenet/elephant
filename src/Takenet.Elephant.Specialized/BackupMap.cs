@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,15 @@ namespace Takenet.Elephant.Specialized
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     public class BackupMap<TKey, TValue> : BackupStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
-    {       
-        public BackupMap(IMap<TKey, TValue> primary, IMap<TKey, TValue> backup)
-            : base(primary, backup)
+    {
+        public BackupMap(IMap<TKey, TValue> primary, IMap<TKey, TValue> backup, TimeSpan synchronizationTimeout)
+            : this(primary, backup, new DifferentialMapSynchronizer<TKey, TValue>(synchronizationTimeout))
+        {
+
+        }
+
+        public BackupMap(IMap<TKey, TValue> primary, IMap<TKey, TValue> backup, ISynchronizer<IMap<TKey, TValue>> synchronizer)
+            : base(primary, backup, synchronizer)
         {
 
         }

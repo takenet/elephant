@@ -198,7 +198,7 @@ namespace Takenet.Elephant.Specialized
             {
                 if (_isMasterDown)
                 {
-                    await _synchronizer.SynchronizeAsync(_master, _slave).ConfigureAwait(false);
+                    await _synchronizer.SynchronizeAsync(_slave, _master).ConfigureAwait(false);
                     _isMasterDown = false;
                     await RaiseMasterRecoveredAsync().ConfigureAwait(false);
                 }

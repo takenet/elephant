@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IntersectionMapSynchronizer.cs" />
+    <Compile Include="CopyMapSynchronizer.cs" />
     <Compile Include="ExceptionEventArgs.cs" />
     <Compile Include="FallbackBlockingQueue.cs" />
     <Compile Include="BackupStrategy.cs" />

@@ -11,8 +11,15 @@ namespace Takenet.Elephant.Specialized
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     public class BackupPropertyMap<TKey, TValue> : BackupStrategy<IPropertyMap<TKey, TValue>>, IPropertyMap<TKey, TValue>
-    {        
-        public BackupPropertyMap(IPropertyMap<TKey, TValue> primary, IPropertyMap<TKey, TValue> backup) : base(primary, backup)
+    {
+        public BackupPropertyMap(IPropertyMap<TKey, TValue> primary, IPropertyMap<TKey, TValue> backup, TimeSpan synchronizationTimeout)
+            : this(primary, backup, new DifferentialMapSynchronizer<TKey, TValue>(synchronizationTimeout))
+        {
+
+        }
+
+        public BackupPropertyMap(IPropertyMap<TKey, TValue> primary, IPropertyMap<TKey, TValue> backup, ISynchronizer<IMap<TKey, TValue>> synchronizer) 
+            : base(primary, backup, synchronizer)
         {
             
         }

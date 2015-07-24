@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized
@@ -9,17 +10,22 @@ namespace Takenet.Elephant.Specialized
     /// For queries, if the action fails in the first, it falls back to the second.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class BackupStrategy<T>
+    public class BackupStrategy<T> : IDisposable
     {
         private readonly T _primary;
         private readonly T _backup;
+        private readonly ISynchronizer<T> _synchronizer;
+        private readonly SemaphoreSlim _synchronizationSemaphore;
 
-        protected BackupStrategy(T primary, T backup)
+        protected BackupStrategy(T primary, T backup, ISynchronizer<T> synchronizer)
         {
             if (primary == null) throw new ArgumentNullException(nameof(primary));
             if (backup == null) throw new ArgumentNullException(nameof(backup));
+            if (synchronizer == null) throw new ArgumentNullException(nameof(synchronizer));
             _primary = primary;
             _backup = backup;
+            _synchronizer = synchronizer;
+            _synchronizationSemaphore = new SemaphoreSlim(1);
         }
 
         /// <summary>
@@ -43,7 +49,7 @@ namespace Takenet.Elephant.Specialized
             if (!await func(_primary).ConfigureAwait(false)) return false;
             if (!await func(_backup).ConfigureAwait(false))
             {
-                throw new Exception("Could not write to the backup storage");
+                await SynchronizeAsync().ConfigureAwait(false);
             }
             return true;
         }
@@ -89,6 +95,33 @@ namespace Takenet.Elephant.Specialized
         {
             await OnPrimaryFailedAsync(exception).ConfigureAwait(false);
             PrimaryFailed?.Invoke(this, new ExceptionEventArgs(exception));
+        }
+
+        private async Task SynchronizeAsync()
+        {
+            await _synchronizationSemaphore.WaitAsync().ConfigureAwait(false);
+            try
+            {                
+                await _synchronizer.SynchronizeAsync(_primary, _backup).ConfigureAwait(false);                    
+            }
+            finally
+            {
+                _synchronizationSemaphore.Release();
+            }            
+        }
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _synchronizationSemaphore.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

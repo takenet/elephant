@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NFluent;
 using Ploeh.AutoFixture;
@@ -25,21 +26,25 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var map = Create();
-            var key1 = CreateKey();
-            var key2 = CreateKey();
-            var key3 = CreateKey();
-            if (!await map.TryAddAsync(key1, CreateValue(key1), false)) throw new Exception("Could not arrange the test");
-            if (!await map.TryAddAsync(key2, CreateValue(key2), false)) throw new Exception("Could not arrange the test");
-            if (!await map.TryAddAsync(key3, CreateValue(key3), false)) throw new Exception("Could not arrange the test");
+            var random = new Random();
+            var count = random.Next(10, 100);
+            var keys = new List<TKey>();
+            for (var i = 0; i < count; i++)
+            {
+                var key = CreateKey();
+                keys.Add(key);
+                if (!await map.TryAddAsync(key, CreateValue(key), false)) throw new Exception("Could not arrange the test");
+            }
 
             // Act
             var actual = await map.GetKeysAsync();
 
             // Assert
             var actualList = await actual.ToListAsync();
-            Check.That(actualList).Contains(key1);
-            Check.That(actualList).Contains(key2);
-            Check.That(actualList).Contains(key3);
+            foreach (var key in keys)
+            {
+                Check.That(actualList).Contains(key);
+            }            
         }
 
         [Fact(DisplayName = "GetNonExistingKeysReturnsEmpty")]

@@ -156,7 +156,7 @@
     <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemKeyQueryableSetMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemKeyValueMapQueryableStorageFacts.cs" />
-    <Compile Include="Sql\SqlGuidItemKeysMapFacts.cs" />
+    <Compile Include="Redis\RedisGuidItemKeysMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemKeyQueryableMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemPropertyMapFacts.cs" />
