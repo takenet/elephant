@@ -43,7 +43,11 @@
   <ItemGroup>
     <Compile Include="ExceptionEventArgs.cs" />
     <Compile Include="FallbackBlockingQueue.cs" />
+    <Compile Include="BackupExecutor.cs" />
+    <Compile Include="BackupMap.cs" />
+    <Compile Include="BackupPropertyMap.cs" />
     <Compile Include="FallbackQueue.cs" />
+    <Compile Include="BackupSetMap.cs" />
     <Compile Include="ISynchronizer.cs" />
     <Compile Include="MapSynchronizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
