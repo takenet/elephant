@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Takenet.Elephant.Specialized</id>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <title>Elephant Redis</title>
     <authors>takenet</authors>
     <owners>takenet,andrebires</owners>
@@ -13,7 +13,7 @@
     <copyright>Copyright © 2015 Curupira S/A</copyright>
     <tags>elephant</tags>
     <dependencies>
-      <dependency id="Takenet.Elephant" version="0.2.0" />
+      <dependency id="Takenet.Elephant" version="0.2.5" />
     </dependencies>
   </metadata>
   <files>
