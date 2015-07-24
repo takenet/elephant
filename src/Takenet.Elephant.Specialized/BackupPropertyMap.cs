@@ -13,7 +13,7 @@ namespace Takenet.Elephant.Specialized
     public class BackupPropertyMap<TKey, TValue> : BackupStrategy<IPropertyMap<TKey, TValue>>, IPropertyMap<TKey, TValue>
     {
         public BackupPropertyMap(IPropertyMap<TKey, TValue> primary, IPropertyMap<TKey, TValue> backup, TimeSpan synchronizationTimeout)
-            : this(primary, backup, new DifferentialMapSynchronizer<TKey, TValue>(synchronizationTimeout))
+            : this(primary, backup, new IntersectionMapSynchronizer<TKey, TValue>(synchronizationTimeout))
         {
 
         }

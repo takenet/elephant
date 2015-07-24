@@ -16,7 +16,7 @@ namespace Takenet.Elephant.Specialized
     public class BackupMap<TKey, TValue> : BackupStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
     {
         public BackupMap(IMap<TKey, TValue> primary, IMap<TKey, TValue> backup, TimeSpan synchronizationTimeout)
-            : this(primary, backup, new DifferentialMapSynchronizer<TKey, TValue>(synchronizationTimeout))
+            : this(primary, backup, new IntersectionMapSynchronizer<TKey, TValue>(synchronizationTimeout))
         {
 
         }
