@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AEA9548D-8D87-41CE-8959-81B3361C0298}</ProjectGuid>
+    <ProjectGuid>{2D183E50-19E5-4677-BDDF-BB70FC420A16}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Takenet.Elephant</RootNamespace>
-    <AssemblyName>Takenet.Elephant</AssemblyName>
+    <RootNamespace>Takenet.Elephant.Specialized</RootNamespace>
+    <AssemblyName>Takenet.Elephant.Specialized</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -28,62 +28,40 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Takenet.Elephant.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Takenet.Elephant.Specialized.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncEnumerableExtensions.cs" />
-    <Compile Include="AsyncEnumerableWrapper.cs" />
-    <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="IAsyncEnumerable.cs" />
-    <Compile Include="IBlockingQueue.cs" />
-    <Compile Include="IDictionaryConverter.cs" />
-    <Compile Include="IKeyQueryableMap.cs" />
-    <Compile Include="IQueryableStorage.cs" />
-    <Compile Include="IAsyncEnumerator.cs" />
-    <Compile Include="IExpirableKeyMap.cs" />
-    <Compile Include="IItemSetMap.cs" />
-    <Compile Include="IKeysMap.cs" />
-    <Compile Include="IMap.cs" />
-    <Compile Include="INumberMap.cs" />
-    <Compile Include="IPropertyMap.cs" />
-    <Compile Include="IQueue.cs" />
-    <Compile Include="IQueueMap.cs" />
-    <Compile Include="ISet.cs" />
-    <Compile Include="ISetMap.cs" />
-    <Compile Include="IUpdatableMap.cs" />
-    <Compile Include="Memory\Map.cs" />
-    <Compile Include="Memory\NumberMap.cs" />
-    <Compile Include="Memory\Set.cs" />
-    <Compile Include="Memory\QueueMap.cs" />
-    <Compile Include="Memory\SetMap.cs" />
-    <Compile Include="Memory\Queue.cs" />
-    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="ExceptionEventArgs.cs" />
+    <Compile Include="FallbackBlockingQueue.cs" />
+    <Compile Include="FallbackQueue.cs" />
+    <Compile Include="ISynchronizer.cs" />
+    <Compile Include="MapSynchronizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryResult.cs" />
-    <Compile Include="QueueExtensions.cs" />
-    <Compile Include="SetExtensions.cs" />
-    <Compile Include="SetMapExtensions.cs" />
-    <Compile Include="StringExtensions.cs" />
-    <Compile Include="TaskUtil.cs" />
-    <Compile Include="DictionaryConverter.cs" />
-    <Compile Include="TypeExtensions.cs" />
-    <Compile Include="TypeUtil.cs" />
+    <Compile Include="QueueSynchronizer.cs" />
+    <Compile Include="ReplicationMap.cs" />
+    <Compile Include="ReplicationPropertyMap.cs" />
+    <Compile Include="ReplicationSetMap.cs" />
+    <Compile Include="Replicator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Takenet.Elephant.nuspec" />
+    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
+      <Project>{aea9548d-8d87-41ce-8959-81b3361c0298}</Project>
+      <Name>Takenet.Elephant</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Takenet.Elephant.Specialized.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

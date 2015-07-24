@@ -147,7 +147,9 @@
     <Compile Include="Redis\RedisGuidSetFacts.cs" />
     <Compile Include="SetFacts.cs" />
     <Compile Include="SetMapFacts.cs" />
+    <Compile Include="Specialized\FallbackQueueFacts.cs" />
     <Compile Include="Specialized\GuidItemReplicationMapFacts.cs" />
+    <Compile Include="Specialized\ItemFallbackQueueFacts.cs" />
     <Compile Include="Specialized\ReplicationMapFacts.cs" />
     <Compile Include="Sql\SqlConnectionFixture.cs" />
     <Compile Include="Sql\SqlCollectionFixture.cs" />
@@ -177,6 +179,10 @@
     <ProjectReference Include="..\Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj">
       <Project>{6895c290-8eaa-468b-8b2f-b1a7cb3cb32a}</Project>
       <Name>Takenet.Elephant.Redis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Takenet.Elephant.Specialized\Takenet.Elephant.Specialized.csproj">
+      <Project>{2d183e50-19e5-4677-bddf-bb70fc420a16}</Project>
+      <Name>Takenet.Elephant.Specialized</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj">
       <Project>{fa4ecd2c-454c-48fd-8dc1-678b8a723080}</Project>

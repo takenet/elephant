@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>Takenet.Elephant</id>
-    <version>0.2.5</version>
-    <title>Elephant</title>
+    <id>Takenet.Elephant.Specialized</id>
+    <version>0.1.0</version>
+    <title>Elephant Redis</title>
     <authors>takenet</authors>
     <owners>takenet,andrebires</owners>
     <projectUrl>http://github.com/takenet/elephant</projectUrl>
@@ -12,9 +12,12 @@
     <description>Elephant storage library</description>
     <copyright>Copyright © 2015 Curupira S/A</copyright>
     <tags>elephant</tags>
+    <dependencies>
+      <dependency id="Takenet.Elephant" version="0.2.0" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Takenet.Elephant.dll" target="lib\net451\Takenet.Elephant.dll" />
-    <file src="bin\Release\Takenet.Elephant.XML" target="lib\net451\Takenet.Elephant.XML" />
+    <file src="bin\Release\Takenet.Elephant.Specialized.dll" target="lib\net451\Takenet.Elephant.Specialized.dll" />
+    <file src="bin\Release\Takenet.Elephant.Specialized.XML" target="lib\net451\Takenet.Elephant.Specialized.XML" />
   </files>
 </package>

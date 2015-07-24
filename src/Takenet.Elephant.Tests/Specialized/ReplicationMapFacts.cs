@@ -19,8 +19,8 @@ namespace Takenet.Elephant.Tests.Specialized
             return new ReplicationMap<TKey, TValue>(master, slave, TimeSpan.FromSeconds(30));
         }
 
-        [Fact(DisplayName = "TryAddToUpMasterShouldAddToSlave")]
-        public virtual async Task TryAddToUpMasterShouldAddToSlave()
+        [Fact(DisplayName = "TryAddWhenMasterIsUpShouldAddToSlave")]
+        public virtual async Task TryAddWhenMasterIsUpShouldAddToSlave()
         {
             // Arrange
             var master = new Map<TKey, TValue>();
@@ -41,8 +41,8 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertEquals(await slave.GetValueOrDefaultAsync(key), value);
         }
 
-        [Fact(DisplayName = "TryAddToDownMasterShouldAddToSlave")]
-        public virtual async Task TryAddToDownMasterShouldAddToSlave()
+        [Fact(DisplayName = "TryAddWhenMasterIsDownShouldAddToSlave")]
+        public virtual async Task TryAddWhenMasterIsDownShouldAddToSlave()
         {
             // Arrange
             var master = new Mock<IMap<TKey, TValue>>();
@@ -70,8 +70,8 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertEquals(await slave.GetValueOrDefaultAsync(key), value);
         }
 
-        [Fact(DisplayName = "TryAddToDownMasterMultipleTimesShouldSynchronizeAfterRecover")]
-        public virtual async Task TryAddToDownMasterMultipleTimesShouldSynchronizeAfterRecover()
+        [Fact(DisplayName = "TryAddMultipleTimesWhenMasterDownShouldSynchronizeAfterRecovery")]
+        public virtual async Task TryAddMultipleTimesWhenMasterDownShouldSynchronizeAfterRecovery()
         {
             // Arrange
             var master = new Mock<IMap<TKey, TValue>>();
@@ -85,9 +85,9 @@ namespace Takenet.Elephant.Tests.Specialized
             var value3 = CreateValue(key3);
             master
                 .SetupSequence(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>()))
-                .Throws(new Exception())
-                .Throws(new Exception())
-                .Returns(Task.FromResult(true));                            
+                    .Throws(new Exception())
+                    .Throws(new Exception())
+                    .Returns(Task.FromResult(true));                            
             master
                 .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>()))
                 .ThrowsAsync(new Exception());
@@ -113,8 +113,8 @@ namespace Takenet.Elephant.Tests.Specialized
         }
 
 
-        [Fact(DisplayName = "TryAddToUpMasterMultipleTimesShouldSynchronizeAfterRecover")]
-        public virtual async Task TryAddToUpMasterMultipleTimesShouldSynchronizeAfterRecover()
+        [Fact(DisplayName = "TryAddMultipleTimesWhenMasterIsUpThenDownShouldSynchronizeAfterRecovery")]
+        public virtual async Task TryAddMultipleTimesWhenMasterIsUpThenDownShouldSynchronizeAfterRecovery()
         {
             // Arrange
             var master = new Mock<IMap<TKey, TValue>>();
@@ -128,9 +128,9 @@ namespace Takenet.Elephant.Tests.Specialized
             var value3 = CreateValue(key3);
             master
                 .SetupSequence(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(true))
-                .Throws(new Exception())
-                .Returns(Task.FromResult(true));
+                    .Returns(Task.FromResult(true))
+                    .Throws(new Exception())
+                    .Returns(Task.FromResult(true));
 
             master
                 .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>()))
@@ -147,6 +147,7 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertIsTrue(actual3);
             AssertEquals(await map.GetValueOrDefaultAsync(key1), value1);
             AssertEquals(await map.GetValueOrDefaultAsync(key2), value2);
+            AssertEquals(await map.GetValueOrDefaultAsync(key3), value3);
             master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
             master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
             master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
@@ -156,8 +157,8 @@ namespace Takenet.Elephant.Tests.Specialized
             master.Verify(m => m.TryAddAsync(key3, value3, false), Times.Once);
         }
 
-        [Fact(DisplayName = "TryAddToUpMasterMultipleTimesWithSuccessShouldNotSynchronize")]
-        public virtual async Task TryAddToUpMasterMultipleTimesWithSuccessShouldNotSynchronize()
+        [Fact(DisplayName = "TryAddMultipleTimesWhenMasterIsUpShouldNotSynchronize")]
+        public virtual async Task TryAddMultipleTimesWhenMasterIsUpShouldNotSynchronize()
         {
             // Arrange
             var master = new Mock<IMap<TKey, TValue>>();
@@ -171,9 +172,9 @@ namespace Takenet.Elephant.Tests.Specialized
             var value3 = CreateValue(key3);
             master
                 .SetupSequence(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(true))
-                .Returns(Task.FromResult(true))
-                .Returns(Task.FromResult(true));
+                    .Returns(Task.FromResult(true))
+                    .Returns(Task.FromResult(true))
+                    .Returns(Task.FromResult(true));
 
             master
                 .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>()))
@@ -190,6 +191,7 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertIsTrue(actual3);
             AssertEquals(await map.GetValueOrDefaultAsync(key1), value1);
             AssertEquals(await map.GetValueOrDefaultAsync(key2), value2);
+            AssertEquals(await map.GetValueOrDefaultAsync(key3), value3);
             master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
             master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
             master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);

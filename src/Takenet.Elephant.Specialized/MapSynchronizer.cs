@@ -20,6 +20,7 @@ namespace Takenet.Elephant.Specialized
             var slaveKeysMap = slave as IKeysMap<TKey, TValue>;
             if (slaveKeysMap == null) throw new ArgumentException("The slave map must implement IKeysMap to allow synchronization");
 
+            // TODO: How should the deleted values in the slave be handled?
             using (var cts = new CancellationTokenSource(_synchronizationTimeout))
             {
                 var slaveKeysEnumerable = await slaveKeysMap.GetKeysAsync().ConfigureAwait(false);
