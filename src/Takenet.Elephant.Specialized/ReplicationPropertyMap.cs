@@ -10,10 +10,10 @@ namespace Takenet.Elephant.Specialized
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class ReplicationPropertyMap<TKey, TValue> : Replicator<IPropertyMap<TKey, TValue>>, IPropertyMap<TKey, TValue>
+    public class ReplicationPropertyMap<TKey, TValue> : ReplicationStrategy<IPropertyMap<TKey, TValue>>, IPropertyMap<TKey, TValue>
     {
         public ReplicationPropertyMap(IPropertyMap<TKey, TValue> master, IPropertyMap<TKey, TValue> slave, TimeSpan synchronizationTimeout)
-            : this(master, slave, new MapSynchronizer<TKey, TValue>(synchronizationTimeout))
+            : this(master, slave, new DifferentialMapSynchronizer<TKey, TValue>(synchronizationTimeout))
         {
 
         }

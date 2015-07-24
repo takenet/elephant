@@ -4,6 +4,6 @@ namespace Takenet.Elephant.Specialized
 {
     public interface ISynchronizer<in T>
     {
-        Task SynchronizeAsync(T master, T slave);
+        Task SynchronizeAsync(T first, T second);
     }
 }

@@ -9,7 +9,7 @@ namespace Takenet.Elephant.Specialized
     /// When the first actor recovers, it allows the synchronization between them.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Replicator<T> : IDisposable
+    public class ReplicationStrategy<T> : IDisposable
     {
         private readonly T _master;        
         private readonly T _slave;
@@ -18,7 +18,7 @@ namespace Takenet.Elephant.Specialized
 
         private bool _isMasterDown;           
 
-        protected Replicator(T master, T slave, ISynchronizer<T> synchronizer)
+        protected ReplicationStrategy(T master, T slave, ISynchronizer<T> synchronizer)
         {
             if (master == null) throw new ArgumentNullException(nameof(master));
             if (slave == null) throw new ArgumentNullException(nameof(slave));
@@ -29,7 +29,7 @@ namespace Takenet.Elephant.Specialized
             _masterStatusSemaphore = new SemaphoreSlim(1);
         }
 
-        ~Replicator()
+        ~ReplicationStrategy()
         {            
             Dispose(false);
         }

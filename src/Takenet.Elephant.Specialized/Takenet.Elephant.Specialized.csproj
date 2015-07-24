@@ -43,19 +43,19 @@
   <ItemGroup>
     <Compile Include="ExceptionEventArgs.cs" />
     <Compile Include="FallbackBlockingQueue.cs" />
-    <Compile Include="BackupExecutor.cs" />
+    <Compile Include="BackupStrategy.cs" />
     <Compile Include="BackupMap.cs" />
     <Compile Include="BackupPropertyMap.cs" />
     <Compile Include="FallbackQueue.cs" />
     <Compile Include="BackupSetMap.cs" />
     <Compile Include="ISynchronizer.cs" />
-    <Compile Include="MapSynchronizer.cs" />
+    <Compile Include="DifferentialMapSynchronizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueueSynchronizer.cs" />
+    <Compile Include="CopyQueueSynchronizer.cs" />
     <Compile Include="ReplicationMap.cs" />
     <Compile Include="ReplicationPropertyMap.cs" />
     <Compile Include="ReplicationSetMap.cs" />
-    <Compile Include="Replicator.cs" />
+    <Compile Include="ReplicationStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">

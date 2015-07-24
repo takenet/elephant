@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized
 {
-    public class FallbackQueue<T> : Replicator<IQueue<T>>, IQueue<T>
+    public class FallbackQueue<T> : ReplicationStrategy<IQueue<T>>, IQueue<T>
     {        
         public FallbackQueue(IQueue<T> master, IQueue<T> slave)
-            : base(master, slave, new QueueSynchronizer<T>())
+            : base(master, slave, new CopyQueueSynchronizer<T>())
         {
 
         }

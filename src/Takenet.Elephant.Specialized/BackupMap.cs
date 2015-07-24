@@ -12,7 +12,7 @@ namespace Takenet.Elephant.Specialized
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class BackupMap<TKey, TValue> : BackupExecutor<IMap<TKey, TValue>>, IMap<TKey, TValue>
+    public class BackupMap<TKey, TValue> : BackupStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
     {       
         public BackupMap(IMap<TKey, TValue> primary, IMap<TKey, TValue> backup)
             : base(primary, backup)

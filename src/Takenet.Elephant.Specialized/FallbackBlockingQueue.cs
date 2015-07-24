@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized
 {
-    public class FallbackBlockingQueue<T> : Replicator<IBlockingQueue<T>>, IBlockingQueue<T>
+    public class FallbackBlockingQueue<T> : ReplicationStrategy<IBlockingQueue<T>>, IBlockingQueue<T>
     {
         public FallbackBlockingQueue(IBlockingQueue<T> master, IBlockingQueue<T> slave)
-            : base(master, slave, new QueueSynchronizer<T>())
+            : base(master, slave, new CopyQueueSynchronizer<T>())
         {
         }
 

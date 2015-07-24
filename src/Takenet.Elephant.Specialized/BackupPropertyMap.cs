@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 namespace Takenet.Elephant.Specialized
 {
     /// <summary>
-    /// Defines a fall back mechanism with a primary and secondary maps. 
+    /// Defines a fall back mechanism with a primary and backup maps. 
     /// For write actions, the operation must succeed in both;
     /// For queries, if the action fails in the first, it falls back to the second.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class BackupPropertyMap<TKey, TValue> : BackupExecutor<IPropertyMap<TKey, TValue>>, IPropertyMap<TKey, TValue>
+    public class BackupPropertyMap<TKey, TValue> : BackupStrategy<IPropertyMap<TKey, TValue>>, IPropertyMap<TKey, TValue>
     {        
         public BackupPropertyMap(IPropertyMap<TKey, TValue> primary, IPropertyMap<TKey, TValue> backup) : base(primary, backup)
         {

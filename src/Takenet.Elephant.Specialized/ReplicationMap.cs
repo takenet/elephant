@@ -10,10 +10,10 @@ namespace Takenet.Elephant.Specialized
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class ReplicationMap<TKey, TValue> : Replicator<IMap<TKey, TValue>>, IMap<TKey, TValue>
+    public class ReplicationMap<TKey, TValue> : ReplicationStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
     {
         public ReplicationMap(IMap<TKey, TValue> master, IMap<TKey, TValue> slave, TimeSpan synchronizationTimeout)
-            : this(master, slave, new MapSynchronizer<TKey, TValue>(synchronizationTimeout))
+            : this(master, slave, new DifferentialMapSynchronizer<TKey, TValue>(synchronizationTimeout))
         {
             if (!(slave is IKeysMap<TKey, TValue>)) throw new ArgumentException("The slave map must implement IKeysMap to allow synchronization");            
         }

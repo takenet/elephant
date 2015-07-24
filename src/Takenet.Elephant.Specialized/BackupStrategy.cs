@@ -9,12 +9,12 @@ namespace Takenet.Elephant.Specialized
     /// For queries, if the action fails in the first, it falls back to the second.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class BackupExecutor<T>
+    public class BackupStrategy<T>
     {
         private readonly T _primary;
         private readonly T _backup;
 
-        protected BackupExecutor(T primary, T backup)
+        protected BackupStrategy(T primary, T backup)
         {
             if (primary == null) throw new ArgumentNullException(nameof(primary));
             if (backup == null) throw new ArgumentNullException(nameof(backup));
