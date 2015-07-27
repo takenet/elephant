@@ -146,8 +146,9 @@ namespace Takenet.Elephant.Sql
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
 
-        public static DbCommand CreateSelectCountCommand(this DbConnection connection, string tableName, string filter)
+        public static DbCommand CreateSelectCountCommand(this DbConnection connection, string tableName, string filter = null)
         {
+            if (filter == null) filter = SqlTemplates.OneEqualsOne;
             return connection.CreateTextCommand(
                 SqlTemplates.SelectCount,
                 new

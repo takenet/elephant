@@ -20,6 +20,7 @@ namespace Takenet.Elephant.Tests
 
             // Assert
             AssertIsTrue(await set.ContainsAsync(item));
+            AssertEquals(await set.GetLengthAsync(), 1);
         }
 
         [Fact(DisplayName = "AddExistingItemSucceeds")]
@@ -35,6 +36,7 @@ namespace Takenet.Elephant.Tests
 
             // Assert
             AssertIsTrue(await set.ContainsAsync(item));
+            AssertEquals(await set.GetLengthAsync(), 1);
         }
 
         [Fact(DisplayName = "TryRemoveExistingItemSucceeds")]
@@ -51,6 +53,7 @@ namespace Takenet.Elephant.Tests
             // Assert
             AssertIsTrue(result);
             AssertIsFalse(await set.ContainsAsync(item));
+            AssertEquals(await set.GetLengthAsync(), 0);
         }
 
         [Fact(DisplayName = "TryRemoveNonExistingItemFails")]
@@ -84,9 +87,10 @@ namespace Takenet.Elephant.Tests
 
             // Assert
             AssertEquals(await result.CountAsync(), 3);
+            AssertEquals(await set.GetLengthAsync(), 3);
             AssertIsTrue(await result.ContainsAsync(item1));
             AssertIsTrue(await result.ContainsAsync(item2));
-            AssertIsTrue(await result.ContainsAsync(item3));
+            AssertIsTrue(await result.ContainsAsync(item3));            
         }
 
         [Fact(DisplayName = "EnumerateAfterRemovingItemsSucceeds")]
@@ -109,6 +113,7 @@ namespace Takenet.Elephant.Tests
 
             // Assert
             AssertEquals(await result.CountAsync(), 0);
+            AssertEquals(await set.GetLengthAsync(), 0);
             AssertIsFalse(await result.ContainsAsync(item1));
             AssertIsFalse(await result.ContainsAsync(item2));
             AssertIsFalse(await result.ContainsAsync(item3));

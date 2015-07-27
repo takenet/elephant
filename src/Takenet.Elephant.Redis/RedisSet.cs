@@ -72,6 +72,12 @@ namespace Takenet.Elephant.Redis
             return database.SetContainsAsync(_name, _serializer.Serialize(value));
         }
 
+        public Task<long> GetLengthAsync()
+        {
+            var database = GetDatabase();
+            return database.SetLengthAsync(_name);
+        }
+
         #endregion
     }
 }

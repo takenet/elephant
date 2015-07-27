@@ -72,6 +72,11 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult(_hashSet.Contains(value));
         }
 
+        public Task<long> GetLengthAsync()
+        {
+            return Task.FromResult<long>(_hashSet.Count);
+        }
+
         #endregion
 
         #region IQueryableStorage<T> Members

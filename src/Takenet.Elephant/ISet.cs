@@ -10,7 +10,7 @@ namespace Takenet.Elephant
     {
         /// <summary>
         /// Adds an item to the set. 
-        /// If the value already exists, it is overwriten.
+        /// If the value already exists, it is overwritten.
         /// </summary>
         /// <param name="value">The value.</param>        
         /// <returns></returns>
@@ -35,5 +35,11 @@ namespace Takenet.Elephant
         /// <param name="value"></param>
         /// <returns></returns>
         Task<bool> ContainsAsync(T value);
+
+        /// <summary>
+        /// Gets the number of items in the set.
+        /// </summary>
+        /// <returns></returns>
+        Task<long> GetLengthAsync();
     }
 }
