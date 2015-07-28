@@ -1,5 +1,8 @@
 # Elephant
+
 Persistence library that provides common data structures as composable elements to abstract any storage engine, including SQL databases.
+
+![TC](https://take-teamcity1.azurewebsites.net/app/rest/builds/buildType:(id:Elephant_Master)/statusIcon)
 
 ## Introduction
 
