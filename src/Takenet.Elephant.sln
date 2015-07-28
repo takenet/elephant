@@ -7,11 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant", "Takenet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Tests", "Takenet.Elephant.Tests\Takenet.Elephant.Tests.csproj", "{5288FBD3-4FE6-42A2-8256-D004C17A86F1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{862796A0-87AD-46A1-91B6-B8E7FFEB4C3B}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Redis", "Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj", "{6895C290-8EAA-468B-8B2F-B1A7CB3CB32A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Sql", "Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj", "{FA4ECD2C-454C-48FD-8DC1-678B8A723080}"
