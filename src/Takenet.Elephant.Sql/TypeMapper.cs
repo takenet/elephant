@@ -94,6 +94,11 @@ namespace Takenet.Elephant.Sql
                 var dbValueString = (string)dbValue;
                 return Enum.Parse(propertyType, dbValueString);
             }
+            else if (propertyType == typeof(Uri))
+            {
+                var dbValueString = (string)dbValue;
+                return new Uri(dbValueString);
+            }
             else if (dbValue is string)
             {
                 var dbValueString = (string)dbValue;

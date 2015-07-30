@@ -10,9 +10,11 @@ namespace Takenet.Elephant.Tests
 
         public Guid GuidProperty { get; set; }
 
+        public Uri UriProperty { get; set; }
+
         public override string ToString()
         {
-            return $"{StringProperty};{IntegerProperty};{GuidProperty}";
+            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty}";
         }
 
         public static Item Parse(string s)
@@ -20,11 +22,12 @@ namespace Takenet.Elephant.Tests
             if (s == null) throw new ArgumentNullException(nameof(s));
 
             var values = s.Split(';');
-            return new Item()
+            return new Item
             {
                 StringProperty = values[0],
                 IntegerProperty = int.Parse(values[1]),
-                GuidProperty = Guid.Parse(values[2])
+                GuidProperty = Guid.Parse(values[2]),
+                UriProperty = new Uri(values[3])
             };
         }
 
@@ -40,7 +43,8 @@ namespace Takenet.Elephant.Tests
         {
             return string.Equals(StringProperty, other.StringProperty) && 
                 IntegerProperty == other.IntegerProperty && 
-                GuidProperty.Equals(other.GuidProperty);
+                GuidProperty.Equals(other.GuidProperty) &&
+                UriProperty.Equals(other.UriProperty);
         }
 
         public override int GetHashCode()
@@ -50,6 +54,7 @@ namespace Takenet.Elephant.Tests
                 var hashCode = (StringProperty != null ? StringProperty.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ IntegerProperty;
                 hashCode = (hashCode * 397) ^ GuidProperty.GetHashCode();
+                hashCode = (hashCode * 397) ^ UriProperty.GetHashCode();
                 return hashCode;
             }
         }
