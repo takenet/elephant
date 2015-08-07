@@ -50,8 +50,11 @@
     <Compile Include="BackupPropertyMap.cs" />
     <Compile Include="FallbackQueue.cs" />
     <Compile Include="BackupSetMap.cs" />
+    <Compile Include="IScopeFactory.cs" />
+    <Compile Include="IScopeManager.cs" />
     <Compile Include="ISynchronizer.cs" />
     <Compile Include="DifferentialMapSynchronizer.cs" />
+    <Compile Include="MapScopeFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CopyQueueSynchronizer.cs" />
     <Compile Include="ReplicationMap.cs" />
