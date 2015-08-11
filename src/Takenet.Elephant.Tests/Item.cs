@@ -12,9 +12,11 @@ namespace Takenet.Elephant.Tests
 
         public Uri UriProperty { get; set; }
 
+        public DateTime DateProperty { get; set; }
+
         public override string ToString()
         {
-            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty}";
+            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty}";
         }
 
         public static Item Parse(string s)
@@ -27,7 +29,8 @@ namespace Takenet.Elephant.Tests
                 StringProperty = values[0],
                 IntegerProperty = int.Parse(values[1]),
                 GuidProperty = Guid.Parse(values[2]),
-                UriProperty = new Uri(values[3])
+                UriProperty = new Uri(values[3]),
+                DateProperty = DateTime.Parse(values[4])
             };
         }
 
@@ -55,6 +58,7 @@ namespace Takenet.Elephant.Tests
                 hashCode = (hashCode * 397) ^ IntegerProperty;
                 hashCode = (hashCode * 397) ^ GuidProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ UriProperty.GetHashCode();
+                hashCode = (hashCode * 397) ^ DateProperty.GetHashCode();
                 return hashCode;
             }
         }
