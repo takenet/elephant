@@ -135,6 +135,9 @@
   <data name="DbTypeBoolean" xml:space="preserve">
     <value>BIT</value>
   </data>
+  <data name="DbTypeDateTime" xml:space="preserve">
+    <value>DATETIMEOFFSET(2)</value>
+  </data>
   <data name="DbTypeDateTimeOffset" xml:space="preserve">
     <value>DATETIMEOFFSET(2)</value>
   </data>

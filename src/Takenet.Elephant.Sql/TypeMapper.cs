@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 
 namespace Takenet.Elephant.Sql
 {
@@ -98,6 +99,10 @@ namespace Takenet.Elephant.Sql
             {
                 var dbValueString = (string)dbValue;
                 return new Uri(dbValueString);
+            }
+            else if (propertyType == typeof(DateTime) && dbValue is DateTimeOffset)
+            {
+                return ((DateTimeOffset)dbValue).DateTime;
             }
             else if (dbValue is string)
             {
