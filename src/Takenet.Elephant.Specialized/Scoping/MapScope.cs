@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized.Scoping
 {
-    internal class MapScope : IScope
+    public class MapScope : IScope
     {
         private readonly ISetMap<string, string> _keysSetMap;
 
@@ -18,7 +18,7 @@ namespace Takenet.Elephant.Specialized.Scoping
 
         public string Name { get; }
 
-        public async Task DisposeAsync()
+        public async Task ClearAsync()
         {
             if (RemoveKeyFunc == null) return;
 
@@ -29,8 +29,7 @@ namespace Takenet.Elephant.Specialized.Scoping
                 await keysEnumerable.ForEachAsync(k => RemoveKeyFunc(k), CancellationToken.None);
             }
 
-            await _keysSetMap.TryRemoveAsync(Name).ConfigureAwait(false);
-            RemoveKeyFunc = null;
+            await _keysSetMap.TryRemoveAsync(Name).ConfigureAwait(false);            
         }
 
         internal Func<string, Task> RemoveKeyFunc;

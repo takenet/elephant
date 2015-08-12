@@ -149,8 +149,13 @@
     <Compile Include="SetMapFacts.cs" />
     <Compile Include="Specialized\FallbackQueueFacts.cs" />
     <Compile Include="Specialized\GuidItemReplicationMapFacts.cs" />
+    <Compile Include="Specialized\GuidItemScopedMapFacts.cs" />
+    <Compile Include="Specialized\GuidSerializer.cs" />
     <Compile Include="Specialized\ItemFallbackQueueFacts.cs" />
+    <Compile Include="Redis\RedisGuidItemScopedMapFacts.cs" />
+    <Compile Include="Memory\MemoryGuidItemScopedMapFacts.cs" />
     <Compile Include="Specialized\ReplicationMapFacts.cs" />
+    <Compile Include="Specialized\ScopedMapFacts.cs" />
     <Compile Include="Sql\SqlConnectionFixture.cs" />
     <Compile Include="Sql\SqlCollectionFixture.cs" />
     <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />

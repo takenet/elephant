@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized.Scoping
 {
-    internal class ScopedMap<TKey, TValue> : IMap<TKey, TValue>
+    public class ScopedMap<TKey, TValue> : IMap<TKey, TValue>
     {
         private readonly IMap<TKey, TValue> _map;
         private readonly MapScope _scope;
@@ -17,7 +17,7 @@ namespace Takenet.Elephant.Specialized.Scoping
             if (keySerializer == null) throw new ArgumentNullException(nameof(keySerializer));
             _map = map;
             _scope = (MapScope)scope;
-            _scope.RemoveKeyFunc = k => TryRemoveAsync(_keySerializer.Deserialize(k));            
+            _scope.RemoveKeyFunc = k => _map.TryRemoveAsync(_keySerializer.Deserialize(k));            
             _keySerializer = keySerializer;
         }
 
@@ -46,7 +46,7 @@ namespace Takenet.Elephant.Specialized.Scoping
         }
     }
 
-    internal class ScopedSetMap<TKey, TValue> : ScopedMap<TKey, ISet<TValue>>, ISetMap<TKey, TValue>
+    public class ScopedSetMap<TKey, TValue> : ScopedMap<TKey, ISet<TValue>>, ISetMap<TKey, TValue>
     {
         public ScopedSetMap(IMap<TKey, ISet<TValue>> map, IScope scope, ISerializer<TKey> keySerializer) 
             : base(map, scope, keySerializer)

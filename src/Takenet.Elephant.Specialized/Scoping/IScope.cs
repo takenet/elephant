@@ -6,6 +6,6 @@ namespace Takenet.Elephant.Specialized.Scoping
     {
         string Name { get; }
 
-        Task DisposeAsync();
+        Task ClearAsync();
     }
 }
