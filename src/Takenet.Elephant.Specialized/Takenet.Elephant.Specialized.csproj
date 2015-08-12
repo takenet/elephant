@@ -50,17 +50,21 @@
     <Compile Include="BackupPropertyMap.cs" />
     <Compile Include="FallbackQueue.cs" />
     <Compile Include="BackupSetMap.cs" />
-    <Compile Include="IScopeFactory.cs" />
-    <Compile Include="IScopeManager.cs" />
+    <Compile Include="Scoping\IScopedMapFactory.cs" />
+    <Compile Include="Scoping\IScopeFactory.cs" />
+    <Compile Include="Scoping\IScope.cs" />
     <Compile Include="ISynchronizer.cs" />
     <Compile Include="DifferentialMapSynchronizer.cs" />
-    <Compile Include="MapScopeFactory.cs" />
+    <Compile Include="Scoping\MapScope.cs" />
+    <Compile Include="Scoping\MapScopeFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CopyQueueSynchronizer.cs" />
     <Compile Include="ReplicationMap.cs" />
     <Compile Include="ReplicationPropertyMap.cs" />
     <Compile Include="ReplicationSetMap.cs" />
     <Compile Include="ReplicationStrategy.cs" />
+    <Compile Include="Scoping\ScopedMap.cs" />
+    <Compile Include="Scoping\ScopedMapFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">

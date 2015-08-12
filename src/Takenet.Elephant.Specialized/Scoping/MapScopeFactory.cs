@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
-
-namespace Takenet.Elephant.Specialized
+namespace Takenet.Elephant.Specialized.Scoping
 {
     public class MapScopeFactory : IScopeFactory
     {
@@ -11,9 +9,9 @@ namespace Takenet.Elephant.Specialized
             _scopeKeysSetMap = scopeKeysSetMap;
         }
 
-        public Task<IScope> CreateScopeAsync(string name)
+        public IScope CreateScope(string name)
         {
-            throw new System.NotImplementedException();
+            return new MapScope(name, _scopeKeysSetMap);
         }
     }
 }

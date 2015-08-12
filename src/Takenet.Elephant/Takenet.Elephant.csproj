@@ -59,6 +59,7 @@
     <Compile Include="IPropertyMap.cs" />
     <Compile Include="IQueue.cs" />
     <Compile Include="IQueueMap.cs" />
+    <Compile Include="ISerializer.cs" />
     <Compile Include="ISet.cs" />
     <Compile Include="ISetMap.cs" />
     <Compile Include="IUpdatableMap.cs" />

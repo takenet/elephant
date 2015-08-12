@@ -46,7 +46,6 @@
     <Compile Include="Converters\TypeRedisDictionaryConverter.cs" />
     <Compile Include="Converters\ValueRedisDictionaryConverter.cs" />
     <Compile Include="IRedisDictionaryConverter.cs" />
-    <Compile Include="ISerializer.cs" />
     <Compile Include="MapBase.cs" />
     <Compile Include="RedisHashMap.cs" />
     <Compile Include="RedisNumberMap.cs" />

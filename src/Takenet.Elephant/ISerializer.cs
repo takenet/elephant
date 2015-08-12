@@ -1,4 +1,4 @@
-﻿namespace Takenet.Elephant.Redis
+﻿namespace Takenet.Elephant
 {
     /// <summary>
     /// Defines a type serialization service.
