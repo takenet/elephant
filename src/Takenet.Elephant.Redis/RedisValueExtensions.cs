@@ -19,8 +19,8 @@ namespace Takenet.Elephant.Redis
             if (type == typeof(string)) return (string)value;
             if (type == typeof(Guid)) return Guid.Parse(value);
             if (type == typeof(Uri)) return new Uri(value);
-            if (type == typeof(DateTimeOffset)) return DateTimeOffset.Parse(value, DateTimeFormatInfo.InvariantInfo);
-            if (type == typeof(DateTime)) return DateTime.Parse(value, DateTimeFormatInfo.InvariantInfo);            
+            if (type == typeof(DateTimeOffset)) return new DateTimeOffset((long)value, TimeSpan.Zero);
+            if (type == typeof(DateTime)) return new DateTime((long)value, DateTimeKind.Utc);
             throw new NotSupportedException($"The property type '{value.GetType()}'  is not supported");
         }
 
@@ -39,8 +39,8 @@ namespace Takenet.Elephant.Redis
             if (value is string) return (string)value;
             if (value is Guid) return value.ToString();
             if (value is Uri) return value.ToString();
-            if (value is DateTimeOffset) return ((DateTimeOffset)value).ToString(DateTimeFormatInfo.InvariantInfo);
-            if (value is DateTime) return ((DateTime)value).ToString(DateTimeFormatInfo.InvariantInfo);
+            if (value is DateTimeOffset) return ((DateTimeOffset)value).UtcTicks;
+            if (value is DateTime) return ((DateTime)value).ToUniversalTime().Ticks;
             throw new NotSupportedException($"The property type '{value.GetType()}'  is not supported");
         }
     }

@@ -1,9 +1,12 @@
 using System;
+using System.Globalization;
 
 namespace Takenet.Elephant.Tests
 {
     public class Item
     {
+        public const string COMPARISON_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
         public string StringProperty { get; set; }
 
         public int IntegerProperty { get; set; }
@@ -12,11 +15,20 @@ namespace Takenet.Elephant.Tests
 
         public Uri UriProperty { get; set; }
 
-        public DateTime DateProperty { get; set; }
+        private DateTimeOffset _dateProperty;
+        public DateTimeOffset DateProperty
+        {
+            get { return _dateProperty; }
+            set
+            {
+                var utcValue = value.ToUniversalTime();
+                _dateProperty = new DateTimeOffset(utcValue.Year, utcValue.Month, utcValue.Day, utcValue.Hour, utcValue.Minute, utcValue.Second, utcValue.Offset);
+            }
+        }
 
         public override string ToString()
         {
-            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty}";
+            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)}";
         }
 
         public static Item Parse(string s)
@@ -30,7 +42,7 @@ namespace Takenet.Elephant.Tests
                 IntegerProperty = int.Parse(values[1]),
                 GuidProperty = Guid.Parse(values[2]),
                 UriProperty = new Uri(values[3]),
-                DateProperty = DateTime.Parse(values[4])
+                DateProperty = DateTimeOffset.Parse(values[4], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal)
             };
         }
 
@@ -48,7 +60,7 @@ namespace Takenet.Elephant.Tests
                    IntegerProperty == other.IntegerProperty &&
                    GuidProperty.Equals(other.GuidProperty) &&
                    UriProperty.Equals(other.UriProperty) &&
-                   DateProperty.ToLongDateString().Equals(other.DateProperty.ToLongDateString());
+                   DateProperty.ToUniversalTime().ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture).Equals(other.DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture));
         }
 
         public override int GetHashCode()
@@ -59,7 +71,7 @@ namespace Takenet.Elephant.Tests
                 hashCode = (hashCode * 397) ^ IntegerProperty;
                 hashCode = (hashCode * 397) ^ GuidProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ UriProperty.GetHashCode();
-                hashCode = (hashCode * 397) ^ DateProperty.ToLongDateString().GetHashCode();
+                hashCode = (hashCode * 397) ^ DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture).GetHashCode();
                 return hashCode;
             }
         }

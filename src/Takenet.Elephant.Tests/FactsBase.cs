@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using NFluent;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.Kernel;
 using Xunit;
 
 namespace Takenet.Elephant.Tests
