@@ -69,5 +69,35 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertIsFalse(await scopedMap.ContainsKeyAsync(key3));            
         }
 
+        [Fact(DisplayName = "CreateAndClearAScopeWithSameNameShouldClearTheExistingOne")]
+        public virtual async Task CreateAndClearAScopeWithSameNameShouldClearTheExistingOne()
+        {
+            // Arrange
+            var map = CreateMap();
+            var scopeName = CreateScopeName();
+            var keysSetMap = CreateKeysSetMap();
+            var scope = CreateMapScope(scopeName, keysSetMap);
+            var scopedMap = Create(map, scope);
+            var key1 = CreateKey();
+            var value1 = CreateValue(key1);
+            var key2 = CreateKey();
+            var value2 = CreateValue(key2);
+            var key3 = CreateKey();
+            var value3 = CreateValue(key3);
+            if (!await scopedMap.TryAddAsync(key1, value1, false)) throw new Exception("Could not setup the test scenario");
+            if (!await scopedMap.TryAddAsync(key2, value2, false)) throw new Exception("Could not setup the test scenario");
+            if (!await scopedMap.TryAddAsync(key3, value3, false)) throw new Exception("Could not setup the test scenario");
+            var newScope = CreateMapScope(scopeName, keysSetMap);
+            var newScopedMap = Create(map, newScope);
+
+            // Act
+            await newScope.ClearAsync();
+
+            // Assert
+            AssertIsFalse(await scopedMap.ContainsKeyAsync(key1));
+            AssertIsFalse(await scopedMap.ContainsKeyAsync(key2));
+            AssertIsFalse(await scopedMap.ContainsKeyAsync(key3));
+        }
+
     }
 }
