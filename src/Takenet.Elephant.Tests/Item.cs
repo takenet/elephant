@@ -44,10 +44,11 @@ namespace Takenet.Elephant.Tests
 
         protected bool Equals(Item other)
         {
-            return string.Equals(StringProperty, other.StringProperty) && 
-                IntegerProperty == other.IntegerProperty && 
-                GuidProperty.Equals(other.GuidProperty) &&
-                UriProperty.Equals(other.UriProperty);
+            return string.Equals(StringProperty, other.StringProperty) &&
+                   IntegerProperty == other.IntegerProperty &&
+                   GuidProperty.Equals(other.GuidProperty) &&
+                   UriProperty.Equals(other.UriProperty) &&
+                   DateProperty.ToLongDateString().Equals(other.DateProperty.ToLongDateString());
         }
 
         public override int GetHashCode()
@@ -58,7 +59,7 @@ namespace Takenet.Elephant.Tests
                 hashCode = (hashCode * 397) ^ IntegerProperty;
                 hashCode = (hashCode * 397) ^ GuidProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ UriProperty.GetHashCode();
-                hashCode = (hashCode * 397) ^ DateProperty.GetHashCode();
+                hashCode = (hashCode * 397) ^ DateProperty.ToLongDateString().GetHashCode();
                 return hashCode;
             }
         }
