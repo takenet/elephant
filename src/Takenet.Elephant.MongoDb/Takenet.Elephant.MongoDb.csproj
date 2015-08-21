@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Takenet.Elephant.MongoDb.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
