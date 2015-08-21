@@ -87,8 +87,11 @@ namespace Takenet.Elephant.Tests
             var enumerableActualSet2 = await actualSet2.AsEnumerableAsync();
             var enumerableActualSet3 = await actualSet3.AsEnumerableAsync();
             AssertEquals(await enumerableActualSet1.CountAsync(), 5);
+            AssertEquals(await actualSet1.GetLengthAsync(), 5);
             AssertEquals(await enumerableActualSet2.CountAsync(), 3);
+            AssertEquals(await actualSet2.GetLengthAsync(), 3);
             AssertEquals(await enumerableActualSet3.CountAsync(), 1);
+            AssertEquals(await actualSet3.GetLengthAsync(), 1);
             AssertIsTrue(await actualSet1.ContainsAsync(item11));
             AssertIsTrue(await actualSet1.ContainsAsync(item12));
             AssertIsTrue(await actualSet1.ContainsAsync(item13));
