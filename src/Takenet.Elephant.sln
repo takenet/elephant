@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Samples", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Specialized", "Takenet.Elephant.Specialized\Takenet.Elephant.Specialized.csproj", "{2D183E50-19E5-4677-BDDF-BB70FC420A16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.MongoDb", "Takenet.Elephant.MongoDb\Takenet.Elephant.MongoDb.csproj", "{CDB4A8EA-1DE8-450D-B76B-59F4DF238BCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{2D183E50-19E5-4677-BDDF-BB70FC420A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D183E50-19E5-4677-BDDF-BB70FC420A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D183E50-19E5-4677-BDDF-BB70FC420A16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB4A8EA-1DE8-450D-B76B-59F4DF238BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB4A8EA-1DE8-450D-B76B-59F4DF238BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB4A8EA-1DE8-450D-B76B-59F4DF238BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB4A8EA-1DE8-450D-B76B-59F4DF238BCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
