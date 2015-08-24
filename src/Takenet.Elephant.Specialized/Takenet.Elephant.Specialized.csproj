@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheMap.cs" />
+    <Compile Include="CacheStrategy.cs" />
     <Compile Include="IntersectionMapSynchronizer.cs" />
     <Compile Include="CopyMapSynchronizer.cs" />
     <Compile Include="ExceptionEventArgs.cs" />
@@ -50,6 +52,7 @@
     <Compile Include="BackupPropertyMap.cs" />
     <Compile Include="FallbackQueue.cs" />
     <Compile Include="BackupSetMap.cs" />
+    <Compile Include="ISemaphore.cs" />
     <Compile Include="Scoping\IScope.cs" />
     <Compile Include="ISynchronizer.cs" />
     <Compile Include="DifferentialMapSynchronizer.cs" />
@@ -61,6 +64,7 @@
     <Compile Include="ReplicationSetMap.cs" />
     <Compile Include="ReplicationStrategy.cs" />
     <Compile Include="Scoping\ScopedMap.cs" />
+    <Compile Include="OverwriteMapSynchronizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 
@@ -43,10 +44,12 @@ namespace Takenet.Elephant.Redis
 
             internalSet = CreateSet(key, transaction);
 
-            foreach (var item in await value.AsEnumerableAsync().ConfigureAwait(false))
+            var enumerableAsync = await value.AsEnumerableAsync().ConfigureAwait(false);
+            await enumerableAsync.ForEachAsync(item =>
             {
                 commandTasks.Add(internalSet.AddAsync(item));
-            }            
+            }, CancellationToken.None).ConfigureAwait(false);
+
             var success = await transaction.ExecuteAsync().ConfigureAwait(false);
             await Task.WhenAll(commandTasks).ConfigureAwait(false);
             return success;
