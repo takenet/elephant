@@ -153,7 +153,11 @@ namespace Takenet.Elephant.Sql
         {
             var selectColumns = Table.KeyColumnsNames;
             return Task.FromResult<IAsyncEnumerable<TKey>>(
-                new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(Table.Name, null, selectColumns), KeyMapper, selectColumns));
+                new DbDataReaderAsyncEnumerable<TKey>(
+                    GetConnectionAsync, 
+                    c => c.CreateSelectCommand(Table.Name, null, selectColumns), 
+                    KeyMapper, 
+                    selectColumns));
         }
 
         #endregion

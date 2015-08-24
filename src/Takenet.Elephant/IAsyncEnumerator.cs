@@ -14,7 +14,7 @@ namespace Takenet.Elephant
 
     }
 
-    public class AsyncEnumeratorWrapper<T> : IAsyncEnumerator<T>
+    public sealed class AsyncEnumeratorWrapper<T> : IAsyncEnumerator<T>
     {
         private readonly IEnumerator<T> _enumerator;
 

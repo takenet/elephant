@@ -30,7 +30,7 @@ namespace Takenet.Elephant.Sql
             if (dbConnection.State == ConnectionState.Closed) await dbConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
             var dbCommand = _dbCommandFactory(dbConnection);
             var dbReader = await dbCommand.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
-            return new DbDataReaderAsyncEnumerator<T>(dbCommand, dbReader, _mapper, _selectColumns);
+            return new DbDataReaderAsyncEnumerator<T>(dbConnection, dbCommand, dbReader, _mapper, _selectColumns);
         }
 
         public IEnumerator<T> GetEnumerator()
