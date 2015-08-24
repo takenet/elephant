@@ -75,12 +75,12 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<long> GetLengthAsync()
+        public virtual async Task<long> GetLengthAsync()
         {
             var cancellationToken = CreateCancellationToken();
             using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
-                using (var countCommand = connection.CreateSelectCountCommand(Table.Name, null))
+                using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter: null))
                 {
                     return (int)await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
                 }                    

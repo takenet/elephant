@@ -158,6 +158,18 @@ namespace Takenet.Elephant.Sql
                 });
         }
 
+        public static DbCommand CreateSelectCountCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues)
+        {
+            return connection.CreateTextCommand(
+                SqlTemplates.SelectCount,
+                new
+                {
+                    tableName = tableName.AsSqlIdentifier(),
+                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
+                },
+                filterValues?.Select(k => k.ToSqlParameter()));
+        }
+
         public static DbCommand CreateSelectSkipTakeCommand(this DbConnection connection, string tableName, string[] selectColumns,
             string filter, int skip, int take, string[] orderByColumns)
         {
