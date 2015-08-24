@@ -39,6 +39,7 @@ namespace Takenet.Elephant.Sql
                         throw new Exception("The database operation failed");
                     }
                 }
+                connection.Close();
             }
         }
 

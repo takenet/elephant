@@ -49,6 +49,7 @@ namespace Takenet.Elephant.Sql
         {
             _sqlDataReader.Dispose();
             _dbCommand.Dispose();
+            _connection.Close();
             _connection.Dispose();
         }
     }
