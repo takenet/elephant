@@ -11,9 +11,9 @@ namespace Takenet.Elephant.Tests.Sql
     [Collection("Sql")]
     public class SqlIntegerStringSetMapFacts : IntegerStringSetMapFacts
     {
-        private readonly SqlConnectionFixture _fixture;
+        private readonly SqlFixture _fixture;
 
-        public SqlIntegerStringSetMapFacts(SqlConnectionFixture fixture)
+        public SqlIntegerStringSetMapFacts(SqlFixture fixture)
         {
             _fixture = fixture;
         }

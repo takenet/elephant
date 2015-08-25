@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheMap.cs" />
+    <Compile Include="CacheSetMap.cs" />
     <Compile Include="CacheStrategy.cs" />
     <Compile Include="IntersectionMapSynchronizer.cs" />
     <Compile Include="CopyMapSynchronizer.cs" />

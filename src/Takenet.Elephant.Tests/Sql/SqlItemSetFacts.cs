@@ -7,9 +7,9 @@ namespace Takenet.Elephant.Tests.Sql
     [Collection("Sql")]
     public class SqlItemSetFacts : ItemSetFacts
     {
-        private readonly SqlConnectionFixture _fixture;
+        private readonly SqlFixture _fixture;
 
-        public SqlItemSetFacts(SqlConnectionFixture fixture)
+        public SqlItemSetFacts(SqlFixture fixture)
         {
             _fixture = fixture;
         }

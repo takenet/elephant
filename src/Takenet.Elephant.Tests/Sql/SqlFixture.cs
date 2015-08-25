@@ -3,9 +3,9 @@ using System.Data.SqlClient;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    public class SqlConnectionFixture : IDisposable
+    public class SqlFixture : IDisposable
     {
-        public SqlConnectionFixture()
+        public SqlFixture()
         {
             // Note: You should create the Localdb instance if it doesn't exists
             // Go to the command prompt and run: sqllocaldb create "v12.0"

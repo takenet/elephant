@@ -10,9 +10,9 @@ namespace Takenet.Elephant.Tests.Sql
     [Collection("Sql")]
     public class SqlGuidSetFacts : GuidSetFacts
     {
-        private readonly SqlConnectionFixture _fixture;
+        private readonly SqlFixture _fixture;
 
-        public SqlGuidSetFacts(SqlConnectionFixture fixture)
+        public SqlGuidSetFacts(SqlFixture fixture)
         {
             _fixture = fixture;
         }

@@ -8,9 +8,9 @@ namespace Takenet.Elephant.Tests.Sql
     [Collection("Sql")]
     public class SqlGuidItemMapFacts : GuidItemMapFacts
     {
-        private readonly SqlConnectionFixture _fixture;
+        private readonly SqlFixture _fixture;
 
-        public SqlGuidItemMapFacts(SqlConnectionFixture fixture)
+        public SqlGuidItemMapFacts(SqlFixture fixture)
         {
             _fixture = fixture;
         }

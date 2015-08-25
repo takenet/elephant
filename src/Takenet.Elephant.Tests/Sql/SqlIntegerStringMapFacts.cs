@@ -9,9 +9,9 @@ namespace Takenet.Elephant.Tests.Sql
     [Collection("Sql")]
     public class SqlIntegerStringMapFacts : IntegerStringMapFacts
     {
-        private readonly SqlConnectionFixture _fixture;
+        private readonly SqlFixture _fixture;
 
-        public SqlIntegerStringMapFacts(SqlConnectionFixture fixture)
+        public SqlIntegerStringMapFacts(SqlFixture fixture)
         {
             _fixture = fixture;
         }
