@@ -20,7 +20,7 @@ namespace Takenet.Elephant.Tests.Specialized
             return Create(CreateSource(), CreateCache());
         }
 
-        public IMap<TKey, TValue> Create(IMap<TKey, TValue> source, IMap<TKey, TValue> cache)
+        public virtual IMap<TKey, TValue> Create(IMap<TKey, TValue> source, IMap<TKey, TValue> cache)
         {
             return new CacheMap<TKey, TValue>(source, cache, TimeSpan.FromSeconds(60));
         }

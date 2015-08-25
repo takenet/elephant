@@ -1,6 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using NFluent;
 using Ploeh.AutoFixture;
+using Takenet.Elephant.Specialized;
 using Xunit;
 
 namespace Takenet.Elephant.Tests.Specialized
