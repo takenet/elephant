@@ -8,6 +8,11 @@ namespace Takenet.Elephant.Specialized
 {
     public class CacheMap<TKey, TValue> : CacheStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
     {
+        public CacheMap(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, TimeSpan synchronizationTimeout)
+            : base(source, cache, new OverwriteMapSynchronizer<TKey, TValue>(synchronizationTimeout))
+        {
+        }
+
         public CacheMap(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, ISynchronizer<IMap<TKey, TValue>> synchronizer) 
             : base(source, cache, synchronizer)
         {

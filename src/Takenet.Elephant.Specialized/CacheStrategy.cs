@@ -67,7 +67,10 @@ namespace Takenet.Elephant.Specialized
         protected async Task<bool> ExecuteWriteFunc(Func<T, Task<bool>> func)
         {
             if (!await func(_source).ConfigureAwait(false)) return false;
-            if (!await func(_cache).ConfigureAwait(false)) _isSynchronized = false;            
+            if (!await func(_cache).ConfigureAwait(false))
+            {
+                _isSynchronized = false;
+            }            
             return true;
         }
 

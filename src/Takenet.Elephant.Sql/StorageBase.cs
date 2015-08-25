@@ -83,13 +83,14 @@ namespace Takenet.Elephant.Sql
             await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
             await CheckTableSchemaAsync(connection, cancellationToken).ConfigureAwait(false);
             return connection;
-        }        
+        }
 
         #region Protected Members
 
         protected CancellationToken CreateCancellationToken()
         {
-            return CancellationToken.None;
+            return new CancellationTokenSource(DatabaseDriver.Timeout).Token;
+;
         }
 
         protected virtual IDictionary<string, object> GetColumnValues(TEntity entity)
