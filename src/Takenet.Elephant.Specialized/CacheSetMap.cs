@@ -8,13 +8,13 @@ namespace Takenet.Elephant.Specialized
 {
     public class CacheSetMap<TKey, TValue> : CacheMap<TKey, ISet<TValue>>, ISetMap<TKey, TValue>
     {
-        public CacheSetMap(ISetMap<TKey, TValue> primary, ISetMap<TKey, TValue> backup, TimeSpan synchronizationTimeout)
-            : base(primary, backup, synchronizationTimeout)
+        public CacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, TimeSpan synchronizationTimeout)
+            : base(source, cache, synchronizationTimeout)
         {
         }
 
-        public CacheSetMap(ISetMap<TKey, TValue> primary, ISetMap<TKey, TValue> backup, ISynchronizer<IMap<TKey, ISet<TValue>>> synchronizer)
-            : base(primary, backup, synchronizer)
+        public CacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, ISynchronizer<IMap<TKey, ISet<TValue>>> synchronizer)
+            : base(source, cache, synchronizer)
         {
         }
     }
