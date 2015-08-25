@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheMap.cs" />
+    <Compile Include="CacheSet.cs" />
     <Compile Include="CacheSetMap.cs" />
     <Compile Include="CacheStrategy.cs" />
     <Compile Include="IntersectionMapSynchronizer.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="FallbackQueue.cs" />
     <Compile Include="BackupSetMap.cs" />
     <Compile Include="ISemaphore.cs" />
+    <Compile Include="OverwriteSetSynchronizer.cs" />
     <Compile Include="Scoping\IScope.cs" />
     <Compile Include="ISynchronizer.cs" />
     <Compile Include="DifferentialMapSynchronizer.cs" />

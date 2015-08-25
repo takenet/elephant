@@ -121,5 +121,51 @@ namespace Takenet.Elephant.Tests
             AssertIsTrue(await actualSet3.ContainsAsync(item31));
         }
 
+        [Fact(DisplayName = "AddMultipleItemsSucceeds")]
+        public virtual async Task AddMultipleItemsSucceeds()
+        {
+            // Arrange
+            var map = (ISetMap<TKey, TValue>)Create();
+            var key = CreateKey();
+            var item1 = CreateItem();
+            var item2 = CreateItem();
+            var item3 = CreateItem();
+
+            // Act
+            await map.AddItemAsync(key, item1);
+            await map.AddItemAsync(key, item2);
+
+
+            // Assert
+            AssertIsTrue(await map.ContainsItemAsync(key, item1));
+            AssertIsTrue(await map.ContainsItemAsync(key, item2));
+            AssertIsFalse(await map.ContainsItemAsync(key, item3));
+        }
+
+
+        [Fact(DisplayName = "RemoveMultipleItemsSucceeds")]
+        public virtual async Task RemoveMultipleItemsSucceeds()
+        {
+            // Arrange
+            var map = (ISetMap<TKey, TValue>)Create();
+            var key = CreateKey();
+            var item1 = CreateItem();
+            var item2 = CreateItem();
+            var item3 = CreateItem();            
+            await map.AddItemAsync(key, item1);
+            await map.AddItemAsync(key, item2);
+            await map.AddItemAsync(key, item3);
+
+            // Act
+            var actual = await map.TryRemoveItemAsync(key, item1);
+            actual = actual && await map.TryRemoveItemAsync(key, item2);
+
+            // Assert
+            AssertIsTrue(actual);
+            AssertIsFalse(await map.ContainsItemAsync(key, item1));
+            AssertIsFalse(await map.ContainsItemAsync(key, item2));
+            AssertIsTrue(await map.ContainsItemAsync(key, item3));
+        }
+
     }
 }

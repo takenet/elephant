@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockingQueueFacts.cs" />
+    <Compile Include="Specialized\CacheSetFacts.cs" />
     <Compile Include="ExpirableKeyMapFacts.cs" />
     <Compile Include="FactsBase.cs" />
     <Compile Include="ClassQueueFacts.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="Specialized\GuidItemReplicationMapFacts.cs" />
     <Compile Include="Specialized\GuidItemScopedMapFacts.cs" />
     <Compile Include="Specialized\GuidSerializer.cs" />
+    <Compile Include="Specialized\ItemCacheSetFacts.cs" />
     <Compile Include="Specialized\ItemFallbackQueueFacts.cs" />
     <Compile Include="Redis\RedisGuidItemScopedMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemScopedMapFacts.cs" />
@@ -164,6 +166,7 @@
     <Compile Include="Specialized\SqlRedisConnectionFixture.cs" />
     <Compile Include="Specialized\SqlRedisGuidItemCacheMapFacts.cs" />
     <Compile Include="Specialized\SqlRedisGuidItemCacheSetMapFacts.cs" />
+    <Compile Include="Specialized\SqlRedisItemCacheSetFacts.cs" />
     <Compile Include="Sql\SqlFixture.cs" />
     <Compile Include="Sql\SqlCollectionFixture.cs" />
     <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />
