@@ -116,18 +116,18 @@ namespace Takenet.Elephant.Sql
 
         #region Private Methods
 
-        private bool _schemaChecked;
+        protected bool SchemaChecked;
         private readonly SemaphoreSlim _schemaValidationSemaphore = new SemaphoreSlim(1);
 
         private async Task CheckTableSchemaAsync(DbConnection connection, CancellationToken cancellationToken)
         {
-            if (!_schemaChecked)
+            if (!SchemaChecked)
             {
                 await _schemaValidationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 try
                 {
-                    if (!_schemaChecked)
+                    if (!SchemaChecked)
                     {
                         // Check if the table exists
                         var tableExists = await connection.ExecuteScalarAsync<bool>(
@@ -144,7 +144,7 @@ namespace Takenet.Elephant.Sql
                         }
 
                         await DatabaseSchema.UpdateTableSchemaAsync(DatabaseDriver, connection, Table, cancellationToken).ConfigureAwait(false);
-                        _schemaChecked = true;
+                        SchemaChecked = true;
                     }
                 }
                 finally

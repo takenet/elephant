@@ -168,8 +168,9 @@ namespace Takenet.Elephant.Sql
 
             public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues) 
                 : base(databaseDriver, connectionString, table, mapper)
-            {
+            {                
                 MapKeyColumnValues = mapKeyColumnValues;
+                SchemaChecked = true; // Avoid checking the table schema again
             }
 
             protected override IDictionary<string, object> GetColumnValues(TItem entity)
