@@ -13,9 +13,8 @@ namespace Takenet.Elephant.Specialized
     {
         protected readonly T Source;
         protected readonly T Cache;
-        private readonly ISynchronizer<T> _synchronizer;
-        private readonly SemaphoreSlim _synchronizationSemaphore;
-
+        private readonly SemaphoreSlim _writeSemaphore;
+        private readonly ISynchronizer<T> _synchronizer;        
         private bool _isSynchronized;        
 
         /// <summary>
@@ -32,7 +31,7 @@ namespace Takenet.Elephant.Specialized
             Source = source;
             Cache = cache;
             _synchronizer = synchronizer;
-            _synchronizationSemaphore = new SemaphoreSlim(1);
+            _writeSemaphore = new SemaphoreSlim(1);
         }
 
         ~CacheStrategy()
@@ -47,15 +46,23 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected virtual async Task ExecuteWriteFunc(Func<T, Task> func)
         {
-            await func(Source).ConfigureAwait(false);
+            await _writeSemaphore.WaitAsync().ConfigureAwait(false);
             try
             {
-                await func(Cache).ConfigureAwait(false);
+                await func(Source).ConfigureAwait(false);
+                try
+                {
+                    await func(Cache).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
+                    _isSynchronized = false;
+                }
             }
-            catch (Exception ex)
+            finally
             {
-                await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
-                _isSynchronized = false;                
+                _writeSemaphore.Release();
             }
         }
 
@@ -66,12 +73,28 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected async Task<bool> ExecuteWriteFunc(Func<T, Task<bool>> func)
         {
-            if (!await func(Source).ConfigureAwait(false)) return false;
-            if (!await func(Cache).ConfigureAwait(false))
+            await _writeSemaphore.WaitAsync().ConfigureAwait(false);
+            try
             {
-                _isSynchronized = false;
-            }            
-            return true;
+                if (!await func(Source).ConfigureAwait(false)) return false;
+                try
+                {
+                    if (!await func(Cache).ConfigureAwait(false))
+                    {
+                        _isSynchronized = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
+                    _isSynchronized = false;
+                }
+                return true;
+            }
+            finally
+            {
+                _writeSemaphore.Release();
+            }
         }
 
         /// <summary>
@@ -84,7 +107,7 @@ namespace Takenet.Elephant.Specialized
         {
             if (!_isSynchronized)
             {
-                await _synchronizationSemaphore.WaitAsync();
+                await _writeSemaphore.WaitAsync();
                 try
                 {
                     if (!_isSynchronized)
@@ -95,7 +118,7 @@ namespace Takenet.Elephant.Specialized
                 }
                 finally
                 {
-                    _synchronizationSemaphore.Release();
+                    _writeSemaphore.Release();
                 }                
             }
 
@@ -103,7 +126,7 @@ namespace Takenet.Elephant.Specialized
         }
 
         /// <summary>
-        /// Occurs when the primary actor throws an exception during a write method.
+        /// Occurs when the cache actor throws an exception during a write method.
         /// </summary>
         public event EventHandler<ExceptionEventArgs> CacheFailed;
 
@@ -128,7 +151,7 @@ namespace Takenet.Elephant.Specialized
         {
             if (disposing)
             {
-                _synchronizationSemaphore.Dispose();
+                _writeSemaphore.Dispose();
             }
         }
 
