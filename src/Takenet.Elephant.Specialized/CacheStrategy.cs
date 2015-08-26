@@ -31,7 +31,7 @@ namespace Takenet.Elephant.Specialized
             Source = source;
             Cache = cache;
             _synchronizer = synchronizer;
-            _writeSemaphore = new SemaphoreSlim(1);
+            _writeSemaphore = new SemaphoreSlim(1);            
         }
 
         ~CacheStrategy()
@@ -46,24 +46,19 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected virtual async Task ExecuteWriteFunc(Func<T, Task> func)
         {
-            await _writeSemaphore.WaitAsync().ConfigureAwait(false);
+            if (!_isSynchronized) await Synchronize();
+
+            await func(Source).ConfigureAwait(false);
             try
             {
-                await func(Source).ConfigureAwait(false);
-                try
-                {
-                    await func(Cache).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
-                    _isSynchronized = false;
-                }
+                await func(Cache).ConfigureAwait(false);
             }
-            finally
+            catch (Exception ex)
             {
-                _writeSemaphore.Release();
+                await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
+                _isSynchronized = false;
             }
+
         }
 
         /// <summary>
@@ -73,28 +68,23 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected async Task<bool> ExecuteWriteFunc(Func<T, Task<bool>> func)
         {
-            await _writeSemaphore.WaitAsync().ConfigureAwait(false);
+            if (!_isSynchronized) await Synchronize();
+
+            if (!await func(Source).ConfigureAwait(false)) return false;
             try
             {
-                if (!await func(Source).ConfigureAwait(false)) return false;
-                try
+                if (!await func(Cache).ConfigureAwait(false))
                 {
-                    if (!await func(Cache).ConfigureAwait(false))
-                    {
-                        _isSynchronized = false;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
                     _isSynchronized = false;
                 }
-                return true;
             }
-            finally
+            catch (Exception ex)
             {
-                _writeSemaphore.Release();
+                await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
+                _isSynchronized = false;
             }
+            return true;
+
         }
 
         /// <summary>
@@ -105,25 +95,11 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> func)
         {
-            if (!_isSynchronized)
-            {
-                await _writeSemaphore.WaitAsync();
-                try
-                {
-                    if (!_isSynchronized)
-                    {
-                        await _synchronizer.SynchronizeAsync(Source, Cache).ConfigureAwait(false);
-                        _isSynchronized = true;
-                    }                    
-                }
-                finally
-                {
-                    _writeSemaphore.Release();
-                }                
-            }
+            if (!_isSynchronized) await Synchronize();            
 
             return await func(Cache).ConfigureAwait(false);
         }
+
 
         /// <summary>
         /// Occurs when the cache actor throws an exception during a write method.
@@ -152,6 +128,23 @@ namespace Takenet.Elephant.Specialized
             if (disposing)
             {
                 _writeSemaphore.Dispose();
+            }
+        }
+
+        private async Task Synchronize()
+        {
+            await _writeSemaphore.WaitAsync();
+            try
+            {
+                if (!_isSynchronized)
+                {
+                    await _synchronizer.SynchronizeAsync(Source, Cache).ConfigureAwait(false);
+                    _isSynchronized = true;
+                }
+            }
+            finally
+            {
+                _writeSemaphore.Release();
             }
         }
 
