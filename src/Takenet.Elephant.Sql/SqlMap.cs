@@ -36,54 +36,60 @@ namespace Takenet.Elephant.Sql
 
         public async Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
         {
-            var cancellationToken = CreateCancellationToken();
-
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                var columnValues = GetColumnValues(key, value);
-                var keyColumnValues = GetKeyColumnValues(columnValues);
-                using (var command = connection.CreateInsertWhereNotExistsCommand(Table.Name, keyColumnValues, columnValues, overwrite))
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
+                    var columnValues = GetColumnValues(key, value);
+                    var keyColumnValues = GetKeyColumnValues(columnValues);
+                    using (var command = connection.CreateInsertWhereNotExistsCommand(Table.Name, keyColumnValues, columnValues, overwrite))
+                    {
+                        return await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) > 0;
+                    }
                 }
             }
         }
 
         public async Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
-            var cancellationToken = CreateCancellationToken();
-
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                var keyColumnValues = KeyMapper.GetColumnValues(key);
-                var selectColumns = Table.Columns.Keys.ToArray();
-                
-                return await new DbDataReaderAsyncEnumerable<TValue>(
-                    // ReSharper disable once AccessToDisposedClosure
-                    t => connection.AsCompletedTask(), 
-                    c => c.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns), 
-                    Mapper, 
-                    selectColumns)
-                    .FirstOrDefaultAsync(cancellationToken)
-                    .ConfigureAwait(false);
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
+                {
+                    var keyColumnValues = KeyMapper.GetColumnValues(key);
+                    var selectColumns = Table.Columns.Keys.ToArray();
+
+                    return await new DbDataReaderAsyncEnumerable<TValue>(
+                        // ReSharper disable once AccessToDisposedClosure
+                        t => connection.AsCompletedTask(),
+                        c => c.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns),
+                        Mapper,
+                        selectColumns)
+                        .FirstOrDefaultAsync(cancellationTokenSource.Token)
+                        .ConfigureAwait(false);
+                }
             }
         }
 
         public async Task<bool> TryRemoveAsync(TKey key)
         {
-            var cancellationToken = CreateCancellationToken();
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                return await TryRemoveAsync(key, connection, cancellationToken);
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
+                {
+                    return await TryRemoveAsync(key, connection, cancellationTokenSource.Token);
+                }
             }
         }
 
         public async Task<bool> ContainsKeyAsync(TKey key)
         {
-            var cancellationToken = CreateCancellationToken();
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                return await ContainsKeyAsync(key, connection, cancellationToken);
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
+                {
+                    return await ContainsKeyAsync(key, connection, cancellationTokenSource.Token);
+                }
             }
         }
 
@@ -108,18 +114,19 @@ namespace Takenet.Elephant.Sql
             if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));           
             if (Table.KeyColumnsNames.Contains(propertyName)) throw new ArgumentException(@"A key property cannot be changed", nameof(propertyName));
 
-            var cancellationToken = CreateCancellationToken();
-
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-            {                                
-                var keyColumnValues = KeyMapper.GetColumnValues(key);
-                var columnValues = new Dictionary<string, object> {{propertyName, TypeMapper.ToDbType(propertyValue, Table.Columns[propertyName].Type) } };
-
-                using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            {
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
+                    var keyColumnValues = KeyMapper.GetColumnValues(key);
+                    var columnValues = new Dictionary<string, object> { { propertyName, TypeMapper.ToDbType(propertyValue, Table.Columns[propertyName].Type) } };
+
+                    using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
                     {
-                        throw new Exception("The database operation failed");
+                        if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
+                        {
+                            throw new Exception("The database operation failed");
+                        }
                     }
                 }
             }
@@ -130,20 +137,21 @@ namespace Takenet.Elephant.Sql
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
 
-            var cancellationToken = CreateCancellationToken();
-
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                var keyColumnValues = KeyMapper.GetColumnValues(key);
-                var columnValues = GetColumnValues(value);
-
-                if (columnValues.Any())
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
+                    var keyColumnValues = KeyMapper.GetColumnValues(key);
+                    var columnValues = GetColumnValues(value);
+
+                    if (columnValues.Any())
                     {
-                        if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
+                        using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
                         {
-                            throw new Exception("The database operation failed");
+                            if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
+                            {
+                                throw new Exception("The database operation failed");
+                            }
                         }
                     }
                 }
@@ -155,21 +163,22 @@ namespace Takenet.Elephant.Sql
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));
 
-            var cancellationToken = CreateCancellationToken();
-            
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                var keyColumnValues = KeyMapper.GetColumnValues(key);
-
-                using (var command = connection.CreateSelectTop1Command(Table.Name, new[] { propertyName }, keyColumnValues))
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    var dbValue = await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
-                    if (dbValue != null && !(dbValue is DBNull))
+                    var keyColumnValues = KeyMapper.GetColumnValues(key);
+
+                    using (var command = connection.CreateSelectTop1Command(Table.Name, new[] { propertyName }, keyColumnValues))
                     {
-                        return (TProperty)TypeMapper.FromDbType(
-                            dbValue,
-                            Table.Columns[propertyName].Type,
-                            typeof(TValue).GetProperty(propertyName).PropertyType);
+                        var dbValue = await command.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+                        if (dbValue != null && !(dbValue is DBNull))
+                        {
+                            return (TProperty)TypeMapper.FromDbType(
+                                dbValue,
+                                Table.Columns[propertyName].Type,
+                                typeof(TValue).GetProperty(propertyName).PropertyType);
+                        }
                     }
                 }
             }
@@ -183,28 +192,29 @@ namespace Takenet.Elephant.Sql
 
         public async Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
         {
-            var cancellationToken = CreateCancellationToken();
-
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-            {               
-                var oldColumnValues = GetColumnValues(key, oldValue);
-                var filterOldColumnValues = oldColumnValues
-                    .Select(kv => new KeyValuePair<string, object>($"Old{kv.Key}", kv.Value))
-                    .ToDictionary(t => t.Key, t => t.Value);
-
-                var newColumnValues = GetColumnValues(key, newValue);
-
-                using (var command = connection.CreateTextCommand(
-                    SqlTemplates.Update,
-                    new
-                    {
-                        tableName = Table.Name.AsSqlIdentifier(),
-                        columnValues = SqlHelper.GetCommaEqualsStatement(newColumnValues.Keys.ToArray()),
-                        filter = SqlHelper.GetAndEqualsStatement(oldColumnValues.Keys.ToArray(), filterOldColumnValues.Keys.ToArray())
-                    },
-                    newColumnValues.Concat(filterOldColumnValues).Select(c => c.ToSqlParameter())))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            {
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 1;
+                    var oldColumnValues = GetColumnValues(key, oldValue);
+                    var filterOldColumnValues = oldColumnValues
+                        .Select(kv => new KeyValuePair<string, object>($"Old{kv.Key}", kv.Value))
+                        .ToDictionary(t => t.Key, t => t.Value);
+
+                    var newColumnValues = GetColumnValues(key, newValue);
+
+                    using (var command = connection.CreateTextCommand(
+                        SqlTemplates.Update,
+                        new
+                        {
+                            tableName = Table.Name.AsSqlIdentifier(),
+                            columnValues = SqlHelper.GetCommaEqualsStatement(newColumnValues.Keys.ToArray()),
+                            filter = SqlHelper.GetAndEqualsStatement(oldColumnValues.Keys.ToArray(), filterOldColumnValues.Keys.ToArray())
+                        },
+                        newColumnValues.Concat(filterOldColumnValues).Select(c => c.ToSqlParameter())))
+                    {
+                        return await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 1;
+                    }
                 }
             }
         }

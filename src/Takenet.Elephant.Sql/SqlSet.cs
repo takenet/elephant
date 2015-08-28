@@ -26,20 +26,22 @@ namespace Takenet.Elephant.Sql
         public virtual async Task AddAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            var cancellationToken = CreateCancellationToken();
             var columnValues = GetColumnValues(value);
             var keyColumnValues = GetKeyColumnValues(columnValues);
 
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
-            {                
-                using (var command = connection.CreateInsertWhereNotExistsCommand(Table.Name, keyColumnValues, columnValues, true))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            {
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    if (await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) == 0)
+                    using (var command = connection.CreateInsertWhereNotExistsCommand(Table.Name, keyColumnValues, columnValues, true))
                     {
-                        throw new Exception("The database operation failed");
+                        if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
+                        {
+                            throw new Exception("The database operation failed");
+                        }
                     }
+                    connection.Close();
                 }
-                connection.Close();
             }
         }
 
@@ -47,10 +49,12 @@ namespace Takenet.Elephant.Sql
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(value);
-            var cancellationToken = CreateCancellationToken();
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                return await TryRemoveAsync(keyColumnValues, connection, cancellationToken).ConfigureAwait(false);
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
+                {
+                    return await TryRemoveAsync(keyColumnValues, connection, cancellationTokenSource.Token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -69,22 +73,26 @@ namespace Takenet.Elephant.Sql
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(value);
-            var cancellationToken = CreateCancellationToken();
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                return await ContainsAsync(keyColumnValues, connection, cancellationToken).ConfigureAwait(false);
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
+                {
+                    return await ContainsAsync(keyColumnValues, connection, cancellationTokenSource.Token).ConfigureAwait(false);
+                }
             }
         }
 
         public virtual async Task<long> GetLengthAsync()
         {
-            var cancellationToken = CreateCancellationToken();
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter: null))
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    return (int)await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
-                }                    
+                    using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter: null))
+                    {
+                        return (int)await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+                    }
+                }
             }
         }
 

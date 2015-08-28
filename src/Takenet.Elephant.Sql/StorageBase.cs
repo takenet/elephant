@@ -87,9 +87,9 @@ namespace Takenet.Elephant.Sql
 
         #region Protected Members
 
-        protected CancellationToken CreateCancellationToken()
+        protected CancellationTokenSource CreateCancellationTokenSource()
         {
-            return new CancellationTokenSource(DatabaseDriver.Timeout).Token;
+            return new CancellationTokenSource(DatabaseDriver.Timeout);
 ;
         }
 
