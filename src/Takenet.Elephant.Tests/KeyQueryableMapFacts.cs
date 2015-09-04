@@ -136,7 +136,7 @@ namespace Takenet.Elephant.Tests
             AssertEquals(actual.Total, 0);
             var actualList = await actual.ToListAsync();
             AssertEquals(actualList.Count, 0);
-        }
+        }     
 
         [Fact(DisplayName = "QueryExistingKeysWithTakeLimitSucceeds")]
         public async Task QueryExistingKeysWithTakeLimitSucceeds()

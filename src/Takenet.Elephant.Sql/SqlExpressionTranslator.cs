@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -159,15 +160,23 @@ namespace Takenet.Elephant.Sql
             {
                 var values = ((ConstantExpression)node.Arguments[0]).Value as IEnumerable<object>;
                 var expression = node.Arguments[1];
+
                 _filter.Append("(");
                 this.Visit(expression);
                 _filter.AppendFormat(" {0} (", SqlTemplates.In);
-                foreach (var value in values)
+                if (values == null || !values.Any())
                 {
-                    this.VisitConstant(Expression.Constant(value));
-                    _filter.Append(",");
+                    _filter.Append(" null ");
                 }
-                _filter.Remove(_filter.Length - 1, 1);
+                else
+                {
+                    foreach (var value in values)
+                    {
+                        this.VisitConstant(Expression.Constant(value));
+                        _filter.Append(",");
+                    }
+                    _filter.Remove(_filter.Length - 1, 1);
+                }
                 _filter.Append("))");
             }
             else
