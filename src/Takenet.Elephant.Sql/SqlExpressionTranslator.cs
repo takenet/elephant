@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -28,7 +29,7 @@ namespace Takenet.Elephant.Sql
         protected override Expression VisitBinary(BinaryExpression node)
         {
             _filter.Append("(");
-            this.Visit(node.Left);
+            Visit(node.Left);
 
             string @operator;
 
@@ -39,7 +40,23 @@ namespace Takenet.Elephant.Sql
                     break;
 
                 case ExpressionType.NotEqual:
-                    @operator = SqlTemplates.NotEqual;
+                    @operator = SqlTemplates.NotEqual;                    
+                    break;
+
+                case ExpressionType.GreaterThan:
+                    @operator = SqlTemplates.GreaterThan;
+                    break;
+
+                case ExpressionType.GreaterThanOrEqual:
+                    @operator = SqlTemplates.GreaterThanOrEqual;
+                    break;
+
+                case ExpressionType.LessThan:
+                    @operator = SqlTemplates.LessThan;
+                    break;
+
+                case ExpressionType.LessThanOrEqual:
+                    @operator = SqlTemplates.LessThanOrEqual;
                     break;
 
                 case ExpressionType.And:
@@ -58,7 +75,7 @@ namespace Takenet.Elephant.Sql
             }
 
             _filter.AppendFormat(" {0} ", @operator);
-            this.Visit(node.Right);
+            Visit(node.Right);
             _filter.Append(")");
 
             return node;
@@ -150,33 +167,51 @@ namespace Takenet.Elephant.Sql
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
-        {
+        {            
             if (node.Method.Name.Equals("Equals"))
             {
-                this.Visit(BinaryExpression.Equal(node.Object, node.Arguments[0]));
-            }
-            else if (node.Method.Name.Equals("Contains") && node.Method.IsStatic && node.Method.DeclaringType.Name.Equals("Enumerable"))
-            {
-                var values = ((ConstantExpression)node.Arguments[0]).Value as IEnumerable<object>;
-                var expression = node.Arguments[1];
-                _filter.Append("(");
-                this.Visit(expression);
-                _filter.AppendFormat(" {0} (", SqlTemplates.In);
-                foreach (var value in values)
-                {
-                    this.VisitConstant(Expression.Constant(value));
-                    _filter.Append(",");
-                }
-                _filter.Remove(_filter.Length - 1, 1);
-                _filter.Append("))");
-            }
-            else
-            {
-                throw new NotImplementedException(
-                    $"Translation not implemented for method {node.Method.Name} of type {node.Method.DeclaringType}");
+                Visit(Expression.Equal(node.Object, node.Arguments[0]));
+                return node;
             }
 
-            return node;
+            if (node.Method.Name.Equals("Contains"))
+            {
+                if (node.Method.IsStatic && node.Method.DeclaringType.Name.Equals(nameof(Enumerable)))
+                {
+                    var values = ((ConstantExpression) node.Arguments[0]).Value as IEnumerable<object>;
+                    var expression = node.Arguments[1];
+                    _filter.Append("(");
+                    Visit(expression);
+                    _filter.AppendFormat(" {0} (", SqlTemplates.In);
+                    foreach (var value in values)
+                    {
+                        VisitConstant(Expression.Constant(value));
+                        _filter.Append(",");
+                    }
+                    _filter.Remove(_filter.Length - 1, 1);
+                    _filter.Append("))");
+                    return node;
+                }
+
+                _filter.Append("(");
+                Visit(node.Object);
+                _filter.Append($" {SqlTemplates.Like} '%{Expression.Constant(node.Arguments[0]).Value}%')");                                
+                return node;
+
+            }
+
+            if (node.Method.Name.Equals("StartsWith"))
+            {
+                // TODO
+            }
+
+            if (node.Method.Name.Equals("EndsWith"))
+            {
+                // TODO
+            }
+
+            throw new NotImplementedException(
+                $"Translation not implemented for method {node.Method.Name} of type {node.Method.DeclaringType}");                        
         }
 
         #endregion

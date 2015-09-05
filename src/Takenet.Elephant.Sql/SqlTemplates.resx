@@ -186,6 +186,12 @@ DELETE FROM {tableName}</value>
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = '{tableName}'</value>
   </data>
+  <data name="GreaterThan" xml:space="preserve">
+    <value>&gt;</value>
+  </data>
+  <data name="GreaterThanOrEqual" xml:space="preserve">
+    <value>&gt;=</value>
+  </data>
   <data name="IdentityColumnDefinition" xml:space="preserve">
     <value>{columnName} {sqlType} NOT NULL IDENTITY(1,1)</value>
   </data>
@@ -199,6 +205,15 @@ WHERE TABLE_NAME = '{tableName}'</value>
     <value>INSERT INTO {tableName} ({columns}) 
 SELECT {values}
 WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
+  </data>
+  <data name="LessThan" xml:space="preserve">
+    <value>&lt;</value>
+  </data>
+  <data name="LessThanOrEqual" xml:space="preserve">
+    <value>&lt;=</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>LIKE</value>
   </data>
   <data name="Merge" xml:space="preserve">
     <value>DECLARE @dummy int;

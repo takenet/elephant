@@ -250,6 +250,24 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &gt;.
+        /// </summary>
+        public static string GreaterThan {
+            get {
+                return ResourceManager.GetString("GreaterThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &gt;=.
+        /// </summary>
+        public static string GreaterThanOrEqual {
+            get {
+                return ResourceManager.GetString("GreaterThanOrEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {columnName} {sqlType} NOT NULL IDENTITY(1,1).
         /// </summary>
         public static string IdentityColumnDefinition {
@@ -284,6 +302,33 @@ namespace Takenet.Elephant.Sql {
         public static string InsertWhereNotExists {
             get {
                 return ResourceManager.GetString("InsertWhereNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;.
+        /// </summary>
+        public static string LessThan {
+            get {
+                return ResourceManager.GetString("LessThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;=.
+        /// </summary>
+        public static string LessThanOrEqual {
+            get {
+                return ResourceManager.GetString("LessThanOrEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LIKE.
+        /// </summary>
+        public static string Like {
+            get {
+                return ResourceManager.GetString("Like", resourceCulture);
             }
         }
         
