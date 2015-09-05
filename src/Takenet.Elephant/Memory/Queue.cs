@@ -12,13 +12,13 @@ namespace Takenet.Elephant.Memory
     public class Queue<T> : IBlockingQueue<T>, ICloneable
     {
         private readonly ConcurrentQueue<T> _queue;
-        private ConcurrentQueue<TaskCompletionSource<T>> _promisesQueue;
+        private ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue;
         private object _syncRoot = new object();
 
         public Queue()
         {            
             _queue = new ConcurrentQueue<T>();
-            _promisesQueue = new ConcurrentQueue<TaskCompletionSource<T>>();
+            _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
         }
 
         #region IQueue<T> Members
@@ -27,14 +27,15 @@ namespace Takenet.Elephant.Memory
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             lock (_syncRoot)
-            {                
-                TaskCompletionSource<T> promise;
+            {
+                Tuple<TaskCompletionSource<T>, CancellationTokenRegistration> promise;
                 do
                 {
                     if (_promisesQueue.TryDequeue(out promise) &&
-                        !promise.Task.IsCanceled &&
-                        promise.TrySetResult(item))
+                        !promise.Item1.Task.IsCanceled &&
+                        promise.Item1.TrySetResult(item))
                     {
+                        promise.Item2.Dispose();
                         return TaskUtil.CompletedTask;
                     }
                 }
@@ -77,8 +78,8 @@ namespace Takenet.Elephant.Memory
                     if (!_queue.TryDequeue(out item))
                     {
                         var promise = new TaskCompletionSource<T>();
-                        cancellationToken.Register(() => promise.TrySetCanceled());
-                        _promisesQueue.Enqueue(promise);
+                        var registration = cancellationToken.Register(() => promise.TrySetCanceled());
+                        _promisesQueue.Enqueue(Tuple.Create(promise, registration));
                         return promise.Task;
                     }
                 }

@@ -1,25 +1,32 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.Threading.Tasks;
 using NFluent;
 using Ploeh.AutoFixture;
+using Takenet.Elephant.Specialized;
 using Xunit;
 
-namespace Takenet.Elephant.Tests
+namespace Takenet.Elephant.Tests.Specialized
 {
-    public abstract class SetMapFacts<TKey, TValue> : MapFacts<TKey, ISet<TValue>>
+    public abstract class CacheSetMapFacts<TKey, TValue> : CacheMapFacts<TKey, ISet<TValue>>
     {
+        public override IMap<TKey, ISet<TValue>> Create(IMap<TKey, ISet<TValue>> source, IMap<TKey, ISet<TValue>> cache)
+        {
+            return new CacheSetMap<TKey, TValue>((ISetMap<TKey,TValue>)source, (ISetMap<TKey, TValue>)cache, TimeSpan.FromSeconds(60));
+        }
+
         public override void AssertEquals<T>(T actual, T expected)
         {
             if (typeof(ISet<TValue>).IsAssignableFrom(typeof(T)) &&
                 actual != null && expected != null)
             {
-                var actualSet = (ISet<TValue>) actual;
+                var actualSet = (ISet<TValue>)actual;
                 var expectedSet = (ISet<TValue>)expected;
                 Check.That(actualSet.AsEnumerableAsync().Result.ToListAsync().Result).Contains(expectedSet.AsEnumerableAsync().Result.ToListAsync().Result);
             }
             else
             {
                 base.AssertEquals(actual, expected);
-            }            
+            }
         }
 
         public virtual TValue CreateItem()
@@ -74,7 +81,7 @@ namespace Takenet.Elephant.Tests
             AssertIsTrue(actual1);
             AssertIsTrue(actual2);
             AssertIsTrue(actual3);
-            var actualSet1 = await map.GetValueOrDefaultAsync(key1);            
+            var actualSet1 = await map.GetValueOrDefaultAsync(key1);
             var actualSet2 = await map.GetValueOrDefaultAsync(key2);
             var actualSet3 = await map.GetValueOrDefaultAsync(key3);
             AssertIsNotNull(actualSet1);
@@ -151,7 +158,7 @@ namespace Takenet.Elephant.Tests
             var key = CreateKey();
             var item1 = CreateItem();
             var item2 = CreateItem();
-            var item3 = CreateItem();            
+            var item3 = CreateItem();
             await map.AddItemAsync(key, item1);
             await map.AddItemAsync(key, item2);
             await map.AddItemAsync(key, item3);
@@ -166,6 +173,5 @@ namespace Takenet.Elephant.Tests
             AssertIsFalse(await map.ContainsItemAsync(key, item2));
             AssertIsTrue(await map.ContainsItemAsync(key, item3));
         }
-
     }
 }

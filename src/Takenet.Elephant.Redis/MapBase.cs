@@ -51,6 +51,7 @@ namespace Takenet.Elephant.Redis
 
         protected virtual TKey GetKeyFromString(string value)
         {
+            if (typeof (TKey) == typeof (string)) return (TKey)(object)value;
             return TypeUtil.GetParseFunc<TKey>()(value);
         }
 

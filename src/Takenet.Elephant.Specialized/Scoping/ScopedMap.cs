@@ -45,12 +45,4 @@ namespace Takenet.Elephant.Specialized.Scoping
             return _map.ContainsKeyAsync(key);
         }
     }
-
-    public class ScopedSetMap<TKey, TValue> : ScopedMap<TKey, ISet<TValue>>, ISetMap<TKey, TValue>
-    {
-        public ScopedSetMap(IMap<TKey, ISet<TValue>> map, IScope scope, ISerializer<TKey> keySerializer) 
-            : base(map, scope, keySerializer)
-        {
-        }
-    }
 }

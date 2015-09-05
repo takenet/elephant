@@ -35,7 +35,6 @@ namespace Takenet.Elephant.Sql
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
-            var cancellationToken = CreateCancellationToken();
             var keyColumnValues = GetKeyColumnValues(KeyMapper.GetColumnValues(key));
 
             var internalSet = value as InternalSet;
@@ -44,53 +43,56 @@ namespace Takenet.Elephant.Sql
                 return keyColumnValues.SequenceEqual(internalSet.MapKeyColumnValues) && overwrite;
             }
 
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                if (!overwrite &&
-                    await ContainsAsync(keyColumnValues, connection, cancellationToken))
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    return false;
-                }
-
-                using (var transaction = connection.BeginTransaction(_addIsolationLevel))
-                {
-                    if (overwrite)
+                    if (!overwrite &&
+                        await ContainsAsync(keyColumnValues, connection, cancellationTokenSource.Token))
                     {
-                        await
-                            TryRemoveAsync(keyColumnValues, connection, cancellationToken, transaction)
-                                .ConfigureAwait(false);
+                        return false;
                     }
 
-                    var success = true;
-                    var items = await value.AsEnumerableAsync().ConfigureAwait(false);
-                    await items.ForEachAsync(
-                        async item =>
+                    using (var transaction = connection.BeginTransaction(_addIsolationLevel))
+                    {
+                        if (overwrite)
                         {
-                            if (!success) return;
-                            var columnValues = GetColumnValues(key, item);
-                            var itemKeyColumnValues = GetKeyColumnValues(columnValues);
+                            await
+                                TryRemoveAsync(keyColumnValues, connection, cancellationTokenSource.Token, transaction)
+                                    .ConfigureAwait(false);
+                        }
 
-                            using (
-                                var command = connection.CreateInsertWhereNotExistsCommand(Table.Name,
-                                    itemKeyColumnValues, columnValues))
+                        var success = true;
+                        var items = await value.AsEnumerableAsync().ConfigureAwait(false);
+                        await items.ForEachAsync(
+                            async item =>
                             {
-                                command.Transaction = transaction;
-                                success =
-                                    await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
-                            }
-                        },
-                        cancellationToken);
+                                if (!success) return;
+                                var columnValues = GetColumnValues(key, item);
+                                var itemKeyColumnValues = GetKeyColumnValues(columnValues);
 
-                    if (success)
-                    {
-                        transaction.Commit();
-                    }
-                    else
-                    {
-                        transaction.Rollback();
-                    }
+                                using (
+                                    var command = connection.CreateInsertWhereNotExistsCommand(Table.Name,
+                                        itemKeyColumnValues, columnValues))
+                                {
+                                    command.Transaction = transaction;
+                                    success =
+                                        await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) > 0;
+                                }
+                            },
+                            cancellationTokenSource.Token);
 
-                    return success;
+                        if (success)
+                        {
+                            transaction.Commit();
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                        }
+
+                        return success;
+                    }
                 }
             }
         }
@@ -98,33 +100,39 @@ namespace Takenet.Elephant.Sql
         public async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            var cancellationToken = CreateCancellationToken();
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                var keyColumnValues = KeyMapper.GetColumnValues(key);
-                if (!await ContainsAsync(keyColumnValues, connection, cancellationToken))
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    return null;
+                    var keyColumnValues = KeyMapper.GetColumnValues(key);
+                    if (!await ContainsAsync(keyColumnValues, connection, cancellationTokenSource.Token))
+                    {
+                        return null;
+                    }
+                    return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues);
                 }
-                return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues);
             }
         }
 
         public async Task<bool> TryRemoveAsync(TKey key)
         {
-            var cancellationToken = CreateCancellationToken();
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                return await TryRemoveAsync(key, connection, cancellationToken);
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
+                {
+                    return await TryRemoveAsync(key, connection, cancellationTokenSource.Token);
+                }
             }
         }
 
         public async Task<bool> ContainsKeyAsync(TKey key)
         {
-            var cancellationToken = CreateCancellationToken();
-            using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
-                return await ContainsKeyAsync(key, connection, cancellationToken);
+                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
+                {
+                    return await ContainsKeyAsync(key, connection, cancellationTokenSource.Token);
+                }
             }
         }
 
@@ -132,17 +140,19 @@ namespace Takenet.Elephant.Sql
 
         #region IItemSetMap<TKey, TItem> Members
 
-        public virtual Task<TItem> GetItemOrDefaultAsync(TKey key, TItem value)
+        public virtual async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem value)
         {
-            var cancellationToken = CreateCancellationToken();            
             var keyColumnValues = GetKeyColumnValues(GetColumnValues(key, value));
-            var selectColumns = Table.Columns.Keys.ToArray();                
-            return new DbDataReaderAsyncEnumerable<TItem>(
-                GetConnectionAsync, 
-                c => c.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns), 
-                Mapper, 
-                selectColumns)
-                .FirstOrDefaultAsync(cancellationToken);                            
+            var selectColumns = Table.Columns.Keys.ToArray();
+            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            {
+                return await new DbDataReaderAsyncEnumerable<TItem>(
+                            GetConnectionAsync,
+                            c => c.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns),
+                            Mapper,
+                            selectColumns)
+                            .FirstOrDefaultAsync(cancellationTokenSource.Token);
+            }
         }
 
         #endregion
@@ -168,8 +178,9 @@ namespace Takenet.Elephant.Sql
 
             public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues) 
                 : base(databaseDriver, connectionString, table, mapper)
-            {
+            {                
                 MapKeyColumnValues = mapKeyColumnValues;
+                SchemaChecked = true; // Avoid checking the table schema again
             }
 
             protected override IDictionary<string, object> GetColumnValues(TItem entity)
@@ -192,12 +203,14 @@ namespace Takenet.Elephant.Sql
 
             public override async Task<long> GetLengthAsync()
             {
-                var cancellationToken = CreateCancellationToken();
-                using (var connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
+                using (var cancellationTokenSource = CreateCancellationTokenSource())
                 {
-                    using (var countCommand = connection.CreateSelectCountCommand(Table.Name, MapKeyColumnValues))
+                    using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                     {
-                        return (int)await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                        using (var countCommand = connection.CreateSelectCountCommand(Table.Name, MapKeyColumnValues))
+                        {
+                            return (int)await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+                        }
                     }
                 }
             }

@@ -11,11 +11,10 @@ namespace Takenet.Elephant.Specialized
     /// <typeparam name="T"></typeparam>
     public class CacheStrategy<T> : IDisposable
     {
-        private readonly T _source;
-        private readonly T _cache;
-        private readonly ISynchronizer<T> _synchronizer;
-        private readonly SemaphoreSlim _synchronizationSemaphore;
-
+        protected readonly T Source;
+        protected readonly T Cache;
+        private readonly SemaphoreSlim _writeSemaphore;
+        private readonly ISynchronizer<T> _synchronizer;        
         private bool _isSynchronized;        
 
         /// <summary>
@@ -29,10 +28,10 @@ namespace Takenet.Elephant.Specialized
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (cache == null) throw new ArgumentNullException(nameof(cache));            
             if (synchronizer == null) throw new ArgumentNullException(nameof(synchronizer));
-            _source = source;
-            _cache = cache;
+            Source = source;
+            Cache = cache;
             _synchronizer = synchronizer;
-            _synchronizationSemaphore = new SemaphoreSlim(1);
+            _writeSemaphore = new SemaphoreSlim(1);            
         }
 
         ~CacheStrategy()
@@ -47,16 +46,19 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected virtual async Task ExecuteWriteFunc(Func<T, Task> func)
         {
-            await func(_source).ConfigureAwait(false);
+            if (!_isSynchronized) await Synchronize();
+
+            await func(Source).ConfigureAwait(false);
             try
             {
-                await func(_cache).ConfigureAwait(false);
+                await func(Cache).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
-                _isSynchronized = false;                
+                _isSynchronized = false;
             }
+
         }
 
         /// <summary>
@@ -66,9 +68,23 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected async Task<bool> ExecuteWriteFunc(Func<T, Task<bool>> func)
         {
-            if (!await func(_source).ConfigureAwait(false)) return false;
-            if (!await func(_cache).ConfigureAwait(false)) _isSynchronized = false;            
+            if (!_isSynchronized) await Synchronize();
+
+            if (!await func(Source).ConfigureAwait(false)) return false;
+            try
+            {
+                if (!await func(Cache).ConfigureAwait(false))
+                {
+                    _isSynchronized = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
+                _isSynchronized = false;
+            }
             return true;
+
         }
 
         /// <summary>
@@ -79,28 +95,14 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> func)
         {
-            if (!_isSynchronized)
-            {
-                await _synchronizationSemaphore.WaitAsync();
-                try
-                {
-                    if (!_isSynchronized)
-                    {
-                        await _synchronizer.SynchronizeAsync(_source, _cache).ConfigureAwait(false);
-                        _isSynchronized = true;
-                    }                    
-                }
-                finally
-                {
-                    _synchronizationSemaphore.Release();
-                }                
-            }
+            if (!_isSynchronized) await Synchronize();            
 
-            return await func(_cache).ConfigureAwait(false);
+            return await func(Cache).ConfigureAwait(false);
         }
 
+
         /// <summary>
-        /// Occurs when the primary actor throws an exception during a write method.
+        /// Occurs when the cache actor throws an exception during a write method.
         /// </summary>
         public event EventHandler<ExceptionEventArgs> CacheFailed;
 
@@ -125,7 +127,24 @@ namespace Takenet.Elephant.Specialized
         {
             if (disposing)
             {
-                _synchronizationSemaphore.Dispose();
+                _writeSemaphore.Dispose();
+            }
+        }
+
+        private async Task Synchronize()
+        {
+            await _writeSemaphore.WaitAsync();
+            try
+            {
+                if (!_isSynchronized)
+                {
+                    await _synchronizer.SynchronizeAsync(Source, Cache).ConfigureAwait(false);
+                    _isSynchronized = true;
+                }
+            }
+            finally
+            {
+                _writeSemaphore.Release();
             }
         }
 

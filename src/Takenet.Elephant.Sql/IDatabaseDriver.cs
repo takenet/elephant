@@ -1,10 +1,13 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Common;
 
 namespace Takenet.Elephant.Sql
 {
     public interface IDatabaseDriver
     {
+        TimeSpan Timeout { get; }
+
         DbConnection CreateConnection(string connectionString);
 
         string GetSqlStatementTemplate(SqlStatement sqlStatement);

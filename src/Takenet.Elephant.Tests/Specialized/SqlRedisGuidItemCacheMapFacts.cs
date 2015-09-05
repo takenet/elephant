@@ -40,10 +40,5 @@ namespace Takenet.Elephant.Tests.Specialized
             const string mapName = "guid-item-hash";
             return new RedisHashMap<Guid, Item>(mapName, new TypeRedisDictionaryConverter<Item>(), _fixture.RedisFixture.Connection.Configuration, db);
         }
-
-        public override ISynchronizer<IMap<Guid, Item>> CreateSynchronizer()
-        {
-            return new OverwriteMapSynchronizer<Guid, Item>(TimeSpan.FromSeconds(60));
-        }
     }
 }

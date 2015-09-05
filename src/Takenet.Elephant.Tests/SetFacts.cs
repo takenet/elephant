@@ -8,12 +8,17 @@ namespace Takenet.Elephant.Tests
     {
         public abstract ISet<T> Create();
 
+        public virtual T CreateItem()
+        {
+            return Fixture.Create<T>();
+        }
+
         [Fact(DisplayName = "AddNewItemSucceeds")]
         public virtual async Task AddNewItemSucceeds()
         {
             // Arrange
             var set = Create();
-            var item = Fixture.Create<T>();
+            var item = CreateItem();
 
             // Act
             await set.AddAsync(item);
@@ -28,7 +33,7 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var set = Create();
-            var item = Fixture.Create<T>();
+            var item = CreateItem();
             await set.AddAsync(item);
 
             // Act
@@ -44,7 +49,7 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var set = Create();
-            var item = Fixture.Create<T>();
+            var item = CreateItem();
             await set.AddAsync(item);
 
             // Act
@@ -61,7 +66,7 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var set = Create();
-            var item = Fixture.Create<T>();
+            var item = CreateItem();
 
             // Act
             var result = await set.TryRemoveAsync(item);
@@ -75,9 +80,9 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var set = Create();
-            var item1 = Fixture.Create<T>();
-            var item2 = Fixture.Create<T>();
-            var item3 = Fixture.Create<T>();
+            var item1 = CreateItem();
+            var item2 = CreateItem();
+            var item3 = CreateItem();
             await set.AddAsync(item1);
             await set.AddAsync(item2);
             await set.AddAsync(item3);
@@ -98,9 +103,9 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var set = Create();
-            var item1 = Fixture.Create<T>();
-            var item2 = Fixture.Create<T>();
-            var item3 = Fixture.Create<T>();
+            var item1 = CreateItem();
+            var item2 = CreateItem();
+            var item3 = CreateItem();
             await set.AddAsync(item1);
             await set.AddAsync(item2);
             await set.AddAsync(item3);
@@ -124,7 +129,7 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var set = Create();
-            var item1 = Fixture.Create<T>();
+            var item1 = CreateItem();
             await set.AddAsync(item1);
 
             // Act
@@ -139,8 +144,8 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var set = Create();
-            var item1 = Fixture.Create<T>();
-            var item2 = Fixture.Create<T>();
+            var item1 = CreateItem();
+            var item2 = CreateItem();
             await set.AddAsync(item1);
 
             // Act

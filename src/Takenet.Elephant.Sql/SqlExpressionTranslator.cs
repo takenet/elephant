@@ -40,7 +40,7 @@ namespace Takenet.Elephant.Sql
                     break;
 
                 case ExpressionType.NotEqual:
-                    @operator = SqlTemplates.NotEqual;                    
+                    @operator = SqlTemplates.NotEqual;
                     break;
 
                 case ExpressionType.GreaterThan:
@@ -167,7 +167,7 @@ namespace Takenet.Elephant.Sql
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
-        {            
+        {
             if (node.Method.Name.Equals("Equals"))
             {
                 Visit(Expression.Equal(node.Object, node.Arguments[0]));
@@ -177,19 +177,27 @@ namespace Takenet.Elephant.Sql
             if (node.Method.Name.Equals("Contains"))
             {
                 if (node.Method.IsStatic && node.Method.DeclaringType.Name.Equals(nameof(Enumerable)))
-                {
+            {
                     var values = ((ConstantExpression) node.Arguments[0]).Value as IEnumerable<object>;
-                    var expression = node.Arguments[1];
-                    _filter.Append("(");
+                var expression = node.Arguments[1];
+
+                _filter.Append("(");
                     Visit(expression);
-                    _filter.AppendFormat(" {0} (", SqlTemplates.In);
-                    foreach (var value in values)
-                    {
+                _filter.AppendFormat(" {0} (", SqlTemplates.In);
+                if (values == null || !values.Any())
+                {
+                    _filter.Append(" null ");
+                }
+                else
+                {
+                foreach (var value in values)
+                {
                         VisitConstant(Expression.Constant(value));
-                        _filter.Append(",");
-                    }
-                    _filter.Remove(_filter.Length - 1, 1);
-                    _filter.Append("))");
+                    _filter.Append(",");
+                }
+                _filter.Remove(_filter.Length - 1, 1);
+                }
+                _filter.Append("))");
                     return node;
                 }
 
@@ -210,9 +218,9 @@ namespace Takenet.Elephant.Sql
                 // TODO
             }
 
-            throw new NotImplementedException(
-                $"Translation not implemented for method {node.Method.Name} of type {node.Method.DeclaringType}");                        
-        }
+                throw new NotImplementedException(
+                    $"Translation not implemented for method {node.Method.Name} of type {node.Method.DeclaringType}");
+            }
 
         #endregion
 

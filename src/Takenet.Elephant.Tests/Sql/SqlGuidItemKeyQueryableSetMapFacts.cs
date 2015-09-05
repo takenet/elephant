@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
@@ -40,5 +43,44 @@ namespace Takenet.Elephant.Tests.Sql
 
             return map;
         }
+
+        [Fact(DisplayName = "QueryEmptyContainsExpressionReturnsNone")]
+        public async Task QueryNonExistingKeyReturnsNone()
+        {
+            // Arrange
+            var key1 = CreateKey();
+            var key2 = CreateKey();
+            var value1 = CreateValue(key1);
+            var value2 = CreateValue(key2);
+            var map = await CreateAsync(
+                new KeyValuePair<Guid,Item>(key1, value1),
+                new KeyValuePair<Guid,Item>(key2, value2));
+            var skip = 0;
+            var take = 5;
+
+            var filter = GetExpressionForGuidsIn(new Guid[] {  });
+
+            // Act
+            var actual = await map.QueryForKeysAsync<Guid>(filter, null, skip, take, CancellationToken.None);
+
+            // Assert
+            AssertEquals(actual.Total, 0);
+            var actualList = await actual.ToListAsync();
+            AssertEquals(actualList.Count, 0);
+        }
+
+        private Expression<Func<Item, bool>> GetExpressionForGuidsIn(IEnumerable<Guid> values)
+        {
+            var parameter = Expression.Parameter(typeof(Item), "g");
+            var memberIdentiyExpression = Expression.Lambda<Func<Item, bool>>(
+                                            Expression.Call(
+                                                typeof(Enumerable), "Contains",
+                                                new[] { typeof(Guid) },
+                                                Expression.Constant(values),
+                                                Expression.Property(parameter, "GuidProperty")),
+                                            parameter);
+            return memberIdentiyExpression;
+        }
+
     }
 }

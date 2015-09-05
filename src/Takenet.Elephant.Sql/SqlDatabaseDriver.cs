@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -9,6 +10,8 @@ namespace Takenet.Elephant.Sql
     /// </summary>
     public sealed class SqlDatabaseDriver : IDatabaseDriver
     {
+        public TimeSpan Timeout => TimeSpan.FromSeconds(180);
+
         public DbConnection CreateConnection(string connectionString)
         {
             return new SqlConnection(connectionString);
