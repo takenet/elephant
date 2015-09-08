@@ -10,7 +10,7 @@ namespace Takenet.Elephant.Redis
     public class RedisQueue<T> : StorageBase<T>, IBlockingQueue<T>
     {
         private readonly ISerializer<T> _serializer;
-        private readonly ConcurrentQueue<TaskCompletionSource<T>> _promisesQueue = new ConcurrentQueue<TaskCompletionSource<T>>();
+        private readonly ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
         private readonly string _channelName;
 
@@ -87,8 +87,8 @@ namespace Takenet.Elephant.Redis
         public Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<T>();
-            cancellationToken.Register(() => tcs.TrySetCanceled());
-            _promisesQueue.Enqueue(tcs);
+            var registration = cancellationToken.Register(() => tcs.TrySetCanceled());
+            _promisesQueue.Enqueue(Tuple.Create(tcs, registration));
             GetSubscriber().Publish(_channelName, string.Empty, CommandFlags.FireAndForget);
             return tcs.Task;
         }
@@ -102,22 +102,26 @@ namespace Takenet.Elephant.Redis
                 _channelName,
                 async (c, v) =>
                 {
+                    Tuple<TaskCompletionSource<T>, CancellationTokenRegistration> promise = null;
                     await _semaphore.WaitAsync().ConfigureAwait(false);
                     try
                     {
-                        TaskCompletionSource<T> tcs;
-                        if (_promisesQueue.TryDequeue(out tcs) && !tcs.Task.IsCanceled)
+                        if (_promisesQueue.TryDequeue(out promise) && !promise.Item1.Task.IsCanceled)
                         {
                             var database = GetDatabase();
                             var result = await database.ListRightPopAsync(_name).ConfigureAwait(false);
                             if (result.IsNull)
                             {
-                                _promisesQueue.Enqueue(tcs);
+                                _promisesQueue.Enqueue(promise);
                             }
                             else
                             {
                                 var item = _serializer.Deserialize((string) result);
-                                if (!tcs.TrySetResult(item))
+                                if (promise.Item1.TrySetResult(item))
+                                {
+                                    promise.Item2.Dispose();
+                                }
+                                else
                                 {
                                     await EnqueueAsync(item).ConfigureAwait(false);
                                 }
