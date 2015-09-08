@@ -100,6 +100,15 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to VARBINARY({length}).
+        /// </summary>
+        public static string DbTypeBinary {
+            get {
+                return ResourceManager.GetString("DbTypeBinary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BIT.
         /// </summary>
         public static string DbTypeBoolean {
