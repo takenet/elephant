@@ -132,6 +132,9 @@
 {tableDefinition}
 )</value>
   </data>
+  <data name="DbTypeBinary" xml:space="preserve">
+    <value>VARBINARY({length})</value>
+  </data>
   <data name="DbTypeBoolean" xml:space="preserve">
     <value>BIT</value>
   </data>

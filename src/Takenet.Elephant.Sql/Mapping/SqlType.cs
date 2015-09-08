@@ -27,7 +27,7 @@ namespace Takenet.Elephant.Sql.Mapping
             : this(type, false)
         {
             Precision = precision;
-            Scale = scale;            
+            Scale = scale;
         }
 
         public DbType Type { get; }
@@ -36,9 +36,10 @@ namespace Takenet.Elephant.Sql.Mapping
         {
             get
             {
-                if (_length == null && Type == DbType.String)
+                if (_length == null)
                 {
-                    return DEFAULT_STRING_LENGTH;
+                    if (Type == DbType.String) return DEFAULT_STRING_LENGTH;
+                    if (Type == DbType.Binary) return int.MaxValue;
                 }
                 return _length;
             }

@@ -112,7 +112,7 @@ namespace Takenet.Elephant.Sql
             }
             else
             {
-                throw new NotSupportedException("Property type '{type}' is not supported".Format(new { type = propertyType.Name }));
+                throw new NotSupportedException($"Property type '{propertyType.Name}' is not supported");
             }
         }
 
