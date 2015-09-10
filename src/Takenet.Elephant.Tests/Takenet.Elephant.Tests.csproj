@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockingQueueFacts.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Specialized\CacheSetFacts.cs" />
     <Compile Include="ExpirableKeyMapFacts.cs" />
     <Compile Include="FactsBase.cs" />

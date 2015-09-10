@@ -45,7 +45,7 @@ namespace Takenet.Elephant.Tests.Sql
         }
 
         [Fact(DisplayName = "QueryEmptyContainsExpressionReturnsNone")]
-        public async Task QueryNonExistingKeyReturnsNone()
+        public async Task QueryEmptyContainsExpressionReturnsNone()
         {
             // Arrange
             var key1 = CreateKey();
@@ -58,7 +58,7 @@ namespace Takenet.Elephant.Tests.Sql
             var skip = 0;
             var take = 5;
 
-            var filter = GetExpressionForGuidsIn(new Guid[] {  });
+            var filter = new Guid[] {  }.GetContainsExpressionForGuidProperty();
 
             // Act
             var actual = await map.QueryForKeysAsync<Guid>(filter, null, skip, take, CancellationToken.None);
@@ -68,19 +68,5 @@ namespace Takenet.Elephant.Tests.Sql
             var actualList = await actual.ToListAsync();
             AssertEquals(actualList.Count, 0);
         }
-
-        private Expression<Func<Item, bool>> GetExpressionForGuidsIn(IEnumerable<Guid> values)
-        {
-            var parameter = Expression.Parameter(typeof(Item), "g");
-            var memberIdentiyExpression = Expression.Lambda<Func<Item, bool>>(
-                                            Expression.Call(
-                                                typeof(Enumerable), "Contains",
-                                                new[] { typeof(Guid) },
-                                                Expression.Constant(values),
-                                                Expression.Property(parameter, "GuidProperty")),
-                                            parameter);
-            return memberIdentiyExpression;
-        }
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -177,27 +178,27 @@ namespace Takenet.Elephant.Sql
             if (node.Method.Name.Equals("Contains"))
             {
                 if (node.Method.IsStatic && node.Method.DeclaringType.Name.Equals(nameof(Enumerable)))
-            {
-                    var values = ((ConstantExpression) node.Arguments[0]).Value as IEnumerable<object>;
-                var expression = node.Arguments[1];
+                {
+                    var values = (((ConstantExpression) node.Arguments[0]).Value as IEnumerable).Cast<object>();
+                    var expression = node.Arguments[1];
 
-                _filter.Append("(");
-                    Visit(expression);
-                _filter.AppendFormat(" {0} (", SqlTemplates.In);
-                if (values == null || !values.Any())
-                {
-                    _filter.Append(" null ");
-                }
-                else
-                {
-                foreach (var value in values)
-                {
-                        VisitConstant(Expression.Constant(value));
-                    _filter.Append(",");
-                }
-                _filter.Remove(_filter.Length - 1, 1);
-                }
-                _filter.Append("))");
+                    _filter.Append("(");
+                        Visit(expression);
+                    _filter.AppendFormat(" {0} (", SqlTemplates.In);
+                    if (values == null || !values.Any())
+                    {
+                        _filter.Append(" null ");
+                    }
+                    else
+                    {
+                        foreach (var value in values)
+                        {
+                            VisitConstant(Expression.Constant(value));
+                            _filter.Append(",");
+                        }
+                        _filter.Remove(_filter.Length - 1, 1);
+                    }
+                    _filter.Append("))");
                     return node;
                 }
 
