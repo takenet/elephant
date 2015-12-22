@@ -13,9 +13,13 @@ namespace Takenet.Elephant.Specialized
     {
         protected readonly T Source;
         protected readonly T Cache;
+
         private readonly SemaphoreSlim _writeSemaphore;
-        private readonly ISynchronizer<T> _synchronizer;        
-        private bool _isSynchronized;        
+        private readonly ISynchronizer<T> _synchronizer;
+        private readonly TimeSpan _cacheExpiration;
+
+        private bool _isSynchronized;
+        private DateTimeOffset _lastSynchronization;        
 
         /// <summary>
         /// Initialize the instance.
@@ -23,7 +27,8 @@ namespace Takenet.Elephant.Specialized
         /// <param name="source">The source storage</param>
         /// <param name="cache">The cache storage, which all queries will be executed against.</param>
         /// <param name="synchronizer">The synchronizer which will be executed on the first time that a query operation is called.</param>
-        protected CacheStrategy(T source, T cache, ISynchronizer<T> synchronizer)
+        /// <param name="cacheExpiration">The period to invalidate the cache, forcing a new synchronization to be executed.</param>
+        protected CacheStrategy(T source, T cache, ISynchronizer<T> synchronizer, TimeSpan cacheExpiration = default(TimeSpan))
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (cache == null) throw new ArgumentNullException(nameof(cache));            
@@ -31,6 +36,7 @@ namespace Takenet.Elephant.Specialized
             Source = source;
             Cache = cache;
             _synchronizer = synchronizer;
+            _cacheExpiration = cacheExpiration;
             _writeSemaphore = new SemaphoreSlim(1);            
         }
 
@@ -40,13 +46,51 @@ namespace Takenet.Elephant.Specialized
         }
 
         /// <summary>
+        /// Occurs when the cache actor throws an exception during a write method.
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs> CacheFailed;
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _writeSemaphore.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+
+        protected bool IsSynchronized
+        {
+            get
+            {
+                if (_isSynchronized)
+                {
+                    if (_cacheExpiration.Equals(default(TimeSpan))) return true;
+                    return (DateTimeOffset.UtcNow - _lastSynchronization) < _cacheExpiration;
+                }
+
+                return false;
+            }
+            set
+            {
+                _isSynchronized = value;
+            }
+        }
+
+        /// <summary>
         /// Executes a write method where both calls must succeed.
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
         protected virtual async Task ExecuteWriteFunc(Func<T, Task> func)
         {
-            if (!_isSynchronized) await Synchronize();
+            if (!IsSynchronized) await Synchronize();
 
             await func(Source).ConfigureAwait(false);
             try
@@ -56,7 +100,7 @@ namespace Takenet.Elephant.Specialized
             catch (Exception ex)
             {
                 await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
-                _isSynchronized = false;
+                IsSynchronized = false;
             }
 
         }
@@ -68,20 +112,20 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected async Task<bool> ExecuteWriteFunc(Func<T, Task<bool>> func)
         {
-            if (!_isSynchronized) await Synchronize();
+            if (!IsSynchronized) await Synchronize();
 
             if (!await func(Source).ConfigureAwait(false)) return false;
             try
             {
                 if (!await func(Cache).ConfigureAwait(false))
                 {
-                    _isSynchronized = false;
+                    IsSynchronized = false;
                 }
             }
             catch (Exception ex)
             {
                 await RaiseCacheFailedAsync(ex).ConfigureAwait(false);
-                _isSynchronized = false;
+                IsSynchronized = false;
             }
             return true;
 
@@ -95,16 +139,10 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> func)
         {
-            if (!_isSynchronized) await Synchronize();            
+            if (!IsSynchronized) await Synchronize();            
 
             return await func(Cache).ConfigureAwait(false);
         }
-
-
-        /// <summary>
-        /// Occurs when the cache actor throws an exception during a write method.
-        /// </summary>
-        public event EventHandler<ExceptionEventArgs> CacheFailed;
 
         /// <summary>
         /// Occurs when the cache actor throws an exception during a write method.
@@ -122,24 +160,16 @@ namespace Takenet.Elephant.Specialized
             CacheFailed?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
-
-        public virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _writeSemaphore.Dispose();
-            }
-        }
-
         private async Task Synchronize()
         {
             await _writeSemaphore.WaitAsync();
             try
             {
-                if (!_isSynchronized)
+                if (!IsSynchronized)
                 {
                     await _synchronizer.SynchronizeAsync(Source, Cache).ConfigureAwait(false);
-                    _isSynchronized = true;
+                    IsSynchronized = true;
+                    _lastSynchronization = DateTimeOffset.UtcNow;
                 }
             }
             finally
@@ -148,10 +178,5 @@ namespace Takenet.Elephant.Specialized
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
     }
 }
