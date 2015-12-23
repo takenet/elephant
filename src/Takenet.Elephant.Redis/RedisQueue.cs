@@ -11,7 +11,7 @@ namespace Takenet.Elephant.Redis
     {
         private readonly ISerializer<T> _serializer;
         private readonly ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _semaphore;
         private readonly string _channelName;
 
         private ISubscriber _subscriber;
@@ -22,11 +22,12 @@ namespace Takenet.Elephant.Redis
             
         }
 
-        public RedisQueue(string queueName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db)
+        public RedisQueue(string queueName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db)
             : base(queueName, connectionMultiplexer, db)
         {
             _channelName = $"{db}:{queueName}";
             _serializer = serializer;
+            _semaphore = new SemaphoreSlim(1);
             SubscribeChannel();
         }
 
@@ -135,6 +136,16 @@ namespace Takenet.Elephant.Redis
                         _semaphore.Release();
                     }
                 });
-        }        
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _semaphore.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

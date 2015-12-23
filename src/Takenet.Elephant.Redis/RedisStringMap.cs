@@ -19,7 +19,7 @@ namespace Takenet.Elephant.Redis
         
         }
 
-        public RedisStringMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer, int db)
+        public RedisStringMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer, int db)
             : base(mapName, connectionMultiplexer, db)
         {
             if (serializer == null)

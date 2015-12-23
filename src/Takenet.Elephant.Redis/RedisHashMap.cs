@@ -24,7 +24,7 @@ namespace Takenet.Elephant.Redis
             
         }
 
-        public RedisHashMap(string mapName, IRedisDictionaryConverter<TValue> dictionaryConverter, ConnectionMultiplexer connectionMultiplexer, int db = 0)
+        public RedisHashMap(string mapName, IRedisDictionaryConverter<TValue> dictionaryConverter, IConnectionMultiplexer connectionMultiplexer, int db = 0)
             : base(mapName, connectionMultiplexer, db)
         {
             _dictionaryConverter = dictionaryConverter;

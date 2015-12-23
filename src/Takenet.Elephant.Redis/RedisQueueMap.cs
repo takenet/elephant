@@ -15,7 +15,7 @@ namespace Takenet.Elephant.Redis
             
         }
 
-        public RedisQueueMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0)
+        public RedisQueueMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0)
             : base(mapName, connectionMultiplexer, db)
         {
             _serializer = serializer;
@@ -99,7 +99,7 @@ namespace Takenet.Elephant.Redis
         {
             private readonly ITransaction _transaction;
 
-            public InternalQueue(TKey key, string queueName, ISerializer<TItem> serializer, ConnectionMultiplexer connectionMultiplexer, int db, ITransaction transaction = null)
+            public InternalQueue(TKey key, string queueName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, ITransaction transaction = null)
                 : base(queueName, connectionMultiplexer, serializer, db)
             {
                 _transaction = transaction;

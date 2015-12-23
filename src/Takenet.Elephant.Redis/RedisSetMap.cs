@@ -16,7 +16,7 @@ namespace Takenet.Elephant.Redis
             
         }
 
-        public RedisSetMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db)
+        public RedisSetMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db)
             : base(mapName, connectionMultiplexer, db)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
@@ -86,7 +86,7 @@ namespace Takenet.Elephant.Redis
         {
             private readonly ITransaction _transaction;
 
-            public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, ConnectionMultiplexer connectionMultiplexer, int db, ITransaction transaction = null, bool useScanOnEnumeration = true)
+            public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, ITransaction transaction = null, bool useScanOnEnumeration = true)
                 : base(setName, connectionMultiplexer, serializer, db, useScanOnEnumeration)
             {                
                 if (key == null) throw new ArgumentNullException(nameof(key));

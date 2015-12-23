@@ -21,7 +21,7 @@ namespace Takenet.Elephant.Redis
             
         }
 
-        public RedisSet(string setName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, bool useScanOnEnumeration = true)
+        public RedisSet(string setName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, bool useScanOnEnumeration = true)
             : base(setName, connectionMultiplexer, db)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
