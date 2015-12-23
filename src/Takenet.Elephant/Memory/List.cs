@@ -15,6 +15,9 @@ namespace Takenet.Elephant.Memory
     {
         private readonly System.Collections.Generic.List<T> _list;
 
+        private object _syncRoot = new object();
+
+
         public List()
             : this(new System.Collections.Generic.List<T>())
         {
@@ -29,14 +32,20 @@ namespace Takenet.Elephant.Memory
 
         public Task AddAsync(T value)
         {
-            _list.Add(value);
+            lock (_syncRoot)
+            {
+                _list.Add(value);
+            }
             return TaskUtil.CompletedTask;
         }
 
         public Task<long> RemoveAllAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            return Task.FromResult(_list.RemoveAll(i => i.Equals(value))).ContinueWith(t => (long)t.Result);
+            lock (_syncRoot)
+            {
+                return Task.FromResult(_list.RemoveAll(i => i.Equals(value))).ContinueWith(t => (long)t.Result);
+            }
         }
     }
 }

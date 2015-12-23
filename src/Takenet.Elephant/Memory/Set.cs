@@ -14,6 +14,7 @@ namespace Takenet.Elephant.Memory
     public class Set<T> : Collection<T>, ISet<T>
     {
         private readonly HashSet<T> _hashSet;
+        private object _syncRoot = new object();
 
         #region Constructor
 
@@ -53,20 +54,26 @@ namespace Takenet.Elephant.Memory
 
         public Task AddAsync(T value)
         {
-            if (value == null) throw new ArgumentNullException(nameof(value));
-            if (_hashSet.Contains(value))
+            lock (_syncRoot)
             {
-                _hashSet.Remove(value);
-            }
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_hashSet.Contains(value))
+                {
+                    _hashSet.Remove(value);
+                }
 
-            _hashSet.Add(value);
+                _hashSet.Add(value);
+            }
             return TaskUtil.CompletedTask;
         }
 
         public Task<bool> TryRemoveAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            return Task.FromResult(_hashSet.Remove(value));
+            lock (_syncRoot)
+            {
+                return Task.FromResult(_hashSet.Remove(value));
+            }
         }
        
         public Task<bool> ContainsAsync(T value)
