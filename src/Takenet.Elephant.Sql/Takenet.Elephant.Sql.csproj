@@ -62,6 +62,7 @@
     <Compile Include="SqlDatabaseDriver.cs" />
     <Compile Include="SqlExtensions.cs" />
     <Compile Include="SqlHelper.cs" />
+    <Compile Include="SqlCollectionBase.cs" />
     <Compile Include="SqlList.cs" />
     <Compile Include="SqlMap.cs" />
     <Compile Include="SqlSet.cs" />

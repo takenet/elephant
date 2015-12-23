@@ -6,7 +6,7 @@ using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql
 {
-    public class SqlList<T> : StorageBase<T>, IList<T>
+    public class SqlList<T> : SqlCollectionBase<T>, IList<T>
     {
         #region Constructors
 
@@ -42,32 +42,7 @@ namespace Takenet.Elephant.Sql
                 }
             }
         }
-
-        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync()
-        {
-            var selectColumns = Table.Columns.Keys.ToArray();
-            return Task.FromResult<IAsyncEnumerable<T>>(
-                new DbDataReaderAsyncEnumerable<T>(
-                    GetConnectionAsync,
-                    c => c.CreateSelectCommand(Table.Name, null, selectColumns),
-                    Mapper,
-                    selectColumns));
-        }
-
-        public async Task<long> GetLengthAsync()
-        {
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
-            {
-                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
-                {
-                    using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter: null))
-                    {
-                        return (int)await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
-                    }
-                }
-            }
-        }
-
+        
         public async Task<long> RemoveAllAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
