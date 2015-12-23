@@ -10,7 +10,13 @@ namespace Takenet.Elephant.Redis
         private readonly ISerializer<TItem> _serializer;
 
         public RedisQueueMap(string mapName, string configuration, ISerializer<TItem> serializer, int db = 0)
-            : base(mapName, configuration, db)
+            : this(mapName, ConnectionMultiplexer.Connect(configuration), serializer, db)
+        {
+            
+        }
+
+        public RedisQueueMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0)
+            : base(mapName, connectionMultiplexer, db)
         {
             _serializer = serializer;
         }

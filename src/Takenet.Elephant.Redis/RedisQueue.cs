@@ -17,14 +17,12 @@ namespace Takenet.Elephant.Redis
         private ISubscriber _subscriber;
 
         public RedisQueue(string queueName, string configuration, ISerializer<T> serializer, int db = 0)
-            : base(queueName, configuration, db)
+            : this(queueName, ConnectionMultiplexer.Connect(configuration), serializer, db)
         {
-            _channelName = $"{db}:{queueName}";
-            _serializer = serializer;
-            SubscribeChannel();
+            
         }
 
-        internal RedisQueue(string queueName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db)
+        public RedisQueue(string queueName, ConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db)
             : base(queueName, connectionMultiplexer, db)
         {
             _channelName = $"{db}:{queueName}";
