@@ -18,6 +18,10 @@ namespace Takenet.Elephant.Sql
         public SqlList(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<T> mapper)
             : base(databaseDriver, connectionString, table, mapper)
         {
+            if (!table.KeyColumnsNames.Any(c => table.Columns[c].IsIdentity))
+            {
+                throw new ArgumentException("The table must contain an key identity column", nameof(table));
+            }
         }
 
         #endregion

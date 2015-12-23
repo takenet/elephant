@@ -68,7 +68,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockingQueueFacts.cs" />
+    <Compile Include="ClassListFacts.cs" />
     <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="ItemListFacts.cs" />
+    <Compile Include="ListFacts.cs" />
     <Compile Include="Specialized\CacheSetFacts.cs" />
     <Compile Include="ExpirableKeyMapFacts.cs" />
     <Compile Include="FactsBase.cs" />
@@ -181,6 +184,7 @@
     <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemSetMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringSetMapFacts.cs" />
+    <Compile Include="Sql\SqlItemListFacts.cs" />
     <Compile Include="Sql\SqlItemSetFacts.cs" />
     <Compile Include="Sql\SqlGuidItemMapQueryableStorageFacts.cs" />
     <Compile Include="Sql\SqlGuidSetFacts.cs" />
