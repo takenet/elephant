@@ -10,15 +10,15 @@ using Xunit;
 
 namespace Takenet.Elephant.Tests
 {
-    public abstract class BlockingQueueFacts<T> : FactsBase
+    public abstract class BlockingQueueFacts<T> : QueueFacts<T>
     {
-        public abstract IBlockingQueue<T> Create();
+        public override abstract IQueue<T> Create();
 
         [Fact(DisplayName = "DequeueExistingItemSucceeds")]
         public virtual async Task DequeueExistingItemSucceeds()
         {
             // Arrange
-            var queue = Create();
+            var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
             await queue.EnqueueAsync(item);
             var timeout = TimeSpan.FromMilliseconds(100);
@@ -36,7 +36,7 @@ namespace Takenet.Elephant.Tests
         public virtual async Task DequeueEmptyQueueThrowsTaskCanceledException()
         {
             // Arrange
-            var queue = Create();
+            var queue = (IBlockingQueue<T>)Create();
             var timeout = TimeSpan.FromMilliseconds(50);
             var cts = new CancellationTokenSource(timeout);
             
@@ -49,7 +49,7 @@ namespace Takenet.Elephant.Tests
         public virtual async Task DequeueEmptyQueueAddingAfterDequeueWasCalledSucceeds()
         {
             // Arrange
-            var queue = Create();
+            var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
             var timeout = TimeSpan.FromMilliseconds(50);
             var cts = new CancellationTokenSource(timeout + timeout);
@@ -69,7 +69,7 @@ namespace Takenet.Elephant.Tests
         public virtual async Task DequeueTwiceWithSingleItemThrowsTaskCanceledException()
         {
             // Arrange
-            var queue = Create();
+            var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
             await queue.EnqueueAsync(item);            
             var timeout = TimeSpan.FromMilliseconds(50);
@@ -85,7 +85,7 @@ namespace Takenet.Elephant.Tests
         public virtual async Task DequeueMultipleItemsInParallelSucceeds()
         {
             // Arrange
-            var queue = Create();
+            var queue = (IBlockingQueue<T>)Create();
             var items = new HashSet<T>();;
             var count = 100;
             for (var i = 0; i < count; i++)
