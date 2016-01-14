@@ -1,54 +1,51 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace Takenet.Elephant.RabbitMQ
 {
-    public class RabbitMQQueue<T> : IBlockingQueue<T>
+    public class RabbitMQQueue<T> : StorageBase<T>, IBlockingQueue<T>
     {
         private readonly ISerializer<T> _serializer;
 
         public RabbitMQQueue(string queueName, IConnection rabbitMQConnection, ISerializer<T> serializer)
+            : base(queueName, rabbitMQConnection)
         {
             _serializer = serializer;
         }
 
         #region IQueue<T> Members
 
-        public async Task EnqueueAsync(T item)
+        public Task EnqueueAsync(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
-            //var database = GetDatabase();
-            //var shouldCommit = false;
+            
+            GetModel().BasicPublish(exchange: "",
+                               routingKey: _queueName,
+                               basicProperties: null,
+                               body: Encoding.UTF8.GetBytes(_serializer.Serialize(item)));
 
-
-            //var enqueueTask = transaction.ListLeftPushAsync(_name, _serializer.Serialize(item));
-            //var publishTask = transaction.PublishAsync(_channelName, string.Empty, CommandFlags.FireAndForget);
-
-            //if (shouldCommit &&
-            //    !await transaction.ExecuteAsync().ConfigureAwait(false))
-            //{
-            //    throw new Exception("The transaction has failed");                    
-            //}
-
-            //await Task.WhenAll(enqueueTask, publishTask).ConfigureAwait(false);
-            throw new NotImplementedException();
+            return Task.FromResult(0);
         }
 
-        public async Task<T> DequeueOrDefaultAsync()
+        public Task<T> DequeueOrDefaultAsync()
         {
-            //var database = GetDatabase();
-            //var result = await database.ListRightPopAsync(_name).ConfigureAwait(false);
-            //return !result.IsNull ? _serializer.Deserialize((string)result) : default(T);
-            throw new NotImplementedException();
+            BasicGetResult result = GetModel().BasicGet(GetQueueName(), false);
+            if (result == null)
+            {
+                return Task.FromResult<T>(default(T));
+            }
+
+            GetModel().BasicAck(result.DeliveryTag, false);
+            return Task.FromResult<T>(_serializer.Deserialize(Encoding.UTF8.GetString(result.Body)));
         }
 
         public Task<long> GetLengthAsync()
         {
-            //var database = GetDatabase();
-            //return database.ListLengthAsync(_name);
-            throw new NotImplementedException();
+            return Task.FromResult<long>(GetMessageCount());
         }
 
         #endregion
@@ -57,11 +54,7 @@ namespace Takenet.Elephant.RabbitMQ
 
         public Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
-            //var tcs = new TaskCompletionSource<T>();
-            //var registration = cancellationToken.Register(() => tcs.TrySetCanceled());
-            //_promisesQueue.Enqueue(Tuple.Create(tcs, registration));
-            //GetSubscriber().Publish(_channelName, string.Empty, CommandFlags.FireAndForget);
-            //return tcs.Task;
+
             throw new NotImplementedException();
         }
 
