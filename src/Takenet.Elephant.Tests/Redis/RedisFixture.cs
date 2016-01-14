@@ -10,20 +10,7 @@ namespace Takenet.Elephant.Tests.Redis
     {
         public RedisFixture()
         {
-            if (!File.Exists(@"..\..\..\packages\Redis-64.2.8.19\redis-server.exe"))
-            {
-                throw new InvalidOperationException("Please install the 'redis-64' NuGet package with version '2.8.19' to run this test");
-            }
-
-            var redisProcess = new ProcessStartInfo()
-            {
-                FileName = @"..\..\..\packages\Redis-64.2.8.19\redis-server.exe",
-                Arguments = " --heapdir . --maxheap 100mb",
-                CreateNoWindow = true,
-                WindowStyle = ProcessWindowStyle.Hidden
-            };
-
-            ServerProcess = Process.Start(redisProcess);
+            // Note: You should run a local redis server
             var options = new ConfigurationOptions
             {
                 EndPoints = { "localhost" },
@@ -41,7 +28,6 @@ namespace Takenet.Elephant.Tests.Redis
         public void Dispose()
         {
             Connection.Dispose();
-            ServerProcess.WaitForExit(500);
         }
     }
 }
