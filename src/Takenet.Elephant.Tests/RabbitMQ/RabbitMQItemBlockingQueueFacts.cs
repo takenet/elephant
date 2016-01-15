@@ -16,7 +16,7 @@ namespace Takenet.Elephant.Tests.RabbitMQ
         public override IQueue<Item> Create()
         {
             const string setName = "items";
-            return new RabbitMQQueue<Item>(setName, _rabitMQFixture.Connection, new ItemSerializer());
+            return new RabbitMQQueue<Item>(setName, _rabitMQFixture.ConnectionFactory, new ItemSerializer());
         }
     }
 }

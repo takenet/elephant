@@ -8,16 +8,14 @@ namespace Takenet.Elephant.Tests.RabbitMQ
     {
         public RabbitMQFixture()
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            Connection = factory.CreateConnection();
+            ConnectionFactory = new ConnectionFactory() { HostName = "localhost" };
         }
 
 
-        internal IConnection Connection { get;  }
+        internal IConnectionFactory ConnectionFactory { get;  }
 
         public void Dispose()
         {
-            Connection.Close();
         }
     }
 }

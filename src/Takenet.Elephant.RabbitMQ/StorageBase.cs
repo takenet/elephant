@@ -13,13 +13,15 @@ namespace Takenet.Elephant.RabbitMQ
         protected readonly IConnection _connection;
         protected readonly IModel _model;
 
-        public StorageBase(string queueName, IConnection rabbitMQConnection, bool isExclusive = false)
+        public StorageBase(string queueName, IConnectionFactory connectionFactory, bool isExclusive = false)
         {
             if (queueName == null) throw new ArgumentNullException(nameof(queueName));
-            if (rabbitMQConnection == null) throw new ArgumentNullException(nameof(rabbitMQConnection));
+            if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
             _queueName = queueName;
-            _connection = rabbitMQConnection;
+            _connection = connectionFactory.CreateConnection();
+
             _model = _connection.CreateModel();
+            _model.ConfirmSelect();
             _model.QueueDeclare(_queueName, true, isExclusive, false, null);
         }
 
@@ -28,9 +30,6 @@ namespace Takenet.Elephant.RabbitMQ
             Dispose();
         }
         
-
-        #region StorageBase Members
-
         public string GetQueueName()
         {
             return _queueName;
@@ -51,8 +50,6 @@ namespace Takenet.Elephant.RabbitMQ
             return _model.MessageCount(_queueName);
         }
 
-        #endregion
-
         #region IDisposable Members
 
         public void Dispose()
@@ -65,7 +62,6 @@ namespace Takenet.Elephant.RabbitMQ
         {
             if(disposing)
             {
-                _model.Dispose();
                 _connection.Dispose();
             }
         }
