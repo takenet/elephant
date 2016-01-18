@@ -14,6 +14,14 @@ after_build:
 build:
   project: src/Takenet.Elephant.sln
   verbosity: minimal
+environment:
+  RABBITMQ_HOSTNAME: moose.rmq.cloudamqp.com 
+  RABBITMQ_VHOST: vujfyubs
+  RABBITMQ_USERNAME: vujfyubs
+  RABBITMQ_PASSWORD:
+    secure: LZ+N9GVdMnpX36sLaNih/Lu3yIlWrUA0A3w7lk5T2jj2v6Zy44oL5480ZNVoYhhe
+  REDIS_ENDPOINT:
+    secure: X9Qr+1WDAWhpsxTa3bEFTvtjCQwxgsF4rtat9ItJBNsularweTRUbJlq358Ofkn6iGkkjJb22gwr7dd2oikSsAa5nnanbRyqTmQX4SaXUMQ=
 test:
   categories:
     except:

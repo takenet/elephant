@@ -1,6 +1,5 @@
 ﻿using System;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Framing.Impl;
 
 namespace Takenet.Elephant.Tests.RabbitMQ
 {
@@ -8,10 +7,15 @@ namespace Takenet.Elephant.Tests.RabbitMQ
     {
         public RabbitMQFixture()
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory()
+            {
+                HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME"),
+                VirtualHost = Environment.GetEnvironmentVariable("RABBITMQ_VHOST"),
+                UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME"),
+                Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD")
+            };
             Connection = factory.CreateConnection();
         }
-
 
         internal IConnection Connection { get;  }
 
