@@ -47,8 +47,10 @@
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="IAsyncEnumerable.cs" />
     <Compile Include="IBlockingQueue.cs" />
+    <Compile Include="ICollection.cs" />
     <Compile Include="IDictionaryConverter.cs" />
     <Compile Include="IKeyQueryableMap.cs" />
+    <Compile Include="IList.cs" />
     <Compile Include="IQueryableStorage.cs" />
     <Compile Include="IAsyncEnumerator.cs" />
     <Compile Include="IExpirableKeyMap.cs" />
@@ -63,6 +65,8 @@
     <Compile Include="ISet.cs" />
     <Compile Include="ISetMap.cs" />
     <Compile Include="IUpdatableMap.cs" />
+    <Compile Include="Memory\Collection.cs" />
+    <Compile Include="Memory\List.cs" />
     <Compile Include="Memory\Map.cs" />
     <Compile Include="Memory\NumberMap.cs" />
     <Compile Include="Memory\Set.cs" />

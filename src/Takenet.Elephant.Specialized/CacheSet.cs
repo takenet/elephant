@@ -8,12 +8,13 @@ namespace Takenet.Elephant.Specialized
 {
     public class CacheSet<T> : CacheStrategy<ISet<T>>, ISet<T>
     {
-        public CacheSet(ISet<T> source, ISet<T> cache, TimeSpan synchronizationTimeout)
-            : base(source, cache, new OverwriteSetSynchronizer<T>(synchronizationTimeout))
+        public CacheSet(ISet<T> source, ISet<T> cache, TimeSpan synchronizationTimeout, TimeSpan cacheExpiration = default(TimeSpan))
+            : base(source, cache, new OverwriteSetSynchronizer<T>(synchronizationTimeout), cacheExpiration)
         {
         }
 
-        protected CacheSet(ISet<T> source, ISet<T> cache, ISynchronizer<ISet<T>> synchronizer) : base(source, cache, synchronizer)
+        protected CacheSet(ISet<T> source, ISet<T> cache, ISynchronizer<ISet<T>> synchronizer, TimeSpan cacheExpiration = default(TimeSpan)) 
+            : base(source, cache, synchronizer, cacheExpiration)
         {
         }
 

@@ -20,12 +20,12 @@ namespace Takenet.Elephant.Tests.Specialized
             return Create(CreateSource(), CreateCache());
         }
 
-        public virtual IMap<TKey, TValue> Create(IMap<TKey, TValue> source, IMap<TKey, TValue> cache)
+        public virtual IMap<TKey, TValue> Create(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, TimeSpan cacheExpiration = default(TimeSpan))
         {
-            return new CacheMap<TKey, TValue>(source, cache, TimeSpan.FromSeconds(60));
+            return new CacheMap<TKey, TValue>(source, cache, TimeSpan.FromSeconds(60), cacheExpiration);
         }
 
-        [Fact(DisplayName = "AddingAddsToSourceAndToTheCache")]
+        [Fact(DisplayName = nameof(AddingAddsToSourceAndToTheCache))]
         public virtual async Task AddingAddsToSourceAndToTheCache()
         {
             // Arrange
@@ -68,7 +68,7 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertEquals(await cache.GetValueOrDefaultAsync(key3), value3);
         }
 
-        [Fact(DisplayName = "AddingAddsToSourceAndOverwritesExistingValuesInTheCache")]
+        [Fact(DisplayName = nameof(AddingAddsToSourceAndOverwritesExistingValuesInTheCache))]
         public virtual async Task AddingAddsToSourceAndOverwritesExistingValuesInTheCache()
         {
             // Arrange
@@ -92,7 +92,7 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertEquals(await cache.GetValueOrDefaultAsync(key1), value2);
         }
 
-        [Fact(DisplayName = "AddingAddsToSourceAndOverwritesExistingValuesInTheCacheOnSynchronization")]
+        [Fact(DisplayName = nameof(AddingAddsToSourceAndOverwritesExistingValuesInTheCacheOnSynchronization))]
         public virtual async Task AddingAddsToSourceAndOverwritesExistingValuesInTheCacheOnSynchronization()
         {
             // Arrange
@@ -116,8 +116,7 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertEquals(await cache.GetValueOrDefaultAsync(key1), value2);
         }
 
-
-        [Fact(DisplayName = "QueryingSynchonizesTheSourceAndCache")]
+        [Fact(DisplayName = nameof(QueryingSynchonizesTheSourceAndCache))]
         public virtual async Task QueryingSynchonizesTheSourceAndCache()
         {           
             // Arrange
@@ -149,14 +148,14 @@ namespace Takenet.Elephant.Tests.Specialized
             if (!await source.TryAddAsync(key1, value1)) throw new Exception("Could not arrange the test");
             if (!await source.TryAddAsync(key2, value2)) throw new Exception("Could not arrange the test");
             if (!await source.TryAddAsync(key3, value3)) throw new Exception("Could not arrange the test");
+            if (!await source.TryAddAsync(key7, value71)) throw new Exception("Could not arrange the test");
+            if (!await source.TryAddAsync(key8, value81)) throw new Exception("Could not arrange the test");
+            if (!await source.TryAddAsync(key9, value91)) throw new Exception("Could not arrange the test");
             if (!await cache.TryAddAsync(key4, value4)) throw new Exception("Could not arrange the test");
             if (!await cache.TryAddAsync(key5, value5)) throw new Exception("Could not arrange the test");
-            if (!await cache.TryAddAsync(key6, value6)) throw new Exception("Could not arrange the test");
-            if (!await source.TryAddAsync(key7, value71)) throw new Exception("Could not arrange the test");
-            if (!await cache.TryAddAsync(key7, value72)) throw new Exception("Could not arrange the test");
-            if (!await source.TryAddAsync(key8, value81)) throw new Exception("Could not arrange the test");
-            if (!await cache.TryAddAsync(key8, value82)) throw new Exception("Could not arrange the test");
-            if (!await source.TryAddAsync(key9, value91)) throw new Exception("Could not arrange the test");
+            if (!await cache.TryAddAsync(key6, value6)) throw new Exception("Could not arrange the test");         
+            if (!await cache.TryAddAsync(key7, value72)) throw new Exception("Could not arrange the test");            
+            if (!await cache.TryAddAsync(key8, value82)) throw new Exception("Could not arrange the test");            
             if (!await cache.TryAddAsync(key9, value92)) throw new Exception("Could not arrange the test");
 
 
@@ -192,7 +191,7 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertEquals(await cache.GetValueOrDefaultAsync(key9), value91);
         }
 
-        [Fact(DisplayName = "RemovingRemovesFromTheSourceAndCache")]
+        [Fact(DisplayName = nameof(RemovingRemovesFromTheSourceAndCache))]
         public virtual async Task RemovingRemovesFromTheSourceAndCache()
         {
             // Arrange
@@ -225,5 +224,36 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertIsTrue(await cache.ContainsKeyAsync(key3));
         }
 
+
+        [Fact(DisplayName = nameof(QueryingWithExpirationSynchonizesTheSourceAndCache))]
+        public virtual async Task QueryingWithExpirationSynchonizesTheSourceAndCache()
+        {
+            // Arrange
+            var expiration = TimeSpan.FromMilliseconds(100);
+            var source = CreateSource();
+            var cache = CreateCache();
+            var map = Create(source, cache, expiration);
+            var key1 = CreateKey();
+            var value1 = CreateValue(key1);
+            var key2 = CreateKey();
+            var value2 = CreateValue(key2);
+
+            if (!await source.TryAddAsync(key1, value1)) throw new Exception("Could not arrange the test");
+            if (!await source.TryAddAsync(key2, value2)) throw new Exception("Could not arrange the test");
+       
+            // Act
+            var actual1 = await map.GetValueOrDefaultAsync(key1);
+            await cache.TryRemoveAsync(key2);
+            var actual21 = await map.GetValueOrDefaultAsync(key2);
+            await Task.Delay(expiration);
+            var actual22 = await map.GetValueOrDefaultAsync(key2);
+
+            // Assert
+            AssertEquals(actual1, value1);
+            AssertIsDefault(actual21);
+            AssertEquals(actual22, value2);
+            AssertEquals(await cache.GetValueOrDefaultAsync(key1), value1);
+            AssertEquals(await cache.GetValueOrDefaultAsync(key2), value2);
+        }
     }
 }

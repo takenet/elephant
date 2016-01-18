@@ -5,7 +5,7 @@ namespace Takenet.Elephant.Redis
 {
     public class StorageBase<TKey> : IDisposable
     {        
-        protected readonly ConnectionMultiplexer _connectionMultiplexer;
+        protected readonly IConnectionMultiplexer _connectionMultiplexer;
         protected readonly string _name;
         protected readonly int _db;
 
@@ -15,7 +15,7 @@ namespace Takenet.Elephant.Redis
             
         }
 
-        protected StorageBase(string name, ConnectionMultiplexer connectionMultiplexer, int db)
+        protected StorageBase(string name, IConnectionMultiplexer connectionMultiplexer, int db)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (connectionMultiplexer == null) throw new ArgumentNullException(nameof(connectionMultiplexer));
