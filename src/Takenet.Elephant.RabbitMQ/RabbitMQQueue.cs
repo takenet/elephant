@@ -50,6 +50,7 @@ namespace Takenet.Elephant.RabbitMQ
             {
                 model.BasicPublish(exchange: "",
                                    routingKey: _queueName,
+                                   mandatory: true,
                                    basicProperties: new BasicProperties() { Persistent = true },
                                    body: Encoding.UTF8.GetBytes(_serializer.Serialize(item)));
             }
@@ -90,7 +91,7 @@ namespace Takenet.Elephant.RabbitMQ
 
         #region IBlockingQueue<T> Members
 
-        public Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             var model = GetModel();
             BasicGetResult result;
@@ -98,37 +99,21 @@ namespace Takenet.Elephant.RabbitMQ
             /// 2.10. IModel should not be shared between threads <see href="https://www.rabbitmq.com/releases/rabbitmq-dotnet-client/v1.5.0/rabbitmq-dotnet-client-1.5.0-user-guide.pdf"/>
             lock(model)
             {
-                result = model.BasicGet(GetQueueName(), false);
+                result = model.BasicGet(GetQueueName(), true);
             }
 
             if (result == null)
             {
-                var tcs = new TaskCompletionSource<T>();
-                var registration = cancellationToken.Register(() => tcs.TrySetCanceled());
-
-                var consumer = new EventingBasicConsumer(model);
-                consumer.Received += (m, ea) =>
-                {
-                    tcs.TrySetResult(_serializer.Deserialize(Encoding.UTF8.GetString(ea.Body)));
-                    lock(model)
-                    {
-                        model.BasicCancel(ea.ConsumerTag);
-                    }
-                };
+                var consumer = new TaskBasicConsumer(model, cancellationToken);
                 lock(model)
                 {
                     model.BasicConsume(GetQueueName(), false, consumer);
                 }
-
-                return tcs.Task;
-            }
-            
-            lock(model)
-            {
-                model.BasicAck(result.DeliveryTag, false);
+                var body = await consumer.GetTask();
+                return _serializer.Deserialize(body);
             }
 
-            return Task.FromResult<T>(_serializer.Deserialize(Encoding.UTF8.GetString(result.Body)));
+            return _serializer.Deserialize(Encoding.UTF8.GetString(result.Body));
         }
 
         #endregion

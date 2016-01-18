@@ -11,7 +11,6 @@ namespace Takenet.Elephant.Tests.RabbitMQ
             ConnectionFactory = new ConnectionFactory() { HostName = "localhost" };
         }
 
-
         internal IConnectionFactory ConnectionFactory { get;  }
 
         public void Dispose()

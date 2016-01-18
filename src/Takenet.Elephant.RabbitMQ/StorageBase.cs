@@ -42,12 +42,18 @@ namespace Takenet.Elephant.RabbitMQ
 
         public uint GetConsumerCount()
         {
-            return _model.ConsumerCount(_queueName);
+            lock(_model)
+            {
+                return _model.ConsumerCount(_queueName);
+            }
         }
 
         public uint GetMessageCount()
         {
-            return _model.MessageCount(_queueName);
+            lock (_model)
+            {
+                return _model.MessageCount(_queueName);
+            }
         }
 
         #region IDisposable Members

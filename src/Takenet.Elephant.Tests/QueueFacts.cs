@@ -99,7 +99,7 @@ namespace Takenet.Elephant.Tests
                 await queue.EnqueueAsync(item);
             }
 
-            var timeout = TimeSpan.FromMilliseconds(100);
+            var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout);
 
             // Act

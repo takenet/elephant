@@ -37,7 +37,7 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var timeout = TimeSpan.FromMilliseconds(50);
+            var timeout = TimeSpan.FromMilliseconds(100);
             var cts = new CancellationTokenSource(timeout);
             
             // Act
@@ -51,7 +51,7 @@ namespace Takenet.Elephant.Tests
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
-            var timeout = TimeSpan.FromMilliseconds(50);
+            var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout + timeout);
 
             // Act
@@ -63,6 +63,7 @@ namespace Takenet.Elephant.Tests
 
             // Assert
             AssertEquals(actual, item);
+            AssertEquals(await queue.GetLengthAsync(), 0);
         }
 
         [Fact(DisplayName = "DequeueTwiceWithSingleItemThrowsTaskCanceledException")]
