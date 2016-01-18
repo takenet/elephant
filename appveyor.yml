@@ -16,6 +16,10 @@ branches:
 build:
   project: src/Takenet.Elephant.sln
   verbosity: minimal
+test:
+  categories:
+    only:
+      - ok
 assembly_info:
   patch: true
   file: src\Takenet.Elephant\Properties\AssemblyInfo.cs
