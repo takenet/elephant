@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Framing;
 
 namespace Takenet.Elephant.RabbitMQ
 {
@@ -11,8 +12,8 @@ namespace Takenet.Elephant.RabbitMQ
     {
         private readonly ISerializer<T> _serializer;
 
-        public RabbitMQQueue(string queueName, IConnection rabbitMQConnection, ISerializer<T> serializer)
-            : base(queueName, rabbitMQConnection)
+        public RabbitMQQueue(string queueName, IConnectionFactory connectionFactory, ISerializer<T> serializer)
+            : base(queueName, connectionFactory)
         {
             _serializer = serializer;
         }
@@ -22,24 +23,61 @@ namespace Takenet.Elephant.RabbitMQ
         public Task EnqueueAsync(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
-            
-            GetModel().BasicPublish(exchange: "",
-                               routingKey: _queueName,
-                               basicProperties: null,
-                               body: Encoding.UTF8.GetBytes(_serializer.Serialize(item)));
 
-            return Task.FromResult(0);
+            var model = GetModel();
+
+            // setup EAP to TAP
+            var tcs = new TaskCompletionSource<bool>();
+            var basicAck = default(EventHandler<BasicAckEventArgs>);
+            var basicNack = default(EventHandler<BasicNackEventArgs>);
+
+            basicAck = new EventHandler<BasicAckEventArgs>((sender, e) =>
+            {
+                model.BasicAcks -= basicAck;
+                tcs.TrySetResult(true);
+            });
+            basicNack = new EventHandler<BasicNackEventArgs>((sender, e) =>
+            {
+                model.BasicNacks -= basicNack;
+                tcs.TrySetCanceled();
+            });
+
+            model.BasicAcks += basicAck;
+            model.BasicNacks += basicNack;
+
+            /// 2.10. IModel should not be shared between threads <see href="https://www.rabbitmq.com/releases/rabbitmq-dotnet-client/v1.5.0/rabbitmq-dotnet-client-1.5.0-user-guide.pdf"/>
+            lock (model)
+            {
+                model.BasicPublish(exchange: "",
+                                   routingKey: _queueName,
+                                   basicProperties: new BasicProperties() { Persistent = true },
+                                   body: Encoding.UTF8.GetBytes(_serializer.Serialize(item)));
+            }
+
+            return tcs.Task;
         }
 
         public Task<T> DequeueOrDefaultAsync()
         {
-            BasicGetResult result = GetModel().BasicGet(GetQueueName(), false);
+            var model = GetModel();
+            BasicGetResult result;
+
+            /// 2.10. IModel should not be shared between threads <see href="https://www.rabbitmq.com/releases/rabbitmq-dotnet-client/v1.5.0/rabbitmq-dotnet-client-1.5.0-user-guide.pdf"/>
+            lock (model)
+            {
+                result = model.BasicGet(GetQueueName(), false);
+            }
+
             if (result == null)
             {
                 return Task.FromResult<T>(default(T));
             }
+            
+            lock (model)
+            {
+                model.BasicAck(result.DeliveryTag, false);
+            }
 
-            GetModel().BasicAck(result.DeliveryTag, false);
             return Task.FromResult<T>(_serializer.Deserialize(Encoding.UTF8.GetString(result.Body)));
         }
 
@@ -54,8 +92,43 @@ namespace Takenet.Elephant.RabbitMQ
 
         public Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
+            var model = GetModel();
+            BasicGetResult result;
 
-            throw new NotImplementedException();
+            /// 2.10. IModel should not be shared between threads <see href="https://www.rabbitmq.com/releases/rabbitmq-dotnet-client/v1.5.0/rabbitmq-dotnet-client-1.5.0-user-guide.pdf"/>
+            lock(model)
+            {
+                result = model.BasicGet(GetQueueName(), false);
+            }
+
+            if (result == null)
+            {
+                var tcs = new TaskCompletionSource<T>();
+                var registration = cancellationToken.Register(() => tcs.TrySetCanceled());
+
+                var consumer = new EventingBasicConsumer(model);
+                consumer.Received += (m, ea) =>
+                {
+                    tcs.TrySetResult(_serializer.Deserialize(Encoding.UTF8.GetString(ea.Body)));
+                    lock(model)
+                    {
+                        model.BasicCancel(ea.ConsumerTag);
+                    }
+                };
+                lock(model)
+                {
+                    model.BasicConsume(GetQueueName(), false, consumer);
+                }
+
+                return tcs.Task;
+            }
+            
+            lock(model)
+            {
+                model.BasicAck(result.DeliveryTag, false);
+            }
+
+            return Task.FromResult<T>(_serializer.Deserialize(Encoding.UTF8.GetString(result.Body)));
         }
 
         #endregion
