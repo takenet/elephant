@@ -2,8 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Takenet.Elephant.Specialized</id>
-    <version>0.3.0</version>
-    <title>Elephant Redis</title>
+    <version>$version$</version>
+    <title>Elephant Specialized</title>
     <authors>takenet</authors>
     <owners>takenet,andrebires</owners>
     <projectUrl>http://github.com/takenet/elephant</projectUrl>

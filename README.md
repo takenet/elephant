@@ -2,7 +2,7 @@
 
 Persistence library that provides common data structures as composable elements to abstract any storage engine, including SQL databases.
 
-![TC](https://take-teamcity1.azurewebsites.net/app/rest/builds/buildType:(id:Elephant_Master)/statusIcon)
+[![Build status](https://ci.appveyor.com/api/projects/status/g7bhodvyl8ymy9dp?svg=true)](https://ci.appveyor.com/project/Takenet/elephant)
 
 ## Introduction
 
