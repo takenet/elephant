@@ -9,9 +9,9 @@ namespace Takenet.Elephant.Tests.Specialized
 {
     public abstract class CacheSetMapFacts<TKey, TValue> : CacheMapFacts<TKey, ISet<TValue>>
     {
-        public override IMap<TKey, ISet<TValue>> Create(IMap<TKey, ISet<TValue>> source, IMap<TKey, ISet<TValue>> cache)
+        public override IMap<TKey, ISet<TValue>> Create(IMap<TKey, ISet<TValue>> source, IMap<TKey, ISet<TValue>> cache, TimeSpan cacheExpiration = default(TimeSpan))
         {
-            return new CacheSetMap<TKey, TValue>((ISetMap<TKey,TValue>)source, (ISetMap<TKey, TValue>)cache, TimeSpan.FromSeconds(60));
+            return new CacheSetMap<TKey, TValue>((ISetMap<TKey,TValue>)source, (ISetMap<TKey, TValue>)cache, TimeSpan.FromSeconds(60), cacheExpiration);
         }
 
         public override void AssertEquals<T>(T actual, T expected)

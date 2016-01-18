@@ -14,7 +14,7 @@ namespace Takenet.Elephant.Redis
 
         }
 
-        protected MapBase(string mapName, ConnectionMultiplexer connectionMultiplexer, int db)
+        protected MapBase(string mapName, IConnectionMultiplexer connectionMultiplexer, int db)
             : base(mapName, connectionMultiplexer, db)
         {
 

@@ -11,9 +11,10 @@ namespace Takenet.Elephant.Memory
     /// Implements the <see cref="ISet{T}"/> interface using the <see cref="System.Collections.Generic.HashSet{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Set<T> : ISet<T>, IQueryableStorage<T>
+    public class Set<T> : Collection<T>, ISet<T>
     {
         private readonly HashSet<T> _hashSet;
+        private object _syncRoot = new object();
 
         #region Constructor
 
@@ -24,8 +25,9 @@ namespace Takenet.Elephant.Memory
         }
 
         public Set(IEqualityComparer<T> equalityComparer)
+            : this(new HashSet<T>(equalityComparer))
         {
-            _hashSet = new HashSet<T>(equalityComparer);
+            
         }
 
         public Set(IEnumerable<T> collection)
@@ -35,8 +37,15 @@ namespace Takenet.Elephant.Memory
         }
 
         public Set(IEnumerable<T> collection, IEqualityComparer<T> equalityComparer)
+            : this(new HashSet<T>(collection, equalityComparer))
         {
-            _hashSet = new HashSet<T>(collection, equalityComparer);
+
+        }
+
+        private Set(HashSet<T> hashSet)
+            : base(hashSet)
+        {
+            _hashSet = hashSet;
         }
 
         #endregion
@@ -45,63 +54,35 @@ namespace Takenet.Elephant.Memory
 
         public Task AddAsync(T value)
         {
-            if (value == null) throw new ArgumentNullException(nameof(value));
-            if (_hashSet.Contains(value))
+            lock (_syncRoot)
             {
-                _hashSet.Remove(value);
-            }
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_hashSet.Contains(value))
+                {
+                    _hashSet.Remove(value);
+                }
 
-            _hashSet.Add(value);
+                _hashSet.Add(value);
+            }
             return TaskUtil.CompletedTask;
         }
 
         public Task<bool> TryRemoveAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            return Task.FromResult(_hashSet.Remove(value));
+            lock (_syncRoot)
+            {
+                return Task.FromResult(_hashSet.Remove(value));
+            }
         }
-
-        public Task<IAsyncEnumerable<T>> AsEnumerableAsync()
-        {            
-            return Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_hashSet));
-        }
-
+       
         public Task<bool> ContainsAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             return Task.FromResult(_hashSet.Contains(value));
         }
 
-        public Task<long> GetLengthAsync()
-        {
-            return Task.FromResult<long>(_hashSet.Count);
-        }
-
         #endregion
-
-        #region IQueryableStorage<T> Members
-
-        public Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> where,
-            Expression<Func<T, TResult>> select,
-            int skip,
-            int take,
-            CancellationToken cancellationToken)
-        {
-            var predicate = where.Compile();
-
-            var totalValues = _hashSet
-                .Where(predicate.Invoke);
-
-            var resultValues = totalValues
-                .Skip(skip)
-                .Take(take)
-                .ToArray();
-
-            var result = new QueryResult<T>(new AsyncEnumerableWrapper<T>(resultValues), totalValues.Count());
-
-            return Task.FromResult(result);
-        }
-
-        #endregion
+        
     }
 }

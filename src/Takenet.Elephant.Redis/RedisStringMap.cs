@@ -14,17 +14,12 @@ namespace Takenet.Elephant.Redis
         protected readonly ISerializer<TValue> _serializer;
 
         public RedisStringMap(string mapName, string configuration, ISerializer<TValue> serializer, int db = 0)
-            : base(mapName, configuration, db)
+            : this(mapName, ConnectionMultiplexer.Connect(configuration), serializer, db)
         {
-            if (serializer == null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
-
-            _serializer = serializer;
+        
         }
 
-        internal RedisStringMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer, int db)
+        public RedisStringMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer, int db)
             : base(mapName, connectionMultiplexer, db)
         {
             if (serializer == null)
