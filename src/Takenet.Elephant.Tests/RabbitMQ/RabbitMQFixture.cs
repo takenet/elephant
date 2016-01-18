@@ -9,12 +9,15 @@ namespace Takenet.Elephant.Tests.RabbitMQ
         {
             ConnectionFactory = new ConnectionFactory() 
             { 
-                HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME"),
-                VirtualHost = Environment.GetEnvironmentVariable("RABBITMQ_VHOST"),
-                UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME"),
-                Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD")
+                HostName = "localhost"
+                //HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME"),
+                //VirtualHost = Environment.GetEnvironmentVariable("RABBITMQ_VHOST"),
+                //UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME"),
+                //Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD")
             };
         }
+
+        public IConnectionFactory ConnectionFactory { get; private set; }
 
         public void Dispose()
         {

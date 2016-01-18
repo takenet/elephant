@@ -6,7 +6,6 @@ before_build:
 - nuget restore src/Takenet.Elephant.sln
 after_build:
 - nuget pack src/Takenet.Elephant/Takenet.Elephant.csproj -Symbols -Properties Configuration=Release -Properties Platform=AnyCPU
-- nuget pack src/Takenet.Elephant.MongoDB/Takenet.Elephant.MongoDB.csproj -Symbols -Properties Configuration=Release -Properties Platform=AnyCPU
 - nuget pack src/Takenet.Elephant.RabbitMQ/Takenet.Elephant.RabbitMQ.csproj -Symbols -Properties Configuration=Release -Properties Platform=AnyCPU
 - nuget pack src/Takenet.Elephant.Redis/Takenet.Elephant.Redis.csproj -Symbols -Properties Configuration=Release -Properties Platform=AnyCPU
 - nuget pack src/Takenet.Elephant.SQL/Takenet.Elephant.SQL.csproj -Symbols -Properties Configuration=Release -Properties Platform=AnyCPU
@@ -14,6 +13,8 @@ after_build:
 build:
   project: src/Takenet.Elephant.sln
   verbosity: minimal
+services:
+  - mssql2014  
 environment:
   RABBITMQ_HOSTNAME: moose.rmq.cloudamqp.com 
   RABBITMQ_VHOST: vujfyubs
@@ -22,6 +23,10 @@ environment:
     secure: LZ+N9GVdMnpX36sLaNih/Lu3yIlWrUA0A3w7lk5T2jj2v6Zy44oL5480ZNVoYhhe
   REDIS_ENDPOINT:
     secure: X9Qr+1WDAWhpsxTa3bEFTvtjCQwxgsF4rtat9ItJBNsularweTRUbJlq358Ofkn6iGkkjJb22gwr7dd2oikSsAa5nnanbRyqTmQX4SaXUMQ=
+  SQLSERVER_HOSTNAME: (local)\SQL2014
+  SQLSERVER_USERNAME: sa
+  SQLSERVER_PASSWORD: 
+    secure: W2vejKJnTfNqBKorRfFLpg==  
 test:
   categories:
     except:

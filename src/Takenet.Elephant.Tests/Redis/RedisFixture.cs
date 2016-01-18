@@ -15,7 +15,7 @@ namespace Takenet.Elephant.Tests.Redis
             {
                 EndPoints =
                 {
-                    Environment.GetEnvironmentVariable("REDIS_ENDPOINT")
+                    "localhost"
                 },
                 AllowAdmin = true,
                 SyncTimeout = (int)TimeSpan.FromSeconds(2).TotalMilliseconds
