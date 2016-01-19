@@ -22,7 +22,7 @@ test:
       - ok
 assembly_info:
   patch: true
-  file: src\Takenet.Elephant\Properties\AssemblyInfo.cs
+  file: '**\AssemblyInfo.*'
   assembly_file_version: '{version}'
   assembly_version: '{version}'
   assembly_informational_version: '{version}'
