@@ -10,7 +10,7 @@ namespace Takenet.Elephant.Redis
         {
         }
 
-        internal RedisNumberMap(string mapName, ConnectionMultiplexer connectionMultiplexer, ISerializer<long> serializer, int db) 
+        public RedisNumberMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<long> serializer, int db) 
             : base(mapName, connectionMultiplexer, serializer, db)
         {
         }

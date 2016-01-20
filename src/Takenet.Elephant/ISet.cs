@@ -6,7 +6,7 @@ namespace Takenet.Elephant
     /// Defines a set of unique items.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ISet<T>
+    public interface ISet<T> : ICollection<T>
     {
         /// <summary>
         /// Adds an item to the set. 
@@ -24,22 +24,10 @@ namespace Takenet.Elephant
         Task<bool> TryRemoveAsync(T value);
 
         /// <summary>
-        /// Gets an IEnumerable with the values of the set.
-        /// </summary>
-        /// <returns></returns>
-        Task<IAsyncEnumerable<T>> AsEnumerableAsync();
-
-        /// <summary>
         /// Checks if the value exists in the set.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         Task<bool> ContainsAsync(T value);
-
-        /// <summary>
-        /// Gets the number of items in the set.
-        /// </summary>
-        /// <returns></returns>
-        Task<long> GetLengthAsync();
     }
 }

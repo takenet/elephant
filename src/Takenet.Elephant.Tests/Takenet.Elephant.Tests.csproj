@@ -50,7 +50,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="StackExchange.Redis, Version=1.0.316.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StackExchange.Redis.1.0.481\lib\net45\StackExchange.Redis.dll</HintPath>
+      <HintPath>..\packages\StackExchange.Redis.1.0.488\lib\net45\StackExchange.Redis.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -72,12 +72,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockingQueueFacts.cs" />
+    <Compile Include="ClassListFacts.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="RabbitMQ\ItemSerializer.cs" />
     <Compile Include="RabbitMQ\RabbitMQCollectionFixture.cs" />
     <Compile Include="RabbitMQ\RabbitMQFixture.cs" />
     <Compile Include="RabbitMQ\RabbitMQItemBlockingQueueFacts.cs" />
     <Compile Include="RabbitMQ\RabbitMQItemQueueFacts.cs" />
+    <Compile Include="ItemListFacts.cs" />
+    <Compile Include="ListFacts.cs" />
     <Compile Include="Specialized\CacheSetFacts.cs" />
     <Compile Include="ExpirableKeyMapFacts.cs" />
     <Compile Include="FactsBase.cs" />
@@ -190,6 +193,7 @@
     <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
     <Compile Include="Sql\SqlGuidItemSetMapFacts.cs" />
     <Compile Include="Sql\SqlIntegerStringSetMapFacts.cs" />
+    <Compile Include="Sql\SqlItemListFacts.cs" />
     <Compile Include="Sql\SqlItemSetFacts.cs" />
     <Compile Include="Sql\SqlGuidItemMapQueryableStorageFacts.cs" />
     <Compile Include="Sql\SqlGuidSetFacts.cs" />
@@ -234,7 +238,7 @@
     <Error Condition="!Exists('..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props'))" />
     <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
