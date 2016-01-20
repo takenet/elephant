@@ -13,12 +13,15 @@ namespace Takenet.Elephant.Tests.Redis
             // Note: You should run a local redis server
             var options = new ConfigurationOptions
             {
-                EndPoints = { "localhost" },
+                EndPoints =
+                {
+                    "localhost"
+                },
                 AllowAdmin = true,
                 SyncTimeout = (int)TimeSpan.FromSeconds(2).TotalMilliseconds
             };
             Connection = ConnectionMultiplexer.Connect(options);            
-            Server = Connection.GetServer(Connection.GetEndPoints().First());            
+            Server = Connection.GetServer(Connection.GetEndPoints().First());
         }
 
         public Process ServerProcess { get; }
