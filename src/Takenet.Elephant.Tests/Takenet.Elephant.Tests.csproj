@@ -56,6 +56,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Messaging" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -75,6 +76,7 @@
     <Compile Include="BlockingQueueFacts.cs" />
     <Compile Include="ClassListFacts.cs" />
     <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="Msmq\MsmqItemBlockingQueueFacts.cs" />
     <Compile Include="RabbitMQ\ItemSerializer.cs" />
     <Compile Include="RabbitMQ\RabbitMQCollectionFixture.cs" />
     <Compile Include="RabbitMQ\RabbitMQFixture.cs" />
@@ -209,6 +211,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj">
+      <Project>{FEAF6F82-FA69-4BBA-9081-44E597DF405A}</Project>
+      <Name>Takenet.Elephant.Msmq</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.RabbitMQ\Takenet.Elephant.RabbitMQ.csproj">
       <Project>{790f8f5c-5e5c-45fb-8836-4564ab970b9f}</Project>
       <Name>Takenet.Elephant.RabbitMQ</Name>
@@ -233,6 +239,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -32,8 +32,8 @@ namespace Takenet.Elephant.Tests
             AssertEquals(await queue.GetLengthAsync(), 0);
         }
 
-        [Fact(DisplayName = "DequeueEmptyQueueThrowsTaskCanceledException")]
-        public virtual async Task DequeueEmptyQueueThrowsTaskCanceledException()
+        [Fact(DisplayName = nameof(DequeueEmptyQueueThrowsOperationCanceledException))]
+        public virtual async Task DequeueEmptyQueueThrowsOperationCanceledException()
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
@@ -41,7 +41,7 @@ namespace Takenet.Elephant.Tests
             var cts = new CancellationTokenSource(timeout);
             
             // Act
-            await AssertThrowsAsync<TaskCanceledException>(() =>
+            await AssertThrowsAsync<OperationCanceledException>(() =>
                 queue.DequeueAsync(cts.Token));                        
         }
 
@@ -66,8 +66,8 @@ namespace Takenet.Elephant.Tests
             AssertEquals(await queue.GetLengthAsync(), 0);
         }
 
-        [Fact(DisplayName = "DequeueTwiceWithSingleItemThrowsTaskCanceledException")]
-        public virtual async Task DequeueTwiceWithSingleItemThrowsTaskCanceledException()
+        [Fact(DisplayName = nameof(DequeueTwiceWithSingleItemThrowsOperationCanceledException))]
+        public virtual async Task DequeueTwiceWithSingleItemThrowsOperationCanceledException()
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
@@ -78,7 +78,7 @@ namespace Takenet.Elephant.Tests
             await queue.DequeueAsync(cts.Token);
             
             // Act
-            await AssertThrowsAsync<TaskCanceledException>(() =>
+            await AssertThrowsAsync<OperationCanceledException>(() =>
                 queue.DequeueAsync(cts.Token));
         }
 
@@ -87,7 +87,7 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var items = new HashSet<T>();;
+            var items = new List<T>();;
             var count = 100;
             for (var i = 0; i < count; i++)
             {
