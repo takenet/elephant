@@ -19,12 +19,14 @@ namespace Takenet.Elephant.Msmq
     public class MsmqQueue<T> : IBlockingQueue<T>
     {
         private readonly ISerializer<T> _serializer;
+        private readonly bool _recoverable;
         private readonly IMessageFormatter _messageFormatter;
         private readonly MessageQueue _messageQueue;
 
-        public MsmqQueue(string path, ISerializer<T> serializer = null, IMessageFormatter messageFormatter = null)
+        public MsmqQueue(string path, ISerializer<T> serializer = null, IMessageFormatter messageFormatter = null, bool recoverable = true)
         {
             _serializer = serializer;
+            _recoverable = recoverable;
             _messageFormatter = messageFormatter ?? new BinaryMessageFormatter();
             if (!MessageQueue.Exists(path))
             {
@@ -38,7 +40,7 @@ namespace Takenet.Elephant.Msmq
             // Warning: This method is do not support async I/O, but runs asynchronously.
             var message = new Message
             {
-                Recoverable = true,
+                Recoverable = _recoverable,
                 Formatter = _messageFormatter
             };
 
