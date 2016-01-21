@@ -16,7 +16,7 @@ namespace Takenet.Elephant.Msmq
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Takenet.Elephant.IBlockingQueue{T}" />
-    public class MsmqQueue<T> : IBlockingQueue<T>
+    public class MsmqQueue<T> : IBlockingQueue<T>, IDisposable
     {
         private readonly ISerializer<T> _serializer;
         private readonly bool _recoverable;
@@ -33,45 +33,68 @@ namespace Takenet.Elephant.Msmq
                 MessageQueue.Create(path);
             }
             _messageQueue = new MessageQueue(path, QueueAccessMode.SendAndReceive);
-        } 
+        }
+
+        ~MsmqQueue()
+        {
+            Dispose(false);
+        }
 
         public Task EnqueueAsync(T item)
         {
             // Warning: This method is do not support async I/O, but runs asynchronously.
-            var message = new Message
+            using (var message = new Message { Recoverable = _recoverable, Formatter = _messageFormatter })
             {
-                Recoverable = _recoverable,
-                Formatter = _messageFormatter
-            };
 
-            if (_serializer != null)
-            {
-                message.Body = _serializer.Serialize(item);
-            }
-            else
-            {
-                message.Body = item;
-            }
+                if (_serializer != null)
+                {
+                    message.Body = _serializer.Serialize(item);
+                }
+                else
+                {
+                    message.Body = item;
+                }
 
-            _messageQueue.Send(message);
-            return TaskUtil.CompletedTask;
+                _messageQueue.Send(message);
+                return TaskUtil.CompletedTask;
+            }
         }
 
         public Task<T> DequeueOrDefaultAsync()
         {
             try
             {
-                var message = _messageQueue.Receive(TimeSpan.FromTicks(1));
-                if (message != null)
+                using (var message = _messageQueue.Receive(TimeSpan.FromTicks(1)))
                 {
-                    var value = GetValue(message);
-                    return Task.FromResult(value);
+                    if (message != null)
+                    {
+                        var value = GetValue(message);
+                        return Task.FromResult(value);
+                    }
                 }
             }
             catch (MessageQueueException ex) when (ex.MessageQueueErrorCode == MessageQueueErrorCode.IOTimeout) {  }
             return Task.FromResult(default(T));
         }
 
+        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
+        {                        
+            var cancellableTcs = new TaskCompletionSource<object>();
+            cancellationToken.Register(() => cancellableTcs.TrySetCanceled());
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var receiveTask = Task.Factory.FromAsync(
+                _messageQueue.BeginReceive(), r => _messageQueue.EndReceive(r));
+
+            await Task.WhenAny(receiveTask, cancellableTcs.Task).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            using (var message = await receiveTask.ConfigureAwait(false))
+            {
+                return GetValue(message);
+            }
+        }
 
         public Task<long> GetLengthAsync()
         {
@@ -115,23 +138,6 @@ namespace Takenet.Elephant.Msmq
             }
         }
 
-        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
-        {                        
-            var cancellableTcs = new TaskCompletionSource<object>();
-            cancellationToken.Register(() => cancellableTcs.TrySetCanceled());
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var receiveTask = Task.Factory.FromAsync(
-                _messageQueue.BeginReceive(), r => _messageQueue.EndReceive(r));
-
-            await Task.WhenAny(receiveTask, cancellableTcs.Task).ConfigureAwait(false);
-            cancellationToken.ThrowIfCancellationRequested();
-            
-            var message = await receiveTask.ConfigureAwait(false);
-            return GetValue(message);
-        }
-
         private T GetValue(Message message)
         {
             message.Formatter = _messageFormatter;
@@ -143,6 +149,19 @@ namespace Takenet.Elephant.Msmq
             return (T)message.Body;            
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _messageQueue?.Dispose();
+            }
+        }
     }
 
 
