@@ -83,13 +83,15 @@ namespace Takenet.Elephant.Redis
 
         #region IBlockingQueue<T> Members
 
-        public Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<T>();
-            var registration = cancellationToken.Register(() => tcs.TrySetCanceled());
-            _promisesQueue.Enqueue(Tuple.Create(tcs, registration));
-            GetSubscriber().Publish(_channelName, string.Empty, CommandFlags.FireAndForget);
-            return tcs.Task;
+            using (var registration = cancellationToken.Register(() => tcs.TrySetCanceled()))
+            {
+                _promisesQueue.Enqueue(Tuple.Create(tcs, registration));
+                GetSubscriber().Publish(_channelName, string.Empty, CommandFlags.FireAndForget);
+                return await tcs.Task.ConfigureAwait(false);
+            }
         }
 
         #endregion

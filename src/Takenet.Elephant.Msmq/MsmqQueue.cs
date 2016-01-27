@@ -80,19 +80,20 @@ namespace Takenet.Elephant.Msmq
         public async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {                        
             var cancellableTcs = new TaskCompletionSource<object>();
-            cancellationToken.Register(() => cancellableTcs.TrySetCanceled());
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var receiveTask = Task.Factory.FromAsync(
-                _messageQueue.BeginReceive(), r => _messageQueue.EndReceive(r));
-
-            await Task.WhenAny(receiveTask, cancellableTcs.Task).ConfigureAwait(false);
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var message = await receiveTask.ConfigureAwait(false))
+            using (cancellationToken.Register(() => cancellableTcs.TrySetCanceled()))
             {
-                return GetValue(message);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var receiveTask = Task.Factory.FromAsync(
+                    _messageQueue.BeginReceive(), r => _messageQueue.EndReceive(r));
+
+                await Task.WhenAny(receiveTask, cancellableTcs.Task).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                using (var message = await receiveTask.ConfigureAwait(false))
+                {
+                    return GetValue(message);
+                }
             }
         }
 
