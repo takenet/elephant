@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>Takenet.Elephant.Redis</id>
+    <id>Takenet.Elephant.Msmq</id>
     <version>$version$</version>
-    <title>Elephant Redis</title>
+    <title>Elephant Microsoft Message Queue MSMQ</title>
     <authors>takenet</authors>
     <owners>takenet,andrebires</owners>
     <projectUrl>http://github.com/takenet/elephant</projectUrl>
@@ -13,12 +13,11 @@
     <copyright>Copyright © 2015 Curupira S/A</copyright>
     <tags>elephant</tags>
     <dependencies>
-      <dependency id="Takenet.Elephant" version="0.2.0" />
-      <dependency id="StackExchange.Redis" version="1.0.414" />
+      <dependency id="Takenet.Elephant" version="0.4.10" />
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Takenet.Elephant.Redis.dll" target="lib\net451\Takenet.Elephant.Redis.dll" />
-    <file src="bin\Release\Takenet.Elephant.Redis.XML" target="lib\net451\Takenet.Elephant.Redis.XML" />
+    <file src="bin\Release\Takenet.Elephant.Msmq.dll" target="lib\net451\Takenet.Elephant.Msmq.dll" />
+    <file src="bin\Release\Takenet.Elephant.Msmq.XML" target="lib\net451\Takenet.Elephant.Msmq.XML" />
   </files>
 </package>

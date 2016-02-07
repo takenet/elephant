@@ -10,15 +10,15 @@ using Xunit;
 
 namespace Takenet.Elephant.Tests
 {
-    public abstract class BlockingQueueFacts<T> : FactsBase
+    public abstract class BlockingQueueFacts<T> : QueueFacts<T>
     {
-        public abstract IBlockingQueue<T> Create();
+        public override abstract IQueue<T> Create();
 
         [Fact(DisplayName = "DequeueExistingItemSucceeds")]
         public virtual async Task DequeueExistingItemSucceeds()
         {
             // Arrange
-            var queue = Create();
+            var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
             await queue.EnqueueAsync(item);
             var timeout = TimeSpan.FromMilliseconds(100);
@@ -32,16 +32,16 @@ namespace Takenet.Elephant.Tests
             AssertEquals(await queue.GetLengthAsync(), 0);
         }
 
-        [Fact(DisplayName = "DequeueEmptyQueueThrowsTaskCanceledException")]
-        public virtual async Task DequeueEmptyQueueThrowsTaskCanceledException()
+        [Fact(DisplayName = nameof(DequeueEmptyQueueThrowsOperationCanceledException))]
+        public virtual async Task DequeueEmptyQueueThrowsOperationCanceledException()
         {
             // Arrange
-            var queue = Create();
-            var timeout = TimeSpan.FromMilliseconds(50);
+            var queue = (IBlockingQueue<T>)Create();
+            var timeout = TimeSpan.FromMilliseconds(100);
             var cts = new CancellationTokenSource(timeout);
             
             // Act
-            await AssertThrowsAsync<TaskCanceledException>(() =>
+            await AssertThrowsAsync<OperationCanceledException>(() =>
                 queue.DequeueAsync(cts.Token));                        
         }
 
@@ -49,9 +49,9 @@ namespace Takenet.Elephant.Tests
         public virtual async Task DequeueEmptyQueueAddingAfterDequeueWasCalledSucceeds()
         {
             // Arrange
-            var queue = Create();
+            var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
-            var timeout = TimeSpan.FromMilliseconds(50);
+            var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout + timeout);
 
             // Act
@@ -63,13 +63,14 @@ namespace Takenet.Elephant.Tests
 
             // Assert
             AssertEquals(actual, item);
+            AssertEquals(await queue.GetLengthAsync(), 0);
         }
 
-        [Fact(DisplayName = "DequeueTwiceWithSingleItemThrowsTaskCanceledException")]
-        public virtual async Task DequeueTwiceWithSingleItemThrowsTaskCanceledException()
+        [Fact(DisplayName = nameof(DequeueTwiceWithSingleItemThrowsOperationCanceledException))]
+        public virtual async Task DequeueTwiceWithSingleItemThrowsOperationCanceledException()
         {
             // Arrange
-            var queue = Create();
+            var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
             await queue.EnqueueAsync(item);            
             var timeout = TimeSpan.FromMilliseconds(50);
@@ -77,7 +78,7 @@ namespace Takenet.Elephant.Tests
             await queue.DequeueAsync(cts.Token);
             
             // Act
-            await AssertThrowsAsync<TaskCanceledException>(() =>
+            await AssertThrowsAsync<OperationCanceledException>(() =>
                 queue.DequeueAsync(cts.Token));
         }
 
@@ -85,8 +86,8 @@ namespace Takenet.Elephant.Tests
         public virtual async Task DequeueMultipleItemsInParallelSucceeds()
         {
             // Arrange
-            var queue = Create();
-            var items = new HashSet<T>();;
+            var queue = (IBlockingQueue<T>)Create();
+            var items = new List<T>();;
             var count = 100;
             for (var i = 0; i < count; i++)
             {

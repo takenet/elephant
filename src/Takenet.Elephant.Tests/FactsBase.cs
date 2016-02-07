@@ -48,7 +48,8 @@ namespace Takenet.Elephant.Tests
 
         public virtual Task AssertThrowsAsync<TException>(Func<Task> func) where TException : Exception
         {
-            return Assert.ThrowsAsync<TException>(func);
+            var exec = Check.ThatAsyncCode(func).Throws<TException>();
+            return TaskUtil.CompletedTask;
         }
     }
 }

@@ -45,12 +45,18 @@
       <HintPath>..\packages\AutoFixture.3.30.8\lib\net40\Ploeh.AutoFixture.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RabbitMQ.Client, Version=3.6.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\packages\RabbitMQ.Client.3.6.0\lib\net45\RabbitMQ.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="StackExchange.Redis, Version=1.0.316.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\StackExchange.Redis.1.0.488\lib\net45\StackExchange.Redis.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Messaging" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -70,6 +76,12 @@
     <Compile Include="BlockingQueueFacts.cs" />
     <Compile Include="ClassListFacts.cs" />
     <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="Msmq\MsmqItemBlockingQueueFacts.cs" />
+    <Compile Include="RabbitMQ\ItemSerializer.cs" />
+    <Compile Include="RabbitMQ\RabbitMQCollectionFixture.cs" />
+    <Compile Include="RabbitMQ\RabbitMQFixture.cs" />
+    <Compile Include="RabbitMQ\RabbitMQItemBlockingQueueFacts.cs" />
+    <Compile Include="RabbitMQ\RabbitMQItemQueueFacts.cs" />
     <Compile Include="ItemListFacts.cs" />
     <Compile Include="ListFacts.cs" />
     <Compile Include="Specialized\CacheSetFacts.cs" />
@@ -194,9 +206,19 @@
     <Compile Include="UpdatableMapFacts.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj">
+      <Project>{FEAF6F82-FA69-4BBA-9081-44E597DF405A}</Project>
+      <Name>Takenet.Elephant.Msmq</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Takenet.Elephant.RabbitMQ\Takenet.Elephant.RabbitMQ.csproj">
+      <Project>{790f8f5c-5e5c-45fb-8836-4564ab970b9f}</Project>
+      <Name>Takenet.Elephant.RabbitMQ</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj">
       <Project>{6895c290-8eaa-468b-8b2f-b1a7cb3cb32a}</Project>
       <Name>Takenet.Elephant.Redis</Name>
@@ -217,6 +239,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -225,7 +248,7 @@
     <Error Condition="!Exists('..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props'))" />
     <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

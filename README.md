@@ -2,7 +2,7 @@
 
 Persistence library that provides common data structures as composable elements to abstract any storage engine, including SQL databases.
 
-![TC](https://take-teamcity1.azurewebsites.net/app/rest/builds/buildType:(id:Elephant_Master)/statusIcon)
+[![Build status](https://ci.appveyor.com/api/projects/status/g7bhodvyl8ymy9dp?svg=true)](https://ci.appveyor.com/project/Takenet/elephant)
 
 ## Introduction
 
@@ -27,7 +27,7 @@ Name             | Description												| Implementations
 -----------------|----------------------------------------------------------|----------------
 Map              | Mapper that provides fast access to a value using a key. | Memory, Redis, SQL
 Set              | Set of unique items.										| Memory, Redis, SQL
-Queue            | FIFO storage container.									| Memory, Redis
+Queue            | FIFO storage container.									| Memory, Redis, RabbitMQ, MSMQ
 QueryableStorage | Storage that supports queries.							| Memory, SQL
 
 ### Composite structures
@@ -41,6 +41,7 @@ QueueMap | Map that contains a queue of items.      | Memory, Redis
 
 Name             | Parent | Description													| Implementations
 -----------------|--------|-------------------------------------------------------------|----------------
+BlockingQueue    | Queue  | A queue that allows awaiting for the next item asynchronously. | Memory, Redis, RabbitMQ, MSMQ
 ExpirableKeyMap  | Map    | Map that supports key expiration.							| Memory, Redis
 ItemSetMap       | SetMap | SetMap that allows to get an specific item in the set.		| Memory, Redis, SQL
 KeyQueryableMap  | Map    | Map that supports queries for its keys.						| Memory, SQL
@@ -69,6 +70,8 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 * [Takenet.Elephant](https://nuget.org/packages/Takenet.Elephant/)
 * [Takenet.Elephant.Redis](https://nuget.org/packages/Takenet.Elephant.Redis/)
 * [Takenet.Elephant.Sql](https://nuget.org/packages/Takenet.Elephant.Sql/)
+* [Takenet.Elephant.RabbitMQ](https://nuget.org/packages/Takenet.Elephant.RabbitMQ/)
+* [Takenet.Elephant.Msmq](https://nuget.org/packages/Takenet.Elephant.Msmq/)
 
 ### Samples
 

@@ -4,7 +4,7 @@ namespace Takenet.Elephant.Tests.Memory
 {
     public class MemoryItemBlockingQueueFacts : ItemBlockingQueueFacts
     {
-        public override IBlockingQueue<Item> Create()
+        public override IQueue<Item> Create()
         {
             return new Queue<Item>();
         }

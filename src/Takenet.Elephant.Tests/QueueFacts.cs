@@ -53,20 +53,30 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var queue = Create();
-            var item1 = Fixture.Create<T>();
-            var item2 = Fixture.Create<T>();
-            var item3 = Fixture.Create<T>();
+            var items = new ConcurrentBag<T>();
+            var count = 100;
+            for (int i = 0; i < count; i++)
+            {
+                var item = Fixture.Create<T>();
+                items.Add(item);
+            }
 
-            // Act
-            await queue.EnqueueAsync(item1);
-            await queue.EnqueueAsync(item2);
-            await queue.EnqueueAsync(item3);
+            // Act                           
+            var enumerator = items.GetEnumerator();
+            var tasks = Enumerable
+                .Range(0, count)
+                .Where(i => enumerator.MoveNext())
+                .Select(i => Task.Run(async () => await queue.EnqueueAsync(enumerator.Current)));
+
+            await Task.WhenAll(tasks);
 
             // Assert
-            AssertEquals(await queue.GetLengthAsync(), 3);
-            AssertEquals(await queue.DequeueOrDefaultAsync(), item1);
-            AssertEquals(await queue.DequeueOrDefaultAsync(), item2);
-            AssertEquals(await queue.DequeueOrDefaultAsync(), item3);
+            AssertEquals(await queue.GetLengthAsync(), count);
+            while (await queue.GetLengthAsync() > 0)
+            {
+                var item = await queue.DequeueOrDefaultAsync();
+                AssertIsTrue(items.Contains(item));
+            }                        
             AssertEquals(await queue.GetLengthAsync(), 0);
         }
 
@@ -99,7 +109,7 @@ namespace Takenet.Elephant.Tests
                 await queue.EnqueueAsync(item);
             }
 
-            var timeout = TimeSpan.FromMilliseconds(100);
+            var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout);
 
             // Act

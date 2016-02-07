@@ -13,7 +13,7 @@ namespace Takenet.Elephant.Tests.Redis
             _redisFixture = redisFixture;            
         }
 
-        public override IBlockingQueue<Item> Create()
+        public override IQueue<Item> Create()
         {
             _redisFixture.Server.FlushDatabase();
             const string setName = "items";            
