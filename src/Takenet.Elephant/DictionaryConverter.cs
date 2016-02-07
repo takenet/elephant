@@ -48,7 +48,20 @@ namespace Takenet.Elephant
                         
             if (!_isSimpleType)
             {
-                var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(propertyFilter);
+                var properties = typeof (T)
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(propertyFilter)
+                    .ToArray();
+
+                if (properties.Any(p => !p.CanRead))
+                {
+                    throw new ArgumentException($"One or more properties of '{typeof(T).Name}' are not readable. Make sure these properties are public or they by using a property filter.");
+                }
+
+                if (properties.Any(p => !p.CanWrite))
+                {
+                    throw new ArgumentException($"One or more properties of '{typeof(T).Name}' are not writable. Make sure these properties are public or they by using a property filter.");
+                }
                 _propertyDictionary = properties.ToDictionary(p => p.Name, p => p.PropertyType);
                 _getFuncsDictionary = properties.ToDictionary(p => p.Name, TypeUtil.BuildGetAccessor);
                 _setActionsDictionary = properties.ToDictionary(p => p.Name, TypeUtil.BuildSetAccessor);
