@@ -34,7 +34,7 @@ namespace Takenet.Elephant.Tests
 
             return new KeyValuePair<string, TProperty>(propertyInfo.Name, Fixture.Create<TProperty>());
         }
-  
+
         [Fact(DisplayName = "SetPropertyOfExistingKeySucceeds")]
         public async Task SetPropertyOfExistingKeySucceeds()
         {
@@ -94,6 +94,21 @@ namespace Takenet.Elephant.Tests
             // Act
             await Assert.ThrowsAsync<ArgumentException>(() =>
                 map.GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName));
+        }
+
+        [Fact(DisplayName = nameof(GetPropertyOfNonExistingKeyReturnsDefault))]
+        public async Task GetPropertyOfNonExistingKeyReturnsDefault()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var property = CreateProperty();
+
+            // Act
+            var actual = await map.GetPropertyValueOrDefaultAsync<TProperty>(key, property.Key);
+
+            // Assert            
+            AssertEquals(actual, default(TProperty));
         }
 
         [Fact(DisplayName = "MergeWithExistingValueSucceeds")]

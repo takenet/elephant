@@ -141,17 +141,16 @@ namespace Takenet.Elephant.Memory
         public Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
         {
             TValue value;
-
-            if (!InternalDictionary.TryGetValue(key, out value))
-                throw new ArgumentException("The property name is invalid", nameof(propertyName));
-
             var property = typeof(TValue).GetProperty(
                 propertyName,
                 BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-            TProperty propertyValue = default(TProperty);
-            if (property != null) propertyValue = (TProperty)property.GetValue(value);
-
+            if (property == null) throw new ArgumentException("The property name is invalid", nameof(propertyName));
+            var propertyValue = default(TProperty);
+            if (InternalDictionary.TryGetValue(key, out value))
+            { 
+                propertyValue = (TProperty) property.GetValue(value);
+            }
             return Task.FromResult(propertyValue);
         }
 
