@@ -54,11 +54,11 @@ namespace Takenet.Elephant.Redis
                 throw new NotSupportedException("The database instance type is not supported");
             }
 
-            var enqueueTask = transaction.ListLeftPushAsync(_name, _serializer.Serialize(item));
+            var enqueueTask = transaction.ListLeftPushAsync(_name, _serializer.Serialize(item), flags: GetFlags());
             var publishTask = transaction.PublishAsync(_channelName, string.Empty, CommandFlags.FireAndForget);
 
             if (shouldCommit &&
-                !await transaction.ExecuteAsync().ConfigureAwait(false))
+                !await transaction.ExecuteAsync(GetFlags()).ConfigureAwait(false))
             {
                 throw new Exception("The transaction has failed");                    
             }
@@ -69,14 +69,14 @@ namespace Takenet.Elephant.Redis
         public async Task<T> DequeueOrDefaultAsync()
         {
             var database = GetDatabase();
-            var result = await database.ListRightPopAsync(_name).ConfigureAwait(false);
+            var result = await database.ListRightPopAsync(_name, GetFlags()).ConfigureAwait(false);
             return !result.IsNull ? _serializer.Deserialize((string)result) : default(T);
         }
 
         public Task<long> GetLengthAsync()
         {
             var database = GetDatabase();
-            return database.ListLengthAsync(_name);
+            return database.ListLengthAsync(_name, GetFlags());
         }
 
         #endregion

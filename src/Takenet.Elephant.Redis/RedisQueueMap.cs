@@ -50,7 +50,7 @@ namespace Takenet.Elephant.Redis
                 commandTasks.Add(internalQueue.EnqueueAsync(item));
             }
 
-            var success = await transaction.ExecuteAsync().ConfigureAwait(false);
+            var success = await transaction.ExecuteAsync(GetFlags()).ConfigureAwait(false);
             await Task.WhenAll(commandTasks).ConfigureAwait(false);
             return success;
         }
@@ -69,20 +69,20 @@ namespace Takenet.Elephant.Redis
         public override Task<bool> TryRemoveAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyDeleteAsync(GetRedisKey(key));
+            return database.KeyDeleteAsync(GetRedisKey(key), GetFlags());
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyExistsAsync(GetRedisKey(key));
+            return database.KeyExistsAsync(GetRedisKey(key), GetFlags());
         }
 
         #endregion
 
         protected InternalQueue CreateQueue(TKey key, ITransaction transaction = null)
         {
-            return new InternalQueue(key, GetRedisKey(key), _serializer, _connectionMultiplexer, _db, transaction);
+            return new InternalQueue(key, GetRedisKey(key), _serializer, _connectionMultiplexer, _db, GetFlags(), transaction);
         }
 
         private static async Task<IQueue<TItem>> CloneAsync(IQueue<TItem> queue)
@@ -97,11 +97,13 @@ namespace Takenet.Elephant.Redis
 
         protected class InternalQueue : RedisQueue<TItem>
         {
+            private readonly CommandFlags _flags;
             private readonly ITransaction _transaction;
 
-            public InternalQueue(TKey key, string queueName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, ITransaction transaction = null)
+            public InternalQueue(TKey key, string queueName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags flags, ITransaction transaction = null)
                 : base(queueName, connectionMultiplexer, serializer, db)
             {
+                _flags = flags;
                 _transaction = transaction;
                 if (key == null) throw new ArgumentNullException(nameof(key));
                 Key = key;
@@ -113,6 +115,8 @@ namespace Takenet.Elephant.Redis
             {
                 return _transaction ?? base.GetDatabase();
             }
+
+            protected override CommandFlags GetFlags() => _flags;
         }
     }
 }

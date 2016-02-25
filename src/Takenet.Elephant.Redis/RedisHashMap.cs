@@ -50,7 +50,7 @@ namespace Takenet.Elephant.Redis
         public override async Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
             var database = GetDatabase();
-            var hashEntries = await database.HashGetAllAsync(GetRedisKey(key));
+            var hashEntries = await database.HashGetAllAsync(GetRedisKey(key), GetFlags());
             if (hashEntries != null &&
                 hashEntries.Length > 0)
             {
@@ -64,13 +64,13 @@ namespace Takenet.Elephant.Redis
         public override Task<bool> TryRemoveAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyDeleteAsync(GetRedisKey(key));
+            return database.KeyDeleteAsync(GetRedisKey(key), GetFlags());
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyExistsAsync(GetRedisKey(key));
+            return database.KeyExistsAsync(GetRedisKey(key), GetFlags());
         }
 
         #endregion
@@ -86,7 +86,7 @@ namespace Takenet.Elephant.Redis
             
             var database = GetDatabase();
 
-            await database.HashSetAsync(GetRedisKey(key), propertyName, propertyValue.ToRedisValue(), When.Always);
+            await database.HashSetAsync(GetRedisKey(key), propertyName, propertyValue.ToRedisValue(), When.Always, GetFlags());
         }
 
         public Task MergeAsync(TKey key, TValue value)
@@ -102,7 +102,7 @@ namespace Takenet.Elephant.Redis
                 .ToArray();
 
             return hashEntries.Any() ? 
-                database.HashSetAsync(GetRedisKey(key), hashEntries) : 
+                database.HashSetAsync(GetRedisKey(key), hashEntries, GetFlags()) : 
                 TaskUtil.CompletedTask;
         }
 
@@ -114,7 +114,7 @@ namespace Takenet.Elephant.Redis
 
             var database = GetDatabase();
 
-            var redisValue = await database.HashGetAsync(GetRedisKey(key), propertyName);
+            var redisValue = await database.HashGetAsync(GetRedisKey(key), propertyName, GetFlags());
             return !redisValue.IsNull ? 
                 redisValue.Cast<TProperty>() : 
                 default(TProperty);

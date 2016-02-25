@@ -31,7 +31,7 @@ namespace Takenet.Elephant.Redis
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var database = GetDatabase();
-            if (!await database.KeyExpireAsync(GetRedisKey(key), ttl).ConfigureAwait(false))
+            if (!await database.KeyExpireAsync(GetRedisKey(key), ttl, GetFlags()).ConfigureAwait(false))
             {
                 throw new ArgumentException("Invalid key", nameof(key));
             }
@@ -41,7 +41,7 @@ namespace Takenet.Elephant.Redis
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var database = GetDatabase();
-            if (!await database.KeyExpireAsync(GetRedisKey(key), expiration.UtcDateTime).ConfigureAwait(false))
+            if (!await database.KeyExpireAsync(GetRedisKey(key), expiration.UtcDateTime, GetFlags()).ConfigureAwait(false))
             {
                 throw new ArgumentException("Invalid key", nameof(key));
             }
@@ -61,7 +61,7 @@ namespace Takenet.Elephant.Redis
             if (endpoint == null) throw new InvalidOperationException("There's no connection endpoints available");
 
             var server = _connectionMultiplexer.GetServer(endpoint);
-            var cursor = server.Keys(_db, $"{_name}:*");       
+            var cursor = server.Keys(_db, $"{_name}:*", flags: GetFlags());       
             var keys = cursor.Select(k =>
             {
                 var value = (string) k;

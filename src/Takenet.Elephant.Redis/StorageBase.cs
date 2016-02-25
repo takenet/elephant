@@ -36,20 +36,13 @@ namespace Takenet.Elephant.Redis
             return $"{_name}:{KeyToString(key)}";
         }
 
-        protected virtual string KeyToString(TKey key)
-        {
-            return key.ToString();
-        }        
+        protected virtual string KeyToString(TKey key) => key.ToString();
 
-        protected virtual IDatabaseAsync GetDatabase()
-        {
-            return _connectionMultiplexer.GetDatabase(_db);
-        }
+        protected virtual IDatabaseAsync GetDatabase() => _connectionMultiplexer.GetDatabase(_db);
 
-        protected virtual ISubscriber GetSubscriber()
-        {
-            return _connectionMultiplexer.GetSubscriber();
-        }
+        protected virtual ISubscriber GetSubscriber() => _connectionMultiplexer.GetSubscriber();
+
+        protected virtual CommandFlags GetFlags() => CommandFlags.None;
 
         #region IDisposable Members
 

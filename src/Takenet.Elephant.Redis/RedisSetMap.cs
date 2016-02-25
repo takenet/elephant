@@ -35,11 +35,11 @@ namespace Takenet.Elephant.Redis
             if (database == null) throw new NotSupportedException("The database instance type is not supported");
 
             var redisKey = GetRedisKey(key);
-            if (await database.KeyExistsAsync(redisKey) && !overwrite) return false;
+            if (await database.KeyExistsAsync(redisKey, GetFlags()) && !overwrite) return false;
 
             var transaction = database.CreateTransaction();
             var commandTasks = new List<Task>();
-            if (overwrite) commandTasks.Add(transaction.KeyDeleteAsync(redisKey));
+            if (overwrite) commandTasks.Add(transaction.KeyDeleteAsync(redisKey, GetFlags()));
 
             internalSet = CreateSet(key, transaction);
 
@@ -49,7 +49,7 @@ namespace Takenet.Elephant.Redis
                 commandTasks.Add(internalSet.AddAsync(item));
             }, CancellationToken.None).ConfigureAwait(false);
 
-            var success = await transaction.ExecuteAsync().ConfigureAwait(false);
+            var success = await transaction.ExecuteAsync(GetFlags()).ConfigureAwait(false);
             await Task.WhenAll(commandTasks).ConfigureAwait(false);
             return success;
         }
@@ -57,7 +57,7 @@ namespace Takenet.Elephant.Redis
         public override async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key)
         {
             var database = GetDatabase();
-            if (await database.KeyExistsAsync(GetRedisKey(key)).ConfigureAwait(false))
+            if (await database.KeyExistsAsync(GetRedisKey(key), GetFlags()).ConfigureAwait(false))
             {
                 return CreateSet(key);
             }
@@ -68,29 +68,31 @@ namespace Takenet.Elephant.Redis
         public override Task<bool> TryRemoveAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyDeleteAsync(GetRedisKey(key));            
+            return database.KeyDeleteAsync(GetRedisKey(key), GetFlags());            
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyExistsAsync(GetRedisKey(key));
+            return database.KeyExistsAsync(GetRedisKey(key), GetFlags());
         }
 
         protected InternalSet CreateSet(TKey key, ITransaction transaction = null, bool useScanOnEnumeration = true)
         {
-            return new InternalSet(key, GetRedisKey(key), _serializer, _connectionMultiplexer, _db, transaction, useScanOnEnumeration);
+            return new InternalSet(key, GetRedisKey(key), _serializer, _connectionMultiplexer, _db, GetFlags(), transaction, useScanOnEnumeration);
         }
 
         protected class InternalSet : RedisSet<TItem>
         {
+            private readonly CommandFlags _flags;
             private readonly ITransaction _transaction;
 
-            public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, ITransaction transaction = null, bool useScanOnEnumeration = true)
+            public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags flags, ITransaction transaction = null, bool useScanOnEnumeration = true)
                 : base(setName, connectionMultiplexer, serializer, db, useScanOnEnumeration)
             {                
                 if (key == null) throw new ArgumentNullException(nameof(key));
                 Key = key;
+                _flags = flags;
                 _transaction = transaction;
             }
 
@@ -100,6 +102,8 @@ namespace Takenet.Elephant.Redis
             {
                 return _transaction ?? base.GetDatabase();
             }
+
+            protected override CommandFlags GetFlags() => _flags;
         }
     }
 }

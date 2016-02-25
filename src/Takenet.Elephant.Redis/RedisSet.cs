@@ -35,14 +35,14 @@ namespace Takenet.Elephant.Redis
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var database = GetDatabase();
-            return database.SetAddAsync(_name, _serializer.Serialize(value));
+            return database.SetAddAsync(_name, _serializer.Serialize(value), GetFlags());
         }
 
         public Task<bool> TryRemoveAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var database = GetDatabase();
-            return database.SetRemoveAsync(_name, _serializer.Serialize(value));
+            return database.SetRemoveAsync(_name, _serializer.Serialize(value), GetFlags());
         }
 
         public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
@@ -67,13 +67,13 @@ namespace Takenet.Elephant.Redis
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var database = GetDatabase();
-            return database.SetContainsAsync(_name, _serializer.Serialize(value));
+            return database.SetContainsAsync(_name, _serializer.Serialize(value), GetFlags());
         }
 
         public Task<long> GetLengthAsync()
         {
             var database = GetDatabase();
-            return database.SetLengthAsync(_name);
+            return database.SetLengthAsync(_name, GetFlags());
         }
 
         #endregion

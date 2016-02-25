@@ -38,26 +38,27 @@ namespace Takenet.Elephant.Redis
             return database.StringSetAsync(
                 GetRedisKey(key),
                 _serializer.Serialize(value),
-                when: overwrite ? When.Always : When.NotExists);
+                when: overwrite ? When.Always : When.NotExists,
+                flags: GetFlags());
         }
 
         public override async Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
             var database = GetDatabase();
-            var redisValue = await database.StringGetAsync(GetRedisKey(key));
+            var redisValue = await database.StringGetAsync(GetRedisKey(key), GetFlags());
             return redisValue.IsNull ? default(TValue) : _serializer.Deserialize(redisValue);
         }
 
         public override Task<bool> TryRemoveAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyDeleteAsync(GetRedisKey(key));
+            return database.KeyDeleteAsync(GetRedisKey(key), GetFlags());
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyExistsAsync(GetRedisKey(key));
+            return database.KeyExistsAsync(GetRedisKey(key), GetFlags());
         }
 
         #endregion
