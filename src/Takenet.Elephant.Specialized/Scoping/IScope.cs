@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized.Scoping
 {
@@ -6,6 +7,6 @@ namespace Takenet.Elephant.Specialized.Scoping
     {
         string Name { get; }
 
-        Task ClearAsync();        
+        Task ClearAsync(CancellationToken cancellationToken);
     }
 }

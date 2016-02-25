@@ -56,9 +56,11 @@
     <Compile Include="BackupSetMap.cs" />
     <Compile Include="ISemaphore.cs" />
     <Compile Include="OverwriteSetSynchronizer.cs" />
+    <Compile Include="Scoping\IdentifierKey.cs" />
     <Compile Include="Scoping\IScope.cs" />
     <Compile Include="ISynchronizer.cs" />
     <Compile Include="DifferentialMapSynchronizer.cs" />
+    <Compile Include="Scoping\IScopedMap.cs" />
     <Compile Include="Scoping\MapScope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CopyQueueSynchronizer.cs" />

@@ -3,6 +3,7 @@ using Takenet.Elephant.Memory;
 using Takenet.Elephant.Redis;
 using Takenet.Elephant.Redis.Converters;
 using Takenet.Elephant.Redis.Serializers;
+using Takenet.Elephant.Specialized.Scoping;
 using Takenet.Elephant.Tests.Specialized;
 using Xunit;
 
@@ -26,9 +27,9 @@ namespace Takenet.Elephant.Tests.Redis
             return new RedisHashMap<Guid, Item>(MapName, new TypeRedisDictionaryConverter<Item>(), _redisFixture.Connection.Configuration, db);            
         }
 
-        public override ISetMap<string, string> CreateKeysSetMap()
+        public override ISetMap<string, IdentifierKey> CreateKeysSetMap()
         {
-            var setMap = new RedisSetMap<string, string>("scope", _redisFixture.Connection.Configuration, new StringSerializer(), db);
+            var setMap = new RedisSetMap<string, IdentifierKey>("scope", _redisFixture.Connection.Configuration, new ValueSerializer<IdentifierKey>(), db);
             return setMap;            
         }
 

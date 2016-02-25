@@ -8,8 +8,8 @@ namespace Takenet.Elephant.Specialized.Scoping
 {
     public class ScopedSetMap<TKey, TItem> : ScopedMap<TKey, ISet<TItem>>, ISetMap<TKey, TItem>, IItemSetMap<TKey, TItem>, IQueryableStorage<TItem>, IQueryableStorage<KeyValuePair<TKey, TItem>>, IKeyQueryableMap<TKey, TItem>
     {
-        public ScopedSetMap(ISetMap<TKey, TItem> map, IScope scope, ISerializer<TKey> keySerializer) 
-            : base(map, scope, keySerializer)
+        public ScopedSetMap(ISetMap<TKey, TItem> map, IScope scope, string identifier, ISerializer<TKey> keySerializer) 
+            : base(map, scope, identifier, keySerializer)
         {
         }
 

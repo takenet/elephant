@@ -6,28 +6,30 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized.Scoping
 {
-    public class ScopedMap<TKey, TValue> : IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>, IQueryableStorage<KeyValuePair<TKey, TValue>>, IKeyQueryableMap<TKey, TValue>
+    public class ScopedMap<TKey, TValue> : IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>, IQueryableStorage<KeyValuePair<TKey, TValue>>, IKeyQueryableMap<TKey, TValue>, IScopedMap, IDisposable
     {
         private readonly IMap<TKey, TValue> _map;
         private readonly MapScope _scope;
         private readonly ISerializer<TKey> _keySerializer;
 
-        public ScopedMap(IMap<TKey, TValue> map, IScope scope, ISerializer<TKey> keySerializer)
-        {
+        public ScopedMap(IMap<TKey, TValue> map, IScope scope, string identifier, ISerializer<TKey> keySerializer)
+        {            
             if (scope == null) throw new ArgumentNullException(nameof(scope));
+            if (identifier == null) throw new ArgumentNullException(nameof(identifier));
             if (!(scope is MapScope)) throw new ArgumentException("The provided scope type is incompatible", nameof(scope));
             if (map == null) throw new ArgumentNullException(nameof(map));
             if (keySerializer == null) throw new ArgumentNullException(nameof(keySerializer));
             _map = map;
             _scope = (MapScope)scope;
-            _scope.RemoveKeyFunc = k => _map.TryRemoveAsync(_keySerializer.Deserialize(k));            
-            _keySerializer = keySerializer;
+            Identifier = identifier;
+            _scope.Register(this);
+            _keySerializer = keySerializer;            
         }
 
         public virtual async Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
         {
             if (!await _map.TryAddAsync(key, value, overwrite).ConfigureAwait(false)) return false;
-            await _scope.AddKeyAsync(_keySerializer.Serialize(key)).ConfigureAwait(false);
+            await _scope.AddKeyAsync(Identifier, _keySerializer.Serialize(key)).ConfigureAwait(false);
             return true;
         }
 
@@ -37,7 +39,7 @@ namespace Takenet.Elephant.Specialized.Scoping
         public virtual async Task<bool> TryRemoveAsync(TKey key)
         {
             if (!await _map.TryRemoveAsync(key).ConfigureAwait(false)) return false;
-            await _scope.RemoveKeyAsync(_keySerializer.Serialize(key)).ConfigureAwait(false);
+            await _scope.RemoveKeyAsync(Identifier, _keySerializer.Serialize(key)).ConfigureAwait(false);
             return true;
         }
 
@@ -53,7 +55,7 @@ namespace Takenet.Elephant.Specialized.Scoping
         public virtual async Task MergeAsync(TKey key, TValue value)
         {
             await CastMapOrThrow<IPropertyMap<TKey, TValue>>().MergeAsync(key, value).ConfigureAwait(false);
-            await _scope.AddKeyAsync(_keySerializer.Serialize(key)).ConfigureAwait(false);
+            await _scope.AddKeyAsync(Identifier, _keySerializer.Serialize(key)).ConfigureAwait(false);
         }
 
         public virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync() =>
@@ -73,6 +75,27 @@ namespace Takenet.Elephant.Specialized.Scoping
             var map = _map as T;
             if (map == null) throw new NotSupportedException("The underlying map doesn't support the required operation");
             return map;
+        }
+
+        public string Identifier { get; }
+
+        public Task RemoveKeyAsync(string key)
+        {
+            return _map.TryRemoveAsync(_keySerializer.Deserialize(key));
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _scope.Unregister(Identifier);                
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Takenet.Elephant.Memory;
+using Takenet.Elephant.Specialized.Scoping;
 using Takenet.Elephant.Tests.Specialized;
 
 namespace Takenet.Elephant.Tests.Memory
@@ -11,9 +12,9 @@ namespace Takenet.Elephant.Tests.Memory
             return new Map<Guid, Item>();
         }
 
-        public override ISetMap<string, string> CreateKeysSetMap()
+        public override ISetMap<string, IdentifierKey> CreateKeysSetMap()
         {
-            return new SetMap<string, string>();
+            return new SetMap<string, IdentifierKey>();
         }
 
         public override ISerializer<Guid> CreateKeySerializer()
