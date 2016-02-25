@@ -47,6 +47,35 @@ namespace Takenet.Elephant.Tests.Specialized
 
         public abstract ISerializer<TKey> CreateKeySerializer();
 
+        [Fact(DisplayName = nameof(CreateScopedMapAndAddKeyShouldAddToKeySetMap))]
+        public virtual async Task CreateScopedMapAndAddKeyShouldAddToKeySetMap()
+        {
+            // Arrange
+            var map = CreateMap();
+            var scopeName = CreateScopeName();
+            var keysSetMap = CreateKeysSetMap();
+            var scope = CreateMapScope(scopeName, keysSetMap);
+            var identifier = CreateIdentifier();
+            var scopedMap = Create(map, scope, identifier);
+            var keySerializer = CreateKeySerializer();
+            var key1 = CreateKey();
+            var value1 = CreateValue(key1);
+            var key2 = CreateKey();
+            var value2 = CreateValue(key2);
+            var key3 = CreateKey();
+            var value3 = CreateValue(key3);
+
+            // Act
+            if (!await scopedMap.TryAddAsync(key1, value1, false)) throw new Exception("Could not setup the test scenario");
+            if (!await scopedMap.TryAddAsync(key2, value2, false)) throw new Exception("Could not setup the test scenario");
+            if (!await scopedMap.TryAddAsync(key3, value3, false)) throw new Exception("Could not setup the test scenario");
+
+            // Assert
+            AssertIsTrue(await keysSetMap.ContainsKeyAsync(scopeName));            
+            AssertIsTrue(await keysSetMap.ContainsItemAsync(scopeName, new IdentifierKey() { Identifier = identifier, Key = keySerializer.Serialize(key1) }));
+            AssertIsTrue(await keysSetMap.ContainsItemAsync(scopeName, new IdentifierKey() { Identifier = identifier, Key = keySerializer.Serialize(key2) }));
+            AssertIsTrue(await keysSetMap.ContainsItemAsync(scopeName, new IdentifierKey() { Identifier = identifier, Key = keySerializer.Serialize(key3) }));
+        }
 
         [Fact(DisplayName = "ClearScopeAfterAddingItemsShouldClearMap")]
         public virtual async Task ClearScopeAfterAddingItemsShouldClearMap()
@@ -108,7 +137,6 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertIsFalse(await scopedMap.ContainsKeyAsync(key3));
         }
 
-
         [Fact(DisplayName = nameof(AddMultipleMapsToAScopeShouldSucceed))]
         public virtual async Task AddMultipleMapsToAScopeShouldSucceed()
         {
@@ -166,6 +194,38 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertIsFalse(await scopedMap3.ContainsKeyAsync(key31));
             AssertIsFalse(await scopedMap3.ContainsKeyAsync(key32));
             AssertIsFalse(await scopedMap3.ContainsKeyAsync(key33));
+        }
+
+        [Fact(DisplayName = nameof(RemoveKeyFromMapShouldRemoveFromScope))]
+        public virtual async Task RemoveKeyFromMapShouldRemoveFromScope()
+        {
+            // Arrange
+            var map = CreateMap();
+            var scopeName = CreateScopeName();
+            var keysSetMap = CreateKeysSetMap();
+            var scope = CreateMapScope(scopeName, keysSetMap);
+            var identifier = CreateIdentifier();
+            var scopedMap = Create(map, scope, identifier);
+            var serializer = CreateKeySerializer();
+            var key1 = CreateKey();
+            var value1 = CreateValue(key1);
+            var key2 = CreateKey();
+            var value2 = CreateValue(key2);
+            var key3 = CreateKey();
+            var value3 = CreateValue(key3);
+            if (!await scopedMap.TryAddAsync(key1, value1, false)) throw new Exception("Could not setup the test scenario");
+            if (!await scopedMap.TryAddAsync(key2, value2, false)) throw new Exception("Could not setup the test scenario");
+            if (!await scopedMap.TryAddAsync(key3, value3, false)) throw new Exception("Could not setup the test scenario");
+
+            // Act
+            await scopedMap.TryRemoveAsync(key1);
+            await scopedMap.TryRemoveAsync(key3);            
+
+            // Assert
+            AssertIsTrue(await keysSetMap.ContainsKeyAsync(scopeName));            
+            AssertIsFalse(await keysSetMap.ContainsItemAsync(scopeName, new IdentifierKey() { Identifier = identifier, Key = serializer.Serialize(key1)}));
+            AssertIsTrue(await keysSetMap.ContainsItemAsync(scopeName, new IdentifierKey() { Identifier = identifier, Key = serializer.Serialize(key2) }));
+            AssertIsFalse(await keysSetMap.ContainsItemAsync(scopeName, new IdentifierKey() { Identifier = identifier, Key = serializer.Serialize(key3) }));            
         }
     }
 }
