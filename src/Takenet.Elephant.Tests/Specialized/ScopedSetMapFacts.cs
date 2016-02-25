@@ -1,26 +1,45 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Policy;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using NFluent;
+using Takenet.Elephant.Specialized.Scoping;
 using Ploeh.AutoFixture;
+using Takenet.Elephant.Memory;
 using Xunit;
 
-namespace Takenet.Elephant.Tests
+namespace Takenet.Elephant.Tests.Specialized
 {
-    public abstract class SetMapFacts<TKey, TValue> : MapFacts<TKey, ISet<TValue>>
+    public abstract class ScopedSetMapFacts<TKey, TValue> : ScopedMapFacts<TKey, ISet<TValue>>
     {
         public override void AssertEquals<T>(T actual, T expected)
         {
             if (typeof(ISet<TValue>).IsAssignableFrom(typeof(T)) &&
                 actual != null && expected != null)
             {
-                var actualSet = (ISet<TValue>) actual;
+                var actualSet = (ISet<TValue>)actual;
                 var expectedSet = (ISet<TValue>)expected;
                 Check.That(actualSet.AsEnumerableAsync().Result.ToListAsync().Result).Contains(expectedSet.AsEnumerableAsync().Result.ToListAsync().Result);
             }
             else
             {
                 base.AssertEquals(actual, expected);
-            }            
+            }
         }
+
+
+        public override ScopedMap<TKey, ISet<TValue>> Create(IMap<TKey, ISet<TValue>> map, MapScope scope, string identifier)
+        {
+            return new ScopedSetMap<TKey, TValue>(
+                (ISetMap<TKey, TValue>) map,
+                scope,
+                identifier,
+                CreateKeySerializer(),
+                RemoveOnEmptySet());
+        }   
 
         public virtual TValue CreateItem()
         {
@@ -34,6 +53,7 @@ namespace Takenet.Elephant.Tests
 
         public abstract ISet<TValue> CreateValue(TKey key, bool populate);
 
+        public virtual bool RemoveOnEmptySet() => false;
 
         [Fact(DisplayName = "AddMultipleSetsSucceeds")]
         public virtual async Task AddMultipleSetsSucceeds()
@@ -74,7 +94,7 @@ namespace Takenet.Elephant.Tests
             AssertIsTrue(actual1);
             AssertIsTrue(actual2);
             AssertIsTrue(actual3);
-            var actualSet1 = await map.GetValueOrDefaultAsync(key1);            
+            var actualSet1 = await map.GetValueOrDefaultAsync(key1);
             var actualSet2 = await map.GetValueOrDefaultAsync(key2);
             var actualSet3 = await map.GetValueOrDefaultAsync(key3);
             AssertIsNotNull(actualSet1);
@@ -142,54 +162,70 @@ namespace Takenet.Elephant.Tests
             AssertIsFalse(await map.ContainsItemAsync(key, item3));
         }
 
-
         [Fact(DisplayName = "RemoveMultipleItemsSucceeds")]
         public virtual async Task RemoveMultipleItemsSucceeds()
         {
             // Arrange
-            var map = (ISetMap<TKey, TValue>)Create();
+            var map = (ISetMap<TKey, TValue>)CreateMap();
+            var scopeName = CreateScopeName();
+            var keysSetMap = CreateKeysSetMap();
+            var scope = CreateMapScope(scopeName, keysSetMap);
+            var identifier = CreateIdentifier();
+            var scopedMap = (ScopedSetMap<TKey, TValue>)Create(map, scope, identifier);
+            var keySerializer = CreateKeySerializer();
             var key = CreateKey();
             var item1 = CreateItem();
             var item2 = CreateItem();
-            var item3 = CreateItem();            
-            await map.AddItemAsync(key, item1);
-            await map.AddItemAsync(key, item2);
-            await map.AddItemAsync(key, item3);
+            var item3 = CreateItem();
+            await scopedMap.AddItemAsync(key, item1);
+            await scopedMap.AddItemAsync(key, item2);
+            await scopedMap.AddItemAsync(key, item3);
 
             // Act
-            var actual = await map.TryRemoveItemAsync(key, item1);
-            actual = actual && await map.TryRemoveItemAsync(key, item2);
+            var actual = await scopedMap.TryRemoveItemAsync(key, item1);
+            actual = actual && await scopedMap.TryRemoveItemAsync(key, item2);
 
             // Assert
             AssertIsTrue(actual);
             AssertIsFalse(await map.ContainsItemAsync(key, item1));
             AssertIsFalse(await map.ContainsItemAsync(key, item2));
             AssertIsTrue(await map.ContainsItemAsync(key, item3));
+            AssertIsTrue(await keysSetMap.ContainsKeyAsync(scopeName));
         }
 
         [Fact(DisplayName = nameof(RemoveAllItemsSucceeds))]
         public virtual async Task RemoveAllItemsSucceeds()
         {
             // Arrange
-            var map = (ISetMap<TKey, TValue>)Create();
+            var map = (ISetMap<TKey, TValue>)CreateMap();
+            var scopeName = CreateScopeName();
+            var keysSetMap = CreateKeysSetMap();
+            var scope = CreateMapScope(scopeName, keysSetMap);
+            var identifier = CreateIdentifier();
+            var scopedMap = (ScopedSetMap<TKey, TValue>) Create(map, scope, identifier);
+            var keySerializer = CreateKeySerializer();
             var key = CreateKey();
             var item1 = CreateItem();
             var item2 = CreateItem();
             var item3 = CreateItem();
-            await map.AddItemAsync(key, item1);
-            await map.AddItemAsync(key, item2);
-            await map.AddItemAsync(key, item3);
+            await scopedMap.AddItemAsync(key, item1);
+            await scopedMap.AddItemAsync(key, item2);
+            await scopedMap.AddItemAsync(key, item3);
 
             // Act
-            var actual = await map.TryRemoveItemAsync(key, item1);
-            actual = actual && await map.TryRemoveItemAsync(key, item2);
-            actual = actual && await map.TryRemoveItemAsync(key, item3);
+            var actual = await scopedMap.TryRemoveItemAsync(key, item1);
+            actual = actual && await scopedMap.TryRemoveItemAsync(key, item2);
+            actual = actual && await scopedMap.TryRemoveItemAsync(key, item3);
 
             // Assert
             AssertIsTrue(actual);
             AssertIsFalse(await map.ContainsItemAsync(key, item1));
             AssertIsFalse(await map.ContainsItemAsync(key, item2));
             AssertIsFalse(await map.ContainsItemAsync(key, item3));
+            if (RemoveOnEmptySet())
+            {
+                AssertIsFalse(await keysSetMap.ContainsKeyAsync(scopeName));
+            }
         }
     }
 }

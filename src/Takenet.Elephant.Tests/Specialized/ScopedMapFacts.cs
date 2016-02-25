@@ -17,7 +17,7 @@ namespace Takenet.Elephant.Tests.Specialized
             return Create(CreateMap(), CreateMapScope(CreateScopeName(), CreateKeysSetMap()), CreateIdentifier());
         }
 
-        public ScopedMap<TKey, TValue> Create(IMap<TKey, TValue> map, MapScope scope, string identifier)
+        public virtual ScopedMap<TKey, TValue> Create(IMap<TKey, TValue> map, MapScope scope, string identifier)
         {
             return new ScopedMap<TKey, TValue>(
                 map,

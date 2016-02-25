@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized.Scoping
 {
-    public class ScopedQueueMap<TKey, TValue> : ScopedMap<TKey, IQueue<TValue>>, IQueueMap<TKey, TValue>
+    public class ScopedQueueMap<TKey, TItem> : ScopedMap<TKey, IQueue<TItem>>, IQueueMap<TKey, TItem>
     {
-        public ScopedQueueMap(IQueueMap<TKey, TValue> map, IScope scope, string identifier, ISerializer<TKey> keySerializer) 
+        public ScopedQueueMap(IQueueMap<TKey, TItem> map, IScope scope, string identifier, ISerializer<TKey> keySerializer) 
             : base(map, scope, identifier, keySerializer)
         {
+
         }
     }
 }
