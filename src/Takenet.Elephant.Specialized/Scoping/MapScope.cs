@@ -16,9 +16,11 @@ namespace Takenet.Elephant.Specialized.Scoping
             _keysSetMap = keysSetMap;
         }
 
+        internal Func<string, Task> RemoveKeyFunc;
+
         public string Name { get; }
 
-        public async Task ClearAsync()
+        public virtual async Task ClearAsync()
         {
             if (RemoveKeyFunc == null) return;
 
@@ -32,15 +34,13 @@ namespace Takenet.Elephant.Specialized.Scoping
             await _keysSetMap.TryRemoveAsync(Name).ConfigureAwait(false);            
         }
 
-        internal Func<string, Task> RemoveKeyFunc;
-
-        internal Task AddKeyAsync(string key)
+        protected internal virtual Task AddKeyAsync(string key)
         {
             if (RemoveKeyFunc == null) throw new InvalidOperationException("The RemoveKeyFunc must be set before changing the scope");
             return _keysSetMap.AddItemAsync(Name, key);
         }
 
-        internal Task RemoveKeyAsync(string key)
+        protected internal virtual Task RemoveKeyAsync(string key)
         {
             if (RemoveKeyFunc == null) throw new InvalidOperationException("The RemoveKeyFunc must be set before changing the scope");
             return _keysSetMap.TryRemoveItemAsync(Name, key);
