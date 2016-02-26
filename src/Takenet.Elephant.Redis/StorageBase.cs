@@ -5,24 +5,28 @@ namespace Takenet.Elephant.Redis
 {
     public class StorageBase<TKey> : IDisposable
     {        
-        protected readonly IConnectionMultiplexer _connectionMultiplexer;
-        protected readonly string _name;
-        protected readonly int _db;
+        protected readonly IConnectionMultiplexer ConnectionMultiplexer;
+        protected readonly string Name;
+        protected readonly int Db;
+        protected readonly CommandFlags ReadFlags;
+        protected readonly CommandFlags WriteFlags;
 
-        public StorageBase(string name, string configuration, int db)
-            : this(name, ConnectionMultiplexer.Connect(ConfigurationOptions.Parse(configuration)), db)
+        public StorageBase(string name, string configuration, int db, CommandFlags readFlags, CommandFlags writeFlags)
+            : this(name, StackExchange.Redis.ConnectionMultiplexer.Connect(ConfigurationOptions.Parse(configuration)), db, readFlags, writeFlags)
         {
             
         }
 
-        protected StorageBase(string name, IConnectionMultiplexer connectionMultiplexer, int db)
+        protected StorageBase(string name, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (connectionMultiplexer == null) throw new ArgumentNullException(nameof(connectionMultiplexer));
-            _name = name;                        
-            _connectionMultiplexer = connectionMultiplexer;
-            _connectionMultiplexer.PreserveAsyncOrder = false;
-            _db = db;
+            Name = name;                        
+            ConnectionMultiplexer = connectionMultiplexer;
+            ConnectionMultiplexer.PreserveAsyncOrder = false;
+            Db = db;
+            ReadFlags = readFlags;
+            WriteFlags = writeFlags;
         }
 
         ~StorageBase()
@@ -33,16 +37,15 @@ namespace Takenet.Elephant.Redis
         protected virtual string GetRedisKey(TKey key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            return $"{_name}:{KeyToString(key)}";
+            return $"{Name}:{KeyToString(key)}";
         }
 
         protected virtual string KeyToString(TKey key) => key.ToString();
 
-        protected virtual IDatabaseAsync GetDatabase() => _connectionMultiplexer.GetDatabase(_db);
+        protected virtual IDatabaseAsync GetDatabase() => ConnectionMultiplexer.GetDatabase(Db);
 
-        protected virtual ISubscriber GetSubscriber() => _connectionMultiplexer.GetSubscriber();
+        protected virtual ISubscriber GetSubscriber() => ConnectionMultiplexer.GetSubscriber();
 
-        protected virtual CommandFlags GetFlags() => CommandFlags.None;
 
         #region IDisposable Members
 
@@ -50,7 +53,7 @@ namespace Takenet.Elephant.Redis
         {
             if (disposing)
             {
-                _connectionMultiplexer.Dispose();
+                ConnectionMultiplexer.Dispose();
             }
         }
 

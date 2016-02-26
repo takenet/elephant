@@ -9,14 +9,14 @@ namespace Takenet.Elephant.Redis
     {
         private readonly ISerializer<TItem> _serializer;
 
-        public RedisQueueMap(string mapName, string configuration, ISerializer<TItem> serializer, int db = 0)
-            : this(mapName, ConnectionMultiplexer.Connect(configuration), serializer, db)
+        public RedisQueueMap(string mapName, string configuration, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
+            : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags)
         {
             
         }
 
-        public RedisQueueMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0)
-            : base(mapName, connectionMultiplexer, db)
+        public RedisQueueMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
+            : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
         {
             _serializer = serializer;
         }
@@ -50,7 +50,7 @@ namespace Takenet.Elephant.Redis
                 commandTasks.Add(internalQueue.EnqueueAsync(item));
             }
 
-            var success = await transaction.ExecuteAsync(GetFlags()).ConfigureAwait(false);
+            var success = await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false);
             await Task.WhenAll(commandTasks).ConfigureAwait(false);
             return success;
         }
@@ -69,20 +69,20 @@ namespace Takenet.Elephant.Redis
         public override Task<bool> TryRemoveAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyDeleteAsync(GetRedisKey(key), GetFlags());
+            return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyExistsAsync(GetRedisKey(key), GetFlags());
+            return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
         }
 
         #endregion
 
         protected InternalQueue CreateQueue(TKey key, ITransaction transaction = null)
         {
-            return new InternalQueue(key, GetRedisKey(key), _serializer, _connectionMultiplexer, _db, GetFlags(), transaction);
+            return new InternalQueue(key, GetRedisKey(key), _serializer, ConnectionMultiplexer, Db, ReadFlags, WriteFlags, transaction);
         }
 
         private static async Task<IQueue<TItem>> CloneAsync(IQueue<TItem> queue)
@@ -96,14 +96,12 @@ namespace Takenet.Elephant.Redis
         }
 
         protected class InternalQueue : RedisQueue<TItem>
-        {
-            private readonly CommandFlags _flags;
+        {            
             private readonly ITransaction _transaction;
 
-            public InternalQueue(TKey key, string queueName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags flags, ITransaction transaction = null)
-                : base(queueName, connectionMultiplexer, serializer, db)
+            public InternalQueue(TKey key, string queueName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags, ITransaction transaction = null)
+                : base(queueName, connectionMultiplexer, serializer, db, writeFlags)
             {
-                _flags = flags;
                 _transaction = transaction;
                 if (key == null) throw new ArgumentNullException(nameof(key));
                 Key = key;
@@ -115,8 +113,6 @@ namespace Takenet.Elephant.Redis
             {
                 return _transaction ?? base.GetDatabase();
             }
-
-            protected override CommandFlags GetFlags() => _flags;
         }
     }
 }

@@ -8,14 +8,14 @@ namespace Takenet.Elephant.Redis
 {
     public abstract class MapBase<TKey, TValue> : StorageBase<TKey>, IExpirableKeyMap<TKey, TValue>, IKeysMap<TKey, TValue>
     {
-        protected MapBase(string mapName, string configuration, int db)
-            : base(mapName, configuration, db)
+        protected MapBase(string mapName, string configuration, int db, CommandFlags readFlags, CommandFlags writeFlags)
+            : base(mapName, configuration, db, readFlags, writeFlags)
         {
 
         }
 
-        protected MapBase(string mapName, IConnectionMultiplexer connectionMultiplexer, int db)
-            : base(mapName, connectionMultiplexer, db)
+        protected MapBase(string mapName, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags)
+            : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
         {
 
         }
@@ -31,7 +31,7 @@ namespace Takenet.Elephant.Redis
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var database = GetDatabase();
-            if (!await database.KeyExpireAsync(GetRedisKey(key), ttl, GetFlags()).ConfigureAwait(false))
+            if (!await database.KeyExpireAsync(GetRedisKey(key), ttl, WriteFlags).ConfigureAwait(false))
             {
                 throw new ArgumentException("Invalid key", nameof(key));
             }
@@ -41,7 +41,7 @@ namespace Takenet.Elephant.Redis
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var database = GetDatabase();
-            if (!await database.KeyExpireAsync(GetRedisKey(key), expiration.UtcDateTime, GetFlags()).ConfigureAwait(false))
+            if (!await database.KeyExpireAsync(GetRedisKey(key), expiration.UtcDateTime, WriteFlags).ConfigureAwait(false))
             {
                 throw new ArgumentException("Invalid key", nameof(key));
             }
@@ -57,15 +57,15 @@ namespace Takenet.Elephant.Redis
 
         public virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
-            var endpoint = _connectionMultiplexer.GetEndPoints(true).FirstOrDefault();
+            var endpoint = ConnectionMultiplexer.GetEndPoints(true).FirstOrDefault();
             if (endpoint == null) throw new InvalidOperationException("There's no connection endpoints available");
 
-            var server = _connectionMultiplexer.GetServer(endpoint);
-            var cursor = server.Keys(_db, $"{_name}:*", flags: GetFlags());       
+            var server = ConnectionMultiplexer.GetServer(endpoint);
+            var cursor = server.Keys(Db, $"{Name}:*", flags: ReadFlags);       
             var keys = cursor.Select(k =>
             {
                 var value = (string) k;
-                var key = ((string) k).Substring(_name.Length + 1, value.Length - _name.Length - 1);
+                var key = ((string) k).Substring(Name.Length + 1, value.Length - Name.Length - 1);
                 return GetKeyFromString(key);
             });
             return Task.FromResult<IAsyncEnumerable<TKey>>(

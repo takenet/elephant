@@ -15,14 +15,14 @@ namespace Takenet.Elephant.Redis
         private readonly ISerializer<T> _serializer;
         private readonly bool _useScanOnEnumeration;
 
-        public RedisSet(string setName, string configuration, ISerializer<T> serializer, int db = 0, bool useScanOnEnumeration = true)
-            : this(setName, ConnectionMultiplexer.Connect(configuration), serializer, db, useScanOnEnumeration)
+        public RedisSet(string setName, string configuration, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
+            : this(setName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, useScanOnEnumeration)
         {
             
         }
 
-        public RedisSet(string setName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, bool useScanOnEnumeration = true)
-            : base(setName, connectionMultiplexer, db)
+        public RedisSet(string setName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
+            : base(setName, connectionMultiplexer, db, readFlags, writeFlags)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             _serializer = serializer;
@@ -35,14 +35,14 @@ namespace Takenet.Elephant.Redis
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var database = GetDatabase();
-            return database.SetAddAsync(_name, _serializer.Serialize(value), GetFlags());
+            return database.SetAddAsync(Name, _serializer.Serialize(value), WriteFlags);
         }
 
         public Task<bool> TryRemoveAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var database = GetDatabase();
-            return database.SetRemoveAsync(_name, _serializer.Serialize(value), GetFlags());
+            return database.SetRemoveAsync(Name, _serializer.Serialize(value), WriteFlags);
         }
 
         public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
@@ -53,11 +53,11 @@ namespace Takenet.Elephant.Redis
             IEnumerable<RedisValue> values;
             if (_useScanOnEnumeration)
             {
-                values = database.SetScan(_name);
+                values = database.SetScan(Name);
             }
             else
             {
-                values = await database.SetMembersAsync(_name).ConfigureAwait(false);                
+                values = await database.SetMembersAsync(Name).ConfigureAwait(false);                
             }
 
             return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
@@ -67,13 +67,13 @@ namespace Takenet.Elephant.Redis
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var database = GetDatabase();
-            return database.SetContainsAsync(_name, _serializer.Serialize(value), GetFlags());
+            return database.SetContainsAsync(Name, _serializer.Serialize(value), ReadFlags);
         }
 
         public Task<long> GetLengthAsync()
         {
             var database = GetDatabase();
-            return database.SetLengthAsync(_name, GetFlags());
+            return database.SetLengthAsync(Name, ReadFlags);
         }
 
         #endregion

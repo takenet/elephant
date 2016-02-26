@@ -16,14 +16,14 @@ namespace Takenet.Elephant.Redis
 
         private ISubscriber _subscriber;
 
-        public RedisQueue(string queueName, string configuration, ISerializer<T> serializer, int db = 0)
-            : this(queueName, ConnectionMultiplexer.Connect(configuration), serializer, db)
+        public RedisQueue(string queueName, string configuration, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
+            : this(queueName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags)
         {
             
         }
 
-        public RedisQueue(string queueName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db)
-            : base(queueName, connectionMultiplexer, db)
+        public RedisQueue(string queueName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
+            : base(queueName, connectionMultiplexer, db, readFlags, writeFlags)
         {
             _channelName = $"{db}:{queueName}";
             _serializer = serializer;
@@ -54,11 +54,11 @@ namespace Takenet.Elephant.Redis
                 throw new NotSupportedException("The database instance type is not supported");
             }
 
-            var enqueueTask = transaction.ListLeftPushAsync(_name, _serializer.Serialize(item), flags: GetFlags());
+            var enqueueTask = transaction.ListLeftPushAsync(Name, _serializer.Serialize(item), flags: WriteFlags);
             var publishTask = transaction.PublishAsync(_channelName, string.Empty, CommandFlags.FireAndForget);
 
             if (shouldCommit &&
-                !await transaction.ExecuteAsync(GetFlags()).ConfigureAwait(false))
+                !await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false))
             {
                 throw new Exception("The transaction has failed");                    
             }
@@ -69,14 +69,14 @@ namespace Takenet.Elephant.Redis
         public async Task<T> DequeueOrDefaultAsync()
         {
             var database = GetDatabase();
-            var result = await database.ListRightPopAsync(_name, GetFlags()).ConfigureAwait(false);
+            var result = await database.ListRightPopAsync(Name, ReadFlags).ConfigureAwait(false);
             return !result.IsNull ? _serializer.Deserialize((string)result) : default(T);
         }
 
         public Task<long> GetLengthAsync()
         {
             var database = GetDatabase();
-            return database.ListLengthAsync(_name, GetFlags());
+            return database.ListLengthAsync(Name, ReadFlags);
         }
 
         #endregion
@@ -110,7 +110,7 @@ namespace Takenet.Elephant.Redis
                         if (_promisesQueue.TryDequeue(out promise) && !promise.Item1.Task.IsCanceled)
                         {
                             var database = GetDatabase();
-                            var result = await database.ListRightPopAsync(_name).ConfigureAwait(false);
+                            var result = await database.ListRightPopAsync(Name).ConfigureAwait(false);
                             if (result.IsNull)
                             {
                                 _promisesQueue.Enqueue(promise);

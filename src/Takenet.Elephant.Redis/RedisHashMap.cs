@@ -18,14 +18,14 @@ namespace Takenet.Elephant.Redis
 
         #region Constructor
 
-        public RedisHashMap(string mapName, IRedisDictionaryConverter<TValue> dictionaryConverter, string configuration, int db = 0)
-            : this(mapName, dictionaryConverter, ConnectionMultiplexer.Connect(configuration), db)
+        public RedisHashMap(string mapName, IRedisDictionaryConverter<TValue> dictionaryConverter, string configuration, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
+            : this(mapName, dictionaryConverter, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), db, readFlags, writeFlags)
         {
             
         }
 
-        public RedisHashMap(string mapName, IRedisDictionaryConverter<TValue> dictionaryConverter, IConnectionMultiplexer connectionMultiplexer, int db = 0)
-            : base(mapName, connectionMultiplexer, db)
+        public RedisHashMap(string mapName, IRedisDictionaryConverter<TValue> dictionaryConverter, IConnectionMultiplexer connectionMultiplexer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
+            : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
         {
             _dictionaryConverter = dictionaryConverter;
             _propertiesNameHashSet = new HashSet<string>(_dictionaryConverter.Properties);
@@ -50,7 +50,7 @@ namespace Takenet.Elephant.Redis
         public override async Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
             var database = GetDatabase();
-            var hashEntries = await database.HashGetAllAsync(GetRedisKey(key), GetFlags());
+            var hashEntries = await database.HashGetAllAsync(GetRedisKey(key), ReadFlags);
             if (hashEntries != null &&
                 hashEntries.Length > 0)
             {
@@ -64,13 +64,13 @@ namespace Takenet.Elephant.Redis
         public override Task<bool> TryRemoveAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyDeleteAsync(GetRedisKey(key), GetFlags());
+            return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyExistsAsync(GetRedisKey(key), GetFlags());
+            return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
         }
 
         #endregion
@@ -86,7 +86,7 @@ namespace Takenet.Elephant.Redis
             
             var database = GetDatabase();
 
-            await database.HashSetAsync(GetRedisKey(key), propertyName, propertyValue.ToRedisValue(), When.Always, GetFlags());
+            await database.HashSetAsync(GetRedisKey(key), propertyName, propertyValue.ToRedisValue(), When.Always, WriteFlags);
         }
 
         public Task MergeAsync(TKey key, TValue value)
@@ -102,7 +102,7 @@ namespace Takenet.Elephant.Redis
                 .ToArray();
 
             return hashEntries.Any() ? 
-                database.HashSetAsync(GetRedisKey(key), hashEntries, GetFlags()) : 
+                database.HashSetAsync(GetRedisKey(key), hashEntries, WriteFlags) : 
                 TaskUtil.CompletedTask;
         }
 
@@ -114,7 +114,7 @@ namespace Takenet.Elephant.Redis
 
             var database = GetDatabase();
 
-            var redisValue = await database.HashGetAsync(GetRedisKey(key), propertyName, GetFlags());
+            var redisValue = await database.HashGetAsync(GetRedisKey(key), propertyName, ReadFlags);
             return !redisValue.IsNull ? 
                 redisValue.Cast<TProperty>() : 
                 default(TProperty);
