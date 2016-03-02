@@ -24,7 +24,6 @@ namespace Takenet.Elephant.Tests.Redis
             Server = Connection.GetServer(Connection.GetEndPoints().First());
         }
 
-        public Process ServerProcess { get; }
         public IServer Server { get; }
         public ConnectionMultiplexer Connection { get; }
 

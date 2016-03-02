@@ -13,12 +13,12 @@
     <copyright>Copyright © 2015 Curupira S/A</copyright>
     <tags>elephant</tags>
     <dependencies>
-      <dependency id="Takenet.Elephant" version="0.2.0" />
+      <dependency id="Takenet.Elephant" version="$version$" />
       <dependency id="StackExchange.Redis" version="1.0.414" />
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Takenet.Elephant.Redis.dll" target="lib\net451\Takenet.Elephant.Redis.dll" />
-    <file src="bin\Release\Takenet.Elephant.Redis.XML" target="lib\net451\Takenet.Elephant.Redis.XML" />
+    <file src="bin\Release\Takenet.Elephant.Redis.dll" target="lib\net461\Takenet.Elephant.Redis.dll" />
+    <file src="bin\Release\Takenet.Elephant.Redis.XML" target="lib\net461\Takenet.Elephant.Redis.XML" />
   </files>
 </package>

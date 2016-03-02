@@ -13,11 +13,11 @@
     <copyright>Copyright © 2015 Curupira S/A</copyright>
     <tags>elephant</tags>
     <dependencies>
-      <dependency id="Takenet.Elephant" version="0.2.1" />
+      <dependency id="Takenet.Elephant" version="$version$" />
       <dependency id="mongocsharpdriver" version="2.0.1" />
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Takenet.Elephant.MongoDb.dll" target="lib\net451\Takenet.Elephant.MongoDb.dll" />
+    <file src="bin\Release\Takenet.Elephant.MongoDb.dll" target="lib\net461\Takenet.Elephant.MongoDb.dll" />
   </files>
 </package>

@@ -13,11 +13,11 @@
     <copyright>Copyright © 2015 Curupira S/A</copyright>
     <tags>elephant</tags>
     <dependencies>
-      <dependency id="Takenet.Elephant" version="0.2.5" />
+      <dependency id="Takenet.Elephant" version="$version$" />
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Takenet.Elephant.Specialized.dll" target="lib\net451\Takenet.Elephant.Specialized.dll" />
-    <file src="bin\Release\Takenet.Elephant.Specialized.XML" target="lib\net451\Takenet.Elephant.Specialized.XML" />
+    <file src="bin\Release\Takenet.Elephant.Specialized.dll" target="lib\net461\Takenet.Elephant.Specialized.dll" />
+    <file src="bin\Release\Takenet.Elephant.Specialized.XML" target="lib\net461\Takenet.Elephant.Specialized.XML" />
   </files>
 </package>

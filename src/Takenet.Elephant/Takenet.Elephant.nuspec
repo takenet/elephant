@@ -14,7 +14,7 @@
     <tags>elephant</tags>
   </metadata>
   <files>
-    <file src="bin\Release\Takenet.Elephant.dll" target="lib\net451\Takenet.Elephant.dll" />
-    <file src="bin\Release\Takenet.Elephant.XML" target="lib\net451\Takenet.Elephant.XML" />
+    <file src="bin\Release\Takenet.Elephant.dll" target="lib\net461\Takenet.Elephant.dll" />
+    <file src="bin\Release\Takenet.Elephant.XML" target="lib\net461\Takenet.Elephant.XML" />
   </files>
 </package>

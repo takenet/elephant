@@ -13,11 +13,11 @@
     <copyright>Copyright © 2015 Curupira S/A</copyright>
     <tags>elephant</tags>
     <dependencies>
-      <dependency id="Takenet.Elephant" version="0.4.10" />
+      <dependency id="Takenet.Elephant" version="$version$" />
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Takenet.Elephant.Msmq.dll" target="lib\net451\Takenet.Elephant.Msmq.dll" />
-    <file src="bin\Release\Takenet.Elephant.Msmq.XML" target="lib\net451\Takenet.Elephant.Msmq.XML" />
+    <file src="bin\Release\Takenet.Elephant.Msmq.dll" target="lib\net461\Takenet.Elephant.Msmq.dll" />
+    <file src="bin\Release\Takenet.Elephant.Msmq.XML" target="lib\net461\Takenet.Elephant.Msmq.XML" />
   </files>
 </package>
