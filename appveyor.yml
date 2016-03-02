@@ -33,4 +33,4 @@ deploy:
 - provider: NuGet
   api_key:
     secure: 0huvVwDjQ/i7FNOrby1sd/KJ1NaSFNOmTh4uUuS/kp7K7W2O3sDdnEeeYz8MwAzb
-  skip_symbols: false
+  skip_symbols: true
