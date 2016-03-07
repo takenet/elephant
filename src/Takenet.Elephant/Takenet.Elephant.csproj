@@ -61,6 +61,7 @@
     <Compile Include="INumberMap.cs" />
     <Compile Include="IPropertyMap.cs" />
     <Compile Include="IQueue.cs" />
+    <Compile Include="IBlockingQueueMap.cs" />
     <Compile Include="IQueueMap.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="ISet.cs" />
