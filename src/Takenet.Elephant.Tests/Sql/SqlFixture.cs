@@ -15,14 +15,8 @@ namespace Takenet.Elephant.Tests.Sql
 
             // Note: You should create the Localdb instance if it doesn't exists
             // Go to the command prompt and run: sqllocaldb create "MSSQLLocalDB"
-            Connection = new SqlConnection(ConnectionString);
-            Connection.Open();
-            using (var useDatabaseCommand = Connection.CreateCommand())
-            {
-                useDatabaseCommand.CommandText = "USE master";
-                useDatabaseCommand.ExecuteNonQuery();
-            }
-
+            Connection = new SqlConnection(ConnectionString.Replace(DatabaseName, "master"));
+            Connection.Open();            
             using (var dropDatabaseCommand = Connection.CreateCommand())
             {
                 dropDatabaseCommand.CommandText = $"IF NOT EXISTS(SELECT * FROM sys.databases WHERE Name = '{DatabaseName}') CREATE DATABASE {DatabaseName}";

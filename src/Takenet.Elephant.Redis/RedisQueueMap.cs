@@ -5,7 +5,7 @@ using StackExchange.Redis;
 
 namespace Takenet.Elephant.Redis
 {
-    public class RedisQueueMap<TKey, TItem> : MapBase<TKey, IBlockingQueue<TItem>>, IBlockingQueueMap<TKey, TItem>, IQueueMap<TKey, TItem>
+    public class RedisQueueMap<TKey, TItem> : MapBase<TKey, IBlockingQueue<TItem>>, IBlockingQueueMap<TKey, TItem>, IQueueMap<TKey, TItem>, IMap<TKey, IBlockingQueue<TItem>>
     {
         private readonly ISerializer<TItem> _serializer;
 

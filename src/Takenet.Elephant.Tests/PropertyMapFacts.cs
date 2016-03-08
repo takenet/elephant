@@ -162,7 +162,8 @@ namespace Takenet.Elephant.Tests
             var value = CreateValue(key);
             foreach (var property in typeof(TValue).GetProperties())
             {
-                var propertyDefaultValue = property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
+                var propertyDefaultValue = property.PropertyType.IsValueType ? 
+                    Activator.CreateInstance(property.PropertyType) : null;
                 property.SetValue(value, propertyDefaultValue);
             }
             
@@ -171,7 +172,13 @@ namespace Takenet.Elephant.Tests
 
             // Assert
             var actual = await map.GetValueOrDefaultAsync(key);
-            AssertIsDefault(actual);
+            if (actual != null)
+            {
+                foreach (var property in typeof (TValue).GetProperties())
+                {
+                    AssertEquals(property.GetValue(actual), property.PropertyType.GetDefaultValue());                    
+                }
+            }
         }
 
         [Fact(DisplayName = "MergeExistingValueWithDefaultValuePropertiesSucceeds")]

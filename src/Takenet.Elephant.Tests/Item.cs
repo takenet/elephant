@@ -26,9 +26,11 @@ namespace Takenet.Elephant.Tests
             }
         }
 
+        public ItemOptions EnumProperty { get; set; }
+
         public override string ToString()
         {
-            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)}";
+            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{EnumProperty}";
         }
 
         public static Item Parse(string s)
@@ -42,7 +44,8 @@ namespace Takenet.Elephant.Tests
                 IntegerProperty = int.Parse(values[1]),
                 GuidProperty = Guid.Parse(values[2]),
                 UriProperty = new Uri(values[3]),
-                DateProperty = DateTimeOffset.Parse(values[4], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal)
+                DateProperty = DateTimeOffset.Parse(values[4], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
+                EnumProperty = (ItemOptions)Enum.Parse(typeof(ItemOptions), values[5])
             };
         }
 
@@ -60,20 +63,31 @@ namespace Takenet.Elephant.Tests
                    IntegerProperty == other.IntegerProperty &&
                    GuidProperty.Equals(other.GuidProperty) &&
                    UriProperty.Equals(other.UriProperty) &&
-                   DateProperty.ToUniversalTime().ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture).Equals(other.DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture));
+                   DateProperty.ToUniversalTime()
+                       .ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)
+                       .Equals(other.DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)) &&
+                   EnumProperty.Equals(other.EnumProperty);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = (StringProperty != null ? StringProperty.GetHashCode() : 0);
+                var hashCode = StringProperty?.GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ IntegerProperty;
                 hashCode = (hashCode * 397) ^ GuidProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ UriProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture).GetHashCode();
+                hashCode = (hashCode * 397) ^ EnumProperty.GetHashCode();
                 return hashCode;
             }
         }
+    }
+
+    public enum ItemOptions
+    {
+        Option1,
+        Option2,
+        Option3
     }
 }

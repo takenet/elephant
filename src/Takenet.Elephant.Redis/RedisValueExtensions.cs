@@ -21,7 +21,8 @@ namespace Takenet.Elephant.Redis
             if (type == typeof(Uri)) return new Uri(value);
             if (type == typeof(DateTimeOffset)) return new DateTimeOffset((long)value, TimeSpan.Zero);
             if (type == typeof(DateTime)) return new DateTime((long)value, DateTimeKind.Utc);
-            throw new NotSupportedException($"The property type '{value.GetType()}'  is not supported");
+            if (type.IsEnum) return Enum.Parse(type, value);
+            return TypeUtil.GetParseFuncForType(type)(value);
         }
 
         public static T Cast<T>(this RedisValue value)
@@ -32,7 +33,7 @@ namespace Takenet.Elephant.Redis
         public static RedisValue ToRedisValue(this object value)
         {
             if (value == null) return RedisValue.Null;            
-            if (value is int) return (int)value;            
+            if (value is int) return (int)value;
             if (value is long) return (long)value;            
             if (value is bool) return (bool)value;            
             if (value is byte[]) return (byte[])value;            
@@ -41,7 +42,7 @@ namespace Takenet.Elephant.Redis
             if (value is Uri) return value.ToString();
             if (value is DateTimeOffset) return ((DateTimeOffset)value).UtcTicks;
             if (value is DateTime) return ((DateTime)value).ToUniversalTime().Ticks;
-            throw new NotSupportedException($"The property type '{value.GetType()}'  is not supported");
+            return value.ToString();
         }
     }
 }
