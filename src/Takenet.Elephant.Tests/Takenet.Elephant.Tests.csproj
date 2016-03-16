@@ -82,6 +82,7 @@
     <Compile Include="ClassListFacts.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Memory\MemoryGuidItemScopedSetMapFacts.cs" />
+    <Compile Include="Msmq\MsmqGuidItemQueueMapFacts.cs" />
     <Compile Include="Msmq\MsmqItemBlockingQueueFacts.cs" />
     <Compile Include="RabbitMQ\ItemSerializer.cs" />
     <Compile Include="RabbitMQ\RabbitMQCollectionFixture.cs" />
