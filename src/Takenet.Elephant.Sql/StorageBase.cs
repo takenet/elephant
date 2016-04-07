@@ -29,7 +29,7 @@ namespace Takenet.Elephant.Sql
 
         protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken, DbTransaction sqlTransaction = null)
         {            
-            using (var command = connection.CreateDeleteCommand(Table.Name, filterValues))
+            using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table.Name, filterValues))
             {
                 if (sqlTransaction != null) command.Transaction = sqlTransaction;                
                 return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
@@ -38,7 +38,7 @@ namespace Takenet.Elephant.Sql
 
         protected async Task<bool> ContainsAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken)
         {
-            using (var command = connection.CreateContainsCommand(Table.Name, filterValues))
+            using (var command = connection.CreateContainsCommand(DatabaseDriver, Table.Name, filterValues))
             {
                 return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
             }
@@ -60,7 +60,7 @@ namespace Takenet.Elephant.Sql
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
                 int totalCount;
-                using (var countCommand = connection.CreateSelectCountCommand(Table.Name, filter))
+                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter))
                 {
                     totalCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
                 }
@@ -68,7 +68,7 @@ namespace Takenet.Elephant.Sql
                 return new QueryResult<TEntity>(                    
                     new DbDataReaderAsyncEnumerable<TEntity>(
                         GetConnectionAsync, 
-                        c => c.CreateSelectSkipTakeCommand(Table.Name, selectColumns, filter, skip, take, orderByColumns), 
+                        c => c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Name, selectColumns, filter, skip, take, orderByColumns), 
                         Mapper, 
                         selectColumns),
                     totalCount);

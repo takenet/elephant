@@ -60,11 +60,11 @@ namespace Takenet.Elephant.Sql
             return command;
         }
 
-        public static DbCommand CreateDeleteCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues)
+        public static DbCommand CreateDeleteCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues)
         {
             if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
             return connection.CreateTextCommand(
-                SqlTemplates.Delete,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.Delete),
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
@@ -73,12 +73,12 @@ namespace Takenet.Elephant.Sql
                 filterValues.Select(k => k.ToSqlParameter()));
         }
 
-        public static DbCommand CreateUpdateCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
+        public static DbCommand CreateUpdateCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
         {
             if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
             if (columnValues == null) throw new ArgumentNullException(nameof(columnValues));
             return connection.CreateTextCommand(
-                SqlTemplates.Update,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.Update),                
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
@@ -88,10 +88,10 @@ namespace Takenet.Elephant.Sql
                 filterValues.Union(columnValues).Select(c => c.ToSqlParameter()));
         }
 
-        public static DbCommand CreateContainsCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues)
+        public static DbCommand CreateContainsCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues)
         {
             return connection.CreateTextCommand(
-                SqlTemplates.Exists,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.Exists),
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
@@ -100,10 +100,10 @@ namespace Takenet.Elephant.Sql
                 filterValues?.Select(k => k.ToSqlParameter()));
         }        
 
-        public static DbCommand CreateInsertCommand(this DbConnection connection, string tableName, IDictionary<string, object> columnValues)
+        public static DbCommand CreateInsertCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> columnValues)
         {
             return connection.CreateTextCommand(
-                SqlTemplates.Insert,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.Insert),
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
@@ -113,12 +113,11 @@ namespace Takenet.Elephant.Sql
                 columnValues.Select(c => c.ToSqlParameter()));
         }
 
-        public static DbCommand CreateInsertWhereNotExistsCommand(this DbConnection connection, string tableName,
-            IDictionary<string, object> filterValues, IDictionary<string, object> columnValues, bool deleteBeforeInsert = false)
+        public static DbCommand CreateInsertWhereNotExistsCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues, bool deleteBeforeInsert = false)
         {
             var sqlTemplate = deleteBeforeInsert ?
-                SqlTemplates.DeleteAndInsertWhereNotExists :
-                SqlTemplates.InsertWhereNotExists;
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.DeleteAndInsertWhereNotExists) :
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertWhereNotExists);
 
             return connection.CreateTextCommand(
                 sqlTemplate,
@@ -132,11 +131,11 @@ namespace Takenet.Elephant.Sql
                 columnValues.Select(c => c.ToSqlParameter()));
         }
 
-        public static DbCommand CreateSelectCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues, string[] selectColumns)
+        public static DbCommand CreateSelectCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues, string[] selectColumns)
         {
             if (selectColumns == null) throw new ArgumentNullException(nameof(selectColumns));
             return connection.CreateTextCommand(
-                SqlTemplates.Select,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.Select),
                 new
                 {
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
@@ -146,11 +145,11 @@ namespace Takenet.Elephant.Sql
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
 
-        public static DbCommand CreateSelectCountCommand(this DbConnection connection, string tableName, string filter = null)
+        public static DbCommand CreateSelectCountCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string filter = null)
         {
             if (filter == null) filter = SqlTemplates.OneEqualsOne;
             return connection.CreateTextCommand(
-                SqlTemplates.SelectCount,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectCount),
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
@@ -158,10 +157,10 @@ namespace Takenet.Elephant.Sql
                 });
         }
 
-        public static DbCommand CreateSelectCountCommand(this DbConnection connection, string tableName, IDictionary<string, object> filterValues)
+        public static DbCommand CreateSelectCountCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues)
         {
             return connection.CreateTextCommand(
-                SqlTemplates.SelectCount,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectCount),
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
@@ -170,11 +169,10 @@ namespace Takenet.Elephant.Sql
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
 
-        public static DbCommand CreateSelectSkipTakeCommand(this DbConnection connection, string tableName, string[] selectColumns,
-            string filter, int skip, int take, string[] orderByColumns)
+        public static DbCommand CreateSelectSkipTakeCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string[] selectColumns, string filter, int skip, int take, string[] orderByColumns)
         {
             return connection.CreateTextCommand(
-                SqlTemplates.SelectSkipTake,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectSkipTake),
                 new
                 {
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
@@ -186,10 +184,10 @@ namespace Takenet.Elephant.Sql
                 });
         }
 
-        public static DbCommand CreateSelectTop1Command(this DbConnection connection, string tableName, string[] selectColumns, IDictionary<string, object> filterValues)
+        public static DbCommand CreateSelectTop1Command(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string[] selectColumns, IDictionary<string, object> filterValues)
         {
             return connection.CreateTextCommand(
-                SqlTemplates.SelectTop1,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectTop1),
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
@@ -199,14 +197,14 @@ namespace Takenet.Elephant.Sql
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
 
-        public static DbCommand CreateMergeCommand(this DbConnection connection, string tableName, IDictionary<string, object> keyValues, IDictionary<string, object> columnValues)
+        public static DbCommand CreateMergeCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> keyValues, IDictionary<string, object> columnValues)
         {
             var keyAndColumnValues = keyValues
                 .Union(columnValues)
                 .ToDictionary(c => c.Key, c => c.Value);
 
             return connection.CreateTextCommand(
-                SqlTemplates.Merge,
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.Merge),
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),

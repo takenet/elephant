@@ -42,7 +42,7 @@ namespace Takenet.Elephant.Sql
                 {
                     var columnValues = GetColumnValues(key, value);
                     var keyColumnValues = GetKeyColumnValues(columnValues);
-                    using (var command = connection.CreateInsertWhereNotExistsCommand(Table.Name, keyColumnValues, columnValues, overwrite))
+                    using (var command = connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues, overwrite))
                     {
                         return await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) > 0;
                     }
@@ -62,7 +62,7 @@ namespace Takenet.Elephant.Sql
                     return await new DbDataReaderAsyncEnumerable<TValue>(
                         // ReSharper disable once AccessToDisposedClosure
                         t => connection.AsCompletedTask(),
-                        c => c.CreateSelectCommand(Table.Name, keyColumnValues, selectColumns),
+                        c => c.CreateSelectCommand(DatabaseDriver, Table.Name, keyColumnValues, selectColumns),
                         Mapper,
                         selectColumns)
                         .FirstOrDefaultAsync(cancellationTokenSource.Token)
@@ -101,7 +101,7 @@ namespace Takenet.Elephant.Sql
         {
             var selectColumns = Table.KeyColumnsNames;
             return Task.FromResult<IAsyncEnumerable<TKey>>(
-                new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(Table.Name, null, selectColumns), KeyMapper, selectColumns));
+                new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(DatabaseDriver, Table.Name, null, selectColumns), KeyMapper, selectColumns));
         }
 
         #endregion
@@ -121,7 +121,7 @@ namespace Takenet.Elephant.Sql
                     var keyColumnValues = KeyMapper.GetColumnValues(key);
                     var columnValues = new Dictionary<string, object> { { propertyName, TypeMapper.ToDbType(propertyValue, Table.Columns[propertyName].Type) } };
 
-                    using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
+                    using (var command = connection.CreateMergeCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues))
                     {
                         if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
                         {
@@ -146,7 +146,7 @@ namespace Takenet.Elephant.Sql
 
                     if (columnValues.Any())
                     {
-                        using (var command = connection.CreateMergeCommand(Table.Name, keyColumnValues, columnValues))
+                        using (var command = connection.CreateMergeCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues))
                         {
                             if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
                             {
@@ -169,7 +169,7 @@ namespace Takenet.Elephant.Sql
                 {
                     var keyColumnValues = KeyMapper.GetColumnValues(key);
 
-                    using (var command = connection.CreateSelectTop1Command(Table.Name, new[] { propertyName }, keyColumnValues))
+                    using (var command = connection.CreateSelectTop1Command(DatabaseDriver, Table.Name, new[] { propertyName }, keyColumnValues))
                     {
                         var dbValue = await command.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                         if (dbValue != null && !(dbValue is DBNull))

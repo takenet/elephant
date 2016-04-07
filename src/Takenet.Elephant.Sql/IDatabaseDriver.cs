@@ -42,6 +42,7 @@ namespace Takenet.Elephant.Sql
         SelectSkipTake,
         SelectTop1,
         TableExists,
-        Update
+        Update,
+        Merge
     }
 }

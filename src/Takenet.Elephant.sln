@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.RabbitMQ",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Msmq", "Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj", "{FEAF6F82-FA69-4BBA-9081-44E597DF405A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Sql.PostgreSql", "Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj", "{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
