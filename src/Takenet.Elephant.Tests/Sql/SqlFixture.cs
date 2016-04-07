@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace Takenet.Elephant.Tests.Sql
@@ -30,7 +31,7 @@ namespace Takenet.Elephant.Tests.Sql
             }
         }
 
-        public SqlConnection Connection { get; }
+        public DbConnection Connection { get; }
 
         public string DatabaseName { get; } = "Elephant";
 

@@ -247,7 +247,7 @@ INSERT ({columns}) VALUES ({values});</value>
     <value>OR</value>
   </data>
   <data name="PrimaryKeyConstraintDefinition" xml:space="preserve">
-    <value>CONSTRAINT PK_{tableName} PRIMARY KEY CLUSTERED ({columns})</value>
+    <value>CONSTRAINT PK_{tableName} PRIMARY KEY ({columns})</value>
   </data>
   <data name="QueryEquals" xml:space="preserve">
     <value>{column} = {value}</value>
@@ -265,10 +265,10 @@ INSERT ({columns}) VALUES ({values});</value>
     <value>SELECT COUNT(*) FROM {tableName} WHERE {filter}</value>
   </data>
   <data name="SelectSkipTake" xml:space="preserve">
-    <value>SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY</value>
+    <value>SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {tale} OFFSET {skip}</value>
   </data>
   <data name="SelectTop1" xml:space="preserve">
-    <value>SELECT TOP 1 {columns} FROM {tableName} WHERE {filter}</value>
+    <value>SELECT {columns} FROM {tableName} WHERE {filter} LIMIT 1</value>
   </data>
   <data name="TableExists" xml:space="preserve">
     <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{tableName}')) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END</value>

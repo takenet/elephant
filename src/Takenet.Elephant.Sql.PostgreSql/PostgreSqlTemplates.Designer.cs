@@ -412,7 +412,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CONSTRAINT PK_{tableName} PRIMARY KEY CLUSTERED ({columns}).
+        ///   Looks up a localized string similar to CONSTRAINT PK_{tableName} PRIMARY KEY ({columns}).
         /// </summary>
         public static string PrimaryKeyConstraintDefinition {
             get {
@@ -466,7 +466,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY.
+        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {tale} OFFSET {skip}.
         /// </summary>
         public static string SelectSkipTake {
             get {
@@ -475,7 +475,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT TOP 1 {columns} FROM {tableName} WHERE {filter}.
+        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} LIMIT 1.
         /// </summary>
         public static string SelectTop1 {
             get {
