@@ -12,10 +12,12 @@ namespace Takenet.Elephant.Sql
     internal class SqlExpressionTranslator : ExpressionVisitor
     {
         private readonly StringBuilder _filter = new StringBuilder();
+        private readonly IDatabaseDriver _databaseDriver;
         private readonly IDictionary<string, string> _parameterReplacementDictionary;
 
-        public SqlExpressionTranslator(IDictionary<string, string> parameterReplacementDictionary = null)
+        public SqlExpressionTranslator(IDatabaseDriver databaseDriver, IDictionary<string, string> parameterReplacementDictionary = null)
         {
+            _databaseDriver = databaseDriver;
             _parameterReplacementDictionary = parameterReplacementDictionary;
         }
 
@@ -37,37 +39,37 @@ namespace Takenet.Elephant.Sql
             switch (node.NodeType)
             {
                 case ExpressionType.Equal:
-                    @operator = SqlTemplates.Equal;
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Equal);
                     break;
 
                 case ExpressionType.NotEqual:
-                    @operator = SqlTemplates.NotEqual;
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.NotEqual);
                     break;
 
                 case ExpressionType.GreaterThan:
-                    @operator = SqlTemplates.GreaterThan;
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.GreaterThan);
                     break;
 
                 case ExpressionType.GreaterThanOrEqual:
-                    @operator = SqlTemplates.GreaterThanOrEqual;
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.GreaterThanOrEqual);
                     break;
 
                 case ExpressionType.LessThan:
-                    @operator = SqlTemplates.LessThan;
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.LessThan);
                     break;
 
                 case ExpressionType.LessThanOrEqual:
-                    @operator = SqlTemplates.LessThanOrEqual;
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.LessThanOrEqual);
                     break;
 
                 case ExpressionType.And:
                 case ExpressionType.AndAlso:
-                    @operator = SqlTemplates.And;
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.And);
                     break;
 
                 case ExpressionType.Or:
                 case ExpressionType.OrElse:
-                    @operator = SqlTemplates.Or;
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Or);
                     break;
 
                 default:
@@ -184,7 +186,7 @@ namespace Takenet.Elephant.Sql
 
                     _filter.Append("(");
                         Visit(expression);
-                    _filter.AppendFormat(" {0} (", SqlTemplates.In);
+                    _filter.AppendFormat(" {0} (", _databaseDriver.GetSqlStatementTemplate(SqlStatement.In));
                     if (values == null || !values.Any())
                     {
                         _filter.Append(" null ");
@@ -204,7 +206,7 @@ namespace Takenet.Elephant.Sql
 
                 _filter.Append("(");
                 Visit(node.Object);
-                _filter.Append($" {SqlTemplates.Like} '%{Expression.Constant(node.Arguments[0]).Value}%')");                                
+                _filter.Append($" {_databaseDriver.GetSqlStatementTemplate(SqlStatement.Like)} '%{Expression.Constant(node.Arguments[0]).Value}%')");                                
                 return node;
 
             }

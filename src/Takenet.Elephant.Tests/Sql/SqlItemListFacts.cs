@@ -16,11 +16,10 @@ namespace Takenet.Elephant.Tests.Sql
 
         public override IList<Item> Create()
         {
-            var databaseDriver = new SqlDatabaseDriver();
             var table = TableBuilder.WithName("ItemsSet").WithKeyColumnsFromTypeProperties<Item>().WithKeyColumnFromType<int>("Id", true).Build();
             _fixture.DropTable(table.Name);
             var mapper = new TypeMapper<Item>(table);
-            return new SqlList<Item>(databaseDriver, _fixture.ConnectionString, table, mapper);
+            return new SqlList<Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, mapper);
         }
     }
 }

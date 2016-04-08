@@ -204,12 +204,12 @@ namespace Takenet.Elephant.Sql
                     var newColumnValues = GetColumnValues(key, newValue);
 
                     using (var command = connection.CreateTextCommand(
-                        SqlTemplates.Update,
+                        DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),                        
                         new
                         {
                             tableName = Table.Name.AsSqlIdentifier(),
-                            columnValues = SqlHelper.GetCommaEqualsStatement(newColumnValues.Keys.ToArray()),
-                            filter = SqlHelper.GetAndEqualsStatement(oldColumnValues.Keys.ToArray(), filterOldColumnValues.Keys.ToArray())
+                            columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, newColumnValues.Keys.ToArray()),
+                            filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, oldColumnValues.Keys.ToArray(), filterOldColumnValues.Keys.ToArray())
                         },
                         newColumnValues.Concat(filterOldColumnValues).Select(c => c.ToSqlParameter())))
                     {

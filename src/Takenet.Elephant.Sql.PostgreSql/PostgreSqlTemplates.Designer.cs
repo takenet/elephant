@@ -211,16 +211,6 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IF OBJECT_ID(&apos;{tableName}&apos;) IS NOT NULL 
-        ///DELETE FROM {tableName}.
-        /// </summary>
-        public static string DeleteFromTableIfExists {
-            get {
-                return ResourceManager.GetString("DeleteFromTableIfExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to @dummy = 0.
         /// </summary>
         public static string DummyEqualsZero {
@@ -239,7 +229,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM {tableName} WHERE {filter})) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END.
+        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM {tableName} WHERE {filter})) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END.
         /// </summary>
         public static string Exists {
             get {

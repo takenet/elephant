@@ -20,7 +20,6 @@ namespace Takenet.Elephant.Tests.Sql
 
         public override IMap<int, ISet<string>> Create()
         {
-            var databaseDriver = new SqlDatabaseDriver();
             var table = new Table(
                 "IntegerStrings",
                 new[] { "Key", "Value" },
@@ -32,7 +31,7 @@ namespace Takenet.Elephant.Tests.Sql
             _fixture.DropTable(table.Name);
             var keyMapper = new ValueMapper<int>("Key");
             var valueMapper = new ValueMapper<string>("Value");
-            return new SqlSetMap<int, string>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            return new SqlSetMap<int, string>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
         }
 
         public override ISet<string> CreateValue(int key, bool populate)

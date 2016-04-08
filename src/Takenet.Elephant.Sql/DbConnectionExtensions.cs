@@ -68,7 +68,7 @@ namespace Takenet.Elephant.Sql
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
+                    filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues.Select(k => k.ToSqlParameter()));
         }
@@ -82,8 +82,8 @@ namespace Takenet.Elephant.Sql
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    columnValues = SqlHelper.GetCommaEqualsStatement(columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
+                    columnValues = SqlHelper.GetCommaEqualsStatement(databaseDriver, columnValues.Keys.ToArray()),
+                    filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
                 },
                 filterValues.Union(columnValues).Select(c => c.ToSqlParameter()));
         }
@@ -95,7 +95,7 @@ namespace Takenet.Elephant.Sql
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
+                    filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.Select(k => k.ToSqlParameter()));
         }        
@@ -126,7 +126,7 @@ namespace Takenet.Elephant.Sql
                     tableName = tableName.AsSqlIdentifier(),
                     columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate(),
-                    filter = filterValues == null || !filterValues.Any() ? SqlTemplates.OneEqualsZero : SqlHelper.GetAndEqualsStatement(filterValues.Keys.ToArray())
+                    filter = filterValues == null || !filterValues.Any() ? databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsZero) : SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
                 },
                 columnValues.Select(c => c.ToSqlParameter()));
         }
@@ -140,14 +140,14 @@ namespace Takenet.Elephant.Sql
                 {
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     tableName = tableName.AsSqlIdentifier(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
+                    filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
 
         public static DbCommand CreateSelectCountCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string filter = null)
         {
-            if (filter == null) filter = SqlTemplates.OneEqualsOne;
+            if (filter == null) filter = databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectCount),
                 new
@@ -164,7 +164,7 @@ namespace Takenet.Elephant.Sql
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
+                    filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
@@ -192,7 +192,7 @@ namespace Takenet.Elephant.Sql
                 {
                     tableName = tableName.AsSqlIdentifier(),
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
-                    filter = SqlHelper.GetAndEqualsStatement(filterValues)
+                    filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.Select(k => k.ToSqlParameter()));
         }
@@ -208,9 +208,9 @@ namespace Takenet.Elephant.Sql
                 new
                 {
                     tableName = tableName.AsSqlIdentifier(),
-                    columnNamesAndValues = SqlHelper.GetCommaValueAsColumnStatement(keyAndColumnValues.Keys.ToArray()),
-                    on = SqlHelper.GetLiteralJoinConditionStatement(keyValues.Keys.ToArray(), "source", "target"),
-                    columnValues = columnValues.Any() ? SqlHelper.GetCommaEqualsStatement(columnValues.Keys.ToArray()) : SqlTemplates.DummyEqualsZero,
+                    columnNamesAndValues = SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, keyAndColumnValues.Keys.ToArray()),
+                    on = SqlHelper.GetLiteralJoinConditionStatement(databaseDriver, keyValues.Keys.ToArray(), "source", "target"),
+                    columnValues = columnValues.Any() ? SqlHelper.GetCommaEqualsStatement(databaseDriver, columnValues.Keys.ToArray()) : databaseDriver.GetSqlStatementTemplate(SqlStatement.DummyEqualsZero),
                     columns = keyAndColumnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     values = keyAndColumnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate()
                 },

@@ -56,7 +56,7 @@ namespace Takenet.Elephant.Sql
 
             var selectColumns = Table.Columns.Keys.ToArray();
             var orderByColumns = Table.KeyColumnsNames;
-            var filter = SqlHelper.TranslateToSqlWhereClause(where);
+            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
                 int totalCount;

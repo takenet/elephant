@@ -16,11 +16,10 @@ namespace Takenet.Elephant.Tests.Sql
 
         public override ISet<Item> Create()
         {
-            var databaseDriver = new SqlDatabaseDriver();
             var table = TableBuilder.WithName("ItemsSet").WithKeyColumnsFromTypeProperties<Item>().Build();
             _fixture.DropTable(table.Name);
             var mapper = new TypeMapper<Item>(table);
-            return new SqlSet<Item>(databaseDriver, _fixture.ConnectionString, table, mapper);
+            return new SqlSet<Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, mapper);
         }
     }
 }

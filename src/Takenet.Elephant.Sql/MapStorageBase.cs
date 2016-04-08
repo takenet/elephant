@@ -48,7 +48,7 @@ namespace Takenet.Elephant.Sql
                 expressionParameterReplacementDictionary.Add("Value", ((ValueMapper<TValue>) Mapper).ColumnName);
             }
 
-            var filter = SqlHelper.TranslateToSqlWhereClause(where, expressionParameterReplacementDictionary);
+            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, expressionParameterReplacementDictionary);
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
                 int totalCount;
@@ -85,7 +85,7 @@ namespace Takenet.Elephant.Sql
                 }
 
                 var selectColumns = Table.KeyColumnsNames;
-                var filter = SqlHelper.TranslateToSqlWhereClause(where);
+                var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
                 int totalCount;
                 using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter))
                 {

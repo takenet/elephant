@@ -23,7 +23,6 @@ namespace Takenet.Elephant.Sql
         CreateTable,
         Delete,
         DeleteAndInsertWhereNotExists,
-        DeleteFromTableIfExists,
         Equal,
         Exists,
         GetTableColumns,
@@ -43,6 +42,16 @@ namespace Takenet.Elephant.Sql
         SelectTop1,
         TableExists,
         Update,
-        Merge
+        Merge,
+        OneEqualsOne,
+        OneEqualsZero,
+        DummyEqualsZero,
+        ValueAsColumn,
+        NotEqual,
+        GreaterThan,
+        GreaterThanOrEqual,
+        LessThan,
+        LessThanOrEqual,
+        Like
     }
 }

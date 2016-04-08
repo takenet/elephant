@@ -171,10 +171,6 @@ INSERT INTO {tableName} ({columns})
 SELECT {values}
 WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
   </data>
-  <data name="DeleteFromTableIfExists" xml:space="preserve">
-    <value>IF OBJECT_ID('{tableName}') IS NOT NULL 
-DELETE FROM {tableName}</value>
-  </data>
   <data name="DummyEqualsZero" xml:space="preserve">
     <value>@dummy = 0</value>
   </data>

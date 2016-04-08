@@ -17,7 +17,6 @@ namespace Takenet.Elephant.Tests.Sql
 
         public override IPropertyMap<Guid, Item> Create()
         {
-            var databaseDriver = new SqlDatabaseDriver();
             var table = TableBuilder
                 .WithName("GuidItems")
                 .WithColumnsFromTypeProperties<Item>()
@@ -27,7 +26,7 @@ namespace Takenet.Elephant.Tests.Sql
 
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            return new SqlMap<Guid, Item>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            return new SqlMap<Guid, Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
         }
     }
 }

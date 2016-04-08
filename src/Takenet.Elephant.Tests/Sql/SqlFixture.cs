@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data.SqlClient;
+using Takenet.Elephant.Sql;
 
 namespace Takenet.Elephant.Tests.Sql
 {
@@ -29,11 +30,15 @@ namespace Takenet.Elephant.Tests.Sql
                 useDatabaseCommand.CommandText = $"USE {DatabaseName}";
                 useDatabaseCommand.ExecuteNonQuery();
             }
+
+            DatabaseDriver = new SqlDatabaseDriver();
         }
 
         public DbConnection Connection { get; }
 
         public string DatabaseName { get; } = "Elephant";
+
+        public IDatabaseDriver DatabaseDriver { get; }
 
         public string ConnectionString { get; } = @"Server=(localdb)\MSSQLLocalDB;Database=Elephant;Integrated Security=true";
 

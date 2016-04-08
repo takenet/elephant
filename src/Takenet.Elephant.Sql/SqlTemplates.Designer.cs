@@ -211,16 +211,6 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IF OBJECT_ID(&apos;{tableName}&apos;) IS NOT NULL 
-        ///DELETE FROM {tableName}.
-        /// </summary>
-        public static string DeleteFromTableIfExists {
-            get {
-                return ResourceManager.GetString("DeleteFromTableIfExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to @dummy = 0.
         /// </summary>
         public static string DummyEqualsZero {

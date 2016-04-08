@@ -18,7 +18,6 @@ namespace Takenet.Elephant.Tests.Sql
 
         public override IMap<int, string> Create()
         {
-            var databaseDriver = new SqlDatabaseDriver();
             var table = new Table(
                 "IntegerStrings", 
                 new[] { "Key"}, 
@@ -30,7 +29,7 @@ namespace Takenet.Elephant.Tests.Sql
             _fixture.DropTable(table.Name);
             var keyMapper = new ValueMapper<int>("Key");
             var valueMapper = new ValueMapper<string>("Value");
-            return new SqlMap<int, string>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            return new SqlMap<int, string>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
         }
     }
 }

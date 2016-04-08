@@ -18,8 +18,7 @@ namespace Takenet.Elephant.Tests.Sql
         }
 
         public override IItemSetMap<Guid, Item> Create()
-        {
-            var databaseDriver = new SqlDatabaseDriver();
+        {            
             var columns = typeof(Item)
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .ToSqlColumns();
@@ -28,7 +27,7 @@ namespace Takenet.Elephant.Tests.Sql
             _fixture.DropTable(table.Name);
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            return new SqlSetMap<Guid, Item>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            return new SqlSetMap<Guid, Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
         }
     }
 }

@@ -22,9 +22,8 @@ namespace Takenet.Elephant.Tests.Sql
             _fixture = fixture;
         }
 
-        public async override Task<IKeyQueryableMap<Guid, Item>> CreateAsync(params KeyValuePair<Guid, Item>[] values)
+        public override async Task<IKeyQueryableMap<Guid, Item>> CreateAsync(params KeyValuePair<Guid, Item>[] values)
         {
-            var databaseDriver = new SqlDatabaseDriver();
             var columns = typeof(Item)
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .ToSqlColumns();
@@ -34,7 +33,7 @@ namespace Takenet.Elephant.Tests.Sql
 
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            var map = new SqlSetMap<Guid, Item>(databaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            var map = new SqlSetMap<Guid, Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
 
             foreach (var value in values)
             {

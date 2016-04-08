@@ -232,6 +232,10 @@
       <Project>{2d183e50-19e5-4677-bddf-bb70fc420a16}</Project>
       <Name>Takenet.Elephant.Specialized</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj">
+      <Project>{3700b934-4321-4b9e-b662-5f0ae0a1d8aa}</Project>
+      <Name>Takenet.Elephant.Sql.PostgreSql</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj">
       <Project>{fa4ecd2c-454c-48fd-8dc1-678b8a723080}</Project>
       <Name>Takenet.Elephant.Sql</Name>
