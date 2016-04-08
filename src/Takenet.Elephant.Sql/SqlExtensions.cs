@@ -13,7 +13,7 @@ namespace Takenet.Elephant.Sql
 
         public static string AsSqlIdentifier(this string identifier)
         {
-            return $"[{identifier}]";
+            return $"\"{identifier}\"";
         }
 
         /// <summary>

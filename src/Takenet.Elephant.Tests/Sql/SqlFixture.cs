@@ -9,12 +9,6 @@ namespace Takenet.Elephant.Tests.Sql
     {
         public SqlFixture()
         {
-            //var hostName = Environment.GetEnvironmentVariable("SQLSERVER_HOSTNAME");
-            //var userName = Environment.GetEnvironmentVariable("SQLSERVER_USERNAME");
-            //var password = Environment.GetEnvironmentVariable("SQLSERVER_PASSWORD");
-
-            //Connection = new SqlConnection($"Server={hostName};Database=master;User ID={userName};Password={password}");
-
             // Note: You should create the Localdb instance if it doesn't exists
             // Go to the command prompt and run: sqllocaldb create "MSSQLLocalDB"
             Connection = new SqlConnection(ConnectionString.Replace(DatabaseName, "master"));

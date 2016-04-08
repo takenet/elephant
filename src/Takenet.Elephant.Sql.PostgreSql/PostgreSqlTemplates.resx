@@ -148,7 +148,7 @@
     <value>DOUBLE PRECISION</value>
   </data>
   <data name="DbTypeGuid" xml:space="preserve">
-    <value>UNIQUEIDENTIFIER</value>
+    <value>UUID</value>
   </data>
   <data name="DbTypeInt16" xml:space="preserve">
     <value>SMALLINT</value>

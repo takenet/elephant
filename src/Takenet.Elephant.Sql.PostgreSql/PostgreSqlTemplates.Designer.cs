@@ -145,7 +145,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UNIQUEIDENTIFIER.
+        ///   Looks up a localized string similar to UUID.
         /// </summary>
         public static string DbTypeGuid {
             get {

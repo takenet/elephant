@@ -193,6 +193,7 @@
     <Compile Include="Specialized\SqlRedisGuidItemCacheMapFacts.cs" />
     <Compile Include="Specialized\SqlRedisGuidItemCacheSetMapFacts.cs" />
     <Compile Include="Specialized\SqlRedisItemCacheSetFacts.cs" />
+    <Compile Include="Sql\PostgreSqlFixture.cs" />
     <Compile Include="Sql\SqlFixture.cs" />
     <Compile Include="Sql\SqlCollectionFixture.cs" />
     <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />
