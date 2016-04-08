@@ -163,7 +163,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INT.
+        ///   Looks up a localized string similar to INTEGER.
         /// </summary>
         public static string DbTypeInt32 {
             get {
@@ -238,7 +238,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT COLUMN_NAME, DATA_TYPE
+        ///   Looks up a localized string similar to SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN (&apos;varchar&apos;, &apos;timestamp&apos;) THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE
         ///FROM INFORMATION_SCHEMA.COLUMNS
         ///WHERE TABLE_NAME = &apos;{tableName}&apos;.
         /// </summary>

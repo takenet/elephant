@@ -43,8 +43,8 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public static DbCommand CreateTextCommand(this DbConnection connection, string commandTemplate, object format, IEnumerable<SqlParameter> sqlParameters = null)
-        {
+        public static DbCommand CreateTextCommand(this DbConnection connection, string commandTemplate, object format, IEnumerable<DbParameter> sqlParameters = null)
+        {            
             var command = connection.CreateCommand();
             command.CommandText = commandTemplate.Format(format);
             command.CommandType = System.Data.CommandType.Text;
@@ -70,7 +70,7 @@ namespace Takenet.Elephant.Sql
                     tableName = tableName.AsSqlIdentifier(),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues.Select(k => k.ToSqlParameter()));
+                filterValues.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
         public static DbCommand CreateUpdateCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
@@ -85,7 +85,7 @@ namespace Takenet.Elephant.Sql
                     columnValues = SqlHelper.GetCommaEqualsStatement(databaseDriver, columnValues.Keys.ToArray()),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
                 },
-                filterValues.Union(columnValues).Select(c => c.ToSqlParameter()));
+                filterValues.Union(columnValues).Select(c => c.ToDbParameter(databaseDriver)));
         }
 
         public static DbCommand CreateContainsCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues)
@@ -97,7 +97,7 @@ namespace Takenet.Elephant.Sql
                     tableName = tableName.AsSqlIdentifier(),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToSqlParameter()));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }        
 
         public static DbCommand CreateInsertCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> columnValues)
@@ -110,7 +110,7 @@ namespace Takenet.Elephant.Sql
                     columns = columnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate()
                 },
-                columnValues.Select(c => c.ToSqlParameter()));
+                columnValues.Select(c => c.ToDbParameter(databaseDriver)));
         }
 
         public static DbCommand CreateInsertWhereNotExistsCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues, bool deleteBeforeInsert = false)
@@ -128,7 +128,7 @@ namespace Takenet.Elephant.Sql
                     values = columnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate(),
                     filter = filterValues == null || !filterValues.Any() ? databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsZero) : SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
                 },
-                columnValues.Select(c => c.ToSqlParameter()));
+                columnValues.Select(c => c.ToDbParameter(databaseDriver)));
         }
 
         public static DbCommand CreateSelectCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues, string[] selectColumns)
@@ -142,7 +142,7 @@ namespace Takenet.Elephant.Sql
                     tableName = tableName.AsSqlIdentifier(),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToSqlParameter()));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
         public static DbCommand CreateSelectCountCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string filter = null)
@@ -166,7 +166,7 @@ namespace Takenet.Elephant.Sql
                     tableName = tableName.AsSqlIdentifier(),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToSqlParameter()));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
         public static DbCommand CreateSelectSkipTakeCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string[] selectColumns, string filter, int skip, int take, string[] orderByColumns)
@@ -194,7 +194,7 @@ namespace Takenet.Elephant.Sql
                     columns = selectColumns.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToSqlParameter()));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
         public static DbCommand CreateMergeCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> keyValues, IDictionary<string, object> columnValues)
@@ -214,7 +214,7 @@ namespace Takenet.Elephant.Sql
                     columns = keyAndColumnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
                     values = keyAndColumnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate()
                 },
-                keyAndColumnValues.Select(k => k.ToSqlParameter()));
+                keyAndColumnValues.Select(k => k.ToDbParameter(databaseDriver)));
         }
     }
 }

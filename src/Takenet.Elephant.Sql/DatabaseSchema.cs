@@ -45,10 +45,11 @@ namespace Takenet.Elephant.Sql
                     tableDefinition = createTableSqlBuilder.ToString()
                 });
 
-            await connection.ExecuteNonQueryAsync(
-                createTableSql,
-                cancellationToken).ConfigureAwait(false);
-
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = createTableSql;
+                await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);                
+            }
         }
 
         internal static async Task UpdateTableSchemaAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, CancellationToken cancellationToken)
@@ -86,7 +87,7 @@ namespace Takenet.Elephant.Sql
                 else if (!GetSqlTypeSql(databaseDriver, column.Value).StartsWith(
                          tableColumnsDictionary[column.Key], StringComparison.OrdinalIgnoreCase))
                 {
-                    throw new InvalidOperationException("The existing column '{columnName}' type '{columnType}' is not compatible with the definition type '{dbType}'".Format(new { columnName = column.Key, columnType = tableColumnsDictionary[column.Key], dbType = column.Value }));
+                    throw new InvalidOperationException($"The existing column '{column.Key}' type '{tableColumnsDictionary[column.Key]}' is not compatible with the definition type '{column.Value}'");
                 }
             }
 

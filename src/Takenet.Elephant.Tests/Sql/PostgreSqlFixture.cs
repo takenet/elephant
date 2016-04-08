@@ -6,9 +6,9 @@ using Takenet.Elephant.Sql.PostgreSql;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    public class PostgreSqlFixture : IDisposable
+    public class SqlFixture : IDisposable
     {
-        public PostgreSqlFixture()
+        public SqlFixture()
         {
             DatabaseDriver = new PostgreSqlDatabaseDriver();
 
@@ -29,7 +29,7 @@ namespace Takenet.Elephant.Tests.Sql
         {
             using (var command = Connection.CreateCommand())
             {
-                command.CommandText = $"DO $do$ BEGIN IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{tableName}') THEN DROP TABLE {tableName}; END IF; END $do$";
+                command.CommandText = $"DROP TABLE IF EXISTS public.{tableName.AsSqlIdentifier()}";
                 command.ExecuteNonQuery();
             }
         }

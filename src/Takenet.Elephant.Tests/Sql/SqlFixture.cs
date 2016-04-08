@@ -5,9 +5,9 @@ using Takenet.Elephant.Sql;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    public class SqlFixture : IDisposable
+    public class SqlFixture2 : IDisposable
     {
-        public SqlFixture()
+        public SqlFixture2()
         {
             // Note: You should create the Localdb instance if it doesn't exists
             // Go to the command prompt and run: sqllocaldb create "MSSQLLocalDB"

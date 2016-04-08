@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql
 {
@@ -26,5 +27,8 @@ namespace Takenet.Elephant.Sql
         {
             return SqlTemplates.ResourceManager.GetString($"DbType{dbType}");
         }
+
+        public DbParameter CreateParameter(string parameterName, object value) => new SqlParameter(parameterName, value);
+        
     }
 }

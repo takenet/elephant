@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.Common;
 using Npgsql;
+using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql.PostgreSql
 {
@@ -28,5 +29,15 @@ namespace Takenet.Elephant.Sql.PostgreSql
         {
             return PostgreSqlTemplates.ResourceManager.GetString($"DbType{dbType}");
         }
+
+        public DbParameter CreateParameter(string parameterName, object value)
+        {
+            return new NpgsqlParameter()
+            {
+                ParameterName = parameterName,
+                Value = value
+            };
+        }
+        
     }
 }

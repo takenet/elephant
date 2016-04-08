@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql
 {
@@ -26,9 +29,9 @@ namespace Takenet.Elephant.Sql
             return values.Aggregate((a, b) => $"{a},{b}").TrimEnd(',');
         }
 
-        public static SqlParameter ToSqlParameter(this KeyValuePair<string, object> keyValuePair)
+        public static DbParameter ToDbParameter(this KeyValuePair<string, object> keyValuePair, IDatabaseDriver databaseDriver)
         {
-            return new SqlParameter(keyValuePair.Key.AsSqlParameterName(), keyValuePair.Value);
+            return databaseDriver.CreateParameter(keyValuePair.Key.AsSqlParameterName(), keyValuePair.Value);
         }
     }
 }

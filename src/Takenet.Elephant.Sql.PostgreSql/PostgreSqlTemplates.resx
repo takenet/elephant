@@ -154,7 +154,7 @@
     <value>SMALLINT</value>
   </data>
   <data name="DbTypeInt32" xml:space="preserve">
-    <value>INT</value>
+    <value>INTEGER</value>
   </data>
   <data name="DbTypeInt64" xml:space="preserve">
     <value>BIGINT</value>
@@ -181,7 +181,7 @@ WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
     <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM {tableName} WHERE {filter})) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END</value>
   </data>
   <data name="GetTableColumns" xml:space="preserve">
-    <value>SELECT COLUMN_NAME, DATA_TYPE
+    <value>SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN ('varchar', 'timestamp') THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = '{tableName}'</value>
   </data>

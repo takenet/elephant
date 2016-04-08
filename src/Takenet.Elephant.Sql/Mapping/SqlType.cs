@@ -76,5 +76,15 @@ namespace Takenet.Elephant.Sql.Mapping
             }
         }
 
+        public override string ToString()
+        {
+            if (Precision != null)
+            {
+                if (Scale != null) return $"{Type}({Precision},{Scale})";            
+                return $"{Type}({Precision})";
+            }
+
+            return Type.ToString();
+        }
     }
 }

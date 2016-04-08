@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql
 {
@@ -13,6 +14,8 @@ namespace Takenet.Elephant.Sql
         string GetSqlStatementTemplate(SqlStatement sqlStatement);
 
         string GetSqlTypeName(DbType dbType);
+
+        DbParameter CreateParameter(string parameterName, object value);
     }
 
     public enum SqlStatement
