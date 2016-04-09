@@ -267,7 +267,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {columnName} {sqlType} NOT NULL IDENTITY(1,1).
+        ///   Looks up a localized string similar to {columnName} SERIAL NOT NULL.
         /// </summary>
         public static string IdentityColumnDefinition {
             get {
@@ -301,6 +301,33 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         public static string InsertWhereNotExists {
             get {
                 return ResourceManager.GetString("InsertWhereNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {columnName} SMALLSERIAL NOT NULL.
+        /// </summary>
+        public static string Int16IdentityColumnDefinition {
+            get {
+                return ResourceManager.GetString("Int16IdentityColumnDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {columnName} SERIAL NOT NULL.
+        /// </summary>
+        public static string Int32IdentityColumnDefinition {
+            get {
+                return ResourceManager.GetString("Int32IdentityColumnDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {columnName} BIGSERIAL NOT NULL.
+        /// </summary>
+        public static string Int64IdentityColumnDefinition {
+            get {
+                return ResourceManager.GetString("Int64IdentityColumnDefinition", resourceCulture);
             }
         }
         

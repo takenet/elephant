@@ -205,6 +205,15 @@ WHERE TABLE_NAME = '{tableName}'</value>
 SELECT {values}
 WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
   </data>
+  <data name="Int16IdentityColumnDefinition" xml:space="preserve">
+    <value>{columnName} SMALLINT NOT NULL IDENTITY(1,1)</value>
+  </data>
+  <data name="Int32IdentityColumnDefinition" xml:space="preserve">
+    <value>{columnName} INT NOT NULL IDENTITY(1,1)</value>
+  </data>
+  <data name="Int64IdentityColumnDefinition" xml:space="preserve">
+    <value>{columnName} BIGINT NOT NULL IDENTITY(1,1)</value>
+  </data>
   <data name="LessThan" xml:space="preserve">
     <value>&lt;</value>
   </data>

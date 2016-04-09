@@ -20,16 +20,6 @@ namespace Takenet.Elephant.Sql.PostgreSql
             return new NpgsqlConnection(connectionString);
         }
 
-        public string GetSqlStatementTemplate(SqlStatement sqlStatement)
-        {
-            return PostgreSqlTemplates.ResourceManager.GetString(sqlStatement.ToString());
-        }
-
-        public string GetSqlTypeName(DbType dbType)
-        {
-            return PostgreSqlTemplates.ResourceManager.GetString($"DbType{dbType}");
-        }
-
         public DbParameter CreateParameter(string parameterName, object value)
         {
             return new NpgsqlParameter()
@@ -38,6 +28,15 @@ namespace Takenet.Elephant.Sql.PostgreSql
                 Value = value
             };
         }
-        
+
+        public string GetSqlStatementTemplate(SqlStatement sqlStatement)
+        {
+            return PostgreSqlTemplates.ResourceManager.GetString(sqlStatement.ToString());
+        }
+
+        public string GetSqlTypeName(DbType dbType)
+        {
+            return PostgreSqlTemplates.ResourceManager.GetString($"DbType{dbType}");
+        }        
     }
 }

@@ -54,7 +54,8 @@ namespace Takenet.Elephant.Sql
                 int totalCount;
                 using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter))
                 {
-                    totalCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                    totalCount = Convert.ToInt32(
+                        await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
                 }
 
                 return new QueryResult<KeyValuePair<TKey, TValue>>(
@@ -89,7 +90,8 @@ namespace Takenet.Elephant.Sql
                 int totalCount;
                 using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter))
                 {
-                    totalCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                    totalCount = Convert.ToInt32(
+                        await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
                 }
 
                 

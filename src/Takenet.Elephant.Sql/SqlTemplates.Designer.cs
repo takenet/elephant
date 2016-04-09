@@ -305,6 +305,33 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {columnName} SMALLINT NOT NULL IDENTITY(1,1).
+        /// </summary>
+        public static string Int16IdentityColumnDefinition {
+            get {
+                return ResourceManager.GetString("Int16IdentityColumnDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {columnName} INT NOT NULL IDENTITY(1,1).
+        /// </summary>
+        public static string Int32IdentityColumnDefinition {
+            get {
+                return ResourceManager.GetString("Int32IdentityColumnDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {columnName} BIGINT NOT NULL IDENTITY(1,1).
+        /// </summary>
+        public static string Int64IdentityColumnDefinition {
+            get {
+                return ResourceManager.GetString("Int64IdentityColumnDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;.
         /// </summary>
         public static string LessThan {

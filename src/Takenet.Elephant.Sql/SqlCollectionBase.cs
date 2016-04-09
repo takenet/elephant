@@ -33,7 +33,8 @@ namespace Takenet.Elephant.Sql
                 {
                     using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter: null))
                     {
-                        return (int)await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+                        return Convert.ToInt64(
+                            await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false));
                     }
                 }
             }

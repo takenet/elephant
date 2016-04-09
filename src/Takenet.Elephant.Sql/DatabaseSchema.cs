@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -48,7 +49,7 @@ namespace Takenet.Elephant.Sql
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = createTableSql;
-                await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);                
+                await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -116,43 +117,48 @@ namespace Takenet.Elephant.Sql
 
             foreach (var column in columns)
             {
+                var format = new
+                {
+                    columnName = column.Key.AsSqlIdentifier(),
+                    sqlType = GetSqlTypeSql(databaseDriver, column.Value)
+                };
+
+                SqlStatement statement;
+
                 // All columns, except the key are nullable
                 if (table.KeyColumnsNames.Contains(column.Key))
                 {
                     if (column.Value.IsIdentity)
-                    {
-                        columnSqlBuilder.AppendLine(
-                            databaseDriver.GetSqlStatementTemplate(SqlStatement.IdentityColumnDefinition).Format(
-                                new
-                                {
-                                    columnName = column.Key.AsSqlIdentifier(),
-                                    sqlType = GetSqlTypeSql(databaseDriver, column.Value)
-                                })
-                            );
+                    {                        
+                        switch (column.Value.Type)
+                        {
+                            case DbType.Int16:
+                                statement = SqlStatement.Int16IdentityColumnDefinition;                                
+                                break;
+                            case DbType.Int32:
+                                statement = SqlStatement.Int32IdentityColumnDefinition;
+                                break;
+                            case DbType.Int64:
+                                statement = SqlStatement.Int64IdentityColumnDefinition;
+                                break;
+                            default:
+                                statement = SqlStatement.IdentityColumnDefinition;
+                                break;
+                        }
                     }
                     else
                     {
-                        columnSqlBuilder.AppendLine(
-                            databaseDriver.GetSqlStatementTemplate(SqlStatement.ColumnDefinition).Format(
-                                new
-                                {
-                                    columnName = column.Key.AsSqlIdentifier(),
-                                    sqlType = GetSqlTypeSql(databaseDriver, column.Value)
-                                })
-                            );
+                        statement = SqlStatement.ColumnDefinition;                        
                     }
                 }
                 else
                 {
-                    columnSqlBuilder.AppendLine(
-                        databaseDriver.GetSqlStatementTemplate(SqlStatement.NullableColumnDefinition).Format(
-                            new
-                            {
-                                columnName = column.Key.AsSqlIdentifier(),
-                                sqlType = GetSqlTypeSql(databaseDriver, column.Value)
-                            })
-                        );
+                    statement = SqlStatement.NullableColumnDefinition;
                 }
+
+                columnSqlBuilder.AppendLine(
+                    databaseDriver.GetSqlStatementTemplate(statement).Format(
+                        format));
 
                 columnSqlBuilder.Append(",");
             }

@@ -192,7 +192,7 @@ WHERE TABLE_NAME = '{tableName}'</value>
     <value>&gt;=</value>
   </data>
   <data name="IdentityColumnDefinition" xml:space="preserve">
-    <value>{columnName} {sqlType} NOT NULL IDENTITY(1,1)</value>
+    <value>{columnName} SERIAL NOT NULL</value>
   </data>
   <data name="In" xml:space="preserve">
     <value>IN</value>
@@ -204,6 +204,15 @@ WHERE TABLE_NAME = '{tableName}'</value>
     <value>INSERT INTO {tableName} ({columns}) 
 SELECT {values}
 WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
+  </data>
+  <data name="Int16IdentityColumnDefinition" xml:space="preserve">
+    <value>{columnName} SMALLSERIAL NOT NULL</value>
+  </data>
+  <data name="Int32IdentityColumnDefinition" xml:space="preserve">
+    <value>{columnName} SERIAL NOT NULL</value>
+  </data>
+  <data name="Int64IdentityColumnDefinition" xml:space="preserve">
+    <value>{columnName} BIGSERIAL NOT NULL</value>
   </data>
   <data name="LessThan" xml:space="preserve">
     <value>&lt;</value>
