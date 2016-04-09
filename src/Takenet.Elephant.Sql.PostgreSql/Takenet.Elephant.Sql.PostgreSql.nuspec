@@ -19,7 +19,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Takenet.Elephant.PostgreSql.dll" target="lib\net461\Takenet.Elephant.PostgreSql.dll" />
-    <file src="bin\Release\Takenet.Elephant.PostgreSql.XML" target="lib\net461\Takenet.Elephant.PostgreSql.XML" />
+    <file src="bin\Release\Takenet.Elephant.Sql.PostgreSql.dll" target="lib\net461\Takenet.Elephant.Sql.PostgreSql.dll" />
+    <file src="bin\Release\Takenet.Elephant.Sql.PostgreSql.XML" target="lib\net461\Takenet.Elephant.Sql.PostgreSql.XML" />
   </files>
 </package>
