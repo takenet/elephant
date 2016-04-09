@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Takenet.Elephant.PostgreSql.nuspec" />
+    <None Include="Takenet.Elephant.Sql.PostgreSql.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PostgreSqlTemplates.resx">
