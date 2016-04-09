@@ -224,14 +224,8 @@ WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
     <value>LIKE</value>
   </data>
   <data name="Merge" xml:space="preserve">
-    <value>DECLARE @dummy int;
-MERGE {tableName} AS target
-USING (SELECT {columnNamesAndValues}) as source
-ON ({on})
-WHEN MATCHED THEN
-UPDATE SET {columnValues}
-WHEN NOT MATCHED THEN
-INSERT ({columns}) VALUES ({values});</value>
+    <value>INSERT INTO {tableName} ({columns}) VALUES ({values})
+ON CONFLICT ({keyColumns}) DO UPDATE SET {columnValues}</value>
   </data>
   <data name="NotEqual" xml:space="preserve">
     <value>&lt;&gt;</value>

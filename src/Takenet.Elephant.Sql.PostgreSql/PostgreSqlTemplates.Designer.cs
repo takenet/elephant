@@ -359,14 +359,8 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DECLARE @dummy int;
-        ///MERGE {tableName} AS target
-        ///USING (SELECT {columnNamesAndValues}) as source
-        ///ON ({on})
-        ///WHEN MATCHED THEN
-        ///UPDATE SET {columnValues}
-        ///WHEN NOT MATCHED THEN
-        ///INSERT ({columns}) VALUES ({values});.
+        ///   Looks up a localized string similar to INSERT INTO {tableName} ({columns}) VALUES ({values})
+        ///ON CONFLICT ({keyColumns}) DO UPDATE SET {columnValues}.
         /// </summary>
         public static string Merge {
             get {

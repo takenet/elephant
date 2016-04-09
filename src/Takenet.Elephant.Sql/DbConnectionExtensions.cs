@@ -212,7 +212,8 @@ namespace Takenet.Elephant.Sql
                     on = SqlHelper.GetLiteralJoinConditionStatement(databaseDriver, keyValues.Keys.ToArray(), "source", "target"),
                     columnValues = columnValues.Any() ? SqlHelper.GetCommaEqualsStatement(databaseDriver, columnValues.Keys.ToArray()) : databaseDriver.GetSqlStatementTemplate(SqlStatement.DummyEqualsZero),
                     columns = keyAndColumnValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate(),
-                    values = keyAndColumnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate()
+                    values = keyAndColumnValues.Keys.Select(v => v.AsSqlParameterName()).ToCommaSeparate(),
+                    keyColumns = keyValues.Keys.Select(c => c.AsSqlIdentifier()).ToCommaSeparate()
                 },
                 keyAndColumnValues.Select(k => k.ToDbParameter(databaseDriver)));
         }
