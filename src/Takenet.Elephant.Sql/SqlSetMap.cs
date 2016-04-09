@@ -209,7 +209,9 @@ namespace Takenet.Elephant.Sql
                     {
                         using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, MapKeyColumnValues))
                         {
-                            return (int)await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+                            var result = await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+                            // In postgre, it is a long; in sql server, a int32...
+                            return Convert.ToInt64(result);
                         }
                     }
                 }

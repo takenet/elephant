@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 
 namespace Takenet.Elephant.Sql
 {
@@ -50,7 +49,7 @@ namespace Takenet.Elephant.Sql
                 {typeof (char?), DbType.StringFixedLength},
                 {typeof (Guid?), DbType.Guid},
                 {typeof (DateTime?), DbType.DateTime},
-                {typeof (DateTimeOffset?), DbType.DateTimeOffset},
+                {typeof (DateTimeOffset?), DbType.DateTimeOffset}
             };
         }
 
@@ -90,30 +89,31 @@ namespace Takenet.Elephant.Sql
             {
                 return dbValue;
             }
-            else if (propertyType.IsEnum)
+            if (propertyType.IsEnum)
             {
                 var dbValueString = (string)dbValue;
                 return Enum.Parse(propertyType, dbValueString);
             }
-            else if (propertyType == typeof(Uri))
+            if (propertyType == typeof(Uri))
             {
                 var dbValueString = (string)dbValue;
                 return new Uri(dbValueString);
             }
-            else if (propertyType == typeof(DateTime) && dbValue is DateTimeOffset)
+            if (propertyType == typeof(DateTime) && dbValue is DateTimeOffset)
             {
                 return ((DateTimeOffset)dbValue).DateTime;
             }
-            else if (dbValue is string)
+            if (propertyType == typeof(DateTimeOffset) && dbValue is DateTime)
+            {
+                return new DateTimeOffset((DateTime)dbValue);
+            }
+            if (dbValue is string)
             {
                 var dbValueString = (string)dbValue;
                 var parseFunc = TypeUtil.GetParseFuncForType(propertyType);
                 return parseFunc(dbValueString);
             }
-            else
-            {
-                throw new NotSupportedException($"Property type '{propertyType.Name}' is not supported");
-            }
+            throw new NotSupportedException($"Property type '{propertyType.Name}' is not supported");
         }
 
     }

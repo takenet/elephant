@@ -127,7 +127,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TIMESTAMPZ(3).
+        ///   Looks up a localized string similar to TIMESTAMPTZ(3).
         /// </summary>
         public static string DbTypeDateTimeOffset {
             get {
@@ -238,7 +238,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN (&apos;varchar&apos;, &apos;timestamp&apos;) THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE
+        ///   Looks up a localized string similar to SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN (&apos;varchar&apos;, &apos;timestamp&apos;, &apos;timestamptz&apos;) THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE
         ///FROM INFORMATION_SCHEMA.COLUMNS
         ///WHERE TABLE_NAME = &apos;{tableName}&apos;.
         /// </summary>
@@ -456,7 +456,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {tale} OFFSET {skip}.
+        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {take} OFFSET {skip}.
         /// </summary>
         public static string SelectSkipTake {
             get {

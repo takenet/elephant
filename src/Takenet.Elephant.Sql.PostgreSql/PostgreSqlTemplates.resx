@@ -142,7 +142,7 @@
     <value>TIMESTAMP(3)</value>
   </data>
   <data name="DbTypeDateTimeOffset" xml:space="preserve">
-    <value>TIMESTAMPZ(3)</value>
+    <value>TIMESTAMPTZ(3)</value>
   </data>
   <data name="DbTypeDouble" xml:space="preserve">
     <value>DOUBLE PRECISION</value>
@@ -181,7 +181,7 @@ WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
     <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM {tableName} WHERE {filter})) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END</value>
   </data>
   <data name="GetTableColumns" xml:space="preserve">
-    <value>SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN ('varchar', 'timestamp') THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE
+    <value>SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN ('varchar', 'timestamp', 'timestamptz') THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = '{tableName}'</value>
   </data>
@@ -261,7 +261,7 @@ INSERT ({columns}) VALUES ({values});</value>
     <value>SELECT COUNT(*) FROM {tableName} WHERE {filter}</value>
   </data>
   <data name="SelectSkipTake" xml:space="preserve">
-    <value>SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {tale} OFFSET {skip}</value>
+    <value>SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {take} OFFSET {skip}</value>
   </data>
   <data name="SelectTop1" xml:space="preserve">
     <value>SELECT {columns} FROM {tableName} WHERE {filter} LIMIT 1</value>
