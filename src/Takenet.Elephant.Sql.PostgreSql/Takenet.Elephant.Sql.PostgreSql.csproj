@@ -28,6 +28,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Takenet.Elephant.Sql.PostgreSql.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Npgsql, Version=3.0.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
@@ -60,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Takenet.Elephant.PostgreSql.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PostgreSqlTemplates.resx">
