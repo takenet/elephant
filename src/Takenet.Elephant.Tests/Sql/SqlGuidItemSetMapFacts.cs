@@ -5,18 +5,16 @@ using Ploeh.AutoFixture;
 using Takenet.Elephant.Memory;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
-using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    [Collection("Sql")]
-    public class SqlGuidItemSetMapFacts : GuidItemSetMapFacts
+    public abstract class SqlGuidItemSetMapFacts : GuidItemSetMapFacts
     {
-        private readonly SqlFixture _fixture;
+        private readonly ISqlFixture _serverFixture;
 
-        public SqlGuidItemSetMapFacts(SqlFixture fixture)
+        protected SqlGuidItemSetMapFacts(ISqlFixture serverFixture)
         {
-            _fixture = fixture;
+            _serverFixture = serverFixture;
         }
 
         public override IMap<Guid, ISet<Item>> Create()
@@ -26,10 +24,10 @@ namespace Takenet.Elephant.Tests.Sql
                 .ToSqlColumns();
             columns.Add("Key", new SqlType(DbType.Guid));
             var table = new Table("GuidItems", new[] { "Key", nameof(Item.GuidProperty) }, columns);
-            _fixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Name);
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            return new SqlSetMap<Guid, Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            return new SqlSetMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
         }
 
         public override ISet<Item> CreateValue(Guid key, bool populate)

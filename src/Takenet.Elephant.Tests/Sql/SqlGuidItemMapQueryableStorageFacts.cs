@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,14 +9,13 @@ using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    [Collection("Sql")]
-    public class SqlGuidItemMapQueryableStorageFacts : GuidItemMapQueryableStorageFacts
+    public abstract class SqlGuidItemMapQueryableStorageFacts : GuidItemMapQueryableStorageFacts
     {
-        private readonly SqlFixture _fixture;
+        private readonly ISqlFixture _serverFixture;
 
-        public SqlGuidItemMapQueryableStorageFacts(SqlFixture fixture)
+        protected SqlGuidItemMapQueryableStorageFacts(ISqlFixture serverFixture)
         {
-            _fixture = fixture;
+            _serverFixture = serverFixture;
         }
 
         public override IMap<Guid, Item> Create()
@@ -29,11 +25,11 @@ namespace Takenet.Elephant.Tests.Sql
                 .ToSqlColumns();
             columns.Add("Key", new SqlType(DbType.Guid));
             var table = new Table("GuidItems", new[] { "Key" }, columns);
-            _fixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Name);
 
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            return new SqlMap<Guid, Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            return new SqlMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
         }
 
         [Fact(DisplayName = "QueryExistingValueFilteringWithTakeLimitSucceeds")]

@@ -5,18 +5,16 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
-using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    [Collection("Sql")]
-    public class SqlGuidItemKeyQueryableMapFacts : GuidItemKeyQueryableMapFacts
+    public abstract class SqlGuidItemKeyQueryableMapFacts : GuidItemKeyQueryableMapFacts
     {
-        private readonly SqlFixture _fixture;
+        private readonly ISqlFixture _serverFixture;
 
-        public SqlGuidItemKeyQueryableMapFacts(SqlFixture fixture)
+        protected SqlGuidItemKeyQueryableMapFacts(ISqlFixture serverFixture)
         {
-            _fixture = fixture;
+            _serverFixture = serverFixture;
         }
 
         public override async Task<IKeyQueryableMap<Guid, Item>> CreateAsync(params KeyValuePair<Guid, Item>[] values)
@@ -26,11 +24,11 @@ namespace Takenet.Elephant.Tests.Sql
                 .ToSqlColumns();
             columns.Add("Key", new SqlType(DbType.Guid));
             var table = new Table("GuidItems", new[] { "Key" }, columns);
-            _fixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Name);
 
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            var map = new SqlMap<Guid, Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            var map = new SqlMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
 
             foreach (var value in values)
             {

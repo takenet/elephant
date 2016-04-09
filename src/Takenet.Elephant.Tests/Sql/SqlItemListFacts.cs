@@ -1,25 +1,23 @@
 ﻿using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
-using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    [Collection("Sql")]
-    public class SqlItemListFacts : ItemListFacts
+    public abstract class SqlItemListFacts : ItemListFacts
     {
-        private readonly SqlFixture _fixture;
+        private readonly ISqlFixture _serverFixture;
 
-        public SqlItemListFacts(SqlFixture fixture)
+        protected SqlItemListFacts(ISqlFixture serverFixture)
         {
-            _fixture = fixture;
+            _serverFixture = serverFixture;
         }
 
         public override IList<Item> Create()
         {
             var table = TableBuilder.WithName("ItemsSet").WithKeyColumnsFromTypeProperties<Item>().WithKeyColumnFromType<int>("Id", true).Build();
-            _fixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Name);
             var mapper = new TypeMapper<Item>(table);
-            return new SqlList<Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, mapper);
+            return new SqlList<Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, mapper);
         }
     }
 }

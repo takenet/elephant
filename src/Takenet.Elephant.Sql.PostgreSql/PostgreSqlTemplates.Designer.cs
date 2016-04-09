@@ -127,7 +127,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TIMESTAMP(3).
+        ///   Looks up a localized string similar to TIMESTAMPZ(3).
         /// </summary>
         public static string DbTypeDateTimeOffset {
             get {

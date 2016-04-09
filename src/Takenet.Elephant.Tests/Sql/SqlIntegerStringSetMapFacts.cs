@@ -4,18 +4,16 @@ using Ploeh.AutoFixture;
 using Takenet.Elephant.Memory;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
-using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    [Collection("Sql")]
-    public class SqlIntegerStringSetMapFacts : IntegerStringSetMapFacts
+    public abstract class SqlIntegerStringSetMapFacts : IntegerStringSetMapFacts
     {
-        private readonly SqlFixture _fixture;
+        private readonly ISqlFixture _serverFixture;
 
-        public SqlIntegerStringSetMapFacts(SqlFixture fixture)
+        protected SqlIntegerStringSetMapFacts(ISqlFixture serverFixture)
         {
-            _fixture = fixture;
+            _serverFixture = serverFixture;
         }
 
         public override IMap<int, ISet<string>> Create()
@@ -28,10 +26,10 @@ namespace Takenet.Elephant.Tests.Sql
                     {"Key", new SqlType(DbType.Int32)},
                     {"Value", new SqlType(DbType.String)}
                 });
-            _fixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Name);
             var keyMapper = new ValueMapper<int>("Key");
             var valueMapper = new ValueMapper<string>("Value");
-            return new SqlSetMap<int, string>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            return new SqlSetMap<int, string>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
         }
 
         public override ISet<string> CreateValue(int key, bool populate)

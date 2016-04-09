@@ -3,26 +3,24 @@ using System.Collections.Generic;
 using System.Data;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
-using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    [Collection("Sql")]
-    public class SqlGuidSetFacts : GuidSetFacts
+    public abstract class SqlGuidSetFacts : GuidSetFacts
     {
-        private readonly SqlFixture _fixture;
+        private readonly ISqlFixture _serverFixture;
 
-        public SqlGuidSetFacts(SqlFixture fixture)
+        protected SqlGuidSetFacts(ISqlFixture serverFixture)
         {
-            _fixture = fixture;
+            _serverFixture = serverFixture;
         }
             
         public override ISet<Guid> Create()
         {
             var table = new Table("Guids", new [] {"Value"}, new Dictionary<string, SqlType>() { { "Value", new SqlType(DbType.Guid) }});
-            _fixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Name);
             var mapper = new ValueMapper<Guid>("Value");
-            return new SqlSet<Guid>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, mapper);
+            return new SqlSet<Guid>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, mapper);
         }
     }
 }

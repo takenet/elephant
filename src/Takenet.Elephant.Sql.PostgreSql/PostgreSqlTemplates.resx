@@ -142,7 +142,7 @@
     <value>TIMESTAMP(3)</value>
   </data>
   <data name="DbTypeDateTimeOffset" xml:space="preserve">
-    <value>TIMESTAMP(3)</value>
+    <value>TIMESTAMPZ(3)</value>
   </data>
   <data name="DbTypeDouble" xml:space="preserve">
     <value>DOUBLE PRECISION</value>

@@ -3,31 +3,29 @@ using System.Data;
 using System.Reflection;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
-using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    [Collection("Sql")]
-    public class SqlGuidItemItemSetMapFacts : GuidItemItemSetMapFacts
+    public abstract class SqlGuidItemItemSetMapFacts : GuidItemItemSetMapFacts
     {
-        private readonly SqlFixture _fixture;
+        private readonly ISqlFixture _serverFixture;
 
-        public SqlGuidItemItemSetMapFacts(SqlFixture fixture)
+        protected SqlGuidItemItemSetMapFacts(ISqlFixture serverFixture)
         {
-            _fixture = fixture;
+            _serverFixture = serverFixture;
         }
 
         public override IItemSetMap<Guid, Item> Create()
-        {            
+        {
             var columns = typeof(Item)
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .ToSqlColumns();
             columns.Add("Key", new SqlType(DbType.Guid));
             var table = new Table("GuidItems", new[] { "Key", nameof(Item.GuidProperty) }, columns);
-            _fixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Name);
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            return new SqlSetMap<Guid, Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            return new SqlSetMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
         }
     }
 }

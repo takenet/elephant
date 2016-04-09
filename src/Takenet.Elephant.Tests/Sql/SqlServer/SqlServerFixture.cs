@@ -1,13 +1,12 @@
-﻿using System;
-using System.Data.Common;
+﻿using System.Data.Common;
 using System.Data.SqlClient;
 using Takenet.Elephant.Sql;
 
-namespace Takenet.Elephant.Tests.Sql
+namespace Takenet.Elephant.Tests.Sql.SqlServer
 {
-    public class SqlFixture2 : IDisposable
+    public class SqlServerFixture : ISqlFixture
     {
-        public SqlFixture2()
+        public SqlServerFixture()
         {
             // Note: You should create the Localdb instance if it doesn't exists
             // Go to the command prompt and run: sqllocaldb create "MSSQLLocalDB"

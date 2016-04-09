@@ -1,18 +1,16 @@
 ﻿using System;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
-using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql
 {
-    [Collection("Sql")]
-    public class SqlGuidItemPropertyMapFacts : GuidItemPropertyMapFacts
+    public abstract class SqlGuidItemPropertyMapFacts : GuidItemPropertyMapFacts
     {
-        private readonly SqlFixture _fixture;
+        private readonly ISqlFixture _serverFixture;
 
-        public SqlGuidItemPropertyMapFacts(SqlFixture fixture)
+        protected SqlGuidItemPropertyMapFacts(ISqlFixture serverFixture)
         {
-            _fixture = fixture;
+            _serverFixture = serverFixture;
         }
 
         public override IPropertyMap<Guid, Item> Create()
@@ -22,11 +20,11 @@ namespace Takenet.Elephant.Tests.Sql
                 .WithColumnsFromTypeProperties<Item>()
                 .WithKeyColumnFromType<Guid>("Key")
                 .Build();
-            _fixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Name);
 
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            return new SqlMap<Guid, Item>(_fixture.DatabaseDriver, _fixture.ConnectionString, table, keyMapper, valueMapper);
+            return new SqlMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
         }
     }
 }

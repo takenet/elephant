@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
 using Takenet.Elephant.Tests.Redis;
-using Takenet.Elephant.Tests.Sql;
+using Takenet.Elephant.Tests.Sql.SqlServer;
 
 namespace Takenet.Elephant.Tests.Specialized
 {
@@ -13,11 +8,11 @@ namespace Takenet.Elephant.Tests.Specialized
     {
         public SqlRedisFixture()
         {
-            SqlConnectionFixture = new SqlFixture();
+            SqlConnectionFixture = new SqlServerFixture();
             RedisFixture = new RedisFixture();
         }
 
-        public SqlFixture SqlConnectionFixture { get;  }
+        public SqlServerFixture SqlConnectionFixture { get;  }
 
         public RedisFixture RedisFixture { get;  }
 

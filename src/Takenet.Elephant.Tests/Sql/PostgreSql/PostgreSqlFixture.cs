@@ -1,14 +1,12 @@
-﻿using System;
-using System.Data.Common;
-using System.Data.SqlClient;
+﻿using System.Data.Common;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.PostgreSql;
 
-namespace Takenet.Elephant.Tests.Sql
+namespace Takenet.Elephant.Tests.Sql.PostgreSql
 {
-    public class SqlFixture : IDisposable
+    public class PostgreSqlFixture : ISqlFixture
     {
-        public SqlFixture()
+        public PostgreSqlFixture()
         {
             DatabaseDriver = new PostgreSqlDatabaseDriver();
 
