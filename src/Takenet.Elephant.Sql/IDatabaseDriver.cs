@@ -53,6 +53,7 @@ namespace Takenet.Elephant.Sql
         OneEqualsZero,
         DummyEqualsZero,
         ValueAsColumn,
+        Not,
         NotEqual,
         GreaterThan,
         GreaterThanOrEqual,

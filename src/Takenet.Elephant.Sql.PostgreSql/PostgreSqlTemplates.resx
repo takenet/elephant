@@ -227,6 +227,9 @@ WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
     <value>INSERT INTO {tableName} ({columns}) VALUES ({values})
 ON CONFLICT ({keyColumns}) DO UPDATE SET {columnValues}</value>
   </data>
+  <data name="Not" xml:space="preserve">
+    <value>NOT</value>
+  </data>
   <data name="NotEqual" xml:space="preserve">
     <value>&lt;&gt;</value>
   </data>

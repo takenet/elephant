@@ -233,6 +233,9 @@ UPDATE SET {columnValues}
 WHEN NOT MATCHED THEN
 INSERT ({columns}) VALUES ({values});</value>
   </data>
+  <data name="Not" xml:space="preserve">
+    <value>NOT</value>
+  </data>
   <data name="NotEqual" xml:space="preserve">
     <value>&lt;&gt;</value>
   </data>

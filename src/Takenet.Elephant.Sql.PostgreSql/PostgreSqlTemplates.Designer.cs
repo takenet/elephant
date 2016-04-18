@@ -369,6 +369,15 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NOT.
+        /// </summary>
+        public static string Not {
+            get {
+                return ResourceManager.GetString("Not", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;&gt;.
         /// </summary>
         public static string NotEqual {
