@@ -25,16 +25,16 @@ The idea behind this library is expose a common layer that can be used with mult
 
 Name             | Description												| Implementations
 -----------------|----------------------------------------------------------|----------------
-Map              | Mapper that provides fast access to a value using a key. | Memory, Redis, SQL
-Set              | Set of unique items.										| Memory, Redis, SQL
+Map              | Mapper that provides fast access to a value using a key. | Memory, Redis, SQL Server, PostgreSQL
+Set              | Set of unique items.										| Memory, Redis, SQL Server, PostgreSQL
 Queue            | FIFO storage container.									| Memory, Redis, RabbitMQ, MSMQ
-QueryableStorage | Storage that supports queries.							| Memory, SQL
+QueryableStorage | Storage that supports queries.							| Memory, SQL Server, PostgreSQL
 
 ### Composite structures
 
 Name     | Description                              | Implementations
 ---------|------------------------------------------|----------------
-SetMap   | Map that contains a set on unique items. | Memory, Redis, SQL
+SetMap   | Map that contains a set on unique items. | Memory, Redis, SQL Server, PostgreSQL
 QueueMap | Map that contains a queue of items.      | Memory, Redis
 
 ### Extended structures
@@ -43,12 +43,12 @@ Name             | Parent | Description													| Implementations
 -----------------|--------|-------------------------------------------------------------|----------------
 BlockingQueue    | Queue  | A queue that allows awaiting for the next item asynchronously. | Memory, Redis, RabbitMQ, MSMQ
 ExpirableKeyMap  | Map    | Map that supports key expiration.							| Memory, Redis
-ItemSetMap       | SetMap | SetMap that allows to get an specific item in the set.		| Memory, Redis, SQL
-KeyQueryableMap  | Map    | Map that supports queries for its keys.						| Memory, SQL
-KeysMap          | Map    | Map service that provides direct access to stored keys.		| Memory, SQL
+ItemSetMap       | SetMap | SetMap that allows to get an specific item in the set.		| Memory, Redis, SQL Server, PostgreSQL
+KeyQueryableMap  | Map    | Map that supports queries for its keys.						| Memory, SQL Server, PostgreSQL
+KeysMap          | Map    | Map service that provides direct access to stored keys.		| Memory, SQL Server, PostgreSQL
 NumberMap        | Map    | Map for number values with atomic increment and decrement support. | Memory, Redis
 PropertyMap      | Map    | Map that allows the insertion and update of specific properties of the value document. | Memory, Redis, SQL
-UpdatableMap     | Map    | Map that supports value updates under specific conditions.	| Memory, SQL
+UpdatableMap     | Map    | Map that supports value updates under specific conditions.	| Memory, SQL Server, PostgreSQL
 
 ### Other
 
@@ -60,6 +60,7 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 
 * Memory (System.Collections)
 * SQL Server
+* PostgreSQL
 * Redis
 
 ## Requirements (to build from source)
@@ -70,6 +71,7 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 * [Takenet.Elephant](https://nuget.org/packages/Takenet.Elephant/)
 * [Takenet.Elephant.Redis](https://nuget.org/packages/Takenet.Elephant.Redis/)
 * [Takenet.Elephant.Sql](https://nuget.org/packages/Takenet.Elephant.Sql/)
+* [Takenet.Elephant.Sql.PostgreSql](https://nuget.org/packages/Takenet.Elephant.Sql.PostgreSql/)
 * [Takenet.Elephant.RabbitMQ](https://nuget.org/packages/Takenet.Elephant.RabbitMQ/)
 * [Takenet.Elephant.Msmq](https://nuget.org/packages/Takenet.Elephant.Msmq/)
 
