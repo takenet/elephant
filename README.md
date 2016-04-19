@@ -59,12 +59,15 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 ## Current supported storage engines
 
 * Memory (System.Collections)
+* Redis
 * SQL Server
 * PostgreSQL
-* Redis
+* RabbitMQ
+* Microsoft Message Queueing
 
 ## Requirements (to build from source)
-* C# 6 (Visual Studio 2015 or better)
+* C# 6 (Visual Studio 2015 or newer)
+* .NET Framework 4.6.1
 
 ### NuGet
 
