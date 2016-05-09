@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
 
@@ -17,7 +18,8 @@ namespace Takenet.Elephant.Tests.Sql
         {
             var table = TableBuilder
                 .WithName("GuidItems")
-                .WithColumnsFromTypeProperties<Item>()
+                .WithColumnsFromTypeProperties<Item>(p => !p.Name.Equals(nameof(Item.StringProperty)))
+                .WithColumn(nameof(Item.StringProperty), new SqlType(DbType.String, int.MaxValue))
                 .WithKeyColumnFromType<Guid>("Key")
                 .Build();
             _serverFixture.DropTable(table.Name);

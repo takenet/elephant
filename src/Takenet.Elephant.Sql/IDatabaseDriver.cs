@@ -59,6 +59,7 @@ namespace Takenet.Elephant.Sql
         GreaterThanOrEqual,
         LessThan,
         LessThanOrEqual,
-        Like
+        Like,
+        MaxLength
     }
 }

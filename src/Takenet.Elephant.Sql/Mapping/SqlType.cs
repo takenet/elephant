@@ -7,7 +7,6 @@ namespace Takenet.Elephant.Sql.Mapping
     /// </summary>
     public sealed class SqlType
     { 
-        public const string MAX_LENGTH = "MAX";
         public const int DEFAULT_STRING_LENGTH = 250;
         private readonly int? _length;
   

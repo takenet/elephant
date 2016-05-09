@@ -171,7 +171,9 @@ namespace Takenet.Elephant.Sql
 
             if (sqlType.Length.HasValue)
             {
-                string lengthValue = sqlType.Length == int.MaxValue ? SqlType.MAX_LENGTH : sqlType.Length.ToString();
+                var lengthValue = sqlType.Length == int.MaxValue ? 
+                    databaseDriver.GetSqlStatementTemplate(SqlStatement.MaxLength) : 
+                    sqlType.Length.ToString();
                 typeSql = typeSql.Format(new
                 {
                     length = lengthValue

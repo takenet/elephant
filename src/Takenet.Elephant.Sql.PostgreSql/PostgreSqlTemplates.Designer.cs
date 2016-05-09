@@ -359,6 +359,15 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 10485760.
+        /// </summary>
+        public static string MaxLength {
+            get {
+                return ResourceManager.GetString("MaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO {tableName} ({columns}) VALUES ({values})
         ///ON CONFLICT ({keyColumns}) DO UPDATE SET {columnValues}.
         /// </summary>
