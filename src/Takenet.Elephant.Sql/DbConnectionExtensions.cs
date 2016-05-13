@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Sql
 {
-    internal static class DbConnectionExtensions
+    public static class DbConnectionExtensions
     {
         public static Task<int> ExecuteNonQueryAsync(this DbConnection connection, string commandText, CancellationToken cancellationToken, SqlParameter[] sqlParameters = null)
         {
