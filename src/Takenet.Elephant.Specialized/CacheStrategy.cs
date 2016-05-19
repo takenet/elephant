@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Takenet.Elephant.Specialized
 {
     /// <summary>
-    /// Defines a cache mechanism where the write actions are executed against two actors - the source and the cache - but the reading ones only against the source.
+    /// Defines a cache mechanism where the write actions are executed against two actors - the source and the cache - but the reading ones only against the cache.
     /// In case of failure of writing in the cache actor, there's a chance of synchronization between the actors before the next read.
     /// </summary>
     /// <typeparam name="T"></typeparam>
