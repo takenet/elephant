@@ -34,7 +34,7 @@ namespace Takenet.Elephant.Sql
                     new
                     {
                         tableName = table.Name,
-                        columns = table.KeyColumnsNames.Select(c => c.AsSqlIdentifier()).ToCommaSeparate()
+                        columns = table.KeyColumnsNames.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                     })
             );
 
@@ -42,7 +42,7 @@ namespace Takenet.Elephant.Sql
             var createTableSql = databaseDriver.GetSqlStatementTemplate(SqlStatement.CreateTable).Format(
                 new
                 {
-                    tableName = table.Name.AsSqlIdentifier(),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     tableDefinition = createTableSqlBuilder.ToString()
                 });
 
@@ -104,7 +104,7 @@ namespace Takenet.Elephant.Sql
             command.CommandText = databaseDriver.GetSqlStatementTemplate(SqlStatement.AlterTableAddColumn).Format(
                 new
                 {
-                    tableName = table.Name,
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     columnDefinition = GetColumnsDefinitionSql(databaseDriver, table, columns).TrimEnd(',')
                 });
 
@@ -119,7 +119,7 @@ namespace Takenet.Elephant.Sql
             {
                 var format = new
                 {
-                    columnName = column.Key.AsSqlIdentifier(),
+                    columnName = databaseDriver.ParseIdentifier(column.Key),
                     sqlType = GetSqlTypeSql(databaseDriver, column.Value)
                 };
 

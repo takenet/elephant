@@ -68,6 +68,7 @@
     <Compile Include="SqlMap.cs" />
     <Compile Include="SqlSet.cs" />
     <Compile Include="SqlSetMap.cs" />
+    <Compile Include="SqlStatement.cs" />
     <Compile Include="SqlTemplates.Designer.cs">
       <DependentUpon>SqlTemplates.resx</DependentUpon>
       <AutoGen>True</AutoGen>

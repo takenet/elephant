@@ -112,7 +112,7 @@ namespace Takenet.Elephant.Sql
                     {
                         parameterName = _parameterReplacementDictionary[parameterName];
                     }
-                    _filter.Append(parameterName.AsSqlIdentifier());
+                    _filter.Append(_databaseDriver.ParseIdentifier(parameterName));
                     return node;
 
                 case ExpressionType.MemberAccess:
@@ -152,7 +152,7 @@ namespace Takenet.Elephant.Sql
                         }
                     }
 
-                    _filter.Append(node.Member.Name.AsSqlIdentifier());
+                    _filter.Append(_databaseDriver.ParseIdentifier(node.Member.Name));
                     return node;
 
                 case ExpressionType.Constant:

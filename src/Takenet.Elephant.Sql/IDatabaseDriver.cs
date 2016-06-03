@@ -16,50 +16,9 @@ namespace Takenet.Elephant.Sql
         string GetSqlTypeName(DbType dbType);
 
         DbParameter CreateParameter(string parameterName, object value);
-    }
 
-    public enum SqlStatement
-    {
-        AlterTableAddColumn,
-        And,
-        ColumnDefinition,
-        CreateTable,
-        Delete,
-        DeleteAndInsertWhereNotExists,
-        Equal,
-        Exists,
-        GetTableColumns,
-        Int16IdentityColumnDefinition,
-        Int32IdentityColumnDefinition,
-        Int64IdentityColumnDefinition,
-        IdentityColumnDefinition,
-        In,
-        Insert,
-        InsertWhereNotExists,
-        NullableColumnDefinition,
-        Or,
-        PrimaryKeyConstraintDefinition,
-        QueryEquals,
-        QueryGreatherThen,
-        QueryLessThen,
-        Select,
-        SelectCount,
-        SelectSkipTake,
-        SelectTop1,
-        TableExists,
-        Update,
-        Merge,
-        OneEqualsOne,
-        OneEqualsZero,
-        DummyEqualsZero,
-        ValueAsColumn,
-        Not,
-        NotEqual,
-        GreaterThan,
-        GreaterThanOrEqual,
-        LessThan,
-        LessThanOrEqual,
-        Like,
-        MaxLength
+        string ParseParameterName(string parameterName);
+
+        string ParseIdentifier(string identifier);
     }
 }

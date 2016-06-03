@@ -29,6 +29,9 @@ namespace Takenet.Elephant.Sql
         }
 
         public DbParameter CreateParameter(string parameterName, object value) => new SqlParameter(parameterName, value);
-        
+
+        public string ParseParameterName(string parameterName) => $"@{parameterName}";
+
+        public string ParseIdentifier(string identifier) => $"[{identifier}]";
     }
 }

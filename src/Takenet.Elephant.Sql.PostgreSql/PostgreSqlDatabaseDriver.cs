@@ -29,6 +29,10 @@ namespace Takenet.Elephant.Sql.PostgreSql
             };
         }
 
+        public string ParseParameterName(string parameterName) => $"@{parameterName}";
+
+        public string ParseIdentifier(string identifier) => $"\"{identifier}\"";
+
         public string GetSqlStatementTemplate(SqlStatement sqlStatement)
         {
             return PostgreSqlTemplates.ResourceManager.GetString(sqlStatement.ToString());

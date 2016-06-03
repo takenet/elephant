@@ -9,16 +9,6 @@ namespace Takenet.Elephant.Sql
 {
     public static class SqlExtensions
     {
-        public static string AsSqlParameterName(this string columnName)
-        {
-            return $"@{columnName}";
-        }
-
-        public static string AsSqlIdentifier(this string identifier)
-        {
-            return $"\"{identifier}\"";
-        }
-
         /// <summary>
         /// Transform to a flat string with comma separate values.
         /// </summary>
@@ -31,7 +21,7 @@ namespace Takenet.Elephant.Sql
 
         public static DbParameter ToDbParameter(this KeyValuePair<string, object> keyValuePair, IDatabaseDriver databaseDriver)
         {
-            return databaseDriver.CreateParameter(keyValuePair.Key.AsSqlParameterName(), keyValuePair.Value);
+            return databaseDriver.CreateParameter(databaseDriver.ParseParameterName(keyValuePair.Key), keyValuePair.Value);
         }
     }
 }

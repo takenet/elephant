@@ -47,8 +47,8 @@ namespace Takenet.Elephant.Sql
             return databaseDriver.GetSqlStatementTemplate(SqlStatement.QueryEquals).Format(
                 new
                 {
-                    column = column.AsSqlIdentifier(),
-                    value = parameter.AsSqlParameterName()
+                    column = databaseDriver.ParseIdentifier(column),
+                    value = databaseDriver.ParseParameterName(parameter)
                 });
         }
 
@@ -72,8 +72,8 @@ namespace Takenet.Elephant.Sql
             return databaseDriver.GetSqlStatementTemplate(SqlStatement.ValueAsColumn).Format(
                 new
                 {
-                    value = parameter.AsSqlParameterName(),
-                    column = column.AsSqlIdentifier()
+                    value = databaseDriver.ParseParameterName(parameter),
+                    column = databaseDriver.ParseIdentifier(column)
                 });
         }
 
@@ -87,8 +87,8 @@ namespace Takenet.Elephant.Sql
                 (d, c, p) => databaseDriver.GetSqlStatementTemplate(SqlStatement.QueryEquals).Format(
                     new
                     {
-                        column = $"{sourceTableName.AsSqlIdentifier()}.{c.AsSqlIdentifier()}",
-                        value = $"{targetTableName.AsSqlIdentifier()}.{c.AsSqlIdentifier()}",
+                        column = $"{databaseDriver.ParseIdentifier(sourceTableName)}.{databaseDriver.ParseIdentifier(c)}",
+                        value = $"{databaseDriver.ParseIdentifier(targetTableName)}.{databaseDriver.ParseIdentifier(c)}",
                     }));
 
         }

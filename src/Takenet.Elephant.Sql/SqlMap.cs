@@ -207,7 +207,7 @@ namespace Takenet.Elephant.Sql
                         DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),                        
                         new
                         {
-                            tableName = Table.Name.AsSqlIdentifier(),
+                            tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                             columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, newColumnValues.Keys.ToArray()),
                             filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, oldColumnValues.Keys.ToArray(), filterOldColumnValues.Keys.ToArray())
                         },
