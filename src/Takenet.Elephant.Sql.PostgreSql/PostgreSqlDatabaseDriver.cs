@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using Npgsql;
 using Takenet.Elephant.Sql.Mapping;
 
@@ -13,6 +15,17 @@ namespace Takenet.Elephant.Sql.PostgreSql
     /// </summary>
     public class PostgreSqlDatabaseDriver : IDatabaseDriver
     {
+        private static HashSet<string> ReserverdKeywords;
+
+        static PostgreSqlDatabaseDriver()
+        {
+            ReserverdKeywords = new HashSet<string>(
+                PostgreSqlTemplates
+                    .ReservedKeywords
+                    .Split('\n')
+                    .Select(k => k.TrimEnd('\r', '\n').ToLower()));            
+        }
+
         public TimeSpan Timeout => TimeSpan.FromSeconds(180);
 
         public DbConnection CreateConnection(string connectionString)
@@ -31,7 +44,11 @@ namespace Takenet.Elephant.Sql.PostgreSql
 
         public string ParseParameterName(string parameterName) => $"@{parameterName}";
 
-        public string ParseIdentifier(string identifier) => $"\"{identifier}\"";
+        public string ParseIdentifier(string identifier)
+        {
+            if (ReserverdKeywords.Contains(identifier)) return $"\"{identifier}\"";            
+            return identifier;
+        }
 
         public string GetSqlStatementTemplate(SqlStatement sqlStatement)
         {
@@ -41,6 +58,6 @@ namespace Takenet.Elephant.Sql.PostgreSql
         public string GetSqlTypeName(DbType dbType)
         {
             return PostgreSqlTemplates.ResourceManager.GetString($"DbType{dbType}");
-        }        
+        }
     }
 }

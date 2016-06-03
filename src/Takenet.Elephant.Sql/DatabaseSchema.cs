@@ -101,7 +101,8 @@ namespace Takenet.Elephant.Sql
         private static async Task CreateColumnsAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, IEnumerable<KeyValuePair<string, SqlType>> columns, CancellationToken cancellationToken)
         {
             var command = connection.CreateCommand();
-            command.CommandText = databaseDriver.GetSqlStatementTemplate(SqlStatement.AlterTableAddColumn).Format(
+            command.CommandText = databaseDriver.GetSqlStatementTemplate(
+                SqlStatement.AlterTableAddColumn).Format(
                 new
                 {
                     tableName = databaseDriver.ParseIdentifier(table.Name),

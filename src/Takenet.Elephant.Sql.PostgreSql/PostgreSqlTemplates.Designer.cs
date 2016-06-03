@@ -477,6 +477,77 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ALL
+        ///ALLOCATE
+        ///AND
+        ///ANY
+        ///ARE
+        ///AS
+        ///AUTHORIZATION
+        ///AVG
+        ///BOTH
+        ///CASE
+        ///CAST
+        ///CHARACTER_LENGTH
+        ///CHAR_LENGTH
+        ///CHECK
+        ///COLLATE
+        ///COLUMN
+        ///CONNECT
+        ///CONSTRAINT
+        ///CONVERT
+        ///CORRESPONDING
+        ///COUNT
+        ///CREATE
+        ///CROSS
+        ///CURRENT_DATE
+        ///CURRENT_TIME
+        ///CURRENT_TIMESTAMP
+        ///CURRENT_USER
+        ///DATE
+        ///DEFAULT
+        ///DESCRIBE
+        ///DISCONNECT
+        ///DISTINCT
+        ///ELSE
+        ///END
+        ///END-EXEC
+        ///EXCEPT
+        ///EXEC
+        ///FALSE
+        ///FETCH
+        ///FOR
+        ///FOREIGN
+        ///FROM
+        ///FULL
+        ///GET
+        ///GRANT
+        ///GROUP
+        ///HAVING
+        ///IN
+        ///INDICATOR
+        ///INNER
+        ///INTERSECT
+        ///INTO
+        ///IS
+        ///JOIN
+        ///LEADING
+        ///LEFT
+        ///LIKE
+        ///LOWER
+        ///MAX
+        ///MIN
+        ///MODULE
+        ///NATURAL
+        ///NOT        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string ReservedKeywords {
+            get {
+                return ResourceManager.GetString("ReservedKeywords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter}.
         /// </summary>
         public static string Select {
