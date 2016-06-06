@@ -477,69 +477,66 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ALL
+        ///   Looks up a localized string similar to ABS
+        ///ABSOLUTE
+        ///ACTION
+        ///ADD
+        ///ALL
         ///ALLOCATE
+        ///ALTER
+        ///ANALYSE
+        ///ANALYZE
         ///AND
         ///ANY
         ///ARE
+        ///ARRAY
+        ///ARRAY_AGG
+        ///ARRAY_MAX_CARDINALITY
         ///AS
+        ///ASC
+        ///ASENSITIVE
+        ///ASSERTION
+        ///ASYMMETRIC
+        ///AT
+        ///ATOMIC
         ///AUTHORIZATION
         ///AVG
+        ///BEGIN
+        ///BEGIN_FRAME
+        ///BEGIN_PARTITION
+        ///BETWEEN
+        ///BIGINT
+        ///BINARY
+        ///BIT
+        ///BIT_LENGTH
+        ///BLOB
+        ///BOOLEAN
         ///BOTH
+        ///BY
+        ///CALL
+        ///CALLED
+        ///CARDINALITY
+        ///CASCADE
+        ///CASCADED
         ///CASE
         ///CAST
+        ///CATALOG
+        ///CEIL
+        ///CEILING
+        ///CHAR
+        ///CHARACTER
         ///CHARACTER_LENGTH
         ///CHAR_LENGTH
         ///CHECK
+        ///CLOB
+        ///CLOSE
+        ///COALESCE
         ///COLLATE
+        ///COLLATION
+        ///COLLECT
         ///COLUMN
-        ///CONNECT
-        ///CONSTRAINT
-        ///CONVERT
-        ///CORRESPONDING
-        ///COUNT
-        ///CREATE
-        ///CROSS
-        ///CURRENT_DATE
-        ///CURRENT_TIME
-        ///CURRENT_TIMESTAMP
-        ///CURRENT_USER
-        ///DATE
-        ///DEFAULT
-        ///DESCRIBE
-        ///DISCONNECT
-        ///DISTINCT
-        ///ELSE
-        ///END
-        ///END-EXEC
-        ///EXCEPT
-        ///EXEC
-        ///FALSE
-        ///FETCH
-        ///FOR
-        ///FOREIGN
-        ///FROM
-        ///FULL
-        ///GET
-        ///GRANT
-        ///GROUP
-        ///HAVING
-        ///IN
-        ///INDICATOR
-        ///INNER
-        ///INTERSECT
-        ///INTO
-        ///IS
-        ///JOIN
-        ///LEADING
-        ///LEFT
-        ///LIKE
-        ///LOWER
-        ///MAX
-        ///MIN
-        ///MODULE
-        ///NATURAL
-        ///NOT        /// [rest of string was truncated]&quot;;.
+        ///COMMIT
+        ///CON [rest of string was truncated]&quot;;.
         /// </summary>
         public static string ReservedKeywords {
             get {

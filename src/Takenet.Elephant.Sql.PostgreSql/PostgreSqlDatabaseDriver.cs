@@ -23,7 +23,7 @@ namespace Takenet.Elephant.Sql.PostgreSql
                 PostgreSqlTemplates
                     .ReservedKeywords
                     .Split('\n')
-                    .Select(k => k.TrimEnd('\r', '\n').ToLower()));            
+                    .Select(k => k.TrimEnd('\r', '\n').ToLowerInvariant()));            
         }
 
         public TimeSpan Timeout => TimeSpan.FromSeconds(180);
@@ -46,7 +46,7 @@ namespace Takenet.Elephant.Sql.PostgreSql
 
         public string ParseIdentifier(string identifier)
         {
-            if (ReserverdKeywords.Contains(identifier)) return $"\"{identifier}\"";            
+            if (ReserverdKeywords.Contains(identifier.ToLowerInvariant())) return $"\"{identifier}\"";            
             return identifier;
         }
 

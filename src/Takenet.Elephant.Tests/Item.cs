@@ -26,11 +26,11 @@ namespace Takenet.Elephant.Tests
             }
         }
 
-        public ItemOptions EnumProperty { get; set; }
+        public ItemOptions Select { get; set; }
 
         public override string ToString()
         {
-            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{EnumProperty}";
+            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select}";
         }
 
         public static Item Parse(string s)
@@ -45,7 +45,7 @@ namespace Takenet.Elephant.Tests
                 GuidProperty = Guid.Parse(values[2]),
                 UriProperty = new Uri(values[3]),
                 DateProperty = DateTimeOffset.Parse(values[4], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
-                EnumProperty = (ItemOptions)Enum.Parse(typeof(ItemOptions), values[5])
+                Select = (ItemOptions)Enum.Parse(typeof(ItemOptions), values[5])
             };
         }
 
@@ -66,7 +66,7 @@ namespace Takenet.Elephant.Tests
                    DateProperty.ToUniversalTime()
                        .ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)
                        .Equals(other.DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)) &&
-                   EnumProperty.Equals(other.EnumProperty);
+                   Select.Equals(other.Select);
         }
 
         public override int GetHashCode()
@@ -78,7 +78,7 @@ namespace Takenet.Elephant.Tests
                 hashCode = (hashCode * 397) ^ GuidProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ UriProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture).GetHashCode();
-                hashCode = (hashCode * 397) ^ EnumProperty.GetHashCode();
+                hashCode = (hashCode * 397) ^ Select.GetHashCode();
                 return hashCode;
             }
         }
