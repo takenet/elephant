@@ -183,7 +183,7 @@ WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
   <data name="GetTableColumns" xml:space="preserve">
     <value>SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN ('varchar', 'timestamp', 'timestamptz') THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE
 FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = '{tableName}'</value>
+WHERE Lower(TABLE_NAME) = Lower('{tableName}')</value>
   </data>
   <data name="GreaterThan" xml:space="preserve">
     <value>&gt;</value>

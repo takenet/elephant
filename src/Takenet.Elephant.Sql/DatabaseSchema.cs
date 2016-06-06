@@ -69,24 +69,26 @@ namespace Takenet.Elephant.Sql
                 {
                     while (await reader.ReadAsync(cancellationToken))
                     {
-                        tableColumnsDictionary.Add((string)reader[0], (string)reader[1]);
+                        tableColumnsDictionary.Add(
+                            reader[0].ToString().ToLowerInvariant(), 
+                            (string)reader[1]);
                     }
                 }
             }
 
-            var columnsToBeCreated = new List<KeyValuePair<string, SqlType>>();
+            var columnsToBeCreated = new HashSet<KeyValuePair<string, SqlType>>();
 
             foreach (var column in table.Columns)
             {
                 // Check if the column exists in the database
-                if (!tableColumnsDictionary.ContainsKey(column.Key))
+                if (!tableColumnsDictionary.ContainsKey(column.Key.ToLowerInvariant()))
                 {
                     columnsToBeCreated.Add(column);
                 }
                 // Checks if the existing column type matches with the definition
                 // The comparion is with startsWith for the NVARCHAR values
                 else if (!GetSqlTypeSql(databaseDriver, column.Value).StartsWith(
-                         tableColumnsDictionary[column.Key], StringComparison.OrdinalIgnoreCase))
+                         tableColumnsDictionary[column.Key.ToLowerInvariant()], StringComparison.OrdinalIgnoreCase))
                 {
                     throw new InvalidOperationException($"The existing column '{column.Key}' type '{tableColumnsDictionary[column.Key]}' is not compatible with the definition type '{column.Value}'");
                 }
@@ -100,16 +102,20 @@ namespace Takenet.Elephant.Sql
 
         private static async Task CreateColumnsAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, IEnumerable<KeyValuePair<string, SqlType>> columns, CancellationToken cancellationToken)
         {
-            var command = connection.CreateCommand();
-            command.CommandText = databaseDriver.GetSqlStatementTemplate(
-                SqlStatement.AlterTableAddColumn).Format(
-                new
-                {
-                    tableName = databaseDriver.ParseIdentifier(table.Name),
-                    columnDefinition = GetColumnsDefinitionSql(databaseDriver, table, columns).TrimEnd(',')
-                });
+            // Create one column each time to improve SQL query compatibility
+            foreach (var column in columns)
+            {
+                var command = connection.CreateCommand();
+                command.CommandText = databaseDriver.GetSqlStatementTemplate(
+                    SqlStatement.AlterTableAddColumn).Format(
+                        new
+                        {
+                            tableName = databaseDriver.ParseIdentifier(table.Name),
+                            columnDefinition = GetColumnsDefinitionSql(databaseDriver, table, new[] { column }).TrimEnd(',')
+                        });
 
-            await command.ExecuteNonQueryAsync(cancellationToken);
+                await command.ExecuteNonQueryAsync(cancellationToken);
+            }
         }
 
         private static string GetColumnsDefinitionSql(IDatabaseDriver databaseDriver, ITable table, IEnumerable<KeyValuePair<string, SqlType>> columns)

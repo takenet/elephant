@@ -240,7 +240,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         /// <summary>
         ///   Looks up a localized string similar to SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN (&apos;varchar&apos;, &apos;timestamp&apos;, &apos;timestamptz&apos;) THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE
         ///FROM INFORMATION_SCHEMA.COLUMNS
-        ///WHERE TABLE_NAME = &apos;{tableName}&apos;.
+        ///WHERE Lower(TABLE_NAME) = Lower(&apos;{tableName}&apos;).
         /// </summary>
         public static string GetTableColumns {
             get {
