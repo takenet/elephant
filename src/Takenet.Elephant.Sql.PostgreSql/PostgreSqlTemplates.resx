@@ -701,7 +701,7 @@ ZONE</value>
     <value>SELECT {columns} FROM {tableName} WHERE {filter} LIMIT 1</value>
   </data>
   <data name="TableExists" xml:space="preserve">
-    <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{tableName}')) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END</value>
+    <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE Lower(TABLE_NAME) = Lower('{tableName}'))) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>UPDATE {tableName}

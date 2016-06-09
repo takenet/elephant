@@ -581,7 +581,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = &apos;{tableName}&apos;)) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END.
+        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE Lower(TABLE_NAME) = Lower(&apos;{tableName}&apos;))) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END.
         /// </summary>
         public static string TableExists {
             get {
