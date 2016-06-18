@@ -81,16 +81,17 @@ namespace Takenet.Elephant.Sql
             foreach (var column in table.Columns)
             {
                 // Check if the column exists in the database
-                if (!tableColumnsDictionary.ContainsKey(column.Key.ToLowerInvariant()))
+                var columnKey = column.Key.ToLowerInvariant();
+                if (!tableColumnsDictionary.ContainsKey(columnKey))
                 {
                     columnsToBeCreated.Add(column);
                 }
                 // Checks if the existing column type matches with the definition
                 // The comparion is with startsWith for the NVARCHAR values
                 else if (!GetSqlTypeSql(databaseDriver, column.Value).StartsWith(
-                         tableColumnsDictionary[column.Key.ToLowerInvariant()], StringComparison.OrdinalIgnoreCase))
+                         tableColumnsDictionary[columnKey], StringComparison.OrdinalIgnoreCase))
                 {
-                    throw new InvalidOperationException($"The existing column '{column.Key}' type '{tableColumnsDictionary[column.Key]}' is not compatible with the definition type '{column.Value}'");
+                    throw new InvalidOperationException($"The existing column '{column.Key}' type '{tableColumnsDictionary[columnKey]}' is not compatible with the definition type '{column.Value}'");
                 }
             }
 
