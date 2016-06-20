@@ -44,8 +44,6 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        #region IQueryableStorage<TEntity>
-
         public async Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken)
         {
             if (select != null && 
@@ -76,8 +74,6 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        #endregion
-
         protected async Task<DbConnection> GetConnectionAsync(CancellationToken cancellationToken)
         {
             var connection = DatabaseDriver.CreateConnection(ConnectionString);
@@ -85,8 +81,6 @@ namespace Takenet.Elephant.Sql
             await CheckTableSchemaAsync(connection, cancellationToken).ConfigureAwait(false);
             return connection;
         }
-
-        #region Protected Members
 
         protected CancellationTokenSource CreateCancellationTokenSource()
         {
@@ -112,10 +106,6 @@ namespace Takenet.Elephant.Sql
                 .Select(c => new { Key = c, Value = columnValues[c] })
                 .ToDictionary(t => t.Key, t => t.Value);
         }
-
-        #endregion
-
-        #region Private Methods
 
         protected bool SchemaChecked;
         private readonly SemaphoreSlim _schemaValidationSemaphore = new SemaphoreSlim(1);
@@ -154,7 +144,5 @@ namespace Takenet.Elephant.Sql
                 }
             }
         }
-
-        #endregion
     }
 }

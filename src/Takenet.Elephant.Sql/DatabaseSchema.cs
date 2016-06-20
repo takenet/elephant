@@ -77,6 +77,7 @@ namespace Takenet.Elephant.Sql
             }
 
             var columnsToBeCreated = new HashSet<KeyValuePair<string, SqlType>>();
+            var columnsToBeAltered = new HashSet<KeyValuePair<string, SqlType>>();
 
             foreach (var column in table.Columns)
             {
@@ -87,28 +88,42 @@ namespace Takenet.Elephant.Sql
                     columnsToBeCreated.Add(column);
                 }
                 // Checks if the existing column type matches with the definition
-                // The comparion is with startsWith for the NVARCHAR values
+                // The comparison is with startsWith for the NVARCHAR values
                 else if (!GetSqlTypeSql(databaseDriver, column.Value).StartsWith(
                          tableColumnsDictionary[columnKey], StringComparison.OrdinalIgnoreCase))
                 {
-                    throw new InvalidOperationException($"The existing column '{column.Key}' type '{tableColumnsDictionary[columnKey]}' is not compatible with the definition type '{column.Value}'");
+                    columnsToBeAltered.Add(column);                    
                 }
             }
 
             if (columnsToBeCreated.Any())
             {
-                await CreateColumnsAsync(databaseDriver, connection, table, columnsToBeCreated, cancellationToken);
+                await AddColumnsAsync(databaseDriver, connection, table, columnsToBeCreated, cancellationToken);
+            }
+
+            if (columnsToBeAltered.Any())
+            {
+                await AlterColumnsAsync(databaseDriver, connection, table, columnsToBeAltered, cancellationToken);
             }
         }
 
-        private static async Task CreateColumnsAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, IEnumerable<KeyValuePair<string, SqlType>> columns, CancellationToken cancellationToken)
+        private static Task AddColumnsAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, 
+            IEnumerable<KeyValuePair<string, SqlType>> columns, CancellationToken cancellationToken) =>
+                AlterTableColumnsAsync(databaseDriver, connection, table, columns, SqlStatement.AlterTableAddColumn,
+                    cancellationToken);
+
+        private static Task AlterColumnsAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table,
+            IEnumerable<KeyValuePair<string, SqlType>> columns, CancellationToken cancellationToken) =>
+                AlterTableColumnsAsync(databaseDriver, connection, table, columns, SqlStatement.AlterTableAlterColumn,
+                    cancellationToken);
+
+        private static async Task AlterTableColumnsAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, IEnumerable<KeyValuePair<string, SqlType>> columns, SqlStatement sqlStatement, CancellationToken cancellationToken)
         {
-            // Create one column each time to improve SQL query compatibility
             foreach (var column in columns)
             {
                 var command = connection.CreateCommand();
                 command.CommandText = databaseDriver.GetSqlStatementTemplate(
-                    SqlStatement.AlterTableAddColumn).Format(
+                    sqlStatement).Format(
                         new
                         {
                             tableName = databaseDriver.ParseIdentifier(table.Name),

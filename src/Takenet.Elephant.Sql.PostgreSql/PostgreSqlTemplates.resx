@@ -120,6 +120,9 @@
   <data name="AlterTableAddColumn" xml:space="preserve">
     <value>ALTER TABLE {tableName} ADD {columnDefinition}</value>
   </data>
+  <data name="AlterTableAlterColumn" xml:space="preserve">
+    <value>ALTER TABLE {tableName} ALTER COLUMN {columnDefinition}</value>
+  </data>
   <data name="And" xml:space="preserve">
     <value>AND</value>
   </data>

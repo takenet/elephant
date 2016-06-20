@@ -70,6 +70,15 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE {tableName} ALTER COLUMN {columnDefinition}.
+        /// </summary>
+        public static string AlterTableAlterColumn {
+            get {
+                return ResourceManager.GetString("AlterTableAlterColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AND.
         /// </summary>
         public static string And {

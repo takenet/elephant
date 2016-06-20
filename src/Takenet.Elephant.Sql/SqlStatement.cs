@@ -3,6 +3,7 @@ namespace Takenet.Elephant.Sql
     public enum SqlStatement
     {
         AlterTableAddColumn,
+        AlterTableAlterColumn,
         And,
         ColumnDefinition,
         CreateTable,
