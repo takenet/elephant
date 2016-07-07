@@ -109,11 +109,11 @@ namespace Takenet.Elephant.Sql
 
         protected IMapper<TKey> KeyMapper { get; }
 
-        protected virtual IDictionary<string, object> GetColumnValues(TKey key, TValue value)
+        protected virtual IDictionary<string, object> GetColumnValues(TKey key, TValue value, bool valueEmitDefaultValues = false)
         {
             return KeyMapper
                 .GetColumnValues(key)
-                .Union(GetColumnValues(value))
+                .Union(GetColumnValues(value, valueEmitDefaultValues))
                 .ToDictionary(t => t.Key, t => t.Value);
         }
 

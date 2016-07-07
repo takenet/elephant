@@ -67,9 +67,9 @@ namespace Takenet.Elephant.Sql
 
         public static object ToDbType(object value, DbType type)
         {
+            if (value == null) return DBNull.Value;
             if (type == DbType.String &&
-                !(value is string) &&
-                value != null)
+                !(value is string))
             {
                 return value.ToString();
             }

@@ -26,7 +26,7 @@ namespace Takenet.Elephant.Sql
         public virtual async Task AddAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            var columnValues = GetColumnValues(value);
+            var columnValues = GetColumnValues(value, true);
             var keyColumnValues = GetKeyColumnValues(columnValues);
 
             using (var cancellationTokenSource = CreateCancellationTokenSource())

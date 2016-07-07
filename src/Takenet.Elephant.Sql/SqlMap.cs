@@ -16,8 +16,6 @@ namespace Takenet.Elephant.Sql
     /// <typeparam name="TValue"></typeparam>
     public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IKeysMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IUpdatableMap<TKey, TValue>
     {
-        #region Constructors
-
         public SqlMap(string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper)
             : this(new SqlDatabaseDriver(), connectionString, table, keyMapper, valueMapper)
         {
@@ -30,17 +28,13 @@ namespace Takenet.Elephant.Sql
 
         }
 
-        #endregion
-
-        #region IMap<TKey,TValue> Members
-
         public async Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    var columnValues = GetColumnValues(key, value);
+                    var columnValues = GetColumnValues(key, value, true);
                     var keyColumnValues = GetKeyColumnValues(columnValues);
                     using (var command = overwrite ? 
                         connection.CreateMergeCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues) : 
@@ -95,20 +89,12 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        #endregion
-
-        #region IKeysMap<TKey, TValue> Members
-
         public Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
             var selectColumns = Table.KeyColumnsNames;
             return Task.FromResult<IAsyncEnumerable<TKey>>(
                 new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(DatabaseDriver, Table.Name, null, selectColumns), KeyMapper, selectColumns));
         }
-
-        #endregion
-
-        #region IPropertyMap<TKey,TValue> Members
 
         public async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
@@ -188,10 +174,6 @@ namespace Takenet.Elephant.Sql
             return default(TProperty);
         }
 
-        #endregion
-
-        #region IUpdatableMap<TKey, TValue> Members
-
         public async Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
@@ -220,7 +202,5 @@ namespace Takenet.Elephant.Sql
                 }
             }
         }
-
-        #endregion
     }
 }

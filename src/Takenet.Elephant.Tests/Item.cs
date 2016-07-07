@@ -28,9 +28,11 @@ namespace Takenet.Elephant.Tests
 
         public ItemOptions Select { get; set; }
 
+        public string RandomProperty { get; set; }
+
         public override string ToString()
         {
-            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select}";
+            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{RandomProperty}";
         }
 
         public static Item Parse(string s)
@@ -45,7 +47,8 @@ namespace Takenet.Elephant.Tests
                 GuidProperty = Guid.Parse(values[2]),
                 UriProperty = new Uri(values[3]),
                 DateProperty = DateTimeOffset.Parse(values[4], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
-                Select = (ItemOptions)Enum.Parse(typeof(ItemOptions), values[5])
+                Select = (ItemOptions)Enum.Parse(typeof(ItemOptions), values[5]),
+                RandomProperty = values[6]
             };
         }
 
@@ -66,7 +69,8 @@ namespace Takenet.Elephant.Tests
                    DateProperty.ToUniversalTime()
                        .ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)
                        .Equals(other.DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)) &&
-                   Select.Equals(other.Select);
+                   Select.Equals(other.Select) &&
+                   string.Equals(RandomProperty, other.RandomProperty);
         }
 
         public override int GetHashCode()
@@ -79,6 +83,7 @@ namespace Takenet.Elephant.Tests
                 hashCode = (hashCode * 397) ^ UriProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture).GetHashCode();
                 hashCode = (hashCode * 397) ^ Select.GetHashCode();
+                hashCode = (hashCode * 397) ^ RandomProperty?.GetHashCode() ?? 0;
                 return hashCode;
             }
         }

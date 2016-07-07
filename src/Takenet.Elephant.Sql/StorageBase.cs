@@ -85,12 +85,11 @@ namespace Takenet.Elephant.Sql
         protected CancellationTokenSource CreateCancellationTokenSource()
         {
             return new CancellationTokenSource(DatabaseDriver.Timeout);
-;
         }
 
-        protected virtual IDictionary<string, object> GetColumnValues(TEntity entity)
+        protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitDefaultValues = false)
         {
-            return Mapper.GetColumnValues(entity);
+            return Mapper.GetColumnValues(entity, emitDefaultValues: emitDefaultValues);
         }
 
         protected IDictionary<string, object> GetKeyColumnValues(TEntity entity)
