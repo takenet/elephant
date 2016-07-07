@@ -8,7 +8,6 @@ namespace Takenet.Elephant.Sql
         ColumnDefinition,
         CreateTable,
         Delete,
-        DeleteAndInsertWhereNotExists,
         Equal,
         Exists,
         GetTableColumns,

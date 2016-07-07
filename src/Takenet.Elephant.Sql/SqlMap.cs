@@ -42,7 +42,9 @@ namespace Takenet.Elephant.Sql
                 {
                     var columnValues = GetColumnValues(key, value);
                     var keyColumnValues = GetKeyColumnValues(columnValues);
-                    using (var command = connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues, overwrite))
+                    using (var command = overwrite ? 
+                        connection.CreateMergeCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues) : 
+                        connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues))
                     {
                         return await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) > 0;
                     }

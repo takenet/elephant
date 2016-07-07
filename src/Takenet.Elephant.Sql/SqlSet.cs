@@ -33,7 +33,7 @@ namespace Takenet.Elephant.Sql
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    using (var command = connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues, true))
+                    using (var command = connection.CreateMergeCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues))
                     {
                         if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
                         {

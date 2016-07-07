@@ -113,11 +113,9 @@ namespace Takenet.Elephant.Sql
                 columnValues.Select(c => c.ToDbParameter(databaseDriver)));
         }
 
-        public static DbCommand CreateInsertWhereNotExistsCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues, bool deleteBeforeInsert = false)
+        public static DbCommand CreateInsertWhereNotExistsCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues, IDictionary<string, object> columnValues)
         {
-            var sqlTemplate = deleteBeforeInsert ?
-                databaseDriver.GetSqlStatementTemplate(SqlStatement.DeleteAndInsertWhereNotExists) :
-                databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertWhereNotExists);
+            var sqlTemplate = databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertWhereNotExists);
 
             return connection.CreateTextCommand(
                 sqlTemplate,
