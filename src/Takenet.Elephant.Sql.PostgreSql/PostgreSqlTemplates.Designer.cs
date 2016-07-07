@@ -208,18 +208,6 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DELETE FROM {tableName} WHERE {filter}; 
-        ///INSERT INTO {tableName} ({columns}) 
-        ///SELECT {values}
-        ///WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} ).
-        /// </summary>
-        public static string DeleteAndInsertWhereNotExists {
-            get {
-                return ResourceManager.GetString("DeleteAndInsertWhereNotExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to @dummy = 0.
         /// </summary>
         public static string DummyEqualsZero {

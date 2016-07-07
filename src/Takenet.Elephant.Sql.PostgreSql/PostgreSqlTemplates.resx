@@ -168,12 +168,6 @@
   <data name="Delete" xml:space="preserve">
     <value>DELETE FROM {tableName} WHERE {filter}</value>
   </data>
-  <data name="DeleteAndInsertWhereNotExists" xml:space="preserve">
-    <value>DELETE FROM {tableName} WHERE {filter}; 
-INSERT INTO {tableName} ({columns}) 
-SELECT {values}
-WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
-  </data>
   <data name="DummyEqualsZero" xml:space="preserve">
     <value>@dummy = 0</value>
   </data>
