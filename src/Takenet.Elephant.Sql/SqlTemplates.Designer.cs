@@ -366,7 +366,7 @@ namespace Takenet.Elephant.Sql {
         
         /// <summary>
         ///   Looks up a localized string similar to DECLARE @dummy int;
-        ///MERGE {tableName} AS target
+        ///MERGE {tableName} WITH (HOLDLOCK) AS target
         ///USING (SELECT {columnNamesAndValues}) as source
         ///ON ({on})
         ///WHEN MATCHED THEN
