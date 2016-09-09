@@ -50,14 +50,17 @@ namespace Takenet.Elephant.Sql
                 select.ReturnType != typeof(TEntity))
             {
                 throw new NotImplementedException("The select parameter is not supported yet");
-            }            
+            }
 
             var selectColumns = Table.Columns.Keys.ToArray();
-            var orderByColumns = Table.KeyColumnsNames;
             var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
 
-            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns);
+            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, QueryOrderByColumns, QueryOrderByAscending);
         }
+
+        protected virtual string[] QueryOrderByColumns => Table.KeyColumnsNames;
+
+        protected virtual bool QueryOrderByAscending => true;
 
         protected virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(string filter, string[] selectColumns, int skip, int take,
             CancellationToken cancellationToken, string[] orderByColumns, bool orderByAscending = true, IDictionary<string, object> filterValues = null)
@@ -119,7 +122,7 @@ namespace Takenet.Elephant.Sql
                 .Where(columnValues.ContainsKey)
                 .Select(c => new { Key = c, Value = columnValues[c] })
                 .ToDictionary(t => t.Key, t => t.Value);
-        }
+        }     
 
         protected bool SchemaChecked;
         private readonly SemaphoreSlim _schemaValidationSemaphore = new SemaphoreSlim(1);
