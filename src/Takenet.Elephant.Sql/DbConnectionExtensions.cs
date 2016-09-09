@@ -143,7 +143,7 @@ namespace Takenet.Elephant.Sql
                 filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
-        public static DbCommand CreateSelectCountCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string filter = null)
+        public static DbCommand CreateSelectCountCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string filter = null, IDictionary<string, object> filterValues = null)
         {
             if (filter == null) filter = databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
             return connection.CreateTextCommand(
@@ -152,7 +152,8 @@ namespace Takenet.Elephant.Sql
                 {
                     tableName = databaseDriver.ParseIdentifier(tableName),
                     filter = filter
-                });
+                },
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
         public static DbCommand CreateSelectCountCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> filterValues)
@@ -167,7 +168,7 @@ namespace Takenet.Elephant.Sql
                 filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
-        public static DbCommand CreateSelectSkipTakeCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string[] selectColumns, string filter, int skip, int take, string[] orderByColumns)
+        public static DbCommand CreateSelectSkipTakeCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string[] selectColumns, string filter, int skip, int take, string[] orderByColumns, IDictionary<string, object> filterValues = null)
         {
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectSkipTake),
@@ -179,7 +180,8 @@ namespace Takenet.Elephant.Sql
                     skip = skip,
                     take = take,
                     orderBy = orderByColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
-                });
+                },
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
         public static DbCommand CreateSelectTop1Command(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string[] selectColumns, IDictionary<string, object> filterValues)

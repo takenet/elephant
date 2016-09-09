@@ -50,25 +50,40 @@ namespace Takenet.Elephant.Sql
                 select.ReturnType != typeof(TEntity))
             {
                 throw new NotImplementedException("The select parameter is not supported yet");
-            }
+            }            
 
             var selectColumns = Table.Columns.Keys.ToArray();
             var orderByColumns = Table.KeyColumnsNames;
             var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
+
+            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns);
+        }
+
+        protected virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(string filter, string[] selectColumns, int skip, int take,
+            CancellationToken cancellationToken, string[] orderByColumns, IDictionary<string, object> filterValues = null)
+        {
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
+                if (filterValues != null)
+                {
+                    var filterValuesSql = SqlHelper.GetAndEqualsStatement(DatabaseDriver, filterValues);
+                    filter = $"{filter} {DatabaseDriver.GetSqlStatementTemplate(SqlStatement.And)} ({filterValuesSql})";
+                }
+
                 int totalCount;
-                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter))
+                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter, filterValues))
                 {
                     totalCount = Convert.ToInt32(
                         await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
                 }
-                
-                return new QueryResult<TEntity>(                    
+
+                return new QueryResult<TEntity>(
                     new DbDataReaderAsyncEnumerable<TEntity>(
-                        GetConnectionAsync, 
-                        c => c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Name, selectColumns, filter, skip, take, orderByColumns), 
-                        Mapper, 
+                        GetConnectionAsync,
+                        c =>
+                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Name, selectColumns, filter, skip, take,
+                                orderByColumns, filterValues),
+                        Mapper,
                         selectColumns),
                     totalCount);
             }

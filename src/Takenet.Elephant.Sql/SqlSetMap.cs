@@ -216,6 +216,29 @@ namespace Takenet.Elephant.Sql
                     }
                 }
             }
+
+            protected override Task<QueryResult<TItem>> QueryAsync<TResult>(
+                string filter, 
+                string[] selectColumns, 
+                int skip, 
+                int take, 
+                CancellationToken cancellationToken,
+                string[] orderByColumns, 
+                IDictionary<string, object> filterValues = null)
+            {
+                if (filterValues == null)
+                {
+                    filterValues = MapKeyColumnValues;
+                }
+                else
+                {
+                    filterValues = filterValues
+                        .Union(MapKeyColumnValues)
+                        .ToDictionary(k => k.Key, v => v.Value);
+                }
+
+                return base.QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, filterValues);
+            }
         }
     }
 }
