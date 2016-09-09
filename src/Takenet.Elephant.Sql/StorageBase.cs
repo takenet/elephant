@@ -60,7 +60,7 @@ namespace Takenet.Elephant.Sql
         }
 
         protected virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(string filter, string[] selectColumns, int skip, int take,
-            CancellationToken cancellationToken, string[] orderByColumns, IDictionary<string, object> filterValues = null)
+            CancellationToken cancellationToken, string[] orderByColumns, bool orderByAscending = true, IDictionary<string, object> filterValues = null)
         {
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
@@ -82,7 +82,7 @@ namespace Takenet.Elephant.Sql
                         GetConnectionAsync,
                         c =>
                             c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Name, selectColumns, filter, skip, take,
-                                orderByColumns, filterValues),
+                                orderByColumns, orderByAscending, filterValues),
                         Mapper,
                         selectColumns),
                     totalCount);

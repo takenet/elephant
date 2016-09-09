@@ -126,6 +126,9 @@
   <data name="And" xml:space="preserve">
     <value>AND</value>
   </data>
+  <data name="Asc" xml:space="preserve">
+    <value>ASC</value>
+  </data>
   <data name="ColumnDefinition" xml:space="preserve">
     <value>{columnName} {sqlType} NOT NULL</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="Delete" xml:space="preserve">
     <value>DELETE FROM {tableName} WHERE {filter}</value>
+  </data>
+  <data name="Desc" xml:space="preserve">
+    <value>DESC</value>
   </data>
   <data name="DummyEqualsZero" xml:space="preserve">
     <value>@dummy = 0</value>

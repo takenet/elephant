@@ -88,6 +88,15 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ASC.
+        /// </summary>
+        public static string Asc {
+            get {
+                return ResourceManager.GetString("Asc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {columnName} {sqlType} NOT NULL.
         /// </summary>
         public static string ColumnDefinition {
@@ -204,6 +213,15 @@ namespace Takenet.Elephant.Sql {
         public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DESC.
+        /// </summary>
+        public static string Desc {
+            get {
+                return ResourceManager.GetString("Desc", resourceCulture);
             }
         }
         

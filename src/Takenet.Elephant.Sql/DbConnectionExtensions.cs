@@ -168,8 +168,14 @@ namespace Takenet.Elephant.Sql
                 filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
-        public static DbCommand CreateSelectSkipTakeCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string[] selectColumns, string filter, int skip, int take, string[] orderByColumns, IDictionary<string, object> filterValues = null)
+        public static DbCommand CreateSelectSkipTakeCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, string[] selectColumns, string filter, int skip, int take, string[] orderByColumns, bool orderByAscending = true, IDictionary<string, object> filterValues = null)
         {
+            var orderBy = orderByColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate();
+            if (!orderByAscending)
+            {
+                orderBy = $"{orderBy} {databaseDriver.GetSqlStatementTemplate(SqlStatement.Desc)}";
+            }
+
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectSkipTake),
                 new
@@ -179,7 +185,7 @@ namespace Takenet.Elephant.Sql
                     filter = filter,
                     skip = skip,
                     take = take,
-                    orderBy = orderByColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
+                    orderBy = orderBy
                 },
                 filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }

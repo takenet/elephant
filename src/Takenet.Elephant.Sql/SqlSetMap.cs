@@ -159,7 +159,7 @@ namespace Takenet.Elephant.Sql
 
         #region IKeysMap<TKey, ISet<TItem>> Members
 
-        public Task<IAsyncEnumerable<TKey>> GetKeysAsync()
+        public virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
             var selectColumns = Table.KeyColumnsNames;
             return Task.FromResult<IAsyncEnumerable<TKey>>(
@@ -223,7 +223,8 @@ namespace Takenet.Elephant.Sql
                 int skip, 
                 int take, 
                 CancellationToken cancellationToken,
-                string[] orderByColumns, 
+                string[] orderByColumns,
+                bool orderByAscending = true,
                 IDictionary<string, object> filterValues = null)
             {
                 if (filterValues == null)
@@ -237,7 +238,7 @@ namespace Takenet.Elephant.Sql
                         .ToDictionary(k => k.Key, v => v.Value);
                 }
 
-                return base.QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, filterValues);
+                return base.QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, orderByAscending, filterValues);
             }
         }
     }
