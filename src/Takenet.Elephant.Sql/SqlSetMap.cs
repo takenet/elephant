@@ -109,7 +109,7 @@ namespace Takenet.Elephant.Sql
                     {
                         return null;
                     }
-                    return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues, QueryOrderByColumns, QueryOrderByAscending);
+                    return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues);
                 }
             }
         }
@@ -174,15 +174,11 @@ namespace Takenet.Elephant.Sql
 
         private class InternalSet : SqlSet<TItem>
         {
-            private readonly string[] _queryOrderByColumns;
-            private readonly bool _queryOrderByAscending;
             public IDictionary<string, object> MapKeyColumnValues { get; }
 
-            public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues, string[] queryOrderByColumns, bool queryOrderByAscending) 
+            public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues) 
                 : base(databaseDriver, connectionString, table, mapper)
             {
-                _queryOrderByColumns = queryOrderByColumns;
-                _queryOrderByAscending = queryOrderByAscending;
                 MapKeyColumnValues = mapKeyColumnValues;
                 SchemaChecked = true; // Avoid checking the table schema again
             }
@@ -242,7 +238,7 @@ namespace Takenet.Elephant.Sql
                         .ToDictionary(k => k.Key, v => v.Value);
                 }
 
-                return base.QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, _queryOrderByColumns, _queryOrderByAscending, filterValues);
+                return base.QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, orderByAscending, filterValues);
             }
         }
     }

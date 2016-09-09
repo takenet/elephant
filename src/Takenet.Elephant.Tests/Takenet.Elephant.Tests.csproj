@@ -81,9 +81,12 @@
     <Compile Include="BlockingQueueFacts.cs" />
     <Compile Include="ClassListFacts.cs" />
     <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="ItemOrderedQueryableStorageFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemScopedSetMapFacts.cs" />
+    <Compile Include="Memory\MemoryItemOrderedQueryableStorageFacts.cs" />
     <Compile Include="Msmq\MsmqGuidItemQueueMapFacts.cs" />
     <Compile Include="Msmq\MsmqItemBlockingQueueFacts.cs" />
+    <Compile Include="OrderedQueryableStorageFacts.cs" />
     <Compile Include="RabbitMQ\ItemSerializer.cs" />
     <Compile Include="RabbitMQ\RabbitMQCollectionFixture.cs" />
     <Compile Include="RabbitMQ\RabbitMQFixture.cs" />
@@ -210,6 +213,9 @@
     <Compile Include="Sql\PostgreSql\PostgreSqlItemListFacts.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlItemSetFacts.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlCollectionFixture.cs" />
+    <Compile Include="Sql\PostgreSql\PostgreSqlItemOrderedQueryableStorageFacts.cs" />
+    <Compile Include="Sql\SqlItemOrderedQueryableStorageFacts.cs" />
+    <Compile Include="Sql\SqlServer\SqlServerItemOrderedQueryableStorageFacts.cs" />
     <Compile Include="Sql\SqlServer\SqlServerItemSetFacts.cs" />
     <Compile Include="Sql\SqlServer\SqlServerItemListFacts.cs" />
     <Compile Include="Sql\SqlServer\SqlServerIntegerStringSetMapFacts.cs" />

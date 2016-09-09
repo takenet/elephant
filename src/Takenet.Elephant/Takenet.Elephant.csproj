@@ -52,6 +52,7 @@
     <Compile Include="IDictionaryConverter.cs" />
     <Compile Include="IKeyQueryableMap.cs" />
     <Compile Include="IList.cs" />
+    <Compile Include="IOrderedQueryableStorage.cs" />
     <Compile Include="IQueryableStorage.cs" />
     <Compile Include="IAsyncEnumerator.cs" />
     <Compile Include="IExpirableKeyMap.cs" />

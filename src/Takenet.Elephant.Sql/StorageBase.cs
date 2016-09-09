@@ -9,7 +9,7 @@ using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql
 {
-    public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>
+    public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>, IOrderedQueryableStorage<TEntity>
     {                                                
         protected StorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TEntity> mapper)
         {
@@ -54,13 +54,35 @@ namespace Takenet.Elephant.Sql
 
             var selectColumns = Table.Columns.Keys.ToArray();
             var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
+            var orderByColumns = Table.KeyColumnsNames;
 
-            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, QueryOrderByColumns, QueryOrderByAscending);
+            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns);
         }
 
-        protected virtual string[] QueryOrderByColumns => Table.KeyColumnsNames;
+        public async Task<QueryResult<TEntity>> QueryAsync<TResult, TOrderBy>(Expression<Func<TEntity, bool>> @where, Expression<Func<TEntity, TResult>> @select, Expression<Func<TEntity, TOrderBy>> orderBy, bool orderByAscending, int skip, int take, CancellationToken cancellationToken)
+        {
+            if (select != null &&
+                select.ReturnType != typeof(TEntity))
+            {
+                throw new NotImplementedException("The select parameter is not supported yet");
+            }
 
-        protected virtual bool QueryOrderByAscending => true;
+            var selectColumns = Table.Columns.Keys.ToArray();
+            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
+            var orderByColumns = Table.KeyColumnsNames;
+            if (orderBy != null)
+            {
+                var memberExpression = orderBy.Body as MemberExpression;
+                if (memberExpression == null)
+                {
+                    throw new ArgumentException("Only ordering by a single member is supported by now");
+                }
+
+                orderByColumns = new[] {memberExpression.Member.Name};
+            }
+
+            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, orderByAscending);
+        }
 
         protected virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(string filter, string[] selectColumns, int skip, int take,
             CancellationToken cancellationToken, string[] orderByColumns, bool orderByAscending = true, IDictionary<string, object> filterValues = null)
@@ -91,6 +113,9 @@ namespace Takenet.Elephant.Sql
                     totalCount);
             }
         }
+
+
+
 
         protected async Task<DbConnection> GetConnectionAsync(CancellationToken cancellationToken)
         {
@@ -161,5 +186,7 @@ namespace Takenet.Elephant.Sql
                 }
             }
         }
+
+
     }
 }

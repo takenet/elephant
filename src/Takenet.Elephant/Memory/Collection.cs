@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Memory
 {
-    public abstract class Collection<T> : ICollection<T>, IQueryableStorage<T>
+    public abstract class Collection<T> : ICollection<T>, IQueryableStorage<T>, IOrderedQueryableStorage<T>
     {
         private readonly System.Collections.Generic.ICollection<T> _collection;
 
@@ -35,6 +33,7 @@ namespace Takenet.Elephant.Memory
             int take,
             CancellationToken cancellationToken)
         {
+            if (@where == null) @where = i => true;
             var predicate = where.Compile();
             var totalValues = _collection.Where(predicate.Invoke);
             var resultValues = totalValues
@@ -47,5 +46,32 @@ namespace Takenet.Elephant.Memory
         }
 
         #endregion
+
+        public Task<QueryResult<T>> QueryAsync<TResult, TOrderBy>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, Expression<Func<T, TOrderBy>> orderBy, bool orderByAscending,
+            int skip, int take, CancellationToken cancellationToken)
+        {
+            if (@where == null) @where = i => true;
+            var predicate = where.Compile();
+            var totalValues = _collection.Where(predicate.Invoke);
+
+            var orderByFunc = orderBy.Compile();
+            IOrderedEnumerable<T> orderedTotalValues;
+            if (orderByAscending)
+            {
+                orderedTotalValues = totalValues.OrderBy(orderByFunc.Invoke);
+            }
+            else
+            {
+                orderedTotalValues = totalValues.OrderByDescending(orderByFunc.Invoke);
+            }            
+
+            var resultValues = orderedTotalValues
+                .Skip(skip)
+                .Take(take)
+                .ToArray();
+
+            var result = new QueryResult<T>(new AsyncEnumerableWrapper<T>(resultValues), totalValues.Count());
+            return Task.FromResult(result);
+        }
     }
 }
