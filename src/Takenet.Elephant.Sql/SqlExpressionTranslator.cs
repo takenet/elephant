@@ -259,6 +259,7 @@ namespace Takenet.Elephant.Sql
         private string ConvertSqlLiteral(object value, Type type)
         {
             var dbType = TypeMapper.GetDbType(type);
+            var valueString = value.ToStringInvariant();
 
             if (dbType == DbType.String ||
                 dbType == DbType.StringFixedLength ||
@@ -268,10 +269,10 @@ namespace Takenet.Elephant.Sql
                 dbType == DbType.DateTime2 ||
                 dbType == DbType.DateTimeOffset)
             {
-                return $"'{_valuePrefix}{value}{_valueSuffix}'";
+                return $"'{_valuePrefix}{valueString}{_valueSuffix}'";
             }
 
-            return value.ToString();
+            return valueString;
         }
 
         #endregion

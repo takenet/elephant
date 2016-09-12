@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Web;
@@ -8,6 +9,17 @@ namespace Takenet.Elephant
 {
     public static class StringExtensions
     {
+        public static string ToStringOfCulture(this object obj, CultureInfo culture)
+        {
+            return
+                (obj as IConvertible)?.ToString(culture) ??
+                ((obj as IFormattable)?.ToString(null, culture) ??
+                obj.ToString());
+        }
+
+        public static string ToStringInvariant(this object obj)
+            => ToStringOfCulture(obj, CultureInfo.InvariantCulture);
+
         /// <summary>
         /// Returns the first few characters of the string with a length
         /// specified by the given parameter. If the string's length is less than the 
