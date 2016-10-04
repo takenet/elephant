@@ -18,14 +18,7 @@ namespace Takenet.Elephant
         /// <returns></returns>
         public static async Task AddItemAsync<TKey, TItem>(this ISetMap<TKey, TItem> setMap, TKey key, TItem item)
         {
-            ISet<TItem> set;
-            while ((set = await setMap.GetValueOrDefaultAsync(key).ConfigureAwait(false)) == null)
-            {                
-                set = new Set<TItem>();
-                await set.AddAsync(item).ConfigureAwait(false);
-                if (await setMap.TryAddAsync(key, set, false).ConfigureAwait(false)) return;                
-            }
-
+            var set = await setMap.GetValueOrEmptyAsync(key).ConfigureAwait(false);
             await set.AddAsync(item).ConfigureAwait(false);
         }
 
@@ -41,8 +34,7 @@ namespace Takenet.Elephant
         public static async Task<bool> TryRemoveItemAsync<TKey, TItem>(this ISetMap<TKey, TItem> setMap, TKey key,
             TItem item)
         {
-            var set = await setMap.GetValueOrDefaultAsync(key).ConfigureAwait(false);
-            if (set == null) return false;
+            var set = await setMap.GetValueOrEmptyAsync(key).ConfigureAwait(false);
             return await set.TryRemoveAsync(item).ConfigureAwait(false);
         }
 
@@ -58,8 +50,7 @@ namespace Takenet.Elephant
         public static async Task<bool> ContainsItemAsync<TKey, TItem>(this ISetMap<TKey, TItem> setMap, TKey key,
             TItem item)
         {
-            var set = await setMap.GetValueOrDefaultAsync(key).ConfigureAwait(false);
-            if (set == null) return false;
+            var set = await setMap.GetValueOrEmptyAsync(key).ConfigureAwait(false);
             return await set.ContainsAsync(item).ConfigureAwait(false);
         }
     }

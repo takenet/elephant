@@ -25,5 +25,10 @@ namespace Takenet.Elephant.Specialized
             : base(primary, backup, synchronizer)
         {
         }
+
+        public virtual Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key)
+        {
+            return ExecuteQueryFunc(m => ((ISetMap<TKey, TValue>)m).GetValueOrEmptyAsync(key));            
+        }
     }
 }

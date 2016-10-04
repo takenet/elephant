@@ -38,8 +38,6 @@ namespace Takenet.Elephant.Memory
             return await base.TryAddAsync(key, set, overwrite).ConfigureAwait(false);
         }
 
-        #region IItemSetMap<TKey, TItem> Members
-
         public async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem item)
         {
             var items = await GetValueOrDefaultAsync(key).ConfigureAwait(false);
@@ -53,9 +51,10 @@ namespace Takenet.Elephant.Memory
             return default(TItem);
         }
 
-        #endregion
-
-        #region IQueryableStorage<TItem> Members
+        public Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        {
+            return InternalDictionary.GetOrAdd(key, k => new Set<TItem>()).AsCompletedTask();
+        }
 
         public Task<QueryResult<TItem>> QueryAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TItem, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
@@ -80,8 +79,6 @@ namespace Takenet.Elephant.Memory
                 new QueryResult<TItem>(new AsyncEnumerableWrapper<TItem>(resultValues), totalValues.Count()));
         }
 
-        #endregion
-
         public Task<QueryResult<KeyValuePair<TKey, TItem>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TItem>, bool>> @where, Expression<Func<KeyValuePair<TKey, TItem>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
@@ -103,8 +100,6 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult(
                 new QueryResult<KeyValuePair<TKey, TItem>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TItem>>(resultValues), totalValues.Count()));
         }
-
-        #region IKeyQueryableMap<TKey, TItem> Members
 
         public Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take,
             CancellationToken cancellationToken)
@@ -130,7 +125,5 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult(
                 new QueryResult<TKey>(new AsyncEnumerableWrapper<TKey>(resultValues), totalValues.Count()));
         }
-
-        #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized
 {
@@ -17,6 +18,11 @@ namespace Takenet.Elephant.Specialized
 
         public ReplicationSetMap(ISetMap<TKey, TValue> master, ISetMap<TKey, TValue> slave, ISynchronizer<IMap<TKey, ISet<TValue>>> synchronizer) : base(master, slave, synchronizer)
         {
+        }
+
+        public Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key)
+        {
+            return ExecuteWithFallbackAsync(m => ((ISetMap<TKey, TValue>)m).GetValueOrEmptyAsync(key));
         }
     }
 }

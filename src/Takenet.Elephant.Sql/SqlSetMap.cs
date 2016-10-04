@@ -13,8 +13,6 @@ namespace Takenet.Elephant.Sql
     {
         private readonly IsolationLevel _addIsolationLevel;
 
-        #region Constructor
-
         public SqlSetMap(string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TItem> valueMapper, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted)
             : this(new SqlDatabaseDriver(), connectionString, table, keyMapper, valueMapper)
         {
@@ -26,10 +24,6 @@ namespace Takenet.Elephant.Sql
         {
             _addIsolationLevel = addIsolationLevel;
         }
-
-        #endregion
-
-        #region ISetMap<TKey, TItem> Members
 
         public async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
         {
@@ -109,9 +103,16 @@ namespace Takenet.Elephant.Sql
                     {
                         return null;
                     }
-                    return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues);
+                    return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues, SchemaChecked);
                 }
             }
+        }
+
+        public Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        {
+            if (key == null) throw new ArgumentNullException(nameof(key));            
+            var keyColumnValues = KeyMapper.GetColumnValues(key);
+            return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues, SchemaChecked).AsCompletedTask<ISet<TItem>>();
         }
 
         public async Task<bool> TryRemoveAsync(TKey key)
@@ -136,10 +137,6 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        #endregion
-
-        #region IItemSetMap<TKey, TItem> Members
-
         public virtual async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem value)
         {
             var keyColumnValues = GetKeyColumnValues(GetColumnValues(key, value));
@@ -155,10 +152,6 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        #endregion
-
-        #region IKeysMap<TKey, ISet<TItem>> Members
-
         public virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
             var selectColumns = Table.KeyColumnsNames;
@@ -170,17 +163,15 @@ namespace Takenet.Elephant.Sql
                     selectColumns));
         }
 
-        #endregion
-
         private class InternalSet : SqlSet<TItem>
         {
             public IDictionary<string, object> MapKeyColumnValues { get; }
 
-            public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues) 
+            public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues, bool schemaChecked) 
                 : base(databaseDriver, connectionString, table, mapper)
             {
                 MapKeyColumnValues = mapKeyColumnValues;
-                SchemaChecked = true; // Avoid checking the table schema again
+                SchemaChecked = schemaChecked; // To avoid checking the table schema again
             }
 
             protected override IDictionary<string, object> GetColumnValues(TItem entity, bool emitDefaultValues = false)

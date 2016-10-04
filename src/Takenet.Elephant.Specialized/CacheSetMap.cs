@@ -27,6 +27,13 @@ namespace Takenet.Elephant.Specialized
             return new InternalCacheSet(sourceValue, value);
         }
 
+        public virtual async Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key)
+        {
+            var value = await ExecuteQueryFunc(m => ((ISetMap<TKey, TValue>)m).GetValueOrEmptyAsync(key)).ConfigureAwait(false);
+            var sourceValue = await ((ISetMap<TKey, TValue>)Source).GetValueOrEmptyAsync(key).ConfigureAwait(false);
+            return new InternalCacheSet(sourceValue, value);
+        }
+
         private class InternalCacheSet : CacheSet<TValue>
         {
             public InternalCacheSet(ISet<TValue> source, ISet<TValue> cache) 
@@ -44,5 +51,6 @@ namespace Takenet.Elephant.Specialized
                 return TaskUtil.CompletedTask;
             }
         }
+
     }
 }

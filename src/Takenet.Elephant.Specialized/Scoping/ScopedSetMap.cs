@@ -27,6 +27,14 @@ namespace Takenet.Elephant.Specialized.Scoping
             return _removeOnEmptySet ? new SetWrapper(key, items, _scope, Identifier, _keySerializer) : items;
         }
 
+        public virtual async Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        {
+            var setMap = (ISetMap<TKey, TItem>) Map;
+            var items = await setMap.GetValueOrEmptyAsync(key);            
+            await Scope.AddKeyAsync(Identifier, KeySerializer.Serialize(key)).ConfigureAwait(false);            
+            return _removeOnEmptySet ? new SetWrapper(key, items, _scope, Identifier, _keySerializer) : items;
+        }
+
         public virtual Task<TItem> GetItemOrDefaultAsync(TKey key, TItem item) =>
             CastMapOrThrow<IItemSetMap<TKey, TItem>>().GetItemOrDefaultAsync(key, item);
 
