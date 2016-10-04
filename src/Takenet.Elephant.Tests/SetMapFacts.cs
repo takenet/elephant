@@ -191,5 +191,84 @@ namespace Takenet.Elephant.Tests
             AssertIsFalse(await map.ContainsItemAsync(key, item2));
             AssertIsFalse(await map.ContainsItemAsync(key, item3));
         }
+
+        [Fact(DisplayName = nameof(GetNonExistingSetShouldReturnEmptySet))]
+        public virtual async Task GetNonExistingSetShouldReturnEmptySet()
+        {
+            // Arrange
+            var map = (ISetMap<TKey, TValue>)Create();
+            var key = CreateKey();
+
+            // Act
+            var actual = await map.GetValueOrEmptyAsync(key);
+
+            // Assert
+            AssertIsNotNull(actual);
+            AssertEquals(await actual.GetLengthAsync(), 0);
+        }
+
+        [Fact(DisplayName = nameof(GetNonExistingMultipleTimesSetShouldReturnEmptySets))]
+        public virtual async Task GetNonExistingMultipleTimesSetShouldReturnEmptySets()
+        {
+            // Arrange
+            var map = (ISetMap<TKey, TValue>)Create();
+            var key = CreateKey();
+
+            // Act
+            var actual1 = await map.GetValueOrEmptyAsync(key);
+            var actual2 = await map.GetValueOrEmptyAsync(key);
+            var actual3 = await map.GetValueOrEmptyAsync(key);
+
+            // Assert
+            AssertIsNotNull(actual1);
+            AssertIsNotNull(actual2);
+            AssertIsNotNull(actual3);
+            AssertEquals(await actual1.GetLengthAsync(), 0);            
+            AssertEquals(await actual2.GetLengthAsync(), 0);            
+            AssertEquals(await actual3.GetLengthAsync(), 0);
+        }
+
+        [Fact(DisplayName = nameof(GetNonExistingMultipleTimesSetAndAddsShouldAddToAllInstances))]
+        public virtual async Task GetNonExistingMultipleTimesSetAndAddsShouldAddToAllInstances()
+        {
+            // Arrange
+            var map = (ISetMap<TKey, TValue>)Create();
+            var key = CreateKey();
+            var item1 = CreateItem();
+            var item2 = CreateItem();
+            var item3 = CreateItem();
+
+            // Act
+            var actual1 = await map.GetValueOrEmptyAsync(key);
+            var actual2 = await map.GetValueOrEmptyAsync(key);
+            var actual3 = await map.GetValueOrEmptyAsync(key);
+            await actual1.AddAsync(item1);
+            await actual2.AddAsync(item2);
+            await actual3.AddAsync(item3);
+
+            // Assert
+            AssertIsTrue(await map.ContainsKeyAsync(key));            
+            AssertEquals(await actual1.GetLengthAsync(), 3);
+            AssertEquals(await actual2.GetLengthAsync(), 3);
+            AssertEquals(await actual3.GetLengthAsync(), 3);
+        }
+
+        [Fact(DisplayName = nameof(GetExistingSetShouldReturnSet))]
+        public virtual async Task GetExistingSetShouldReturnSet()
+        {
+            // Arrange
+            var map = (ISetMap<TKey, TValue>)Create();
+            var key = CreateKey();
+            var item1 = CreateItem();
+            await map.AddItemAsync(key, item1);
+
+            // Act
+            var actual = await map.GetValueOrEmptyAsync(key);
+
+            // Assert
+            AssertIsNotNull(actual);
+            AssertIsTrue(await map.ContainsKeyAsync(key));
+            AssertEquals(await actual.GetLengthAsync(), 1);
+        }
     }
 }
