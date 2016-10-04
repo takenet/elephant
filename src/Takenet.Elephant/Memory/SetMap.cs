@@ -53,7 +53,7 @@ namespace Takenet.Elephant.Memory
 
         public Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
         {
-            return InternalDictionary.GetOrAdd(key, k => new Set<TItem>()).AsCompletedTask();
+            return InternalDictionary.GetOrAdd(key, k => ValueFactory()).AsCompletedTask();
         }
 
         public Task<QueryResult<TItem>> QueryAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TItem, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
