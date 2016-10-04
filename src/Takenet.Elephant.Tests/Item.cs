@@ -32,7 +32,7 @@ namespace Takenet.Elephant.Tests
 
         public override string ToString()
         {
-            return $"{StringProperty};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{RandomProperty}";
+            return $"{StringProperty ?? "<null>"};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{RandomProperty ?? "<null>"}";
         }
 
         public static Item Parse(string s)
@@ -42,13 +42,13 @@ namespace Takenet.Elephant.Tests
             var values = s.Split(';');
             return new Item
             {
-                StringProperty = values[0],
+                StringProperty = values[0] == "<null>" ? null : values[0],
                 IntegerProperty = int.Parse(values[1]),
                 GuidProperty = Guid.Parse(values[2]),
                 UriProperty = new Uri(values[3]),
                 DateProperty = DateTimeOffset.Parse(values[4], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
                 Select = (ItemOptions)Enum.Parse(typeof(ItemOptions), values[5]),
-                RandomProperty = values[6]
+                RandomProperty = values[6] == "<null>" ? null : values[6],
             };
         }
 
