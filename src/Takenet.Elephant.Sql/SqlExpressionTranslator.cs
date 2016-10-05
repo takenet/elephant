@@ -258,7 +258,7 @@ namespace Takenet.Elephant.Sql
 
         private string ConvertSqlLiteral(object value, Type type)
         {
-            var dbType = TypeMapper.GetDbType(type);
+            var dbType = DbTypeMapper.GetDbType(type);
             var valueString = value.ToStringInvariant();
 
             if (dbType == DbType.String ||

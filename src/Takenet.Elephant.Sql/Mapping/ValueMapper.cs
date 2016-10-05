@@ -6,30 +6,34 @@ namespace Takenet.Elephant.Sql.Mapping
 {
     public class ValueMapper<T> : IMapper<T>
     {
-        private readonly static DbType _dbType;                
-
-        static ValueMapper()
+        private static readonly DbType _dbType = Sql.DbTypeMapper.GetDbType(typeof(T));
+                
+        public ValueMapper(string columnName)
+            : this(columnName, Sql.DbTypeMapper.Default)
         {
-            _dbType = TypeMapper.GetDbType(typeof(T));
+            
+        }
+
+        public ValueMapper(string columnName, IDbTypeMapper dbTypeMapper)
+        {            
+            if (columnName == null) throw new ArgumentNullException(nameof(columnName));
+            ColumnName = columnName;
+            DbTypeMapper = dbTypeMapper;
         }
 
         internal string ColumnName { get; }
 
-        public ValueMapper(string columnName)
-        {
-            if (columnName == null) throw new ArgumentNullException(nameof(columnName));
-            ColumnName = columnName;
-        }
+        public IDbTypeMapper DbTypeMapper { get; }
 
-        public IDictionary<string, object> GetColumnValues(T value, string[] columns = null, bool emitDefaultValues = false)
+        public virtual IDictionary<string, object> GetColumnValues(T value, string[] columns = null, bool emitDefaultValues = false)
         {
             return new Dictionary<string, object>()
             {
-                { ColumnName, TypeMapper.ToDbType(value, _dbType) }
+                { ColumnName, DbTypeMapper.ToDbType(value, _dbType) }
             };
         }
 
-        public T Create(IDataRecord record, string[] columns)
+        public virtual T Create(IDataRecord record, string[] columns)
         {
             var index = -1;
 
@@ -43,7 +47,7 @@ namespace Takenet.Elephant.Sql.Mapping
             }
 
             if (index < 0) throw new ArgumentException($"The column '{ColumnName}' was not found", nameof(columns));            
-            return (T)TypeMapper.FromDbType(record[index], _dbType, typeof (T));
+            return (T)DbTypeMapper.FromDbType(record[index], _dbType, typeof (T));
         }
     }
 }

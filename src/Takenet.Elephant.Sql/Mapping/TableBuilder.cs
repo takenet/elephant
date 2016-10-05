@@ -85,7 +85,7 @@ namespace Takenet.Elephant.Sql.Mapping
         public TableBuilder WithColumnFromType<T>(string columnName)
         {
             if (columnName == null) throw new ArgumentNullException(nameof(columnName));
-            var column = new KeyValuePair<string, SqlType>(columnName, new SqlType(TypeMapper.GetDbType(typeof(T))));
+            var column = new KeyValuePair<string, SqlType>(columnName, new SqlType(DbTypeMapper.GetDbType(typeof(T))));
             Columns.Add(column);
             return this;
         }
@@ -100,7 +100,7 @@ namespace Takenet.Elephant.Sql.Mapping
         public TableBuilder WithColumnFromType<T>(string columnName, int length)
         {
             if (columnName == null) throw new ArgumentNullException(nameof(columnName));
-            var column = new KeyValuePair<string, SqlType>(columnName, new SqlType(TypeMapper.GetDbType(typeof(T)), length));
+            var column = new KeyValuePair<string, SqlType>(columnName, new SqlType(DbTypeMapper.GetDbType(typeof(T)), length));
             Columns.Add(column);
             return this;
         }
@@ -116,7 +116,7 @@ namespace Takenet.Elephant.Sql.Mapping
         public TableBuilder WithColumnFromType<T>(string columnName, int precision, int scale)
         {
             if (columnName == null) throw new ArgumentNullException(nameof(columnName));
-            var column = new KeyValuePair<string, SqlType>(columnName, new SqlType(TypeMapper.GetDbType(typeof(T)), precision, scale));
+            var column = new KeyValuePair<string, SqlType>(columnName, new SqlType(DbTypeMapper.GetDbType(typeof(T)), precision, scale));
             Columns.Add(column);
             return this;
         }
@@ -198,7 +198,7 @@ namespace Takenet.Elephant.Sql.Mapping
         public TableBuilder WithKeyColumnFromType<T>(string keyColumnName, bool isIdentity = false)
         {
             if (keyColumnName == null) throw new ArgumentNullException(nameof(keyColumnName));
-            var column = new KeyValuePair<string, SqlType>(keyColumnName, new SqlType(TypeMapper.GetDbType(typeof (T)), isIdentity));
+            var column = new KeyValuePair<string, SqlType>(keyColumnName, new SqlType(DbTypeMapper.GetDbType(typeof (T)), isIdentity));
             Columns.Add(column);
             KeyColumns.Add(keyColumnName);
             return this;

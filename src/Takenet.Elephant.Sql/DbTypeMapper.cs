@@ -5,14 +5,13 @@ using System.Data;
 namespace Takenet.Elephant.Sql
 {
     /// <summary>
-    /// Provides CLR to SQL type
-    /// mapping utilities
+    /// Provides CLR to SQL type mapping utilities.
     /// </summary>
-    public static class TypeMapper
+    public class DbTypeMapper : IDbTypeMapper
     {
-        private static Dictionary<Type, DbType> _typeMap;
+        private static readonly Dictionary<Type, DbType> _typeMap;
 
-        static TypeMapper()
+        static DbTypeMapper()
         {
             _typeMap = new Dictionary<Type, DbType>
             {
@@ -51,7 +50,7 @@ namespace Takenet.Elephant.Sql
                 {typeof (DateTime?), DbType.DateTime},
                 {typeof (DateTimeOffset?), DbType.DateTimeOffset}
             };
-        }
+        }        
 
         public static DbType GetDbType(Type type)
         {
@@ -65,7 +64,9 @@ namespace Takenet.Elephant.Sql
             return dbType;
         }
 
-        public static object ToDbType(object value, DbType type)
+        public static readonly DbTypeMapper Default = new DbTypeMapper();
+
+        public object ToDbType(object value, DbType type)
         {
             if (value == null) return DBNull.Value;
             if (type == DbType.String &&
@@ -77,7 +78,7 @@ namespace Takenet.Elephant.Sql
             return value;
         }
 
-        public static object FromDbType(object dbValue, DbType type, Type propertyType)
+        public object FromDbType(object dbValue, DbType type, Type propertyType)
         {
             if (propertyType.IsGenericType &&
                 propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))

@@ -8,7 +8,7 @@ namespace Takenet.Elephant.Sql.Mapping
     {
         public static IDictionary<string, SqlType> ToSqlColumns(this IEnumerable<PropertyInfo> properties)
         {
-            return properties.ToDictionary(p => p.Name, p => new SqlType(TypeMapper.GetDbType(p.PropertyType)));
+            return properties.ToDictionary(p => p.Name, p => new SqlType(DbTypeMapper.GetDbType(p.PropertyType)));
         }
     }
 }

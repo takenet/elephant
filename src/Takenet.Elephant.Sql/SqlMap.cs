@@ -107,7 +107,7 @@ namespace Takenet.Elephant.Sql
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
                     var keyColumnValues = KeyMapper.GetColumnValues(key);
-                    var columnValues = new Dictionary<string, object> { { propertyName, TypeMapper.ToDbType(propertyValue, Table.Columns[propertyName].Type) } };
+                    var columnValues = new Dictionary<string, object> { { propertyName, Mapper.DbTypeMapper.ToDbType(propertyValue, Table.Columns[propertyName].Type) } };
 
                     using (var command = connection.CreateMergeCommand(DatabaseDriver, Table.Name, keyColumnValues, columnValues))
                     {
@@ -162,7 +162,7 @@ namespace Takenet.Elephant.Sql
                         var dbValue = await command.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                         if (dbValue != null && !(dbValue is DBNull))
                         {
-                            return (TProperty)TypeMapper.FromDbType(
+                            return (TProperty)Mapper.DbTypeMapper.FromDbType(
                                 dbValue,
                                 Table.Columns[propertyName].Type,
                                 typeof(TValue).GetProperty(propertyName).PropertyType);

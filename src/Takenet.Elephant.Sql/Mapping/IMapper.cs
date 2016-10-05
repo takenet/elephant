@@ -6,6 +6,14 @@ namespace Takenet.Elephant.Sql.Mapping
     public interface IMapper<TEntity>
     {
         /// <summary>
+        /// Gets the database type mapper.
+        /// </summary>
+        /// <value>
+        /// The database type mapper.
+        /// </value>
+        IDbTypeMapper DbTypeMapper { get; }
+
+        /// <summary>
         /// Gets the column values for an entity.
         /// </summary>
         /// <param name="value">The value.</param>

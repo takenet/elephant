@@ -8,29 +8,30 @@ namespace Takenet.Elephant.Sql.Mapping
 {
     public class TypeMapper<TEntity> : IMapper<TEntity> where TEntity : class, new()
     {
-        private readonly ITable _table;
+        private readonly ITable _table;        
         private readonly IDictionary<string, Type> _propertyDictionary;
         private readonly IDictionary<string, Func<TEntity, object>> _propertyGetFuncDictionary;
         private readonly IDictionary<string, Action<TEntity, object>> _propertySetActionDictionary;
 
-        public TypeMapper(ITable table)
-            : this(table, p => true)
+        public TypeMapper(ITable table, IDbTypeMapper dbTypeMapper = null)
+            : this(table, p => true, dbTypeMapper)
         {
             
         }
 
-        public TypeMapper(ITable table, Func<PropertyInfo, bool> propertyFilter)
-            : this(table, typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(propertyFilter).ToArray())
+        public TypeMapper(ITable table, Func<PropertyInfo, bool> propertyFilter, IDbTypeMapper dbTypeMapper = null)
+            : this(table, typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(propertyFilter).ToArray(), dbTypeMapper ?? Sql.DbTypeMapper.Default)
         {
 
         }
 
-        protected TypeMapper(ITable table, PropertyInfo[] properties)
+        protected TypeMapper(ITable table, PropertyInfo[] properties, IDbTypeMapper dbTypeMapper)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
             if (properties == null || properties.Length == 0) throw new ArgumentNullException(nameof(properties));
 
-            _table = table;            
+            _table = table;
+            DbTypeMapper = dbTypeMapper;
             _propertyDictionary = properties.ToDictionary(p => p.Name, p => p.PropertyType);
             _propertyGetFuncDictionary = new Dictionary<string, Func<TEntity, object>>();
             _propertySetActionDictionary = new Dictionary<string, Action<TEntity, object>>();
@@ -70,7 +71,9 @@ namespace Takenet.Elephant.Sql.Mapping
             }
         }
 
-        public IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool emitDefaultValues = false)
+        public IDbTypeMapper DbTypeMapper { get; }
+
+        public virtual IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool emitDefaultValues = false)
         {
             return _propertyGetFuncDictionary
                 .Where(
@@ -83,10 +86,10 @@ namespace Takenet.Elephant.Sql.Mapping
                     p => emitDefaultValues || !p.Value.IsDefaultValueOfType(_propertyDictionary[p.Key]))
                 .ToDictionary(
                     p => p.Key,
-                    p => TypeMapper.ToDbType(p.Value, _table.Columns[p.Key].Type));
+                    p => DbTypeMapper.ToDbType(p.Value, _table.Columns[p.Key].Type));
         }
 
-        public TEntity Create(IDataRecord record, string[] columns)
+        public virtual TEntity Create(IDataRecord record, string[] columns)
         {
             var entity = new TEntity();
 
@@ -99,7 +102,7 @@ namespace Takenet.Elephant.Sql.Mapping
                 {
                     _propertySetActionDictionary[column](
                         entity,
-                        TypeMapper.FromDbType(
+                        DbTypeMapper.FromDbType(
                             record[i],
                             _table.Columns[column].Type,
                             _propertyDictionary[column]

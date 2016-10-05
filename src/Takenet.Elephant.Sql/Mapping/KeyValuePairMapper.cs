@@ -15,6 +15,8 @@ namespace Takenet.Elephant.Sql.Mapping
             _valueMapper = valueMapper;
         }
 
+        public IDbTypeMapper DbTypeMapper => _valueMapper.DbTypeMapper;
+
         public IDictionary<string, object> GetColumnValues(KeyValuePair<TKey, TValue> value, string[] columns = null, bool emitDefaultValues = false)
         {
             return _keyMapper

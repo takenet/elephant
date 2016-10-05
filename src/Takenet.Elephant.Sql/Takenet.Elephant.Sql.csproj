@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseSchema.cs" />
+    <Compile Include="IDbTypeMapper.cs" />
     <Compile Include="Mapping\KeyValuePairMapper.cs" />
     <Compile Include="Mapping\TableBuilder.cs" />
     <Compile Include="SqlExpressionTranslator.cs" />
@@ -75,7 +76,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="StorageBase.cs" />
-    <Compile Include="TypeMapper.cs" />
+    <Compile Include="DbTypeMapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
