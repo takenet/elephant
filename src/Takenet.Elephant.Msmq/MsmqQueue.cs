@@ -23,12 +23,25 @@ namespace Takenet.Elephant.Msmq
         private readonly IMessageFormatter _messageFormatter;
         private readonly MessageQueue _messageQueue;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MsmqQueue{T}"/> class.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="serializer">The serializer.</param>
+        /// <param name="messageFormatter">The message formatter.</param>
+        /// <param name="recoverable">if set to <c>true</c> [recoverable].</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public MsmqQueue(string path, ISerializer<T> serializer = null, IMessageFormatter messageFormatter = null, bool recoverable = true)
         {
+            if (path == null) throw new ArgumentNullException(nameof(path));
             _serializer = serializer;
             _recoverable = recoverable;
             _messageFormatter = messageFormatter ?? new BinaryMessageFormatter();
-            if (!MessageQueue.Exists(path))
+
+            // The methods Exists and Create doesn't support remote queues
+            // https://msdn.microsoft.com/en-us/library/system.messaging.messagequeue.exists(v=vs.110).aspx
+            if (!path.StartsWith("FormatName", StringComparison.OrdinalIgnoreCase) &&
+                !MessageQueue.Exists(path))            
             {
                 MessageQueue.Create(path);
             }
