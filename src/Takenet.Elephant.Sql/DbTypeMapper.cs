@@ -66,13 +66,20 @@ namespace Takenet.Elephant.Sql
 
         public static readonly DbTypeMapper Default = new DbTypeMapper();
 
-        public object ToDbType(object value, DbType type)
+        public object ToDbType(object value, DbType type, int? length = null)
         {
             if (value == null) return DBNull.Value;
-            if (type == DbType.String &&
-                !(value is string))
+            if (type == DbType.String)
             {
-                return value.ToString();
+                if (!(value is string))
+                {
+                    value = value.ToString();
+                }
+
+                if (length.HasValue && length.Value < int.MaxValue)
+                {
+                    value = ((string) value).Left(length.Value);
+                }
             }
 
             return value;

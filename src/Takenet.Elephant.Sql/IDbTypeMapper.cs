@@ -13,8 +13,9 @@ namespace Takenet.Elephant.Sql
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="type">The type.</param>
+        /// <param name="length">The length.</param>
         /// <returns></returns>
-        object ToDbType(object value, DbType type);
+        object ToDbType(object value, DbType type, int? length = null);
 
         /// <summary>
         /// Maps a DbType to a specified CLR type.

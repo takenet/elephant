@@ -45,24 +45,9 @@ namespace Takenet.Elephant.Sql.Mapping
 
                 if (!_table.Columns[property.Name].IsIdentity)
                 {
-                    Func<object, object> getAccessor = TypeUtil.BuildGetAccessor(property);
-
-                    if (typeof (string) == property.PropertyType &&
-                        _table.Columns[property.Name].Length != null &&
-                        _table.Columns[property.Name].Length != int.MaxValue)
-                    {
-                        var closureGetAccessor = getAccessor;
-                        var closureColumnLength = _table.Columns[property.Name].Length.Value;
-                        getAccessor = p =>
-                        {
-                            var value = (string)closureGetAccessor(p);
-                            return value?.Left(closureColumnLength);
-                        };
-                    }                    
-
                     _propertyGetFuncDictionary.Add(
                         property.Name,
-                        getAccessor);
+                        TypeUtil.BuildGetAccessor(property));
                 }
 
                 _propertySetActionDictionary.Add(
@@ -86,7 +71,7 @@ namespace Takenet.Elephant.Sql.Mapping
                     p => emitDefaultValues || !p.Value.IsDefaultValueOfType(_propertyDictionary[p.Key]))
                 .ToDictionary(
                     p => p.Key,
-                    p => DbTypeMapper.ToDbType(p.Value, _table.Columns[p.Key].Type));
+                    p => DbTypeMapper.ToDbType(p.Value, _table.Columns[p.Key].Type, _table.Columns[p.Key].Length));
         }
 
         public virtual TEntity Create(IDataRecord record, string[] columns)
