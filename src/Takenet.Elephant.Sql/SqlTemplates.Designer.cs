@@ -253,7 +253,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT COLUMN_NAME, DATA_TYPE
+        ///   Looks up a localized string similar to SELECT COLUMN_NAME, DATA_TYPE, COALESCE(CHARACTER_MAXIMUM_LENGTH, DATETIME_PRECISION) AS LENGTH_OR_PRECISION
         ///FROM INFORMATION_SCHEMA.COLUMNS
         ///WHERE TABLE_NAME = &apos;{tableName}&apos;.
         /// </summary>

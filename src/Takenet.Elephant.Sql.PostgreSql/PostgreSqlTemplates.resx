@@ -184,7 +184,7 @@
     <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM {tableName} WHERE {filter})) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END</value>
   </data>
   <data name="GetTableColumns" xml:space="preserve">
-    <value>SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN ('varchar', 'timestamp', 'timestamptz') THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE
+    <value>SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN ('varchar', 'timestamp', 'timestamptz') THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE, COALESCE(CHARACTER_MAXIMUM_LENGTH, DATETIME_PRECISION) AS LENGTH_OR_PRECISION
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE Lower(TABLE_NAME) = Lower('{tableName}')</value>
   </data>

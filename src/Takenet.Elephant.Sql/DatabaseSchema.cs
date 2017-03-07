@@ -69,9 +69,25 @@ namespace Takenet.Elephant.Sql
                 {
                     while (await reader.ReadAsync(cancellationToken))
                     {
+                        var columnType = (string)reader[1];
+
+                        if (reader.FieldCount == 3 && 
+                            reader[2] != DBNull.Value)
+                        {
+                            var columnLength = (int)reader[2];
+                            if (columnLength == -1)
+                            {
+                                columnType = $"{columnType}({databaseDriver.GetSqlStatementTemplate(SqlStatement.MaxLength)})";
+                            }
+                            else
+                            {
+                                columnType = $"{columnType}({columnLength})";
+                            }
+                        }
+
                         tableColumnsDictionary.Add(
-                            reader[0].ToString().ToLowerInvariant(), 
-                            (string)reader[1]);
+                            reader[0].ToString().ToLowerInvariant(),
+                            columnType);
                     }
                 }
             }
@@ -88,8 +104,7 @@ namespace Takenet.Elephant.Sql
                     columnsToBeCreated.Add(column);
                 }
                 // Checks if the existing column type matches with the definition
-                // The comparison is with startsWith for the NVARCHAR values
-                else if (!GetSqlTypeSql(databaseDriver, column.Value).StartsWith(
+                else if (!GetSqlTypeSql(databaseDriver, column.Value).Equals(
                          tableColumnsDictionary[columnKey], StringComparison.OrdinalIgnoreCase))
                 {
                     columnsToBeAltered.Add(column);                    
@@ -156,7 +171,7 @@ namespace Takenet.Elephant.Sql
                         switch (column.Value.Type)
                         {
                             case DbType.Int16:
-                                statement = SqlStatement.Int16IdentityColumnDefinition;                                
+                                statement = SqlStatement.Int16IdentityColumnDefinition;
                                 break;
                             case DbType.Int32:
                                 statement = SqlStatement.Int32IdentityColumnDefinition;
@@ -171,7 +186,7 @@ namespace Takenet.Elephant.Sql
                     }
                     else
                     {
-                        statement = SqlStatement.ColumnDefinition;                        
+                        statement = SqlStatement.ColumnDefinition;
                     }
                 }
                 else
