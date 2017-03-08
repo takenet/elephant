@@ -18,7 +18,7 @@ namespace Takenet.Elephant.Samples.Map
         }
 
         public SqlDataMap()
-            : base(@"Server=(localdb)\v12.0;Database=Elephant;Integrated Security=true",
+            : base(@"Server=(localdb)\MSSQLLocalDB;Database=Elephant;Integrated Security=true",
                 table, new ValueMapper<Guid>("Id"), new TypeMapper<Data>(table))
         {
                

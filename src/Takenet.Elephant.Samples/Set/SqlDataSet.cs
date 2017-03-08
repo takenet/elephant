@@ -16,7 +16,7 @@ namespace Takenet.Elephant.Samples.Set
         }
 
         public SqlDataSet() 
-            : base(@"Server=(localdb)\v12.0;Database=Elephant;Integrated Security=true", table, new TypeMapper<Data>(table))
+            : base(@"Server=(localdb)\MSSQLLocalDB;Database=Elephant;Integrated Security=true", table, new TypeMapper<Data>(table))
         {
         }
 
