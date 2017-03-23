@@ -130,14 +130,14 @@ namespace Takenet.Elephant.Sql
             return new CancellationTokenSource(DatabaseDriver.Timeout);
         }
 
-        protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitDefaultValues = false)
+        protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitDefaultValues = false, bool includeIdentityTypes = false)
         {
-            return Mapper.GetColumnValues(entity, emitDefaultValues: emitDefaultValues);
+            return Mapper.GetColumnValues(entity, emitDefaultValues: emitDefaultValues, includeIdentityTypes: includeIdentityTypes);
         }
 
-        protected IDictionary<string, object> GetKeyColumnValues(TEntity entity)
+        protected IDictionary<string, object> GetKeyColumnValues(TEntity entity, bool includeIdentityTypes = false)
         {
-            return GetKeyColumnValues(GetColumnValues(entity));
+            return GetKeyColumnValues(GetColumnValues(entity, includeIdentityTypes: includeIdentityTypes));
         }
 
         protected virtual IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues)

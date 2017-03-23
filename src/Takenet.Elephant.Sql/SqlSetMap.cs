@@ -174,10 +174,10 @@ namespace Takenet.Elephant.Sql
                 SchemaChecked = schemaChecked; // To avoid checking the table schema again
             }
 
-            protected override IDictionary<string, object> GetColumnValues(TItem entity, bool emitDefaultValues = false)
+            protected override IDictionary<string, object> GetColumnValues(TItem entity, bool emitDefaultValues = false, bool includeIdentityTypes = false)
             {
                 return MapKeyColumnValues
-                    .Union(base.GetColumnValues(entity, emitDefaultValues))
+                    .Union(base.GetColumnValues(entity, emitDefaultValues, includeIdentityTypes))
                     .ToDictionary(k => k.Key, k => k.Value);
             }
 

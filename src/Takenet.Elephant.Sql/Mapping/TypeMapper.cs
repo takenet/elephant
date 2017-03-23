@@ -8,7 +8,7 @@ namespace Takenet.Elephant.Sql.Mapping
 {
     public class TypeMapper<TEntity> : IMapper<TEntity> where TEntity : class, new()
     {
-        private readonly ITable _table;        
+        private readonly ITable _table;
         private readonly IDictionary<string, Type> _propertyDictionary;
         private readonly IDictionary<string, Func<TEntity, object>> _propertyGetFuncDictionary;
         private readonly IDictionary<string, Action<TEntity, object>> _propertySetActionDictionary;
@@ -16,7 +16,7 @@ namespace Takenet.Elephant.Sql.Mapping
         public TypeMapper(ITable table, IDbTypeMapper dbTypeMapper = null)
             : this(table, p => true, dbTypeMapper)
         {
-            
+
         }
 
         public TypeMapper(ITable table, Func<PropertyInfo, bool> propertyFilter, IDbTypeMapper dbTypeMapper = null)
@@ -43,12 +43,9 @@ namespace Takenet.Elephant.Sql.Mapping
                     throw new ArgumentException($"The table doesn't contains a column for property '{property.Name}'");
                 }
 
-                if (!_table.Columns[property.Name].IsIdentity)
-                {
-                    _propertyGetFuncDictionary.Add(
-                        property.Name,
-                        TypeUtil.BuildGetAccessor(property));
-                }
+                _propertyGetFuncDictionary.Add(
+                    property.Name,
+                    TypeUtil.BuildGetAccessor(property));
 
                 _propertySetActionDictionary.Add(
                     property.Name,
@@ -58,7 +55,7 @@ namespace Takenet.Elephant.Sql.Mapping
 
         public IDbTypeMapper DbTypeMapper { get; }
 
-        public virtual IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool emitDefaultValues = false)
+        public virtual IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool emitDefaultValues = false, bool includeIdentityTypes = false)
         {
             return _propertyGetFuncDictionary
                 .Where(
@@ -69,6 +66,8 @@ namespace Takenet.Elephant.Sql.Mapping
                     p => p.Value(value))
                 .Where(
                     p => emitDefaultValues || !p.Value.IsDefaultValueOfType(_propertyDictionary[p.Key]))
+                .Where(
+                    p => includeIdentityTypes || !_table.Columns[p.Key].IsIdentity)
                 .ToDictionary(
                     p => p.Key,
                     p => DbTypeMapper.ToDbType(p.Value, _table.Columns[p.Key].Type, _table.Columns[p.Key].Length));
