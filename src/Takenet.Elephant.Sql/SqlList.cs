@@ -52,7 +52,7 @@ namespace Takenet.Elephant.Sql
         public async Task<long> RemoveAllAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            var keyColumnValues = GetKeyColumnValues(value);
+            var keyColumnValues = GetKeyColumnValues(value, includeIdentityTypes: true);
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
