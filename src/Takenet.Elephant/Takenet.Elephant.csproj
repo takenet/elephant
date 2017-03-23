@@ -46,10 +46,12 @@
     <Compile Include="AsyncEnumerableExtensions.cs" />
     <Compile Include="AsyncEnumerableWrapper.cs" />
     <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="Group.cs" />
     <Compile Include="IAsyncEnumerable.cs" />
     <Compile Include="IBlockingQueue.cs" />
     <Compile Include="ICollection.cs" />
     <Compile Include="IDictionaryConverter.cs" />
+    <Compile Include="IGroupableMap.cs" />
     <Compile Include="IKeyQueryableMap.cs" />
     <Compile Include="IList.cs" />
     <Compile Include="IOrderedQueryableStorage.cs" />

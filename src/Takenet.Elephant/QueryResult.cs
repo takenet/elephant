@@ -22,7 +22,6 @@ namespace Takenet.Elephant
 
         public int Total { get; private set; }
 
-        #region IEnumerable<T> Members
 
         public Task<IAsyncEnumerator<T>> GetEnumeratorAsync(CancellationToken cancellationToken)
         {
@@ -34,10 +33,6 @@ namespace Takenet.Elephant
             return Items.GetEnumerator();
         }
 
-        #endregion
-
-        #region IEnumerable Members
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable)Items).GetEnumerator();
@@ -48,6 +43,5 @@ namespace Takenet.Elephant
             (Items as IDisposable)?.Dispose();
         }
 
-        #endregion
     }
 }
