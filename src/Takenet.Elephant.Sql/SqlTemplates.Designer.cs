@@ -136,6 +136,15 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DATE.
+        /// </summary>
+        public static string DbTypeDate {
+            get {
+                return ResourceManager.GetString("DbTypeDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DATETIMEOFFSET(2).
         /// </summary>
         public static string DbTypeDateTime {

@@ -144,6 +144,9 @@
   <data name="DbTypeBoolean" xml:space="preserve">
     <value>BOOLEAN</value>
   </data>
+  <data name="DbTypeDate" xml:space="preserve">
+    <value>DATE</value>
+  </data>
   <data name="DbTypeDateTime" xml:space="preserve">
     <value>TIMESTAMP(3)</value>
   </data>
