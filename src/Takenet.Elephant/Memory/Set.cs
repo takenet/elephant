@@ -16,7 +16,6 @@ namespace Takenet.Elephant.Memory
         private readonly HashSet<T> _hashSet;
         private object _syncRoot = new object();
 
-        #region Constructor
 
         public Set()
             : this(EqualityComparer<T>.Default)
@@ -48,7 +47,6 @@ namespace Takenet.Elephant.Memory
             _hashSet = hashSet;
         }
 
-        #endregion
 
         #region ISet<T> Members
 

@@ -19,33 +19,35 @@ namespace Takenet.Elephant.Memory
         public Map()
             : this(() => (TValue)Activator.CreateInstance(typeof(TValue)))
         {
-
         }
 
         public Map(Func<TValue> valueFactory)
             : this(valueFactory, new DictionaryConverter<TValue>(valueFactory))
         {
-         
         }
 
         public Map(IDictionaryConverter<TValue> dictionaryConverter)
             : this(() => (TValue)Activator.CreateInstance(typeof(TValue)), dictionaryConverter)
         {
-
         }
 
         public Map(Func<TValue> valueFactory, IDictionaryConverter<TValue> dictionaryConverter)
+            : this(valueFactory, dictionaryConverter, new ConcurrentDictionary<TKey, TValue>())
         {
-            if (valueFactory == null) throw new ArgumentNullException(nameof(valueFactory));
-            if (dictionaryConverter == null) throw new ArgumentNullException(nameof(dictionaryConverter));
-            ValueFactory = valueFactory;
-            DictionaryConverter = dictionaryConverter;
-            InternalDictionary = new ConcurrentDictionary<TKey, TValue>();
         }
 
-        protected ConcurrentDictionary<TKey, TValue> InternalDictionary { get; }
+        public Map(Func<TValue> valueFactory, IDictionaryConverter<TValue> dictionaryConverter, ConcurrentDictionary<TKey, TValue> internalDictionary)
+        {
+            ValueFactory = valueFactory ?? throw new ArgumentNullException(nameof(valueFactory));
+            DictionaryConverter = dictionaryConverter ?? throw new ArgumentNullException(nameof(dictionaryConverter));
+            InternalDictionary = internalDictionary ?? throw new ArgumentNullException(nameof(internalDictionary));
+        }
+
         protected Func<TValue> ValueFactory { get; }
+
         protected IDictionaryConverter<TValue> DictionaryConverter { get; }
+
+        protected ConcurrentDictionary<TKey, TValue> InternalDictionary { get; }
 
         #region IMap<TKey,TValue> Members
 
