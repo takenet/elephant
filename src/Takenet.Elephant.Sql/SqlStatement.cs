@@ -44,6 +44,7 @@ namespace Takenet.Elephant.Sql
         LessThan,
         LessThanOrEqual,
         Like,
-        MaxLength
+        MaxLength,
+        MergeIncrement
     }
 }

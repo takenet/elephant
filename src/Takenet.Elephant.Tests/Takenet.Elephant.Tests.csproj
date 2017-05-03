@@ -214,7 +214,10 @@
     <Compile Include="Sql\PostgreSql\PostgreSqlItemSetFacts.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlCollectionFixture.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlItemOrderedQueryableStorageFacts.cs" />
+    <Compile Include="Sql\PostgreSql\PostgreSqlGuidNumberMapFacts.cs" />
+    <Compile Include="Sql\SqlGuidNumberMapFacts.cs" />
     <Compile Include="Sql\SqlItemOrderedQueryableStorageFacts.cs" />
+    <Compile Include="Sql\SqlServer\SqlServerGuidNumberMapFacts.cs" />
     <Compile Include="Sql\SqlServer\SqlServerListFactIdentity.cs" />
     <Compile Include="Sql\SqlServer\SqlServerItemOrderedQueryableStorageFacts.cs" />
     <Compile Include="Sql\SqlServer\SqlServerItemSetFacts.cs" />

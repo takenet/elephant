@@ -242,6 +242,16 @@ UPDATE SET {columnValues}
 WHEN NOT MATCHED THEN
 INSERT ({columns}) VALUES ({values});</value>
   </data>
+  <data name="MergeIncrement" xml:space="preserve">
+    <value>MERGE {tableName} WITH (HOLDLOCK) AS target
+USING (SELECT {columnNamesAndValues}) as source
+ON ({on})
+WHEN MATCHED THEN
+UPDATE SET {incrementColumnName} = target.{incrementColumnName} + {increment}
+WHEN NOT MATCHED THEN
+INSERT ({columns}) VALUES ({values})
+OUTPUT inserted.{incrementColumnName};</value>
+  </data>
   <data name="Not" xml:space="preserve">
     <value>NOT</value>
   </data>

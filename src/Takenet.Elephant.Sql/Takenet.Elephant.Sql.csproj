@@ -67,6 +67,7 @@
     <Compile Include="SqlCollectionBase.cs" />
     <Compile Include="SqlList.cs" />
     <Compile Include="SqlMap.cs" />
+    <Compile Include="SqlNumberMap.cs" />
     <Compile Include="SqlSet.cs" />
     <Compile Include="SqlSetMap.cs" />
     <Compile Include="SqlStatement.cs" />

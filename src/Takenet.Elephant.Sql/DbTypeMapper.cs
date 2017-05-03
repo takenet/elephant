@@ -30,7 +30,6 @@ namespace Takenet.Elephant.Sql
                 {typeof (string), DbType.String},
                 {typeof (char), DbType.StringFixedLength},
                 {typeof (Guid), DbType.Guid},
-                {typeof (DateTime), DbType.Date},
                 {typeof (DateTime), DbType.DateTime},
                 {typeof (DateTimeOffset), DbType.DateTimeOffset},
                 {typeof (byte[]), DbType.Binary},

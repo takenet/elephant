@@ -402,6 +402,17 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO {tableName} ({columns}) VALUES ({values})
+        ///ON CONFLICT ({keyColumns}) DO UPDATE SET {incrementColumnName} = {tableName}.{incrementColumnName} + {increment}
+        ///RETURNING {incrementColumnName}.
+        /// </summary>
+        public static string MergeIncrement {
+            get {
+                return ResourceManager.GetString("MergeIncrement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NOT.
         /// </summary>
         public static string Not {

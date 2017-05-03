@@ -408,6 +408,22 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MERGE {tableName} WITH (HOLDLOCK) AS target
+        ///USING (SELECT {columnNamesAndValues}) as source
+        ///ON ({on})
+        ///WHEN MATCHED THEN
+        ///UPDATE SET {incrementColumnName} = target.{incrementColumnName} + {increment}
+        ///WHEN NOT MATCHED THEN
+        ///INSERT ({columns}) VALUES ({values})
+        ///OUTPUT inserted.{incrementColumnName};.
+        /// </summary>
+        public static string MergeIncrement {
+            get {
+                return ResourceManager.GetString("MergeIncrement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NOT.
         /// </summary>
         public static string Not {

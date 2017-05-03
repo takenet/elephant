@@ -203,7 +203,12 @@ namespace Takenet.Elephant.Sql
                 filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
         }
 
-        public static DbCommand CreateMergeCommand(this DbConnection connection, IDatabaseDriver databaseDriver, string tableName, IDictionary<string, object> keyValues, IDictionary<string, object> columnValues)
+        public static DbCommand CreateMergeCommand(
+            this DbConnection connection,
+            IDatabaseDriver databaseDriver,
+            string tableName,
+            IDictionary<string, object> keyValues,
+            IDictionary<string, object> columnValues)
         {
             var keyAndColumnValues = keyValues
                 .Union(columnValues)
@@ -217,6 +222,34 @@ namespace Takenet.Elephant.Sql
                     columnNamesAndValues = SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, keyAndColumnValues.Keys.ToArray()),
                     on = SqlHelper.GetLiteralJoinConditionStatement(databaseDriver, keyValues.Keys.ToArray(), "source", "target"),
                     columnValues = columnValues.Any() ? SqlHelper.GetCommaEqualsStatement(databaseDriver, columnValues.Keys.ToArray()) : databaseDriver.GetSqlStatementTemplate(SqlStatement.DummyEqualsZero),
+                    columns = keyAndColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
+                    values = keyAndColumnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate(),
+                    keyColumns = keyValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
+                },
+                keyAndColumnValues.Select(k => k.ToDbParameter(databaseDriver)));
+        }
+
+        public static DbCommand CreateMergeIncrementCommand(
+            this DbConnection connection,
+            IDatabaseDriver databaseDriver,
+            string tableName,
+            string incrementColumnName,
+            IDictionary<string, object> keyValues,
+            IDictionary<string, object> columnValues)
+        {
+            var keyAndColumnValues = keyValues
+                .Union(columnValues)
+                .ToDictionary(c => c.Key, c => c.Value);
+
+            return connection.CreateTextCommand(
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.MergeIncrement),
+                new
+                {
+                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    columnNamesAndValues = SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, keyAndColumnValues.Keys.ToArray()),
+                    on = SqlHelper.GetLiteralJoinConditionStatement(databaseDriver, keyValues.Keys.ToArray(), "source", "target"),
+                    incrementColumnName = databaseDriver.ParseIdentifier(incrementColumnName),
+                    increment = databaseDriver.ParseParameterName(incrementColumnName),
                     columns = keyAndColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     values = keyAndColumnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate(),
                     keyColumns = keyValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
