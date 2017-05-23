@@ -14,7 +14,7 @@
     <tags>elephant</tags>
     <dependencies>
       <dependency id="Takenet.Elephant" version="$version$" />
-      <dependency id="StackExchange.Redis" version="1.0.414" />
+      <dependency id="StackExchange.Redis" version="1.2.3" />
     </dependencies>
   </metadata>
   <files>
