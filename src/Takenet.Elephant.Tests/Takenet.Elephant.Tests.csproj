@@ -180,6 +180,7 @@
     <Compile Include="Specialized\FallbackQueueFacts.cs" />
     <Compile Include="Specialized\GuidItemCacheMapFacts.cs" />
     <Compile Include="Specialized\GuidItemCacheSetMapFacts.cs" />
+    <Compile Include="Specialized\GuidItemOnDemandCacheMapFacts.cs" />
     <Compile Include="Specialized\GuidItemReplicationMapFacts.cs" />
     <Compile Include="Specialized\GuidItemScopedMapFacts.cs" />
     <Compile Include="Specialized\GuidItemScopedSetMapFacts.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Specialized\ItemFallbackQueueFacts.cs" />
     <Compile Include="Redis\RedisGuidItemScopedMapFacts.cs" />
     <Compile Include="Memory\MemoryGuidItemScopedMapFacts.cs" />
+    <Compile Include="Specialized\OnDemandCacheMapFacts.cs" />
     <Compile Include="Specialized\ReplicationMapFacts.cs" />
     <Compile Include="Specialized\ScopedSetMapFacts.cs" />
     <Compile Include="Specialized\ScopedMapFacts.cs" />
@@ -195,6 +197,7 @@
     <Compile Include="Specialized\SqlRedisConnectionFixture.cs" />
     <Compile Include="Specialized\SqlRedisGuidItemCacheMapFacts.cs" />
     <Compile Include="Specialized\SqlRedisGuidItemCacheSetMapFacts.cs" />
+    <Compile Include="Specialized\SqlRedisGuidItemOnDemandCacheMapFacts.cs" />
     <Compile Include="Specialized\SqlRedisItemCacheSetFacts.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlFixture.cs" />
     <Compile Include="Sql\ISqlFixture.cs" />

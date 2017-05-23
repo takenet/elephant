@@ -10,6 +10,12 @@ namespace Takenet.Elephant.Specialized
         public OnDemandCacheMap(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, TimeSpan cacheExpiration = default(TimeSpan))
             : base(source, cache)
         {
+            if (cacheExpiration != default(TimeSpan)
+                && !(cache is IExpirableKeyMap<TKey, TValue>))
+            {
+                throw new ArgumentException("To enable cache expiration, the cache map should implement IExpirableKeyMap");
+            }
+
             _cacheExpiration = cacheExpiration;
         }
 
@@ -36,7 +42,7 @@ namespace Takenet.Elephant.Specialized
                         var value = await Source.GetValueOrDefaultAsync(key).ConfigureAwait(false);
                         if (!IsDefaultValueOfType(value))
                         {
-                            return await AddToMapAsync(key, value, m);
+                            return await AddToMapAsync(key, value, m).ConfigureAwait(false);
                         }
                     }
                     return true;
@@ -47,6 +53,7 @@ namespace Takenet.Elephant.Specialized
         {
             var added = await map.TryAddAsync(key, value, true).ConfigureAwait(false);
             if (added
+                && _cacheExpiration != default(TimeSpan)
                 && map is IExpirableKeyMap<TKey, TValue> expirableMap)
             {
                 await expirableMap.SetRelativeKeyExpirationAsync(key, _cacheExpiration).ConfigureAwait(false);

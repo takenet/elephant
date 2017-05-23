@@ -8,11 +8,11 @@ using Xunit;
 namespace Takenet.Elephant.Tests.Specialized
 {
     [Collection("SqlRedis")]
-    public class SqlRedisGuidItemCacheMapFacts : GuidItemCacheMapFacts
+    public class SqlRedisGuidItemOnDemandCacheMapFacts : GuidItemOnDemandCacheMapFacts
     {
         private readonly SqlRedisFixture _fixture;
 
-        public SqlRedisGuidItemCacheMapFacts(SqlRedisFixture fixture)
+        public SqlRedisGuidItemOnDemandCacheMapFacts(SqlRedisFixture fixture)
         {
             _fixture = fixture;
         }
