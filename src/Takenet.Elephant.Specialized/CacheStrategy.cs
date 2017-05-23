@@ -128,7 +128,6 @@ namespace Takenet.Elephant.Specialized
                 IsSynchronized = false;
             }
             return true;
-
         }
 
         /// <summary>
@@ -139,8 +138,7 @@ namespace Takenet.Elephant.Specialized
         /// <returns></returns>
         protected virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> func)
         {
-            if (!IsSynchronized) await Synchronize();            
-
+            if (!IsSynchronized) await Synchronize();
             return await func(Cache).ConfigureAwait(false);
         }
 
