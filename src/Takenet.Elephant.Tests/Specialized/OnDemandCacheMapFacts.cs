@@ -172,6 +172,8 @@ namespace Takenet.Elephant.Tests.Specialized
             var actual2 = await map.ContainsKeyAsync(key2);
 
             // Assert
+            AssertIsTrue(actual1);
+            AssertIsTrue(actual2);
             AssertIsTrue(await cache.ContainsKeyAsync(key1));
             AssertIsTrue(await cache.ContainsKeyAsync(key2));
             AssertEquals(await cache.GetValueOrDefaultAsync(key1), value1);
