@@ -27,6 +27,85 @@ namespace Takenet.Elephant.Tests
                     i.StringProperty != "ignore me";
         }
 
+        [Fact(DisplayName = "QueryExistingValueWithEqualsOperatorSucceeds")]
+        public virtual async Task QueryExistingValueWithEqualsOperatorSucceeds()
+        {
+            // Arrange            
+            var value1 = CreateValue();
+            value1.StringProperty = "abcdefgh1234567890";
+            var value2 = CreateValue();
+            value2.StringProperty = "xyz0987654321";
+            var value3 = CreateValue();
+            value3.StringProperty = "1234567890xyzabcd";
+            var cancellationToken = CancellationToken.None;
+            var storage = await CreateAsync(value1, value2, value3);
+            var queryValue = "abcdefgh1234567890";
+
+            // Act
+            var actual = await storage.QueryAsync<Item>(i => i.StringProperty.Equals(queryValue), null, 0, 1, cancellationToken);
+
+            // Assert            
+            AssertEquals(actual.Total, 1);
+            var actualList = await actual.ToListAsync();
+            AssertEquals(actualList[0], value1);
+        }
+
+        [Fact(DisplayName = "QueryExistingValueWithContainsAndOperatorsSucceeds")]
+        public virtual async Task QueryExistingValueWithContainsAndOperatorsSucceeds()
+        {
+            // Arrange            
+            var value1 = CreateValue();
+            value1.StringProperty = "abcdefgh1234567890";
+            value1.IntegerProperty = 101;
+            var value2 = CreateValue();
+            value2.StringProperty = "xyz0987654321";
+            value2.IntegerProperty = 102;
+            var value3 = CreateValue();
+            value3.StringProperty = "1234567890xyzabcd";
+            value3.IntegerProperty = 103;
+            var cancellationToken = CancellationToken.None;
+            var storage = await CreateAsync(value1, value2, value3);
+            var queryValue1 = "1234567890";
+            var queryValue2 = 103;
+
+            // Act
+            var actual = await storage.QueryAsync<Item>(
+                i => i.StringProperty.Contains(queryValue1) && i.IntegerProperty.Equals(queryValue2), null, 0, 1, cancellationToken);
+
+            // Assert            
+            AssertEquals(actual.Total, 1);
+            var actualList = await actual.ToListAsync();
+            AssertEquals(actualList[0], value3);
+        }
+
+        [Fact(DisplayName = "QueryExistingValueWithEqualsOrOperatorsSucceeds")]
+        public virtual async Task QueryExistingValueWithEqualsOrOperatorsSucceeds()
+        {
+            // Arrange            
+            var value1 = CreateValue();
+            value1.StringProperty = "abcdefgh1234567890";
+            value1.IntegerProperty = 101;
+            var value2 = CreateValue();
+            value2.StringProperty = "xyz0987654321";
+            value2.IntegerProperty = 102;
+            var value3 = CreateValue();
+            value3.StringProperty = "1234567890xyzabcd";
+            value3.IntegerProperty = 103;
+            var cancellationToken = CancellationToken.None;
+            var storage = await CreateAsync(value1, value2, value3);
+            var queryValue1 = "xyz0987654321";
+            var queryValue2 = 104;
+
+            // Act
+            var actual = await storage.QueryAsync<Item>(
+                i => i.StringProperty.Contains(queryValue1) || i.IntegerProperty.Equals(queryValue2), null, 0, 1, cancellationToken);
+
+            // Assert            
+            AssertEquals(actual.Total, 1);
+            var actualList = await actual.ToListAsync();
+            AssertEquals(actualList[0], value2);
+        }
+
         [Fact(DisplayName = "QueryExistingValueWithStartsWithSucceeds")]
         public virtual async Task QueryExistingValueWithStartsWithSucceeds()
         {
