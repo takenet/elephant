@@ -183,13 +183,19 @@ namespace Takenet.Elephant.Sql
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            if (node.Method.Name.Equals("Equals"))
+            if (node.Method.Name.Equals(nameof(object.Equals)))
             {
                 Visit(Expression.Equal(node.Object, node.Arguments[0]));
                 return node;
             }
 
-            if (node.Method.Name.Equals("Contains"))
+            if (node.Method.Name.Equals(nameof(object.ToString)))
+            {
+                VisitMember((MemberExpression)node.Object);
+                return node;
+            }
+
+            if (node.Method.Name.Equals(nameof(string.Contains)))
             {
                 if (node.Method.IsStatic && node.Method.DeclaringType.Name.Equals(nameof(Enumerable)))
                 {
@@ -221,23 +227,23 @@ namespace Takenet.Elephant.Sql
                 return GenerateSqlLike(node);
             }
 
-            if (node.Method.Name.Equals("StartsWith"))
+            if (node.Method.Name.Equals(nameof(string.StartsWith)))
             {
-                _valuePrefix = "%";
-                _valueSuffix = "";
+                _valuePrefix = "";
+                _valueSuffix = "%";
 
                 return GenerateSqlLike(node);
             }
 
-            if (node.Method.Name.Equals("EndsWith"))
+            if (node.Method.Name.Equals(nameof(string.EndsWith)))
             {
-                _valuePrefix = "";
-                _valueSuffix = "%";
+                _valuePrefix = "%";
+                _valueSuffix = "";
                 return GenerateSqlLike(node);
             }
 
             throw new NotImplementedException(
-                    $"Translation not implemented for method {node.Method.Name} of type {node.Method.DeclaringType}");
+                $"Translation not implemented for method {node.Method.Name} of type {node.Method.DeclaringType}");
         }
 
         #endregion
