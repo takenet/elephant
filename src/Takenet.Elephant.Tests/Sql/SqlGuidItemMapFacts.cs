@@ -22,7 +22,7 @@ namespace Takenet.Elephant.Tests.Sql
                 .WithColumn(nameof(Item.StringProperty), new SqlType(DbType.String, int.MaxValue))
                 .WithKeyColumnFromType<Guid>("Key")
                 .Build();
-            _serverFixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Schema, table.Name);
 
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);

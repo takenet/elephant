@@ -13,6 +13,8 @@ namespace Takenet.Elephant.Sql
     {
         public TimeSpan Timeout => TimeSpan.FromSeconds(180);
 
+        public string DefaultSchema => "dbo";
+
         public DbConnection CreateConnection(string connectionString)
         {
             return new SqlConnection(connectionString);

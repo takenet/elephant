@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AlterTableAddColumn" xml:space="preserve">
-    <value>ALTER TABLE {tableName} ADD {columnDefinition}</value>
+    <value>ALTER TABLE {schemaName}.{tableName} ADD {columnDefinition}</value>
   </data>
   <data name="AlterTableAlterColumn" xml:space="preserve">
-    <value>ALTER TABLE {tableName} ALTER COLUMN {columnDefinition}</value>
+    <value>ALTER TABLE {schemaName}.{tableName} ALTER COLUMN {columnDefinition}</value>
   </data>
   <data name="And" xml:space="preserve">
     <value>AND</value>
@@ -133,7 +133,7 @@
     <value>{columnName} {sqlType} NOT NULL</value>
   </data>
   <data name="CreateTable" xml:space="preserve">
-    <value>CREATE TABLE {tableName}
+    <value>CREATE TABLE {schemaName}.{tableName}
 ( 
 {tableDefinition}
 )</value>
@@ -172,7 +172,7 @@
     <value>VARCHAR({length})</value>
   </data>
   <data name="Delete" xml:space="preserve">
-    <value>DELETE FROM {tableName} WHERE {filter}</value>
+    <value>DELETE FROM {schemaName}.{tableName} WHERE {filter}</value>
   </data>
   <data name="Desc" xml:space="preserve">
     <value>DESC</value>
@@ -184,12 +184,13 @@
     <value>=</value>
   </data>
   <data name="Exists" xml:space="preserve">
-    <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM {tableName} WHERE {filter})) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END</value>
+    <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM {schemaName}.{tableName} WHERE {filter})) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END</value>
   </data>
   <data name="GetTableColumns" xml:space="preserve">
     <value>SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN ('varchar', 'timestamp', 'timestamptz') THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE, COALESCE(CHARACTER_MAXIMUM_LENGTH, DATETIME_PRECISION) AS LENGTH_OR_PRECISION
 FROM INFORMATION_SCHEMA.COLUMNS
-WHERE Lower(TABLE_NAME) = Lower('{tableName}')</value>
+WHERE Lower(TABLE_SCHEMA) = Lower('{schemaName}')
+AND Lower(TABLE_NAME) = Lower('{tableName}')</value>
   </data>
   <data name="GreaterThan" xml:space="preserve">
     <value>&gt;</value>
@@ -204,12 +205,12 @@ WHERE Lower(TABLE_NAME) = Lower('{tableName}')</value>
     <value>IN</value>
   </data>
   <data name="Insert" xml:space="preserve">
-    <value>INSERT INTO {tableName} ({columns}) VALUES ({values})</value>
+    <value>INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values})</value>
   </data>
   <data name="InsertWhereNotExists" xml:space="preserve">
-    <value>INSERT INTO {tableName} ({columns}) 
+    <value>INSERT INTO {schemaName}.{tableName} ({columns}) 
 SELECT {values}
-WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
+WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} )</value>
   </data>
   <data name="Int16IdentityColumnDefinition" xml:space="preserve">
     <value>{columnName} SMALLSERIAL NOT NULL</value>
@@ -233,12 +234,12 @@ WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} )</value>
     <value>10485760</value>
   </data>
   <data name="Merge" xml:space="preserve">
-    <value>INSERT INTO {tableName} ({columns}) VALUES ({values})
+    <value>INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values})
 ON CONFLICT ({keyColumns}) DO UPDATE SET {columnValues}</value>
   </data>
   <data name="MergeIncrement" xml:space="preserve">
-    <value>INSERT INTO {tableName} ({columns}) VALUES ({values})
-ON CONFLICT ({keyColumns}) DO UPDATE SET {incrementColumnName} = {tableName}.{incrementColumnName} + {increment}
+    <value>INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values})
+ON CONFLICT ({keyColumns}) DO UPDATE SET {incrementColumnName} = {schemaName}.{tableName}.{incrementColumnName} + {increment}
 RETURNING {incrementColumnName}</value>
   </data>
   <data name="Not" xml:space="preserve">
@@ -700,22 +701,22 @@ YEAR
 ZONE</value>
   </data>
   <data name="Select" xml:space="preserve">
-    <value>SELECT {columns} FROM {tableName} WHERE {filter}</value>
+    <value>SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter}</value>
   </data>
   <data name="SelectCount" xml:space="preserve">
-    <value>SELECT COUNT(*) FROM {tableName} WHERE {filter}</value>
+    <value>SELECT COUNT(*) FROM {schemaName}.{tableName} WHERE {filter}</value>
   </data>
   <data name="SelectSkipTake" xml:space="preserve">
-    <value>SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {take} OFFSET {skip}</value>
+    <value>SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {take} OFFSET {skip}</value>
   </data>
   <data name="SelectTop1" xml:space="preserve">
-    <value>SELECT {columns} FROM {tableName} WHERE {filter} LIMIT 1</value>
+    <value>SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter} LIMIT 1</value>
   </data>
   <data name="TableExists" xml:space="preserve">
-    <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE Lower(TABLE_NAME) = Lower('{tableName}'))) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END</value>
+    <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE Lower(TABLE_SCHEMA) = Lower('{schemaName}') AND Lower(TABLE_NAME) = Lower('{tableName}'))) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END</value>
   </data>
   <data name="Update" xml:space="preserve">
-    <value>UPDATE {tableName}
+    <value>UPDATE {schemaName}.{tableName}
 SET {columnValues}
 WHERE {filter}</value>
   </data>

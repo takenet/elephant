@@ -12,6 +12,14 @@ namespace Takenet.Elephant.Sql.Mapping
     public sealed class TableBuilder
     {
         /// <summary>
+        /// Gets the table schema.
+        /// </summary>
+        /// <value>
+        /// The schema.
+        /// </value>
+        public string Schema { get; }
+
+        /// <summary>
         /// Gets the table name.
         /// </summary>
         /// <value>
@@ -35,10 +43,10 @@ namespace Takenet.Elephant.Sql.Mapping
         /// </value>
         public HashSet<string> KeyColumns { get; }
 
-        private TableBuilder(string name)
+        private TableBuilder(string schema, string name)
         {
-            if (name == null) throw new ArgumentNullException(nameof(name));
-            Name = name;
+            Schema = schema;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             Columns = new Dictionary<string, SqlType>();
             KeyColumns = new HashSet<string>();
         }
@@ -46,11 +54,12 @@ namespace Takenet.Elephant.Sql.Mapping
         /// <summary>
         /// Creates a table builder using the specified table name.
         /// </summary>
-        /// <param name="tableName"></param>
+        /// <param name="schema">The schema name to be used in the database. If null, the default drive schema will be used.</param>
+        /// <param name="tableName">The table name.</param>
         /// <returns></returns>
-        public static TableBuilder WithName(string tableName)
+        public static TableBuilder WithName(string tableName, string schema = null)
         {
-            return new TableBuilder(tableName);
+            return new TableBuilder(schema, tableName);
         }
 
         /// <summary>
@@ -230,7 +239,7 @@ namespace Takenet.Elephant.Sql.Mapping
         /// <returns></returns>
         public ITable Build()
         {
-            return new Table(Name, KeyColumns.ToArray(), Columns);
+            return new Table(Name, KeyColumns.ToArray(), Columns, Schema);
         }
     }
 }

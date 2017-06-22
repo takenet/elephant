@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System;
+using System.Data.Common;
 using System.Data.SqlClient;
 using Takenet.Elephant.Sql;
 
@@ -35,11 +36,22 @@ namespace Takenet.Elephant.Tests.Sql.SqlServer
 
         public string ConnectionString { get; } = @"Server=(localdb)\MSSQLLocalDB;Database=Elephant;Integrated Security=true";
 
-        public void DropTable(string tableName)
+        public void DropTable(string schemaName, string tableName)
+        {
+            schemaName = schemaName ?? DatabaseDriver.DefaultSchema;
+
+            using (var command = Connection.CreateCommand())
+            {
+                command.CommandText = $"IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{schemaName}' AND TABLE_NAME = '{tableName}') DROP TABLE {schemaName}.{tableName}";
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void CreateSchema(string schemaName)
         {
             using (var command = Connection.CreateCommand())
             {
-                command.CommandText = $"IF EXISTS (SELECT * FROM sys.tables WHERE Name = '{tableName}') DROP TABLE {tableName}";
+                command.CommandText = $"IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{schemaName}') EXEC sp_executesql N'CREATE SCHEMA {schemaName}';";
                 command.ExecuteNonQuery();
             }
         }

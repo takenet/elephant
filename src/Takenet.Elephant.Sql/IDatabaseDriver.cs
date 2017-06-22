@@ -7,6 +7,8 @@ namespace Takenet.Elephant.Sql
 {
     public interface IDatabaseDriver
     {
+        string DefaultSchema { get; }
+
         TimeSpan Timeout { get; }
 
         DbConnection CreateConnection(string connectionString);

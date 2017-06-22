@@ -20,7 +20,7 @@ namespace Takenet.Elephant.Tests.Sql
                 .WithKeyColumnFromType<Guid>("Key")
                 .WithColumnFromType<long>("Counter")
                 .Build();
-            _serverFixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Schema, table.Name);
             var keyMapper = new ValueMapper<Guid>("Key");
             return new SqlNumberMap<Guid>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, "Counter");
         }

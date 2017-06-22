@@ -27,11 +27,9 @@ namespace Takenet.Elephant.Sql.Mapping
 
         protected TypeMapper(ITable table, PropertyInfo[] properties, IDbTypeMapper dbTypeMapper)
         {
-            if (table == null) throw new ArgumentNullException(nameof(table));
             if (properties == null || properties.Length == 0) throw new ArgumentNullException(nameof(properties));
-
-            _table = table;
-            DbTypeMapper = dbTypeMapper;
+            _table = table ?? throw new ArgumentNullException(nameof(table));
+            DbTypeMapper = dbTypeMapper ?? throw new ArgumentNullException(nameof(dbTypeMapper));
             _propertyDictionary = properties.ToDictionary(p => p.Name, p => p.PropertyType);
             _propertyGetFuncDictionary = new Dictionary<string, Func<TEntity, object>>();
             _propertySetActionDictionary = new Dictionary<string, Action<TEntity, object>>();

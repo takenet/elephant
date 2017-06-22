@@ -51,7 +51,7 @@ namespace Takenet.Elephant.Sql
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
                 int totalCount;
-                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter))
+                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter))
                 {
                     totalCount = Convert.ToInt32(
                         await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
@@ -61,7 +61,7 @@ namespace Takenet.Elephant.Sql
                     new DbDataReaderAsyncEnumerable<KeyValuePair<TKey, TValue>>(
                         GetConnectionAsync,
                         c =>
-                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Name, selectColumns, filter, skip, take, orderByColumns),
+                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter, skip, take, orderByColumns),
                         new KeyValuePairMapper<TKey, TValue>(KeyMapper, Mapper),
                         selectColumns),
                     totalCount);
@@ -87,17 +87,16 @@ namespace Takenet.Elephant.Sql
                 var selectColumns = Table.KeyColumnsNames;
                 var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
                 int totalCount;
-                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter))
+                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter))
                 {
                     totalCount = Convert.ToInt32(
                         await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
                 }
 
-                
                 return new QueryResult<TKey>(
                     new DbDataReaderAsyncEnumerable<TKey>(
                         GetConnectionAsync, 
-                        c => c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Name, selectColumns, filter, skip, take, selectColumns), 
+                        c => c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter, skip, take, selectColumns),
                         KeyMapper, 
                         selectColumns),
                     totalCount);

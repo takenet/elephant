@@ -8,6 +8,11 @@ namespace Takenet.Elephant.Sql.Mapping
     public interface ITable
     {
         /// <summary>
+        /// Gets the table schema.
+        /// </summary>
+        string Schema { get; }
+
+        /// <summary>
         /// Gets the table name.
         /// </summary>
         string Name { get; }

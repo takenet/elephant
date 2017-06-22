@@ -61,7 +61,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ALTER TABLE {tableName} ADD {columnDefinition}.
+        ///   Looks up a localized string similar to ALTER TABLE {schemaName}.{tableName} ADD {columnDefinition}.
         /// </summary>
         public static string AlterTableAddColumn {
             get {
@@ -70,7 +70,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ALTER TABLE {tableName} ALTER COLUMN {columnDefinition}.
+        ///   Looks up a localized string similar to ALTER TABLE {schemaName}.{tableName} ALTER COLUMN {columnDefinition}.
         /// </summary>
         public static string AlterTableAlterColumn {
             get {
@@ -106,7 +106,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CREATE TABLE {tableName}
+        ///   Looks up a localized string similar to CREATE TABLE {schemaName}.{tableName}
         ///( 
         ///{tableDefinition}
         ///).
@@ -217,7 +217,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DELETE FROM {tableName} WHERE {filter}.
+        ///   Looks up a localized string similar to DELETE FROM {schemaName}.{tableName} WHERE {filter}.
         /// </summary>
         public static string Delete {
             get {
@@ -253,7 +253,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM {tableName} WHERE {filter})) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END.
+        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM {schemaName}.{tableName} WHERE {filter})) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END.
         /// </summary>
         public static string Exists {
             get {
@@ -264,7 +264,8 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         /// <summary>
         ///   Looks up a localized string similar to SELECT COLUMN_NAME, CASE WHEN UDT_NAME IN (&apos;varchar&apos;, &apos;timestamp&apos;, &apos;timestamptz&apos;) THEN UDT_NAME ELSE DATA_TYPE END AS DATA_TYPE, COALESCE(CHARACTER_MAXIMUM_LENGTH, DATETIME_PRECISION) AS LENGTH_OR_PRECISION
         ///FROM INFORMATION_SCHEMA.COLUMNS
-        ///WHERE Lower(TABLE_NAME) = Lower(&apos;{tableName}&apos;).
+        ///WHERE Lower(TABLE_SCHEMA) = Lower(&apos;{schemaName}&apos;)
+        ///AND Lower(TABLE_NAME) = Lower(&apos;{tableName}&apos;).
         /// </summary>
         public static string GetTableColumns {
             get {
@@ -309,7 +310,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO {tableName} ({columns}) VALUES ({values}).
+        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values}).
         /// </summary>
         public static string Insert {
             get {
@@ -318,9 +319,9 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO {tableName} ({columns}) 
+        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) 
         ///SELECT {values}
-        ///WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} ).
+        ///WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} ).
         /// </summary>
         public static string InsertWhereNotExists {
             get {
@@ -392,7 +393,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO {tableName} ({columns}) VALUES ({values})
+        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values})
         ///ON CONFLICT ({keyColumns}) DO UPDATE SET {columnValues}.
         /// </summary>
         public static string Merge {
@@ -402,8 +403,8 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO {tableName} ({columns}) VALUES ({values})
-        ///ON CONFLICT ({keyColumns}) DO UPDATE SET {incrementColumnName} = {tableName}.{incrementColumnName} + {increment}
+        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values})
+        ///ON CONFLICT ({keyColumns}) DO UPDATE SET {incrementColumnName} = {schemaName}.{tableName}.{incrementColumnName} + {increment}
         ///RETURNING {incrementColumnName}.
         /// </summary>
         public static string MergeIncrement {
@@ -580,7 +581,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter}.
+        ///   Looks up a localized string similar to SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter}.
         /// </summary>
         public static string Select {
             get {
@@ -589,7 +590,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT COUNT(*) FROM {tableName} WHERE {filter}.
+        ///   Looks up a localized string similar to SELECT COUNT(*) FROM {schemaName}.{tableName} WHERE {filter}.
         /// </summary>
         public static string SelectCount {
             get {
@@ -598,7 +599,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {take} OFFSET {skip}.
+        ///   Looks up a localized string similar to SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter} ORDER BY {orderBy} LIMIT {take} OFFSET {skip}.
         /// </summary>
         public static string SelectSkipTake {
             get {
@@ -607,7 +608,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} LIMIT 1.
+        ///   Looks up a localized string similar to SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter} LIMIT 1.
         /// </summary>
         public static string SelectTop1 {
             get {
@@ -616,7 +617,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE Lower(TABLE_NAME) = Lower(&apos;{tableName}&apos;))) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END.
+        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE Lower(TABLE_SCHEMA) = Lower(&apos;{schemaName}&apos;) AND Lower(TABLE_NAME) = Lower(&apos;{tableName}&apos;))) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END.
         /// </summary>
         public static string TableExists {
             get {
@@ -625,7 +626,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UPDATE {tableName}
+        ///   Looks up a localized string similar to UPDATE {schemaName}.{tableName}
         ///SET {columnValues}
         ///WHERE {filter}.
         /// </summary>

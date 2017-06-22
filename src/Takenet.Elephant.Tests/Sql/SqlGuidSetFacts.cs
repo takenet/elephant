@@ -17,8 +17,9 @@ namespace Takenet.Elephant.Tests.Sql
             
         public override ISet<Guid> Create()
         {
-            var table = new Table("Guids", new [] {"Value"}, new Dictionary<string, SqlType>() { { "Value", new SqlType(DbType.Guid) }});
-            _serverFixture.DropTable(table.Name);
+            var table = new Table("Guids", new [] {"Value"}, new Dictionary<string, SqlType>() { { "Value", new SqlType(DbType.Guid) }}, "test");
+            _serverFixture.DropTable(table.Schema, table.Name);
+            _serverFixture.CreateSchema(table.Schema);
             var mapper = new ValueMapper<Guid>("Value");
             return new SqlSet<Guid>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, mapper);
         }

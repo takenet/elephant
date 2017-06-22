@@ -61,7 +61,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ALTER TABLE {tableName} ADD {columnDefinition}.
+        ///   Looks up a localized string similar to ALTER TABLE {schemaName}.{tableName} ADD {columnDefinition}.
         /// </summary>
         public static string AlterTableAddColumn {
             get {
@@ -70,7 +70,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ALTER TABLE {tableName} ALTER COLUMN {columnDefinition}.
+        ///   Looks up a localized string similar to ALTER TABLE {schemaName}.{tableName} ALTER COLUMN {columnDefinition}.
         /// </summary>
         public static string AlterTableAlterColumn {
             get {
@@ -106,7 +106,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CREATE TABLE {tableName}
+        ///   Looks up a localized string similar to CREATE TABLE {schemaName}.{tableName}
         ///( 
         ///{tableDefinition}
         ///).
@@ -217,7 +217,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DELETE FROM {tableName} WHERE {filter}.
+        ///   Looks up a localized string similar to DELETE FROM {schemaName}.{tableName} WHERE {filter}.
         /// </summary>
         public static string Delete {
             get {
@@ -253,7 +253,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM {tableName} WHERE {filter})) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END.
+        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM {schemaName}.{tableName} WHERE {filter})) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END.
         /// </summary>
         public static string Exists {
             get {
@@ -264,7 +264,8 @@ namespace Takenet.Elephant.Sql {
         /// <summary>
         ///   Looks up a localized string similar to SELECT COLUMN_NAME, DATA_TYPE, COALESCE(CHARACTER_MAXIMUM_LENGTH, DATETIME_PRECISION) AS LENGTH_OR_PRECISION
         ///FROM INFORMATION_SCHEMA.COLUMNS
-        ///WHERE TABLE_NAME = &apos;{tableName}&apos;.
+        ///WHERE TABLE_SCHEMA = &apos;{schemaName}&apos;
+        ///AND TABLE_NAME = &apos;{tableName}&apos;.
         /// </summary>
         public static string GetTableColumns {
             get {
@@ -309,7 +310,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO {tableName} ({columns}) VALUES ({values}).
+        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values}).
         /// </summary>
         public static string Insert {
             get {
@@ -318,9 +319,9 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO {tableName} ({columns}) 
+        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) 
         ///SELECT {values}
-        ///WHERE NOT EXISTS ( SELECT 1 FROM {tableName} WHERE {filter} ).
+        ///WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} ).
         /// </summary>
         public static string InsertWhereNotExists {
             get {
@@ -393,7 +394,7 @@ namespace Takenet.Elephant.Sql {
         
         /// <summary>
         ///   Looks up a localized string similar to DECLARE @dummy int;
-        ///MERGE {tableName} WITH (HOLDLOCK) AS target
+        ///MERGE {schemaName}.{tableName} WITH (HOLDLOCK) AS target
         ///USING (SELECT {columnNamesAndValues}) as source
         ///ON ({on})
         ///WHEN MATCHED THEN
@@ -408,7 +409,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MERGE {tableName} WITH (HOLDLOCK) AS target
+        ///   Looks up a localized string similar to MERGE {schemaName}.{tableName} WITH (HOLDLOCK) AS target
         ///USING (SELECT {columnNamesAndValues}) as source
         ///ON ({on})
         ///WHEN MATCHED THEN
@@ -523,7 +524,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter}.
+        ///   Looks up a localized string similar to SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter}.
         /// </summary>
         public static string Select {
             get {
@@ -532,7 +533,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT COUNT(*) FROM {tableName} WHERE {filter}.
+        ///   Looks up a localized string similar to SELECT COUNT(*) FROM {schemaName}.{tableName} WHERE {filter}.
         /// </summary>
         public static string SelectCount {
             get {
@@ -541,7 +542,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT {columns} FROM {tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY.
+        ///   Looks up a localized string similar to SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY.
         /// </summary>
         public static string SelectSkipTake {
             get {
@@ -550,7 +551,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT TOP 1 {columns} FROM {tableName} WHERE {filter}.
+        ///   Looks up a localized string similar to SELECT TOP 1 {columns} FROM {schemaName}.{tableName} WHERE {filter}.
         /// </summary>
         public static string SelectTop1 {
             get {
@@ -559,7 +560,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = &apos;{tableName}&apos;)) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END.
+        ///   Looks up a localized string similar to SELECT CASE WHEN EXISTS ((SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = &apos;{schemaName}&apos; AND TABLE_NAME = &apos;{tableName}&apos;)) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END.
         /// </summary>
         public static string TableExists {
             get {
@@ -568,7 +569,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UPDATE {tableName}
+        ///   Looks up a localized string similar to UPDATE {schemaName}.{tableName}
         ///SET {columnValues}
         ///WHERE {filter}.
         /// </summary>

@@ -20,7 +20,7 @@ namespace Takenet.Elephant.Tests.Specialized
         {
             var databaseDriver = new SqlDatabaseDriver();
             var table = TableBuilder.WithName("Items").WithKeyColumnsFromTypeProperties<Item>().Build();
-            _fixture.SqlConnectionFixture.DropTable(table.Name);
+            _fixture.SqlConnectionFixture.DropTable(table.Schema, table.Name);
             var mapper = new TypeMapper<Item>(table);
             return new SqlSet<Item>(databaseDriver, _fixture.SqlConnectionFixture.ConnectionString, table, mapper);
         }

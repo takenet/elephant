@@ -33,6 +33,7 @@ namespace Takenet.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.PrimaryKeyConstraintDefinition).Format(
                     new
                     {
+                        schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
                         tableName = table.Name,
                         columns = table.KeyColumnsNames.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                     })
@@ -42,6 +43,7 @@ namespace Takenet.Elephant.Sql
             var createTableSql = databaseDriver.GetSqlStatementTemplate(SqlStatement.CreateTable).Format(
                 new
                 {
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
                     tableName = databaseDriver.ParseIdentifier(table.Name),
                     tableDefinition = createTableSqlBuilder.ToString()
                 });
@@ -62,6 +64,8 @@ namespace Takenet.Elephant.Sql
                 command.CommandText = databaseDriver.GetSqlStatementTemplate(SqlStatement.GetTableColumns).Format(
                     new
                     {
+                        // Do not parse the identifiers here.
+                        schemaName = table.Schema ?? databaseDriver.DefaultSchema,
                         tableName = table.Name
                     });
 
@@ -107,7 +111,7 @@ namespace Takenet.Elephant.Sql
                 else if (!GetSqlTypeSql(databaseDriver, column.Value).Equals(
                          tableColumnsDictionary[columnKey], StringComparison.OrdinalIgnoreCase))
                 {
-                    columnsToBeAltered.Add(column);                    
+                    columnsToBeAltered.Add(column);
                 }
             }
 
@@ -141,6 +145,7 @@ namespace Takenet.Elephant.Sql
                     sqlStatement).Format(
                         new
                         {
+                            schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
                             tableName = databaseDriver.ParseIdentifier(table.Name),
                             columnDefinition = GetColumnsDefinitionSql(databaseDriver, table, new[] { column }).TrimEnd(',')
                         });

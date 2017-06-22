@@ -24,7 +24,7 @@ namespace Takenet.Elephant.Tests.Sql
                 .ToSqlColumns();
             columns.Add("Key", new SqlType(DbType.Guid));
             var table = new Table("GuidItems", new[] { "Key" }, columns);
-            _serverFixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Schema, table.Name);
 
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);

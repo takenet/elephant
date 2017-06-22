@@ -66,8 +66,7 @@ namespace Takenet.Elephant.Sql
                                 var itemKeyColumnValues = GetKeyColumnValues(columnValues);
 
                                 using (
-                                    var command = connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table.Name,
-                                        itemKeyColumnValues, columnValues))
+                                    var command = connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table.Schema, Table.Name, itemKeyColumnValues, columnValues))
                                 {
                                     command.Transaction = transaction;
                                     success =
@@ -145,7 +144,7 @@ namespace Takenet.Elephant.Sql
             {
                 return await new DbDataReaderAsyncEnumerable<TItem>(
                             GetConnectionAsync,
-                            c => c.CreateSelectCommand(DatabaseDriver, Table.Name, keyColumnValues, selectColumns),
+                            c => c.CreateSelectCommand(DatabaseDriver, Table.Schema, Table.Name, keyColumnValues, selectColumns),
                             Mapper,
                             selectColumns)
                             .FirstOrDefaultAsync(cancellationTokenSource.Token);
@@ -158,7 +157,7 @@ namespace Takenet.Elephant.Sql
             return Task.FromResult<IAsyncEnumerable<TKey>>(
                 new DbDataReaderAsyncEnumerable<TKey>(
                     GetConnectionAsync, 
-                    c => c.CreateSelectCommand(DatabaseDriver, Table.Name, null, selectColumns), 
+                    c => c.CreateSelectCommand(DatabaseDriver, Table.Schema, Table.Name, null, selectColumns),
                     KeyMapper, 
                     selectColumns));
         }
@@ -187,7 +186,7 @@ namespace Takenet.Elephant.Sql
                 return Task.FromResult<IAsyncEnumerable<TItem>>(
                     new DbDataReaderAsyncEnumerable<TItem>(
                         GetConnectionAsync, 
-                        c => c.CreateSelectCommand(DatabaseDriver, Table.Name, MapKeyColumnValues, selectColumns), 
+                        c => c.CreateSelectCommand(DatabaseDriver, Table.Schema, Table.Name, MapKeyColumnValues, selectColumns),
                         Mapper, 
                         selectColumns));
             }
@@ -198,7 +197,7 @@ namespace Takenet.Elephant.Sql
                 {
                     using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                     {
-                        using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, MapKeyColumnValues))
+                        using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, MapKeyColumnValues))
                         {
                             var result = await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                             // In postgre, it is a long; in sql server, a int32...

@@ -15,7 +15,7 @@ namespace Takenet.Elephant.Tests.Sql
         public override IList<Item> Create()
         {
             var table = TableBuilder.WithName("ItemsSet").WithKeyColumnsFromTypeProperties<Item>().WithKeyColumnFromType<int>("Id", true).Build();
-            _serverFixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Schema, table.Name);
             var mapper = new TypeMapper<Item>(table);
             return new SqlList<Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, mapper);
         }

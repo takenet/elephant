@@ -1,8 +1,4 @@
 ﻿using NFluent;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.Mapping;
@@ -10,7 +6,6 @@ using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql.SqlServer
 {
-    
     public class SqlServerListFactIdentity
     {
         private readonly ISqlFixture _serverFixture;
@@ -37,7 +32,7 @@ namespace Takenet.Elephant.Tests.Sql.SqlServer
                 .WithColumnsFromTypeProperties<Item>(p => !p.Name.Equals(nameof(Item.IdentityProperty)))
                 .Build();
             
-            _serverFixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Schema, table.Name);
 
             var mapper = new TypeMapper<Item>(table);
             return new SqlList<Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, mapper);
@@ -82,7 +77,7 @@ namespace Takenet.Elephant.Tests.Sql.SqlServer
             var length = await list.GetLengthAsync();
             Check.That(length).IsEqualTo(1);
 
-            _serverFixture.DropTable(TABLE_NAME);
+            _serverFixture.DropTable(null, TABLE_NAME);
         }
     }
 }

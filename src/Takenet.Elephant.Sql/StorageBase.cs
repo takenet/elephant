@@ -29,7 +29,7 @@ namespace Takenet.Elephant.Sql
 
         protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken, DbTransaction sqlTransaction = null)
         {            
-            using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table.Name, filterValues))
+            using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues))
             {
                 if (sqlTransaction != null) command.Transaction = sqlTransaction;                
                 return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
@@ -38,7 +38,7 @@ namespace Takenet.Elephant.Sql
 
         protected async Task<bool> ContainsAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken)
         {
-            using (var command = connection.CreateContainsCommand(DatabaseDriver, Table.Name, filterValues))
+            using (var command = connection.CreateContainsCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues))
             {
                 return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
             }
@@ -96,7 +96,7 @@ namespace Takenet.Elephant.Sql
                 }
 
                 int totalCount;
-                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Name, filter, filterValues))
+                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter, filterValues))
                 {
                     totalCount = Convert.ToInt32(
                         await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
@@ -106,16 +106,13 @@ namespace Takenet.Elephant.Sql
                     new DbDataReaderAsyncEnumerable<TEntity>(
                         GetConnectionAsync,
                         c =>
-                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Name, selectColumns, filter, skip, take,
+                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter, skip, take,
                                 orderByColumns, orderByAscending, filterValues),
                         Mapper,
                         selectColumns),
                     totalCount);
             }
         }
-
-
-
 
         protected async Task<DbConnection> GetConnectionAsync(CancellationToken cancellationToken)
         {
@@ -125,29 +122,21 @@ namespace Takenet.Elephant.Sql
             return connection;
         }
 
-        protected CancellationTokenSource CreateCancellationTokenSource()
-        {
-            return new CancellationTokenSource(DatabaseDriver.Timeout);
-        }
+        protected CancellationTokenSource CreateCancellationTokenSource() 
+            => new CancellationTokenSource(DatabaseDriver.Timeout);
 
         protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitDefaultValues = false, bool includeIdentityTypes = false)
-        {
-            return Mapper.GetColumnValues(entity, emitDefaultValues: emitDefaultValues, includeIdentityTypes: includeIdentityTypes);
-        }
+            => Mapper.GetColumnValues(entity, emitDefaultValues: emitDefaultValues, includeIdentityTypes: includeIdentityTypes);
 
-        protected IDictionary<string, object> GetKeyColumnValues(TEntity entity, bool includeIdentityTypes = false)
-        {
-            return GetKeyColumnValues(GetColumnValues(entity, includeIdentityTypes: includeIdentityTypes));
-        }
+        protected IDictionary<string, object> GetKeyColumnValues(TEntity entity, bool includeIdentityTypes = false) 
+            => GetKeyColumnValues(GetColumnValues(entity, includeIdentityTypes: includeIdentityTypes));
 
-        protected virtual IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues)
-        {
-            return Table
+        protected virtual IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues) 
+            => Table
                 .KeyColumnsNames
                 .Where(columnValues.ContainsKey)
                 .Select(c => new { Key = c, Value = columnValues[c] })
                 .ToDictionary(t => t.Key, t => t.Value);
-        }     
 
         protected bool SchemaChecked;
         private readonly SemaphoreSlim _schemaValidationSemaphore = new SemaphoreSlim(1);
@@ -162,13 +151,17 @@ namespace Takenet.Elephant.Sql
                 {
                     if (!SchemaChecked)
                     {
-                        // Check if the table exists
-                        var tableExists = await connection.ExecuteScalarAsync<bool>(
-                            DatabaseDriver.GetSqlStatementTemplate(SqlStatement.TableExists).Format(
+                        var tableExistsSql = DatabaseDriver.GetSqlStatementTemplate(SqlStatement.TableExists).Format(
                             new
                             {
+                                // Do not parse the identifiers here.
+                                schemaName = Table.Schema ?? DatabaseDriver.DefaultSchema,
                                 tableName = Table.Name
-                            }),
+                            });
+
+                        // Check if the table exists
+                        var tableExists = await connection.ExecuteScalarAsync<bool>(
+                            tableExistsSql,
                             cancellationToken).ConfigureAwait(false);
 
                         if (!tableExists)

@@ -43,7 +43,7 @@ namespace Takenet.Elephant.Sql
                 {
                     var keyColumnValues = KeyMapper.GetColumnValues(key);
                     var columnValues = GetColumnValues(value);
-                    using (var command = connection.CreateMergeIncrementCommand(DatabaseDriver, Table.Name, _numberColumnName, keyColumnValues, columnValues))
+                    using (var command = connection.CreateMergeIncrementCommand(DatabaseDriver, Table.Schema, Table.Name, _numberColumnName, keyColumnValues, columnValues))
                     {
                         return (long)await command.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                     }

@@ -20,7 +20,7 @@ namespace Takenet.Elephant.Tests.Sql
                 .WithColumnsFromTypeProperties<Item>()
                 .WithKeyColumnFromType<Guid>("Key")
                 .Build();
-            _serverFixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Schema, table.Name);
 
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);

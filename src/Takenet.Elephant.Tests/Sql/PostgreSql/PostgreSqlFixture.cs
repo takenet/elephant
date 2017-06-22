@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System;
+using System.Data.Common;
 using Takenet.Elephant.Sql;
 using Takenet.Elephant.Sql.PostgreSql;
 
@@ -16,14 +17,28 @@ namespace Takenet.Elephant.Tests.Sql.PostgreSql
         public string ConnectionString { get; } =
             @"Server=localhost;Port=5432;Database=Elephant;User Id=elephant;Password=elephant;";
 
-        public void DropTable(string tableName)
+        public void DropTable(string schemaName, string tableName)
         {
             using (var connection = DatabaseDriver.CreateConnection(ConnectionString))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = $"DROP TABLE IF EXISTS public.{DatabaseDriver.ParseIdentifier(tableName)}";
+                    command.CommandText = $"DROP TABLE IF EXISTS {DatabaseDriver.ParseIdentifier(schemaName ?? DatabaseDriver.DefaultSchema)}.{DatabaseDriver.ParseIdentifier(tableName)}";
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+
+        public void CreateSchema(string schemaName)
+        {
+            using (var connection = DatabaseDriver.CreateConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = $"CREATE SCHEMA IF NOT EXISTS {schemaName}";
                     command.ExecuteNonQuery();
                 }
                 connection.Close();
@@ -34,5 +49,7 @@ namespace Takenet.Elephant.Tests.Sql.PostgreSql
         {
             
         }
+
+
     }
 }

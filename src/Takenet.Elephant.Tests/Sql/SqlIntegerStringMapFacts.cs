@@ -24,7 +24,7 @@ namespace Takenet.Elephant.Tests.Sql
                     {"Key", new SqlType(DbType.Int32)},
                     {"Value", new SqlType(DbType.String)}
                 });        
-            _serverFixture.DropTable(table.Name);
+            _serverFixture.DropTable(table.Schema, table.Name);
             var keyMapper = new ValueMapper<int>("Key");
             var valueMapper = new ValueMapper<string>("Value");
             return new SqlMap<int, string>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);

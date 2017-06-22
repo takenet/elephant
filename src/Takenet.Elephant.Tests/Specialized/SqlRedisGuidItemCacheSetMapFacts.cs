@@ -30,7 +30,7 @@ namespace Takenet.Elephant.Tests.Specialized
                 .ToSqlColumns();
             columns.Add("Key", new SqlType(DbType.Guid));
             var table = new Table("GuidItems", new[] { "Key", nameof(Item.GuidProperty) }, columns);
-            _fixture.SqlConnectionFixture.DropTable(table.Name);
+            _fixture.SqlConnectionFixture.DropTable(table.Schema, table.Name);
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
             return new SqlSetMap<Guid, Item>(databaseDriver, _fixture.SqlConnectionFixture.ConnectionString, table, keyMapper, valueMapper);
