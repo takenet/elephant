@@ -28,5 +28,7 @@ namespace Takenet.Elephant.Sql.Mapping
         public string[] KeyColumnsNames { get; }
 
         public IDictionary<string, SqlType> Columns { get; }
+
+        public bool SchemaChecked { get; set; }
     }
 }

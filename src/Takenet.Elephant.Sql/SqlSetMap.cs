@@ -102,7 +102,7 @@ namespace Takenet.Elephant.Sql
                     {
                         return null;
                     }
-                    return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues, SchemaChecked);
+                    return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues);
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace Takenet.Elephant.Sql
         {
             if (key == null) throw new ArgumentNullException(nameof(key));            
             var keyColumnValues = KeyMapper.GetColumnValues(key);
-            return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues, SchemaChecked).AsCompletedTask<ISet<TItem>>();
+            return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues).AsCompletedTask<ISet<TItem>>();
         }
 
         public async Task<bool> TryRemoveAsync(TKey key)
@@ -166,11 +166,10 @@ namespace Takenet.Elephant.Sql
         {
             public IDictionary<string, object> MapKeyColumnValues { get; }
 
-            public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues, bool schemaChecked) 
+            public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues) 
                 : base(databaseDriver, connectionString, table, mapper)
             {
                 MapKeyColumnValues = mapKeyColumnValues;
-                SchemaChecked = schemaChecked; // To avoid checking the table schema again
             }
 
             protected override IDictionary<string, object> GetColumnValues(TItem entity, bool emitDefaultValues = false, bool includeIdentityTypes = false)

@@ -27,5 +27,10 @@ namespace Takenet.Elephant.Sql.Mapping
         /// The key columns must be included.
         /// </summary>
         IDictionary<string, SqlType> Columns { get; }
+
+        /// <summary>
+        /// Defines if the table schema has been checked.
+        /// </summary>
+        bool SchemaChecked { get; set; }
     }
 }

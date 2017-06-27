@@ -137,19 +137,18 @@ namespace Takenet.Elephant.Sql
                 .Where(columnValues.ContainsKey)
                 .Select(c => new { Key = c, Value = columnValues[c] })
                 .ToDictionary(t => t.Key, t => t.Value);
-
-        protected bool SchemaChecked;
+        
         private readonly SemaphoreSlim _schemaValidationSemaphore = new SemaphoreSlim(1);
 
         private async Task CheckTableSchemaAsync(DbConnection connection, CancellationToken cancellationToken)
         {
-            if (!SchemaChecked)
+            if (!Table.SchemaChecked)
             {
                 await _schemaValidationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 try
                 {
-                    if (!SchemaChecked)
+                    if (!Table.SchemaChecked)
                     {
                         var tableExistsSql = DatabaseDriver.GetSqlStatementTemplate(SqlStatement.TableExists).Format(
                             new
@@ -170,7 +169,7 @@ namespace Takenet.Elephant.Sql
                         }
 
                         await DatabaseSchema.UpdateTableSchemaAsync(DatabaseDriver, connection, Table, cancellationToken).ConfigureAwait(false);
-                        SchemaChecked = true;
+                        Table.SchemaChecked = true;
                     }
                 }
                 finally
