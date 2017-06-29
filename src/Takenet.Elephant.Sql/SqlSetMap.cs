@@ -136,9 +136,9 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public virtual async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem value)
+        public virtual async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem item)
         {
-            var keyColumnValues = GetKeyColumnValues(GetColumnValues(key, value));
+            var keyColumnValues = GetKeyColumnValues(GetColumnValues(key, item));
             var selectColumns = Table.Columns.Keys.ToArray();
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {

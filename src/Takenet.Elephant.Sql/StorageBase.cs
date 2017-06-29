@@ -10,7 +10,7 @@ using Takenet.Elephant.Sql.Mapping;
 namespace Takenet.Elephant.Sql
 {
     public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>, IOrderedQueryableStorage<TEntity>
-    {                                                
+    {
         protected StorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TEntity> mapper)
         {
             ConnectionString = connectionString;
@@ -23,12 +23,12 @@ namespace Takenet.Elephant.Sql
 
         protected string ConnectionString { get; }
 
-        protected ITable Table { get; }                
+        protected ITable Table { get; }
 
         protected IMapper<TEntity> Mapper { get; }
 
         protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken, DbTransaction sqlTransaction = null)
-        {            
+        {
             using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues))
             {
                 if (sqlTransaction != null) command.Transaction = sqlTransaction;                
@@ -116,13 +116,13 @@ namespace Takenet.Elephant.Sql
 
         protected async Task<DbConnection> GetConnectionAsync(CancellationToken cancellationToken)
         {
+            await Table.SynchronizeSchemaAsync(ConnectionString, DatabaseDriver, cancellationToken).ConfigureAwait(false);
             var connection = DatabaseDriver.CreateConnection(ConnectionString);
             await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
-            await CheckTableSchemaAsync(connection, cancellationToken).ConfigureAwait(false);
             return connection;
         }
 
-        protected CancellationTokenSource CreateCancellationTokenSource() 
+        protected CancellationTokenSource CreateCancellationTokenSource()
             => new CancellationTokenSource(DatabaseDriver.Timeout);
 
         protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitDefaultValues = false, bool includeIdentityTypes = false)
@@ -137,48 +137,5 @@ namespace Takenet.Elephant.Sql
                 .Where(columnValues.ContainsKey)
                 .Select(c => new { Key = c, Value = columnValues[c] })
                 .ToDictionary(t => t.Key, t => t.Value);
-        
-        private readonly SemaphoreSlim _schemaValidationSemaphore = new SemaphoreSlim(1);
-
-        private async Task CheckTableSchemaAsync(DbConnection connection, CancellationToken cancellationToken)
-        {
-            if (!Table.SchemaChecked)
-            {
-                await _schemaValidationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-                try
-                {
-                    if (!Table.SchemaChecked)
-                    {
-                        var tableExistsSql = DatabaseDriver.GetSqlStatementTemplate(SqlStatement.TableExists).Format(
-                            new
-                            {
-                                // Do not parse the identifiers here.
-                                schemaName = Table.Schema ?? DatabaseDriver.DefaultSchema,
-                                tableName = Table.Name
-                            });
-
-                        // Check if the table exists
-                        var tableExists = await connection.ExecuteScalarAsync<bool>(
-                            tableExistsSql,
-                            cancellationToken).ConfigureAwait(false);
-
-                        if (!tableExists)
-                        {
-                            await DatabaseSchema.CreateTableAsync(DatabaseDriver, connection, Table, cancellationToken).ConfigureAwait(false);
-                        }
-
-                        await DatabaseSchema.UpdateTableSchemaAsync(DatabaseDriver, connection, Table, cancellationToken).ConfigureAwait(false);
-                        Table.SchemaChecked = true;
-                    }
-                }
-                finally
-                {
-                    _schemaValidationSemaphore.Release();
-                }
-            }
-        }
-
-
     }
 }
