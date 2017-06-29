@@ -42,16 +42,7 @@ namespace Takenet.Elephant.Tests.Sql.SqlServer
 
             using (var command = Connection.CreateCommand())
             {
-                command.CommandText = $"IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{schemaName}' AND TABLE_NAME = '{tableName}') DROP TABLE {schemaName}.{tableName}";
-                command.ExecuteNonQuery();
-            }
-        }
-
-        public void CreateSchema(string schemaName)
-        {
-            using (var command = Connection.CreateCommand())
-            {
-                command.CommandText = $"IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{schemaName}') EXEC sp_executesql N'CREATE SCHEMA {schemaName}';";
+                command.CommandText = $"IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{schemaName}' AND TABLE_NAME = '{tableName}') DROP TABLE [{schemaName}].[{tableName}]";
                 command.ExecuteNonQuery();
             }
         }

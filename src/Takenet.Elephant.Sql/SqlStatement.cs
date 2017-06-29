@@ -7,6 +7,7 @@ namespace Takenet.Elephant.Sql
         And,
         Asc,
         ColumnDefinition,
+        CreateSchemaIfNotExists,
         CreateTable,
         Delete,
         Desc,

@@ -10,7 +10,5 @@ namespace Takenet.Elephant.Tests.Sql
         string ConnectionString { get; }
 
         void DropTable(string schemaName, string tableName);
-
-        void CreateSchema(string schemaName);
     }
 }

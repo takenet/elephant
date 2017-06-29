@@ -24,6 +24,18 @@ namespace Takenet.Elephant.Sql
                 throw new InvalidOperationException("The table mapper has no defined key columns");
             }
 
+            // Schema
+            var schemaName = table.Schema ?? databaseDriver.DefaultSchema;
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = databaseDriver.GetSqlStatementTemplate(SqlStatement.CreateSchemaIfNotExists).Format(
+                    new
+                    {
+                        schemaName = schemaName
+                    });
+                await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+            }
+
             // Table columns
             var createTableSqlBuilder = new StringBuilder();
             createTableSqlBuilder.AppendLine(GetColumnsDefinitionSql(databaseDriver, table, table.Columns));
@@ -33,7 +45,7 @@ namespace Takenet.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.PrimaryKeyConstraintDefinition).Format(
                     new
                     {
-                        schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                        schemaName = schemaName,
                         tableName = table.Name,
                         columns = table.KeyColumnsNames.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                     })
@@ -43,7 +55,7 @@ namespace Takenet.Elephant.Sql
             var createTableSql = databaseDriver.GetSqlStatementTemplate(SqlStatement.CreateTable).Format(
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    schemaName = databaseDriver.ParseIdentifier(schemaName),
                     tableName = databaseDriver.ParseIdentifier(table.Name),
                     tableDefinition = createTableSqlBuilder.ToString()
                 });

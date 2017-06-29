@@ -106,6 +106,15 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CREATE SCHEMA IF NOT EXISTS &quot;{schemaName}&quot;.
+        /// </summary>
+        public static string CreateSchemaIfNotExists {
+            get {
+                return ResourceManager.GetString("CreateSchemaIfNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE {schemaName}.{tableName}
         ///( 
         ///{tableDefinition}

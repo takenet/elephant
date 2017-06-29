@@ -53,7 +53,6 @@ namespace Takenet.Elephant.Sql.Mapping
                         using (var connection = databaseDriver.CreateConnection(connectionString))
                         {
                             await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
-
                             var tableExistsSql = databaseDriver.GetSqlStatementTemplate(SqlStatement.TableExists).Format(
                                 new
                                 {

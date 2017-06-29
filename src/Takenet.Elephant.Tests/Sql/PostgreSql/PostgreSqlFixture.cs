@@ -31,20 +31,6 @@ namespace Takenet.Elephant.Tests.Sql.PostgreSql
             }
         }
 
-        public void CreateSchema(string schemaName)
-        {
-            using (var connection = DatabaseDriver.CreateConnection(ConnectionString))
-            {
-                connection.Open();
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = $"CREATE SCHEMA IF NOT EXISTS {schemaName}";
-                    command.ExecuteNonQuery();
-                }
-                connection.Close();
-            }
-        }
-
         public void Dispose()
         {
             

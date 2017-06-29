@@ -132,6 +132,9 @@
   <data name="ColumnDefinition" xml:space="preserve">
     <value>{columnName} {sqlType} NOT NULL</value>
   </data>
+  <data name="CreateSchemaIfNotExists" xml:space="preserve">
+    <value>CREATE SCHEMA IF NOT EXISTS "{schemaName}"</value>
+  </data>
   <data name="CreateTable" xml:space="preserve">
     <value>CREATE TABLE {schemaName}.{tableName}
 ( 

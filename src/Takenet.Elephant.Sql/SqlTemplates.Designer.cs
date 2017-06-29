@@ -106,6 +106,15 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = &apos;{schemaName}&apos;) EXEC sp_executesql N&apos;CREATE SCHEMA {schemaName};&apos;;.
+        /// </summary>
+        public static string CreateSchemaIfNotExists {
+            get {
+                return ResourceManager.GetString("CreateSchemaIfNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE {schemaName}.{tableName}
         ///( 
         ///{tableDefinition}
