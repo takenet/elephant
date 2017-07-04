@@ -366,6 +366,24 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IS.
+        /// </summary>
+        public static string Is {
+            get {
+                return ResourceManager.GetString("Is", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IS NOT.
+        /// </summary>
+        public static string IsNot {
+            get {
+                return ResourceManager.GetString("IsNot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;.
         /// </summary>
         public static string LessThan {
@@ -437,6 +455,15 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         public static string NotEqual {
             get {
                 return ResourceManager.GetString("NotEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NULL.
+        /// </summary>
+        public static string Null {
+            get {
+                return ResourceManager.GetString("Null", resourceCulture);
             }
         }
         

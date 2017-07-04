@@ -224,6 +224,12 @@ WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} )</valu
   <data name="Int64IdentityColumnDefinition" xml:space="preserve">
     <value>{columnName} BIGINT NOT NULL IDENTITY(1,1)</value>
   </data>
+  <data name="Is" xml:space="preserve">
+    <value>IS</value>
+  </data>
+  <data name="IsNot" xml:space="preserve">
+    <value>IS NOT</value>
+  </data>
   <data name="LessThan" xml:space="preserve">
     <value>&lt;</value>
   </data>
@@ -261,6 +267,9 @@ OUTPUT inserted.{incrementColumnName};</value>
   </data>
   <data name="NotEqual" xml:space="preserve">
     <value>&lt;&gt;</value>
+  </data>
+  <data name="Null" xml:space="preserve">
+    <value>NULL</value>
   </data>
   <data name="NullableColumnDefinition" xml:space="preserve">
     <value>{columnName} {sqlType} NULL</value>

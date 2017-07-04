@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Takenet.Elephant.Sql
 {
-    internal class SqlExpressionTranslator : ExpressionVisitor
+    public class SqlExpressionTranslator : ExpressionVisitor
     {
         private readonly StringBuilder _filter = new StringBuilder();
         private readonly IDatabaseDriver _databaseDriver;
@@ -28,8 +28,6 @@ namespace Takenet.Elephant.Sql
             Visit(expression);
             return _filter.ToString();
         }
-
-        #region ExpressionVisitor Members
 
         protected override Expression VisitUnary(UnaryExpression node)
         {
@@ -51,11 +49,26 @@ namespace Takenet.Elephant.Sql
             switch (node.NodeType)
             {
                 case ExpressionType.Equal:
-                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Equal);
+                    if (IsNullConstantExpression(node.Right))
+                    {
+                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Is);
+                    }
+                    else
+                    {
+                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Equal);
+                    }
                     break;
 
                 case ExpressionType.NotEqual:
-                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.NotEqual);
+                    if (IsNullConstantExpression(node.Right))
+                    {
+                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.IsNot);
+                    }
+                    else
+                    {
+
+                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.NotEqual);
+                    }
                     break;
 
                 case ExpressionType.GreaterThan:
@@ -246,9 +259,7 @@ namespace Takenet.Elephant.Sql
                 $"Translation not implemented for method {node.Method.Name} of type {node.Method.DeclaringType}");
         }
 
-        #endregion
-
-        #region Private Methods
+        private static bool IsNullConstantExpression(Expression expression) => expression is ConstantExpression constantExpression && constantExpression.Value == null;
 
         private Expression GenerateSqlLike(MethodCallExpression node)
         {
@@ -264,16 +275,22 @@ namespace Takenet.Elephant.Sql
 
         private string ConvertSqlLiteral(object value, Type type)
         {
+            if (value == null)
+            {
+                return _databaseDriver.GetSqlStatementTemplate(SqlStatement.Null);
+            }
+
             var dbType = DbTypeMapper.GetDbType(type);
+
             var valueString = value.ToStringInvariant();
 
-            if (dbType == DbType.String ||
-                dbType == DbType.StringFixedLength ||
-                dbType == DbType.Guid ||
-                dbType == DbType.Date ||
-                dbType == DbType.DateTime ||
-                dbType == DbType.DateTime2 ||
-                dbType == DbType.DateTimeOffset)
+            if (dbType == DbType.String
+                || dbType == DbType.StringFixedLength
+                || dbType == DbType.Guid
+                || dbType == DbType.Date
+                || dbType == DbType.DateTime
+                || dbType == DbType.DateTime2
+                || dbType == DbType.DateTimeOffset)
             {
                 return $"'{_valuePrefix}{valueString}{_valueSuffix}'";
             }
@@ -281,6 +298,5 @@ namespace Takenet.Elephant.Sql
             return valueString;
         }
 
-        #endregion
     }
 }
