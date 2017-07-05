@@ -274,7 +274,7 @@
       <Name>Takenet.Elephant.Redis</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Specialized\Takenet.Elephant.Specialized.csproj">
-      <Project>{2d183e50-19e5-4677-bddf-bb70fc420a16}</Project>
+      <Project>{b103d47a-3430-41eb-9f6d-c483c617d3ad}</Project>
       <Name>Takenet.Elephant.Specialized</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj">
