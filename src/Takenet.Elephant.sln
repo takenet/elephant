@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant", "Takenet.Elephant\Takenet.Elephant.csproj", "{AEA9548D-8D87-41CE-8959-81B3361C0298}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Tests", "Takenet.Elephant.Tests\Takenet.Elephant.Tests.csproj", "{5288FBD3-4FE6-42A2-8256-D004C17A86F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Redis", "Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj", "{6895C290-8EAA-468B-8B2F-B1A7CB3CB32A}"
@@ -30,16 +28,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Msmq", "Ta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Sql.PostgreSql", "Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj", "{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant", "Takenet.Elephant\Takenet.Elephant.csproj", "{5826C539-F664-4F71-82B6-180461FF0E81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AEA9548D-8D87-41CE-8959-81B3361C0298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEA9548D-8D87-41CE-8959-81B3361C0298}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEA9548D-8D87-41CE-8959-81B3361C0298}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEA9548D-8D87-41CE-8959-81B3361C0298}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5288FBD3-4FE6-42A2-8256-D004C17A86F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5288FBD3-4FE6-42A2-8256-D004C17A86F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5288FBD3-4FE6-42A2-8256-D004C17A86F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +72,10 @@ Global
 		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5826C539-F664-4F71-82B6-180461FF0E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5826C539-F664-4F71-82B6-180461FF0E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5826C539-F664-4F71-82B6-180461FF0E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5826C539-F664-4F71-82B6-180461FF0E81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -7,12 +8,8 @@ namespace Takenet.Elephant
 {
     public static class TypeUtil
     {
-        private static readonly ConcurrentDictionary<Type, Func<string, object>> _typeParseFuncDictionary;
-
-        static TypeUtil()
-        {
-            _typeParseFuncDictionary = new ConcurrentDictionary<Type, Func<string, object>>();
-        }
+        private static readonly ConcurrentDictionary<Type, Delegate> TypeParseDelegateDictionary = new ConcurrentDictionary<Type, Delegate>();
+        private static readonly ConcurrentDictionary<Type, Func<string, object>> TypeParseFuncDictionary = new ConcurrentDictionary<Type, Func<string, object>>();
 
         /// <summary>
         /// Gets the Parse static method of a Type as a func.
@@ -23,50 +20,78 @@ namespace Takenet.Elephant
         {
             var type = typeof(T);
 
-            var parseMethod = typeof(T)
-                .GetMethod("Parse", BindingFlags.Static | BindingFlags.Public, null, new[] { typeof(string) }, null);
+            Delegate parseDelegate;
+            if (!TypeParseDelegateDictionary.TryGetValue(type, out parseDelegate))
+            {
+                var parseMethod = typeof(T)
+                    .GetTypeInfo()
+                    .GetMethods(BindingFlags.Static | BindingFlags.Public)
+                    .FirstOrDefault(m =>
+                        m.Name.Equals("Parse") &&
+                        m.GetParameters().Length == 1 &&
+                        m.GetParameters()[0].ParameterType == typeof(string));
 
-            if (parseMethod == null) throw new ArgumentException($"The type '{type}' doesn't contains a static 'Parse' method");            
-            if (parseMethod.ReturnType != type) throw new ArgumentException("The Parse method has an invalid return type");            
+                if (parseMethod == null)
+                {
+                    throw new ArgumentException($"The type '{type}' doesn't contains a static 'Parse(string)' method");
+                }
 
-            var parseFuncType = typeof(Func<,>).MakeGenericType(typeof(string), type);
-            return (Func<string, T>)Delegate.CreateDelegate(parseFuncType, parseMethod);
+                if (parseMethod.ReturnType != type)
+                {
+                    throw new ArgumentException("The Parse method has an invalid return type");
+                }
+
+                var parseFuncType = typeof(Func<,>).MakeGenericType(typeof(string), type);
+                parseDelegate = parseMethod.CreateDelegate(parseFuncType);
+                TypeParseDelegateDictionary.TryAdd(type, parseDelegate);
+            }
+
+            return (Func<string, T>)parseDelegate;
         }
 
         /// <summary>
-        /// Gets the Parse static  method of a Type as a func.
+        /// Gets the Parse static method of a Type as a func.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
         public static Func<string, object> GetParseFuncForType(Type type)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
-                        
             Func<string, object> parseFunc;
-            if (_typeParseFuncDictionary.TryGetValue(type, out parseFunc)) return parseFunc;
-            try
+            if (!TypeParseFuncDictionary.TryGetValue(type, out parseFunc))
             {
-                var getParseFuncMethod = typeof(TypeUtil)
-                    .GetMethod(nameof(GetParseFunc), BindingFlags.Static | BindingFlags.Public)
-                    .MakeGenericMethod(type);
+                try
+                {
+                    var getParseFuncMethod = typeof(TypeUtil)
+                        .GetTypeInfo()
+                        .GetMethod(nameof(GetParseFunc), BindingFlags.Static | BindingFlags.Public)
+                        .MakeGenericMethod(type);
 
-                var genericGetParseFunc = getParseFuncMethod.Invoke(null, null);
-                
-                var parseFuncAdapterMethod = typeof(TypeUtil)
-                    .GetMethod(nameof(ParseFuncAdapter), BindingFlags.Static | BindingFlags.NonPublic)
-                    .MakeGenericMethod(type);
+                    var genericGetParseFunc = getParseFuncMethod.Invoke(null, null);
 
-                parseFunc = (Func<string, object>)parseFuncAdapterMethod.Invoke(null, new[] { genericGetParseFunc });
-                _typeParseFuncDictionary.TryAdd(type, parseFunc);
-            }
-            catch (TargetInvocationException ex)
-            {
-                throw ex.InnerException;
+                    var parseFuncAdapterMethod = typeof(TypeUtil)
+                        .GetTypeInfo()
+                        .GetMethod(nameof(ParseFuncAdapter), BindingFlags.Static | BindingFlags.NonPublic)
+                        .MakeGenericMethod(type);
+
+                    parseFunc = (Func<string, object>)parseFuncAdapterMethod.Invoke(null, new[] { genericGetParseFunc });
+                    TypeParseFuncDictionary.TryAdd(type, parseFunc);
+                }
+                catch (TargetInvocationException ex)
+                {
+                    throw ex.InnerException;
+                }
             }
 
             return parseFunc;
         }
 
+        /// <summary>
+        /// Utility function to adapt a typed Func to a object one.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parseFunc">The parse function.</param>
+        /// <returns></returns>
         private static Func<string, object> ParseFuncAdapter<T>(Func<string, T> parseFunc)
         {
             return (s) => (object)parseFunc(s);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Takenet.Elephant
@@ -29,7 +30,7 @@ namespace Takenet.Elephant
         public static bool IsDefaultValueOfType(this object value, Type type, bool ignoreIfEnum = true)
         {
             if (value == null) return true;
-            if (ignoreIfEnum && type.IsEnum) return false;
+            if (ignoreIfEnum && type.GetTypeInfo().IsEnum) return false;
             return value.Equals(type.GetDefaultValue());
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Takenet.Elephant
 {
@@ -14,8 +15,8 @@ namespace Takenet.Elephant
             this Type type)
         {
             return
-                type.IsValueType ||
-                type.IsPrimitive ||
+                type.GetTypeInfo().IsValueType ||
+                type.GetTypeInfo().IsPrimitive ||
                 new [] {
                     typeof(string),
                     typeof(decimal),
@@ -36,7 +37,7 @@ namespace Takenet.Elephant
         public static object GetDefaultValue(this Type type)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
-            if (type.IsValueType) return Activator.CreateInstance(type);
+            if (type.GetTypeInfo().IsValueType) return Activator.CreateInstance(type);
             return null;
         }
     }

@@ -286,7 +286,7 @@
       <Name>Takenet.Elephant.Sql</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
-      <Project>{aea9548d-8d87-41ce-8959-81b3361c0298}</Project>
+      <Project>{5826c539-f664-4f71-82b6-180461ff0e81}</Project>
       <Name>Takenet.Elephant</Name>
     </ProjectReference>
   </ItemGroup>

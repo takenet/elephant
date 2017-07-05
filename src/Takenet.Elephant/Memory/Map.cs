@@ -176,7 +176,7 @@ namespace Takenet.Elephant.Memory
                 {
                     try
                     {
-                        if (property.PropertyType.IsEnum)
+                        if (property.PropertyType.GetTypeInfo().IsEnum)
                         {
                             property.SetValue(
                                 existingValue,

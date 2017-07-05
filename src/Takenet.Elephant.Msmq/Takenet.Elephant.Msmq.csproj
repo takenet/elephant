@@ -49,13 +49,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
-      <Project>{aea9548d-8d87-41ce-8959-81b3361c0298}</Project>
-      <Name>Takenet.Elephant</Name>
-    </ProjectReference>
+    <None Include="Takenet.Elephant.Msmq.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Takenet.Elephant.Msmq.nuspec" />
+    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
+      <Project>{5826c539-f664-4f71-82b6-180461ff0e81}</Project>
+      <Name>Takenet.Elephant</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

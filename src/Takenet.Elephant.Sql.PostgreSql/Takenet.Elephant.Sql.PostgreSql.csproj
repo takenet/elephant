@@ -58,6 +58,10 @@
       <Project>{fa4ecd2c-454c-48fd-8dc1-678b8a723080}</Project>
       <Name>Takenet.Elephant.Sql</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
+      <Project>{5826c539-f664-4f71-82b6-180461ff0e81}</Project>
+      <Name>Takenet.Elephant</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

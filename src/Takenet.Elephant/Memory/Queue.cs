@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -108,7 +109,5 @@ namespace Takenet.Elephant.Memory
         {
             return Clone();
         }
-
-
     }
 }
