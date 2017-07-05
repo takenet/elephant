@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Reflection;
 using StackExchange.Redis;
 
 namespace Takenet.Elephant.Redis
@@ -21,7 +22,7 @@ namespace Takenet.Elephant.Redis
             if (type == typeof(Uri)) return new Uri(value);
             if (type == typeof(DateTimeOffset)) return new DateTimeOffset((long)value, TimeSpan.Zero);
             if (type == typeof(DateTime)) return new DateTime((long)value, DateTimeKind.Utc);
-            if (type.IsEnum) return Enum.Parse(type, value);
+            if (type.GetTypeInfo().IsEnum) return Enum.Parse(type, value);
             return TypeUtil.GetParseFuncForType(type)(value);
         }
 

@@ -270,7 +270,7 @@
       <Name>Takenet.Elephant.RabbitMQ</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj">
-      <Project>{6895c290-8eaa-468b-8b2f-b1a7cb3cb32a}</Project>
+      <Project>{f68ed17e-e1f8-4c39-9f38-6c5610f0bfe1}</Project>
       <Name>Takenet.Elephant.Redis</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Specialized\Takenet.Elephant.Specialized.csproj">

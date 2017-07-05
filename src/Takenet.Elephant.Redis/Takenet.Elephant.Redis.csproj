@@ -1,84 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6895C290-8EAA-468B-8B2F-B1A7CB3CB32A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Takenet.Elephant.Redis</RootNamespace>
+    <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
     <AssemblyName>Takenet.Elephant.Redis</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <RootNamespace>Takenet.Elephant.Redis</RootNamespace>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>0.1.0</Version>
+    <Product>Elephant Redis</Product>
+    <Company>Take</Company>
+    <Authors>takenet,andrebires</Authors>
+    <Description>Elephant storage library</Description>
+    <Copyright>Copyright © 2015 Curupira S/A</Copyright>
+    <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Takenet.Elephant.Redis.XML</DocumentationFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="StackExchange.Redis, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StackExchange.Redis.1.2.3\lib\net46\StackExchange.Redis.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.4" />
+    <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Converters\TypeRedisDictionaryConverter.cs" />
-    <Compile Include="Converters\ValueRedisDictionaryConverter.cs" />
-    <Compile Include="IRedisDictionaryConverter.cs" />
-    <Compile Include="MapBase.cs" />
-    <Compile Include="RedisHashMap.cs" />
-    <Compile Include="RedisNumberMap.cs" />
-    <Compile Include="RedisQueue.cs" />
-    <Compile Include="RedisQueueMap.cs" />
-    <Compile Include="RedisSet.cs" />
-    <Compile Include="RedisSetMap.cs" />
-    <Compile Include="RedisStringMap.cs" />
-    <Compile Include="RedisValueExtensions.cs" />
-    <Compile Include="Serializers\LowerValueSerializer.cs" />
-    <Compile Include="Serializers\StringSerializer.cs" />
-    <Compile Include="Serializers\ValueSerializer.cs" />
-    <Compile Include="StorageBase.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Takenet.Elephant.Redis.nuspec" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
-      <Project>{5826c539-f664-4f71-82b6-180461ff0e81}</Project>
-      <Name>Takenet.Elephant</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
