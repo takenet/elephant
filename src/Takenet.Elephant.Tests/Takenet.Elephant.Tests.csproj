@@ -265,10 +265,6 @@
       <Project>{FEAF6F82-FA69-4BBA-9081-44E597DF405A}</Project>
       <Name>Takenet.Elephant.Msmq</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Takenet.Elephant.RabbitMQ\Takenet.Elephant.RabbitMQ.csproj">
-      <Project>{790f8f5c-5e5c-45fb-8836-4564ab970b9f}</Project>
-      <Name>Takenet.Elephant.RabbitMQ</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj">
       <Project>{f68ed17e-e1f8-4c39-9f38-6c5610f0bfe1}</Project>
       <Name>Takenet.Elephant.Redis</Name>
