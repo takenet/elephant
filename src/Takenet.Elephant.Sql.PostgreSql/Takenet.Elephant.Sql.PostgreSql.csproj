@@ -1,84 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Takenet.Elephant.Sql.PostgreSql</RootNamespace>
+    <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
     <AssemblyName>Takenet.Elephant.Sql.PostgreSql</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <RootNamespace>Takenet.Elephant.Sql.PostgreSql</RootNamespace>
+    <PackageId>Takenet.Elephant.Sql.PostgreSql</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>takenet,andrebires</Authors>
+    <Company>Take</Company>
+    <Product>Elephant PostgreSql</Product>
+    <Description>Elephant storage library</Description>
+    <Copyright>Copyright © 2015 Curupira S/A</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Takenet.Elephant.Sql.PostgreSql.XML</DocumentationFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Npgsql, Version=3.1.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Npgsql.3.1.3\lib\net451\Npgsql.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Npgsql" Version="3.2.4.1" />
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="PostgreSqlDatabaseDriver.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PostgreSqlTemplates.Designer.cs">
+    <ProjectReference Include="..\Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="PostgreSqlTemplates.Designer.cs">
       <DependentUpon>PostgreSqlTemplates.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj">
-      <Project>{3c906350-8559-4754-b79c-b165d1d5529d}</Project>
-      <Name>Takenet.Elephant.Sql</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
-      <Project>{5826c539-f664-4f71-82b6-180461ff0e81}</Project>
-      <Name>Takenet.Elephant</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Takenet.Elephant.Sql.PostgreSql.nuspec" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="PostgreSqlTemplates.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
+    <EmbeddedResource Update="PostgreSqlTemplates.resx">
       <LastGenOutput>PostgreSqlTemplates.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

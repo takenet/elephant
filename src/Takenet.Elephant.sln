@@ -20,8 +20,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.RabbitMQ",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Msmq", "Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj", "{FEAF6F82-FA69-4BBA-9081-44E597DF405A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Sql.PostgreSql", "Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj", "{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant", "Takenet.Elephant\Takenet.Elephant.csproj", "{5826C539-F664-4F71-82B6-180461FF0E81}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Specialized", "Takenet.Elephant.Specialized\Takenet.Elephant.Specialized.csproj", "{B103D47A-3430-41EB-9F6D-C483C617D3AD}"
@@ -29,6 +27,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Redis", "Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj", "{F68ED17E-E1F8-4C39-9F38-6C5610F0BFE1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Sql", "Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj", "{3C906350-8559-4754-B79C-B165D1D5529D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Sql.PostgreSql", "Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj", "{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,10 +56,6 @@ Global
 		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3700B934-4321-4B9E-B662-5F0AE0A1D8AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5826C539-F664-4F71-82B6-180461FF0E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5826C539-F664-4F71-82B6-180461FF0E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5826C539-F664-4F71-82B6-180461FF0E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +72,10 @@ Global
 		{3C906350-8559-4754-B79C-B165D1D5529D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C906350-8559-4754-B79C-B165D1D5529D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C906350-8559-4754-B79C-B165D1D5529D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

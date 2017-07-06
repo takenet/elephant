@@ -4,6 +4,15 @@
     <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
     <AssemblyName>Takenet.Elephant.Sql</AssemblyName>
     <RootNamespace>Takenet.Elephant.Sql</RootNamespace>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Version>0.1.0</Version>
+    <Authors>takenet,andrebires</Authors>
+    <Company>Take</Company>
+    <Product>Elephant Sql and Sql Server</Product>
+    <Description>Elephant storage library</Description>
+    <Copyright>Copyright © 2015 Curupira S/A</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

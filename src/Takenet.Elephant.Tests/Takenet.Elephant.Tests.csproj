@@ -278,7 +278,7 @@
       <Name>Takenet.Elephant.Specialized</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj">
-      <Project>{3700b934-4321-4b9e-b662-5f0ae0a1d8aa}</Project>
+      <Project>{1f4e1df4-bc73-4f94-b8a5-9bf01504d955}</Project>
       <Name>Takenet.Elephant.Sql.PostgreSql</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj">

@@ -10,6 +10,7 @@
 
 namespace Takenet.Elephant.Sql.PostgreSql {
     using System;
+    using System.Reflection;
     
     
     /// <summary>
@@ -39,7 +40,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Takenet.Elephant.Sql.PostgreSql.PostgreSqlTemplates", typeof(PostgreSqlTemplates).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Takenet.Elephant.Sql.PostgreSql.PostgreSqlTemplates", typeof(PostgreSqlTemplates).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
