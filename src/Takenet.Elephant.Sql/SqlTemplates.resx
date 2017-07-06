@@ -133,7 +133,7 @@
     <value>{columnName} {sqlType} NOT NULL</value>
   </data>
   <data name="CreateSchemaIfNotExists" xml:space="preserve">
-    <value>IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{schemaName}') EXEC sp_executesql N'CREATE SCHEMA {schemaName};';</value>
+    <value>IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{schemaName}') EXEC sp_executesql N'CREATE SCHEMA [{schemaName}];';</value>
   </data>
   <data name="CreateTable" xml:space="preserve">
     <value>CREATE TABLE {schemaName}.{tableName}

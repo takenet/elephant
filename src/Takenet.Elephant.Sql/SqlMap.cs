@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Takenet.Elephant.Sql.Mapping;
@@ -165,7 +166,7 @@ namespace Takenet.Elephant.Sql
                             return (TProperty)Mapper.DbTypeMapper.FromDbType(
                                 dbValue,
                                 Table.Columns[propertyName].Type,
-                                typeof(TValue).GetProperty(propertyName).PropertyType);
+                                typeof(TValue).GetTypeInfo().GetProperty(propertyName).PropertyType);
                         }
                     }
                 }

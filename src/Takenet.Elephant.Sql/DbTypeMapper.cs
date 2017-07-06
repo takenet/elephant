@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 
 namespace Takenet.Elephant.Sql
 {
@@ -87,7 +88,7 @@ namespace Takenet.Elephant.Sql
 
         public object FromDbType(object dbValue, DbType type, Type propertyType)
         {
-            if (propertyType.IsGenericType &&
+            if (propertyType.GetTypeInfo().IsGenericType &&
                 propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 propertyType = Nullable.GetUnderlyingType(propertyType);
@@ -97,7 +98,7 @@ namespace Takenet.Elephant.Sql
             {
                 return dbValue;
             }
-            if (propertyType.IsEnum)
+            if (propertyType.GetTypeInfo().IsEnum)
             {
                 var dbValueString = (string)dbValue;
                 return Enum.Parse(propertyType, dbValueString);

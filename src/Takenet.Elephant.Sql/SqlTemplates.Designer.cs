@@ -10,6 +10,7 @@
 
 namespace Takenet.Elephant.Sql {
     using System;
+    using System.Reflection;
     
     
     /// <summary>
@@ -39,7 +40,7 @@ namespace Takenet.Elephant.Sql {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Takenet.Elephant.Sql.SqlTemplates", typeof(SqlTemplates).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Takenet.Elephant.Sql.SqlTemplates", typeof(SqlTemplates).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -106,7 +107,7 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = &apos;{schemaName}&apos;) EXEC sp_executesql N&apos;CREATE SCHEMA {schemaName};&apos;;.
+        ///   Looks up a localized string similar to IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = &apos;{schemaName}&apos;) EXEC sp_executesql N&apos;CREATE SCHEMA [{schemaName}];&apos;;.
         /// </summary>
         public static string CreateSchemaIfNotExists {
             get {

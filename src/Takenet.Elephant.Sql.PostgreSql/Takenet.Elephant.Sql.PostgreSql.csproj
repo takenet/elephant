@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj">
-      <Project>{fa4ecd2c-454c-48fd-8dc1-678b8a723080}</Project>
+      <Project>{3c906350-8559-4754-b79c-b165d1d5529d}</Project>
       <Name>Takenet.Elephant.Sql</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
