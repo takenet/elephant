@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Takenet.Elephant.Tests.Msmq
 {
+    [Trait("Category", nameof(Msmq))]
     [Collection(nameof(Msmq))]
     public class MsmqGuidItemQueueMapFacts : GuidItemQueueMapFacts
     {

@@ -19,10 +19,13 @@ after_build:
 - dotnet pack src/Takenet.Elephant.Sql/Takenet.Elephant.Sql.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet pack src/Takenet.Elephant.Sql.PostgreSql/Takenet.Elephant.Sql.PostgreSql.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet pack src/Takenet.Elephant.Specialized/Takenet.Elephant.Specialized.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
+services:
+  - msmq
 test:
   categories:
     only:
       - Memory
+      - Msmq
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
