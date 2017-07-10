@@ -4,7 +4,7 @@
     <TargetFramework>net461</TargetFramework>
     <AssemblyName>Takenet.Elephant.Msmq</AssemblyName>
     <RootNamespace>Takenet.Elephant.Msmq</RootNamespace>
-    <Version>0.1.0</Version>
+    <Version>0.5.0</Version>
     <Authors>takenet</Authors>
     <Company>Take</Company>
     <Product>Elephant Microsoft Message Queue MSMQ</Product>

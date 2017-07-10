@@ -1,4 +1,4 @@
-version: 0.4.{build}
+version: 0.5.{build}
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
@@ -30,7 +30,7 @@ assembly_info:
   assembly_version: '{version}'
   assembly_informational_version: '{version}'
 artifacts:
-  - path: '**\*.nupkg'
+  - path: '**\Takenet.Elephant*.nupkg'
 deploy:
 - provider: NuGet
   api_key:

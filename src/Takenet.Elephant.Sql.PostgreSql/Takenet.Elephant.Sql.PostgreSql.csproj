@@ -5,7 +5,7 @@
     <AssemblyName>Takenet.Elephant.Sql.PostgreSql</AssemblyName>
     <RootNamespace>Takenet.Elephant.Sql.PostgreSql</RootNamespace>
     <PackageId>Takenet.Elephant.Sql.PostgreSql</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.5.0</Version>
     <Authors>takenet,andrebires</Authors>
     <Company>Take</Company>
     <Product>Elephant PostgreSql</Product>

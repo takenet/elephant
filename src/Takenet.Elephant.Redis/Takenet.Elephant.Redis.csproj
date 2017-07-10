@@ -5,7 +5,7 @@
     <AssemblyName>Takenet.Elephant.Redis</AssemblyName>
     <RootNamespace>Takenet.Elephant.Redis</RootNamespace>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>0.1.0</Version>
+    <Version>0.5.0</Version>
     <Product>Elephant Redis</Product>
     <Company>Take</Company>
     <Authors>takenet,andrebires</Authors>
