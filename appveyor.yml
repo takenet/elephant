@@ -6,12 +6,12 @@ cache: src/packages
 before_build:
 - dotnet restore src/Takenet.Elephant.sln
 after_build:
-- dotnet pack src/Takenet.Elephant/Takenet.Elephant.csproj --no-build --configuration Release /p:Version={version}
-- dotnet pack src/Takenet.Elephant.Msmq/Takenet.Elephant.Msmq.csproj --no-build --configuration Release /p:Version={version}
-- dotnet pack src/Takenet.Elephant.Redis/Takenet.Elephant.Redis.csproj --no-build --configuration Release /p:Version={version}
-- dotnet pack src/Takenet.Elephant.Sql/Takenet.Elephant.Sql.csproj --no-build --configuration Release /p:Version={version}
-- dotnet pack src/Takenet.Elephant.Sql.PostgreSql/Takenet.Elephant.Sql.PostgreSql.csproj --no-build --configuration Release /p:Version={version}
-- dotnet pack src/Takenet.Elephant.Specialized/Takenet.Elephant.Specialized.csproj --no-build --configuration Release /p:Version={version}
+- dotnet pack src/Takenet.Elephant/Takenet.Elephant.csproj --no-build --configuration Release /p:Version='{version}'
+- dotnet pack src/Takenet.Elephant.Msmq/Takenet.Elephant.Msmq.csproj --no-build --configuration Release /p:Version='{version}'
+- dotnet pack src/Takenet.Elephant.Redis/Takenet.Elephant.Redis.csproj --no-build --configuration Release /p:Version='{version}'
+- dotnet pack src/Takenet.Elephant.Sql/Takenet.Elephant.Sql.csproj --no-build --configuration Release /p:Version='{version}'
+- dotnet pack src/Takenet.Elephant.Sql.PostgreSql/Takenet.Elephant.Sql.PostgreSql.csproj --no-build --configuration Release /p:Version='{version}'
+- dotnet pack src/Takenet.Elephant.Specialized/Takenet.Elephant.Specialized.csproj --no-build --configuration Release /p:Version='{version}'
 branches:
   only:
     - master
