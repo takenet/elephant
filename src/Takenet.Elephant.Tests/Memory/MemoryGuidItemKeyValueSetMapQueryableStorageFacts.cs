@@ -5,9 +5,11 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Takenet.Elephant.Memory;
+using Xunit;
 
 namespace Takenet.Elephant.Tests.Memory
 {
+    [Trait("Category", nameof(Memory))]
     public class MemoryGuidItemKeyValueSetMapQueryableStorageFacts : QueryableStorageFacts<KeyValuePair<Guid, Item>>
     {
         public override async Task<IQueryableStorage<KeyValuePair<Guid, Item>>> CreateAsync(params KeyValuePair<Guid, Item>[] values)

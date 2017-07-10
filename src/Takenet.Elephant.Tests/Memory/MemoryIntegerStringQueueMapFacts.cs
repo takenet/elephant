@@ -1,8 +1,10 @@
 ﻿using Ploeh.AutoFixture;
 using Takenet.Elephant.Memory;
+using Xunit;
 
 namespace Takenet.Elephant.Tests.Memory
 {
+    [Trait("Category", nameof(Memory))]
     public class MemoryIntegerStringQueueMapFacts : IntegerStringQueueMapFacts
     {
         public override IMap<int, IQueue<string>> Create()

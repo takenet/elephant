@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Samples", "Takenet.Elephant.Samples\Takenet.Elephant.Samples.csproj", "{8E049ACC-AFCB-4C79-880C-D018B83782F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Msmq", "Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj", "{FEAF6F82-FA69-4BBA-9081-44E597DF405A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant", "Takenet.Elephant\Takenet.Elephant.csproj", "{5826C539-F664-4F71-82B6-180461FF0E81}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Specialized", "Takenet.Elephant.Specialized\Takenet.Elephant.Specialized.csproj", "{B103D47A-3430-41EB-9F6D-C483C617D3AD}"
@@ -25,6 +23,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Sql", "Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj", "{3C906350-8559-4754-B79C-B165D1D5529D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Sql.PostgreSql", "Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj", "{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Msmq", "Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj", "{AA377435-8103-498F-8A3E-203B4FF8BE92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +40,6 @@ Global
 		{8E049ACC-AFCB-4C79-880C-D018B83782F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E049ACC-AFCB-4C79-880C-D018B83782F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E049ACC-AFCB-4C79-880C-D018B83782F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEAF6F82-FA69-4BBA-9081-44E597DF405A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5826C539-F664-4F71-82B6-180461FF0E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5826C539-F664-4F71-82B6-180461FF0E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5826C539-F664-4F71-82B6-180461FF0E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -64,6 +60,10 @@ Global
 		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

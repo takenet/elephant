@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Ploeh.AutoFixture;
 using Takenet.Elephant.Memory;
 using Takenet.Elephant.Msmq;
-using Takenet.Elephant.Tests.RabbitMQ;
+using Takenet.Elephant.Tests.Redis;
 using Xunit;
 
 namespace Takenet.Elephant.Tests.Msmq

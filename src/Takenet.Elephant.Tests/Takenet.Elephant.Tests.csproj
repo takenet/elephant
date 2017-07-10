@@ -87,11 +87,6 @@
     <Compile Include="Msmq\MsmqGuidItemQueueMapFacts.cs" />
     <Compile Include="Msmq\MsmqItemBlockingQueueFacts.cs" />
     <Compile Include="OrderedQueryableStorageFacts.cs" />
-    <Compile Include="RabbitMQ\ItemSerializer.cs" />
-    <Compile Include="RabbitMQ\RabbitMQCollectionFixture.cs" />
-    <Compile Include="RabbitMQ\RabbitMQFixture.cs" />
-    <Compile Include="RabbitMQ\RabbitMQItemBlockingQueueFacts.cs" />
-    <Compile Include="RabbitMQ\RabbitMQItemQueueFacts.cs" />
     <Compile Include="ItemListFacts.cs" />
     <Compile Include="ListFacts.cs" />
     <Compile Include="Redis\RedisGuidItemScopedSetMapFacts.cs" />
@@ -262,7 +257,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj">
-      <Project>{FEAF6F82-FA69-4BBA-9081-44E597DF405A}</Project>
+      <Project>{aa377435-8103-498f-8a3e-203b4ff8be92}</Project>
       <Name>Takenet.Elephant.Msmq</Name>
     </ProjectReference>
     <ProjectReference Include="..\Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj">

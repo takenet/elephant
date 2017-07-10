@@ -3,9 +3,11 @@ using Ploeh.AutoFixture;
 using Takenet.Elephant.Memory;
 using Takenet.Elephant.Specialized.Scoping;
 using Takenet.Elephant.Tests.Specialized;
+using Xunit;
 
 namespace Takenet.Elephant.Tests.Memory
 {
+    [Trait("Category", nameof(Memory))]
     public class MemoryGuidItemScopedSetMapFacts : GuidItemScopedSetMapFacts
     {
         public override IMap<Guid, ISet<Item>> CreateMap()

@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using Ploeh.AutoFixture;
 using Takenet.Elephant.Memory;
+using Xunit;
 
 namespace Takenet.Elephant.Tests.Memory
 {
+    [Trait("Category", nameof(Memory))]
     public class MemoryGuidItemSetMapQueryableStorageFacts : QueryableStorageFacts<Item>
     {
         public override async Task<IQueryableStorage<Item>> CreateAsync(params Item[] values)

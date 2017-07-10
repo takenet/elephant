@@ -12,7 +12,7 @@
     <Authors>takenet,andrebires</Authors>
     <Product>Elephant Specialized</Product>
     <Copyright>Copyright © 2015 Curupira S/A</Copyright>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
