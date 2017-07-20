@@ -15,7 +15,7 @@ namespace Takenet.Elephant
         // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
         // <returns> A Task representing the asynchronous operation. </returns>
         public static async Task ForEachAsync(
-            this IAsyncEnumerable source, Action<object> action, CancellationToken cancellationToken)
+            this IAsyncEnumerable source, Action<object> action, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (source == null) throw new ArgumentNullException("source");
             if (action == null) throw new ArgumentNullException("action");
@@ -46,7 +46,7 @@ namespace Takenet.Elephant
         // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
         // <returns> A Task representing the asynchronous operation. </returns>
         public static async Task ForEachAsync<T>(
-            this IAsyncEnumerable<T> source, Action<T> action, CancellationToken cancellationToken)
+            this IAsyncEnumerable<T> source, Action<T> action, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (source == null) throw new ArgumentNullException("source");
             if (action == null) throw new ArgumentNullException("action");
@@ -55,7 +55,7 @@ namespace Takenet.Elephant
         }
 
         private static async Task ForEachAsync<T>(
-            IAsyncEnumerator<T> enumerator, Action<T> action, CancellationToken cancellationToken)
+            IAsyncEnumerator<T> enumerator, Action<T> action, CancellationToken cancellationToken = default(CancellationToken))
         {
             using (enumerator)
             {
@@ -83,7 +83,7 @@ namespace Takenet.Elephant
         // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
         // <returns> A Task representing the asynchronous operation. </returns>
         public static async Task ForEachAsync<T>(
-            this IAsyncEnumerable<T> source, Func<T, Task> func, CancellationToken cancellationToken)
+            this IAsyncEnumerable<T> source, Func<T, Task> func, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (source == null) throw new ArgumentNullException("source");
             if (func == null) throw new ArgumentNullException("func");
@@ -92,7 +92,7 @@ namespace Takenet.Elephant
         }
 
         private static async Task ForEachAsync<T>(
-            IAsyncEnumerator<T> enumerator, Func<T, Task> func, CancellationToken cancellationToken)
+            IAsyncEnumerator<T> enumerator, Func<T, Task> func, CancellationToken cancellationToken = default(CancellationToken))
         {
             using (enumerator)
             {

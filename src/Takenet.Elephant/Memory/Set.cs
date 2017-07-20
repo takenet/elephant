@@ -48,8 +48,6 @@ namespace Takenet.Elephant.Memory
         }
 
 
-        #region ISet<T> Members
-
         public Task AddAsync(T value)
         {
             lock (_syncRoot)
@@ -80,7 +78,6 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult(_hashSet.Contains(value));
         }
 
-        #endregion
         
     }
 }

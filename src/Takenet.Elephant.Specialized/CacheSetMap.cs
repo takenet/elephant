@@ -51,6 +51,5 @@ namespace Takenet.Elephant.Specialized
                 return TaskUtil.CompletedTask;
             }
         }
-
     }
 }

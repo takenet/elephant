@@ -5,7 +5,7 @@ namespace Takenet.Elephant.Specialized
 {
     public class OnDemandCacheMap<TKey, TValue> : OnDemandCacheStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
     {
-        private readonly TimeSpan _cacheExpiration;
+        protected readonly TimeSpan CacheExpiration;
 
         public OnDemandCacheMap(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, TimeSpan cacheExpiration = default(TimeSpan))
             : base(source, cache)
@@ -16,33 +16,33 @@ namespace Takenet.Elephant.Specialized
                 throw new ArgumentException("To enable cache expiration, the cache map should implement IExpirableKeyMap");
             }
 
-            _cacheExpiration = cacheExpiration;
+            CacheExpiration = cacheExpiration;
         }
 
         public virtual Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
-            => ExecuteWriteFunc(m => m.TryAddAsync(key, value, overwrite));
+            => ExecuteWriteFunc(map => map.TryAddAsync(key, value, overwrite));
 
         public virtual Task<TValue> GetValueOrDefaultAsync(TKey key) 
             => ExecuteQueryFunc(
-                m => m.GetValueOrDefaultAsync(key),
-                (v, m) => AddToMapAsync(key, v, m));
+                map => map.GetValueOrDefaultAsync(key),
+                (result, m) => AddToMapAsync(key, result, m));
 
         public virtual Task<bool> TryRemoveAsync(TKey key) 
-            => ExecuteWriteFunc(m => m.TryRemoveAsync(key));
+            => ExecuteWriteFunc(map => map.TryRemoveAsync(key));
 
         public virtual Task<bool> ContainsKeyAsync(TKey key)
         {
             return ExecuteQueryFunc(
-                m => m.ContainsKeyAsync(key),
-                async (v, m) =>
+                map => map.ContainsKeyAsync(key),
+                async (result, map) =>
                 {
                     // If exists in the source and not in the cache
-                    if (v)
+                    if (result)
                     {
                         var value = await Source.GetValueOrDefaultAsync(key).ConfigureAwait(false);
                         if (!IsDefaultValueOfType(value))
                         {
-                            return await AddToMapAsync(key, value, m).ConfigureAwait(false);
+                            return await AddToMapAsync(key, value, map).ConfigureAwait(false);
                         }
                     }
                     return true;
@@ -53,10 +53,10 @@ namespace Takenet.Elephant.Specialized
         {
             var added = await map.TryAddAsync(key, value, true).ConfigureAwait(false);
             if (added
-                && _cacheExpiration != default(TimeSpan)
+                && CacheExpiration != default(TimeSpan)
                 && map is IExpirableKeyMap<TKey, TValue> expirableMap)
             {
-                await expirableMap.SetRelativeKeyExpirationAsync(key, _cacheExpiration).ConfigureAwait(false);
+                await expirableMap.SetRelativeKeyExpirationAsync(key, CacheExpiration).ConfigureAwait(false);
             }
 
             return added;
