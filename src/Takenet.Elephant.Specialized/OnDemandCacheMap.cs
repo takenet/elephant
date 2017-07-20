@@ -20,12 +20,12 @@ namespace Takenet.Elephant.Specialized
         }
 
         public virtual Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
-            => ExecuteWriteFunc(map => map.TryAddAsync(key, value, overwrite));
+            => ExecuteWriteFunc(map => TryAddToMapAsync(key, value, overwrite, map));
 
         public virtual Task<TValue> GetValueOrDefaultAsync(TKey key) 
             => ExecuteQueryFunc(
                 map => map.GetValueOrDefaultAsync(key),
-                (result, m) => AddToMapAsync(key, result, m));
+                (result, m) => TryAddToMapAsync(key, result, true, m));
 
         public virtual Task<bool> TryRemoveAsync(TKey key) 
             => ExecuteWriteFunc(map => map.TryRemoveAsync(key));
@@ -42,17 +42,18 @@ namespace Takenet.Elephant.Specialized
                         var value = await Source.GetValueOrDefaultAsync(key).ConfigureAwait(false);
                         if (!IsDefaultValueOfType(value))
                         {
-                            return await AddToMapAsync(key, value, map).ConfigureAwait(false);
+                            return await TryAddToMapAsync(key, value, true, map).ConfigureAwait(false);
                         }
                     }
                     return true;
                 });
         }
 
-        private async Task<bool> AddToMapAsync(TKey key, TValue value, IMap<TKey, TValue> map)
+        private async Task<bool> TryAddToMapAsync(TKey key, TValue value, bool overwrite, IMap<TKey, TValue> map)
         {
-            var added = await map.TryAddAsync(key, value, true).ConfigureAwait(false);
+            var added = await map.TryAddAsync(key, value, overwrite).ConfigureAwait(false);
             if (added
+                && map == Cache
                 && CacheExpiration != default(TimeSpan)
                 && map is IExpirableKeyMap<TKey, TValue> expirableMap)
             {

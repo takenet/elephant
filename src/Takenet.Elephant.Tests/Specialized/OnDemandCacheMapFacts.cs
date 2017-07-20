@@ -179,5 +179,31 @@ namespace Takenet.Elephant.Tests.Specialized
             AssertEquals(await cache.GetValueOrDefaultAsync(key1), value1);
             AssertEquals(await cache.GetValueOrDefaultAsync(key2), value2);
         }
+
+
+        [Fact(DisplayName = nameof(AddWithExpirationShouldExpiresInCache))]
+        public virtual async Task AddWithExpirationShouldExpiresInCache()
+        {
+            // Arrange
+            var expiration = TimeSpan.FromMilliseconds(100);
+            var source = CreateSource();
+            var cache = CreateCache();
+            var map = Create(source, cache, expiration);
+            var key1 = CreateKey();
+            var value1 = CreateValue(key1);
+            var key2 = CreateKey();
+            var value2 = CreateValue(key2);
+
+            // Act
+            if (!await map.TryAddAsync(key1, value1)) throw new Exception("Could not arrange the test");
+            if (!await map.TryAddAsync(key2, value2)) throw new Exception("Could not arrange the test");
+                        
+            // Assert            
+            AssertIsTrue(await cache.ContainsKeyAsync(key1));
+            AssertIsTrue(await cache.ContainsKeyAsync(key2));
+            await Task.Delay(expiration);
+            AssertIsFalse(await cache.ContainsKeyAsync(key1));
+            AssertIsFalse(await cache.ContainsKeyAsync(key2));
+        }
     }
 }
