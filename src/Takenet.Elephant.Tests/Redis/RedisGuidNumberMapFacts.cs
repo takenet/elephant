@@ -5,7 +5,8 @@ using Xunit;
 
 namespace Takenet.Elephant.Tests.Redis
 {
-    [Collection("Redis")]
+    [Trait("Category", nameof(Redis))]
+    [Collection(nameof(Redis))]
     public class RedisGuidNumberMapFacts : GuidNumberMapFacts
     {
         private readonly RedisFixture _redisFixture;

@@ -7,7 +7,8 @@ using Xunit;
 
 namespace Takenet.Elephant.Tests.Redis
 {
-    [Collection("Redis")]
+    [Trait("Category", nameof(Redis))]
+    [Collection(nameof(Redis))]
     public class RedisHashGuidItemMapFacts : GuidItemMapFacts
     {
         private readonly RedisFixture _redisFixture;
@@ -34,11 +35,11 @@ namespace Takenet.Elephant.Tests.Redis
         public IDictionary<string, object> ToDictionary(Item value)
         {
             return new Dictionary<string, object>()
-                {
-                    {nameof(value.IntegerProperty), value.IntegerProperty},
-                    {nameof(value.StringProperty), value.StringProperty},
-                    {nameof(value.GuidProperty), value.GuidProperty.ToString()}
-                };
+            {
+                {nameof(value.IntegerProperty), value.IntegerProperty},
+                {nameof(value.StringProperty), value.StringProperty},
+                {nameof(value.GuidProperty), value.GuidProperty.ToString()}
+            };
         }
 
         public Item FromDictionary(IDictionary<string, object> dictionary)

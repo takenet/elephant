@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Data;
-using System.Reflection;
 using Takenet.Elephant.Redis;
 using Takenet.Elephant.Redis.Converters;
-using Takenet.Elephant.Sql;
-using Takenet.Elephant.Sql.Mapping;
-using Takenet.Elephant.Tests.Sql;
 using Xunit;
 
 namespace Takenet.Elephant.Tests.Redis
 {
-    [Collection("Redis")]
+    [Trait("Category", nameof(Redis))]
+    [Collection(nameof(Redis))]
     public class RedisGuidItemKeysMapFacts : GuidItemKeysMapFacts
     {
         private readonly RedisFixture _redisFixture;

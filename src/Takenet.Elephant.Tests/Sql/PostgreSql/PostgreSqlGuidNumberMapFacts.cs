@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Takenet.Elephant.Tests.Sql.SqlServer
 {
-    [Collection(nameof(PostgreSql))]
+    [Collection(nameof(PostgreSql)), Trait("Category", nameof(PostgreSql))]
     public class PostgreSqlGuidNumberMapFacts : SqlGuidNumberMapFacts
     {
         public PostgreSqlGuidNumberMapFacts(PostgreSqlFixture serverFixture) : base(serverFixture)
