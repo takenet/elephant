@@ -4,7 +4,6 @@ using NFluent;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Kernel;
 using Xunit;
-using Shouldly;
 
 namespace Takenet.Elephant.Tests
 {
@@ -19,44 +18,38 @@ namespace Takenet.Elephant.Tests
 
         public virtual void AssertEquals<T>(T actual, T expected)
         {
-            actual.ShouldBe(expected);
+            Check.That(actual).IsEqualTo(expected);
         }
 
         public virtual void AssertIsTrue(bool actual)
         {
-            actual.ShouldBeTrue();
+            Check.That(actual).IsTrue();
         }
 
         public virtual void AssertIsFalse(bool actual)
         {
-            actual.ShouldBe(false);
+            Check.That(actual).IsFalse();
         }
 
         public virtual void AssertIsDefault<T>(T actual)
         {
-            actual.ShouldBe(default(T));
+            Check.That(actual).Equals(default(T));
         }
 
         public virtual void AssertIsNull<T>(T actual) where T : class
         {
-            actual.ShouldBeNull();
+            Check.That(actual).IsNull();
         }
 
         public virtual void AssertIsNotNull<T>(T actual) where T : class
         {
-            actual.ShouldNotBeNull();
+            Check.That(actual).IsNotNull();
         }
 
-        public virtual async Task AssertThrowsAsync<TException>(Func<Task> func) where TException : Exception
+        public virtual Task AssertThrowsAsync<TException>(Func<Task> func) where TException : Exception
         {
-            try
-            {
-                await func().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                ex.ShouldBeAssignableTo<TException>();
-            }
+            var exec = Check.ThatAsyncCode(func).Throws<TException>();
+            return TaskUtil.CompletedTask;
         }
     }
 }
