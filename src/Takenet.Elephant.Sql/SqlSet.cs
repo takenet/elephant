@@ -7,8 +7,6 @@ namespace Takenet.Elephant.Sql
 {
     public class SqlSet<T> : SqlCollectionBase<T>, ISet<T>
     {
-        #region Constructors
-
         public SqlSet(string connectionString, ITable table, IMapper<T> mapper)
             : this(new SqlDatabaseDriver(), connectionString, table, mapper)
         {
@@ -18,10 +16,6 @@ namespace Takenet.Elephant.Sql
             : base(databaseDriver, connectionString, table, mapper)
         {
         } 
-
-        #endregion
-
-        #region ISet<T> Members
 
         public virtual async Task AddAsync(T value)
         {
@@ -71,6 +65,5 @@ namespace Takenet.Elephant.Sql
             }
         }
        
-        #endregion
     }
 }

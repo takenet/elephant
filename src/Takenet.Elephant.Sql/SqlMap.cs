@@ -186,7 +186,7 @@ namespace Takenet.Elephant.Sql
                         .Select(kv => new KeyValuePair<string, object>($"Old{kv.Key}", kv.Value))
                         .ToDictionary(t => t.Key, t => t.Value);
 
-                    var newColumnValues = GetColumnValues(key, newValue);
+                    var newColumnValues = GetColumnValues(key, newValue, true);
 
                     using (var command = connection.CreateTextCommand(
                         DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),                        
