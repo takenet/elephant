@@ -16,6 +16,7 @@ namespace Takenet.Elephant.Tests
         public Uri UriProperty { get; set; }
 
         private DateTimeOffset _dateProperty;
+
         public DateTimeOffset DateProperty
         {
             get { return _dateProperty; }
@@ -28,11 +29,13 @@ namespace Takenet.Elephant.Tests
 
         public ItemOptions Select { get; set; }
 
+        public bool BooleanProperty { get; set; }
+
         public string RandomProperty { get; set; }
 
         public override string ToString()
         {
-            return $"{StringProperty ?? "<null>"};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{RandomProperty ?? "<null>"}";
+            return $"{StringProperty ?? "<null>"};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{BooleanProperty};{RandomProperty ?? "<null>"}";
         }
 
         public static Item Parse(string s)
@@ -48,7 +51,8 @@ namespace Takenet.Elephant.Tests
                 UriProperty = new Uri(values[3]),
                 DateProperty = DateTimeOffset.Parse(values[4], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
                 Select = (ItemOptions)Enum.Parse(typeof(ItemOptions), values[5]),
-                RandomProperty = values[6] == "<null>" ? null : values[6],
+                BooleanProperty = bool.Parse(values[6]),
+                RandomProperty = values[6] == "<null>" ? null : values[7],
             };
         }
 
@@ -70,6 +74,7 @@ namespace Takenet.Elephant.Tests
                        .ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)
                        .Equals(other.DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)) &&
                    Select.Equals(other.Select) &&
+                   BooleanProperty.Equals(other.BooleanProperty) &&
                    string.Equals(RandomProperty, other.RandomProperty);
         }
 
@@ -83,6 +88,7 @@ namespace Takenet.Elephant.Tests
                 hashCode = (hashCode * 397) ^ UriProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture).GetHashCode();
                 hashCode = (hashCode * 397) ^ Select.GetHashCode();
+                hashCode = (hashCode * 397) ^ BooleanProperty.GetHashCode();
                 hashCode = (hashCode * 397) ^ RandomProperty?.GetHashCode() ?? 0;
                 return hashCode;
             }

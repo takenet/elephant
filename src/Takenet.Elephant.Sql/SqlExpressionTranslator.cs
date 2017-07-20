@@ -29,6 +29,11 @@ namespace Takenet.Elephant.Sql
             return _filter.ToString();
         }
 
+        public override Expression Visit(Expression node)
+        {
+            return base.Visit(node);
+        }
+
         protected override Expression VisitUnary(UnaryExpression node)
         {
             if (node.NodeType == ExpressionType.Not)
@@ -280,8 +285,9 @@ namespace Takenet.Elephant.Sql
                 return _databaseDriver.GetSqlStatementTemplate(SqlStatement.Null);
             }
 
-            var dbType = DbTypeMapper.GetDbType(type);
+            if (value is bool b) return b ? "1" : "0";
 
+            var dbType = DbTypeMapper.GetDbType(type);
             var valueString = value.ToStringInvariant();
 
             if (dbType == DbType.String
