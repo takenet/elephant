@@ -153,18 +153,16 @@ namespace Takenet.Elephant.Tests
         }
 
 
-        [Fact(DisplayName = "MergeNewValueWithDefaultValuePropertiesSucceeds")]
-        public async Task MergeNewValueWithDefaultValuePropertiesSucceeds()
+        [Fact(DisplayName = "MergeNewValueWithNullPropertiesSucceeds")]
+        public async Task MergeNewValueWithNullPropertiesSucceeds()
         {
             // Arrange
             var map = Create();
             var key = CreateKey();
             var value = CreateValue(key);
-            foreach (var property in typeof(TValue).GetProperties())
-            {
-                var propertyDefaultValue = property.PropertyType.IsValueType ? 
-                    Activator.CreateInstance(property.PropertyType) : null;
-                property.SetValue(value, propertyDefaultValue);
+            foreach (var property in typeof(TValue).GetProperties().Where(p => !p.PropertyType.IsValueType))
+            {                
+                property.SetValue(value, null);
             }
             
             // Act
@@ -174,15 +172,15 @@ namespace Takenet.Elephant.Tests
             var actual = await map.GetValueOrDefaultAsync(key);
             if (actual != null)
             {
-                foreach (var property in typeof (TValue).GetProperties())
+                foreach (var property in typeof (TValue).GetProperties().Where(p => !p.PropertyType.IsValueType))
                 {
-                    AssertEquals(property.GetValue(actual), property.PropertyType.GetDefaultValue());                    
+                    AssertIsNull(property.GetValue(actual));
                 }
             }
         }
 
-        [Fact(DisplayName = "MergeExistingValueWithDefaultValuePropertiesSucceeds")]
-        public async Task MergeExistingValueWithDefaultValuePropertiesSucceeds()
+        [Fact(DisplayName = "MergeExistingValueWithNullValuePropertiesSucceeds")]
+        public async Task MergeExistingValueWithNullValuePropertiesSucceeds()
         {
             // Arrange
             var map = Create();
@@ -191,10 +189,9 @@ namespace Takenet.Elephant.Tests
             await map.TryAddAsync(key, value, false);
             var clonedValue = value.Clone();
 
-            foreach (var property in typeof(TValue).GetProperties())
+            foreach (var property in typeof(TValue).GetProperties().Where(p => !p.PropertyType.IsValueType))
             {
-                var propertyDefaultValue = property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
-                property.SetValue(clonedValue, propertyDefaultValue);
+                property.SetValue(clonedValue, null);
             }
 
             // Act

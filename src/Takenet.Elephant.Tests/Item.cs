@@ -64,35 +64,9 @@ namespace Takenet.Elephant.Tests
             return Equals((Item) obj);
         }
 
-        protected bool Equals(Item other)
-        {
-            return string.Equals(StringProperty, other.StringProperty) &&
-                   IntegerProperty == other.IntegerProperty &&
-                   GuidProperty.Equals(other.GuidProperty) &&
-                   UriProperty.Equals(other.UriProperty) &&
-                   DateProperty.ToUniversalTime()
-                       .ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)
-                       .Equals(other.DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)) &&
-                   Select.Equals(other.Select) &&
-                   BooleanProperty.Equals(other.BooleanProperty) &&
-                   string.Equals(RandomProperty, other.RandomProperty);
-        }
+        protected bool Equals(Item other) => ToString().Equals(other.ToString());
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = StringProperty?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ IntegerProperty;
-                hashCode = (hashCode * 397) ^ GuidProperty.GetHashCode();
-                hashCode = (hashCode * 397) ^ UriProperty.GetHashCode();
-                hashCode = (hashCode * 397) ^ DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture).GetHashCode();
-                hashCode = (hashCode * 397) ^ Select.GetHashCode();
-                hashCode = (hashCode * 397) ^ BooleanProperty.GetHashCode();
-                hashCode = (hashCode * 397) ^ RandomProperty?.GetHashCode() ?? 0;
-                return hashCode;
-            }
-        }
+        public override int GetHashCode() => ToString().GetHashCode();
     }
 
     public enum ItemOptions

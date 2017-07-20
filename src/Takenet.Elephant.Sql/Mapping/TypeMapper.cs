@@ -53,7 +53,7 @@ namespace Takenet.Elephant.Sql.Mapping
 
         public IDbTypeMapper DbTypeMapper { get; }
 
-        public virtual IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool emitDefaultValues = false, bool includeIdentityTypes = false)
+        public virtual IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool emitNullValues = false, bool includeIdentityTypes = false)
         {
             return _propertyGetFuncDictionary
                 .Where(
@@ -63,7 +63,7 @@ namespace Takenet.Elephant.Sql.Mapping
                     p => p.Key,
                     p => p.Value(value))
                 .Where(
-                    p => emitDefaultValues || !p.Value.IsDefaultValueOfType(_propertyDictionary[p.Key]))
+                    p => emitNullValues || p.Value != null)
                 .Where(
                     p => includeIdentityTypes || !_table.Columns[p.Key].IsIdentity)
                 .ToDictionary(

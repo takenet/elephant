@@ -67,7 +67,8 @@ namespace Takenet.Elephant.Tests
 
             // Assert            
             AssertIsTrue(actual);
-            AssertEquals(await map.GetValueOrDefaultAsync(key), newValue);
+            var storedValue = await map.GetValueOrDefaultAsync(key);
+            AssertEquals(storedValue, newValue);
         }
 
         [Fact(DisplayName = "AddExistingKeyFails")]

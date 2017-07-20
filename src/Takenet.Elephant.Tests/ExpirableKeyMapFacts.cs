@@ -75,7 +75,7 @@ namespace Takenet.Elephant.Tests
             await map.SetRelativeKeyExpirationAsync(key, ttl);
 
             // Act
-            await map.SetRelativeKeyExpirationAsync(key, ttl + ttl);
+            await map.SetRelativeKeyExpirationAsync(key, ttl + ttl + ttl);
             
             // Assert
             await Task.Delay(ttl);

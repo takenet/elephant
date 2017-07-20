@@ -7,44 +7,43 @@ namespace Takenet.Elephant
 {
     public class DictionaryConverter<T> : IDictionaryConverter<T>
     {
+        private const string VALUE_KEY = "Value";
+        private static readonly bool _isSimpleType;
+
         private readonly IDictionary<string, Type> _propertyDictionary;
         private readonly Dictionary<string, Func<object, object>> _getFuncsDictionary;
-        private readonly Dictionary<string, Action<object, object>> _setActionsDictionary;
-
-        private static readonly bool _isSimpleType;
-        private const string VALUE_KEY = "Value";
-        
+        private readonly Dictionary<string, Action<object, object>> _setActionsDictionary;        
+        private readonly Func<T> _valueFactory;
+        private readonly bool _emitNullValues;
+                
         static DictionaryConverter()
         {
             var type = typeof (T);
             _isSimpleType = type.IsSimpleType();
         }
 
-        private readonly Func<T> _valueFactory;
-        private readonly bool _emitDefaultValues;
-
-        public DictionaryConverter(bool emitDefaultValues = false)
-            : this(Activator.CreateInstance<T>, emitDefaultValues)
+        public DictionaryConverter(bool emitNullValues = false)
+            : this(Activator.CreateInstance<T>, emitNullValues)
         {
             
         }
 
-        public DictionaryConverter(Func<PropertyInfo, bool> propertyFilter, bool emitDefaultValues = false)
-            : this(Activator.CreateInstance<T>, propertyFilter, emitDefaultValues)
+        public DictionaryConverter(Func<PropertyInfo, bool> propertyFilter, bool emitNullValues = false)
+            : this(Activator.CreateInstance<T>, propertyFilter, emitNullValues)
         {
 
         }
 
-        public DictionaryConverter(Func<T> valueFactory, bool emitDefaultValues = false)
-            : this(valueFactory, p => true, emitDefaultValues)
+        public DictionaryConverter(Func<T> valueFactory, bool emitNullValues = false)
+            : this(valueFactory, p => true, emitNullValues)
         {
             
         }
 
-        public DictionaryConverter(Func<T> valueFactory, Func<PropertyInfo, bool> propertyFilter, bool emitDefaultValues = false)
+        public DictionaryConverter(Func<T> valueFactory, Func<PropertyInfo, bool> propertyFilter, bool emitNullValues = false)
         {
             _valueFactory = valueFactory;
-            _emitDefaultValues = emitDefaultValues;
+            _emitNullValues = emitNullValues;
                         
             if (!_isSimpleType)
             {
@@ -95,7 +94,7 @@ namespace Takenet.Elephant
             if (value == null) throw new ArgumentNullException(nameof(value));
             return _getFuncsDictionary
                 .ToDictionary(i => i.Key, i => i.Value(value))
-                .Where(i => _emitDefaultValues || !i.Value.IsDefaultValueOfType(_propertyDictionary[i.Key]))
+                .Where(i => _emitNullValues || i.Value != null)
                 .ToDictionary(i => i.Key, i => i.Value);
         }
     }

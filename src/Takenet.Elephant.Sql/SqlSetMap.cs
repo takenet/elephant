@@ -172,10 +172,10 @@ namespace Takenet.Elephant.Sql
                 MapKeyColumnValues = mapKeyColumnValues;
             }
 
-            protected override IDictionary<string, object> GetColumnValues(TItem entity, bool emitDefaultValues = false, bool includeIdentityTypes = false)
+            protected override IDictionary<string, object> GetColumnValues(TItem entity, bool emitNullValues = false, bool includeIdentityTypes = false)
             {
                 return MapKeyColumnValues
-                    .Union(base.GetColumnValues(entity, emitDefaultValues, includeIdentityTypes))
+                    .Union(base.GetColumnValues(entity, emitNullValues, includeIdentityTypes))
                     .ToDictionary(k => k.Key, k => k.Value);
             }
 

@@ -125,8 +125,8 @@ namespace Takenet.Elephant.Sql
         protected CancellationTokenSource CreateCancellationTokenSource()
             => new CancellationTokenSource(DatabaseDriver.Timeout);
 
-        protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitDefaultValues = false, bool includeIdentityTypes = false)
-            => Mapper.GetColumnValues(entity, emitDefaultValues: emitDefaultValues, includeIdentityTypes: includeIdentityTypes);
+        protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitNullValues = false, bool includeIdentityTypes = false)
+            => Mapper.GetColumnValues(entity, emitNullValues: emitNullValues, includeIdentityTypes: includeIdentityTypes);
 
         protected IDictionary<string, object> GetKeyColumnValues(TEntity entity, bool includeIdentityTypes = false) 
             => GetKeyColumnValues(GetColumnValues(entity, includeIdentityTypes: includeIdentityTypes));

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using StackExchange.Redis;
 
 namespace Takenet.Elephant.Redis.Converters
@@ -11,30 +9,30 @@ namespace Takenet.Elephant.Redis.Converters
     public class TypeRedisDictionaryConverter<T> : IRedisDictionaryConverter<T> where T : class
     {
         private readonly Func<T> _valueFactory;
-        private readonly bool _emitDefaultValues;
+        private readonly bool _emitNullValues;
         private readonly IDictionary<string, Type> _propertyDictionary;
         private readonly IDictionary<string, Func<T, object>> _propertyGetFuncDictionary;
         private readonly IDictionary<string, Action<T, object>> _propertySetActionDictionary;
 
-        public TypeRedisDictionaryConverter(bool emitDefaultValues = false)
-            : this(p => true, emitDefaultValues)
+        public TypeRedisDictionaryConverter(bool emitNullValues = false)
+            : this(p => true, emitNullValues)
         {
 
         }
 
-        public TypeRedisDictionaryConverter(Func<PropertyInfo, bool> propertyFilter, bool emitDefaultValues = false)
-            : this(propertyFilter, Activator.CreateInstance<T>, emitDefaultValues)
+        public TypeRedisDictionaryConverter(Func<PropertyInfo, bool> propertyFilter, bool emitNullValues = false)
+            : this(propertyFilter, Activator.CreateInstance<T>, emitNullValues)
         {
 
         }
 
-        public TypeRedisDictionaryConverter(Func<PropertyInfo, bool> propertyFilter, Func<T> valueFactory, bool emitDefaultValues = false)
-            : this(typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(propertyFilter).ToArray(), valueFactory, emitDefaultValues)
+        public TypeRedisDictionaryConverter(Func<PropertyInfo, bool> propertyFilter, Func<T> valueFactory, bool emitNullValues = false)
+            : this(typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(propertyFilter).ToArray(), valueFactory, emitNullValues)
         {
 
         }
 
-        protected TypeRedisDictionaryConverter(PropertyInfo[] properties, Func<T> valueFactory, bool emitDefaultValues)
+        protected TypeRedisDictionaryConverter(PropertyInfo[] properties, Func<T> valueFactory, bool emitNullValues)
         {            
             _propertyDictionary = properties.ToDictionary(p => p.Name, p => p.PropertyType);
             _propertyGetFuncDictionary = new Dictionary<string, Func<T, object>>();
@@ -53,7 +51,7 @@ namespace Takenet.Elephant.Redis.Converters
 
             Properties = _propertyDictionary.Keys;
             _valueFactory = valueFactory;
-            _emitDefaultValues = emitDefaultValues;
+            _emitNullValues = emitNullValues;
         }
 
         public IEnumerable<string> Properties { get; }
@@ -77,7 +75,7 @@ namespace Takenet.Elephant.Redis.Converters
                     p => p.Key,
                     p => p.Value(value))
                 .Where(
-                    p => _emitDefaultValues || !p.Value.IsDefaultValueOfType(_propertyDictionary[p.Key]))
+                    p => _emitNullValues || p.Value != null)
                 .ToDictionary(
                     p => p.Key,
                     p => p.Value.ToRedisValue());

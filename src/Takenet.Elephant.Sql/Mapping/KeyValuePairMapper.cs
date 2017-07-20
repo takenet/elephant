@@ -17,12 +17,12 @@ namespace Takenet.Elephant.Sql.Mapping
 
         public IDbTypeMapper DbTypeMapper => _valueMapper.DbTypeMapper;
 
-        public IDictionary<string, object> GetColumnValues(KeyValuePair<TKey, TValue> value, string[] columns = null, bool emitDefaultValues = false, bool includeIdentityTypes = false)
+        public IDictionary<string, object> GetColumnValues(KeyValuePair<TKey, TValue> value, string[] columns = null, bool emitNullValues = false, bool includeIdentityTypes = false)
         {
             return _keyMapper
-                .GetColumnValues(value.Key, columns, emitDefaultValues, includeIdentityTypes)
+                .GetColumnValues(value.Key, columns, emitNullValues, includeIdentityTypes)
                 .Union(
-                    _valueMapper.GetColumnValues(value.Value, columns, emitDefaultValues, includeIdentityTypes))
+                    _valueMapper.GetColumnValues(value.Value, columns, emitNullValues, includeIdentityTypes))
                 .ToDictionary(k => k.Key, v => v.Value);
         }
 
