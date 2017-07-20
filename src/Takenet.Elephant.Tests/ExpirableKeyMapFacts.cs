@@ -81,7 +81,7 @@ namespace Takenet.Elephant.Tests
             await Task.Delay(ttl);
             var actual = await map.GetValueOrDefaultAsync(key);
             AssertEquals(actual, value);
-            await Task.Delay(ttl + ttl);
+            await Task.Delay(ttl + ttl + ttl);
             actual = await map.GetValueOrDefaultAsync(key);
             AssertIsDefault(actual);
         }
