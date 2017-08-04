@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,16 +12,14 @@ namespace Takenet.Elephant.Memory
     public class Queue<T> : IBlockingQueue<T>, ICloneable
     {
         private readonly ConcurrentQueue<T> _queue;
-        private ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue;
-        private object _syncRoot = new object();
+        private readonly ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue;
+        private readonly object _syncRoot = new object();
 
         public Queue()
         {            
             _queue = new ConcurrentQueue<T>();
             _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
         }
-
-        #region IQueue<T> Members
 
         public Task EnqueueAsync(T item)
         {
@@ -63,10 +60,6 @@ namespace Takenet.Elephant.Memory
             return ((long)_queue.Count).AsCompletedTask();
         }
 
-        #endregion
-
-        #region IBlockingQueue<T> Members
-
         public Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             T item;
@@ -87,9 +80,7 @@ namespace Takenet.Elephant.Memory
             }
 
             return item.AsCompletedTask();
-        } 
-
-        #endregion
+        }
 
         /// <summary>
         /// Clones this instance.

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.0
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Tests", "Takenet.Elephant.Tests\Takenet.Elephant.Tests.csproj", "{5288FBD3-4FE6-42A2-8256-D004C17A86F1}"
 EndProject
@@ -25,6 +25,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Sql.PostgreSql", "Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj", "{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Takenet.Elephant.Msmq", "Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj", "{AA377435-8103-498F-8A3E-203B4FF8BE92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Takenet.Elephant.Azure", "Takenet.Elephant.Azure\Takenet.Elephant.Azure.csproj", "{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
