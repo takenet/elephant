@@ -11,7 +11,7 @@ namespace Takenet.Elephant.Tests.Azure
         public override IQueue<Item> Create()
         {
             return new AzureServiceBusQueue<Item>(
-                "Endpoint=sb://?.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=?",
+                "Endpoint=sb://sb-iris.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=aEKWbW6XK20gMFqtQAx3yy5ezqyxwb6IHWPFbMImBys=",
                 "items",
                 new ItemSerializer());          
         }

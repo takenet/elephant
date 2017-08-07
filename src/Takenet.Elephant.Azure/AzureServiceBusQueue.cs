@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus;
@@ -14,6 +15,7 @@ namespace Takenet.Elephant.Azure
         private readonly NamespaceManager _namespaceManager;
         private readonly TimeSpan _dequeueTimeout;
         private readonly SemaphoreSlim _queueCreationSemaphore;
+        private readonly ConcurrentQueue<Task<BrokeredMessage>> _pendingReceiveTasks;
 
         private QueueClient _queueClient;
 
@@ -29,6 +31,7 @@ namespace Takenet.Elephant.Azure
             _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
             _dequeueTimeout = dequeueTimeout ?? TimeSpan.FromMilliseconds(500);
             _queueCreationSemaphore = new SemaphoreSlim(1);
+            _pendingReceiveTasks = new ConcurrentQueue<Task<BrokeredMessage>>();
         }
 
         public async Task EnqueueAsync(T item)
@@ -56,13 +59,35 @@ namespace Takenet.Elephant.Azure
         {
             var tcs = new TaskCompletionSource<BrokeredMessage>();
             using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
-            {
-                var queueClient = await GetQueueClientAsync().ConfigureAwait(false);
-                var completedTask = await 
-                    Task.WhenAny(queueClient.ReceiveAsync(), tcs.Task).ConfigureAwait(false);
-                var message = await completedTask.ConfigureAwait(false);
-                return CreateItem(message);
+            {                
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    var queueClient = await GetQueueClientAsync().ConfigureAwait(false);
+
+                    Task<BrokeredMessage> receiveFromQueueTask;
+                    if (!_pendingReceiveTasks.TryDequeue(out receiveFromQueueTask))
+                    {
+                        receiveFromQueueTask = queueClient.ReceiveAsync();
+                    }
+
+                    try
+                    {
+                        var completedTask = await
+                            Task.WhenAny(receiveFromQueueTask, tcs.Task).ConfigureAwait(false);
+
+                        var message = await completedTask.ConfigureAwait(false);
+                        if (message != null) return CreateItem(message);
+                    }
+                    catch (TaskCanceledException) when (cancellationToken.IsCancellationRequested)
+                    {
+                        _pendingReceiveTasks.Enqueue(receiveFromQueueTask);
+                        throw;
+                    }
+                }
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new InvalidOperationException("Something very wrong happened");
         }
 
         public Task CloseAsync(CancellationToken cancellationToken) 
