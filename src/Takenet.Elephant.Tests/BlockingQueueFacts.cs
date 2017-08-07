@@ -37,7 +37,7 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var timeout = TimeSpan.FromMilliseconds(100);
+            var timeout = TimeSpan.FromMilliseconds(250);
             var cts = new CancellationTokenSource(timeout);
             
             // Act
