@@ -60,7 +60,7 @@ namespace Takenet.Elephant.Sql
                     using (var deleteCommand = connection.CreateDeleteCommand(DatabaseDriver, Table.Schema, Table.Name, keyColumnValues))
                     {
                         return await deleteCommand.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false);
-                    }                    
+                    }
                 }
             }
         }

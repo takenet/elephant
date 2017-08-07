@@ -12,7 +12,7 @@ namespace Takenet.Elephant.Tests
 {
     public abstract class BlockingQueueFacts<T> : QueueFacts<T>
     {
-        public override abstract IQueue<T> Create();
+        public abstract override IQueue<T> Create();
 
         [Fact(DisplayName = "DequeueExistingItemSucceeds")]
         public virtual async Task DequeueExistingItemSucceeds()
@@ -21,7 +21,7 @@ namespace Takenet.Elephant.Tests
             var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
             await queue.EnqueueAsync(item);
-            var timeout = TimeSpan.FromMilliseconds(100);
+            var timeout = TimeSpan.FromMilliseconds(250);
             var cts = new CancellationTokenSource(timeout);
             
             // Act
@@ -73,7 +73,7 @@ namespace Takenet.Elephant.Tests
             var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
             await queue.EnqueueAsync(item);            
-            var timeout = TimeSpan.FromMilliseconds(50);
+            var timeout = TimeSpan.FromMilliseconds(250);
             var cts = new CancellationTokenSource(timeout);            
             await queue.DequeueAsync(cts.Token);
             
@@ -96,7 +96,7 @@ namespace Takenet.Elephant.Tests
                 await queue.EnqueueAsync(item);
             }
             
-            var timeout = TimeSpan.FromMilliseconds(500);
+            var timeout = TimeSpan.FromMilliseconds(30000);
             var cts = new CancellationTokenSource(timeout);
 
             // Act

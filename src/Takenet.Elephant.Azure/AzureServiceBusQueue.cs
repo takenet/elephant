@@ -1,64 +1,63 @@
 ﻿using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
-using Microsoft.Azure.ServiceBus;
+using Microsoft.ServiceBus;
+using Microsoft.ServiceBus.Messaging;
 
 namespace Takenet.Elephant.Azure
 {
     public class AzureServiceBusQueue<T> : IBlockingQueue<T>, ICloseable
-    {        
-        private readonly QueueClient _queueClient;
+    {
         private readonly ISerializer<T> _serializer;
-        private readonly BufferBlock<T> _receivedBuffer;
+        private readonly QueueClient _queueClient;
+        private readonly NamespaceManager _namespaceManager;
+        private readonly TimeSpan _dequeueTimeout;
 
         public AzureServiceBusQueue(
             string connectionString, 
-            string queueName, 
-            ISerializer<T> serializer, 
-            int boundedCapacity = -1, 
-            Func<ExceptionReceivedEventArgs, Task> exceptionReceivedHandler = null)
+            string path, 
+            ISerializer<T> serializer,
+            TimeSpan? dequeueTimeout = null)
         {            
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-            _queueClient = new QueueClient(connectionString, queueName, ReceiveMode.ReceiveAndDelete);
-            _queueClient.RegisterMessageHandler(ReceiveAsync, exceptionReceivedHandler ?? (e => Task.CompletedTask));
-            _receivedBuffer = new BufferBlock<T>(
-                new DataflowBlockOptions()
-                {
-                    BoundedCapacity = boundedCapacity
-                });
+            _queueClient = QueueClient.CreateFromConnectionString(connectionString, path, ReceiveMode.ReceiveAndDelete);            
+            _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
+            _dequeueTimeout = dequeueTimeout ?? TimeSpan.FromMilliseconds(500);
         }
 
         public Task EnqueueAsync(T item)
         {
             var serializedItem = _serializer.Serialize(item);
-            return _queueClient.SendAsync(new Message(Encoding.UTF8.GetBytes(serializedItem)));
+            return _queueClient.SendAsync(new BrokeredMessage(serializedItem));
         }
 
-        public Task<T> DequeueOrDefaultAsync()
-        {
-            _receivedBuffer.TryReceive(out T item);
-            return Task.FromResult(item);
+        public async Task<T> DequeueOrDefaultAsync()
+        {            
+            var message = await _queueClient.ReceiveAsync(_dequeueTimeout).ConfigureAwait(false);
+            if (message == null) return default(T);
+            return CreateItem(message);            
         }
 
-        public Task<long> GetLengthAsync()
+        public async Task<long> GetLengthAsync()
         {
-            
-
-            throw new NotSupportedException();
+            var queueDescription = await _namespaceManager.GetQueueAsync(_queueClient.Path).ConfigureAwait(false);
+            return queueDescription.MessageCount;
         }
 
-        public Task<T> DequeueAsync(CancellationToken cancellationToken) =>
-            _receivedBuffer.ReceiveAsync(cancellationToken);
-
-
-        private Task ReceiveAsync(Message message, CancellationToken cancellationToken)
+        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
-            var item = _serializer.Deserialize(Encoding.UTF8.GetString(message.Body));
-            return _receivedBuffer.SendAsync(item, cancellationToken);
+            var tcs = new TaskCompletionSource<BrokeredMessage>();
+            using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
+            {
+                var completedTask = await 
+                    Task.WhenAny(_queueClient.ReceiveAsync(), tcs.Task).ConfigureAwait(false);
+                var message = await completedTask.ConfigureAwait(false);
+                return CreateItem(message);
+            }
         }
 
         public Task CloseAsync(CancellationToken cancellationToken) => _queueClient.CloseAsync();
+
+        private T CreateItem(BrokeredMessage message) => _serializer.Deserialize(message.GetBody<string>());
     }
 }
