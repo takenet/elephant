@@ -125,7 +125,7 @@ namespace Takenet.Elephant.Tests.Specialized
         public virtual async Task QueryingWithExpirationShouldExpiresInCache()
         {
             // Arrange
-            var expiration = TimeSpan.FromMilliseconds(100);
+            var expiration = TimeSpan.FromMilliseconds(250);
             var source = CreateSource();
             var cache = CreateCache();
             var map = Create(source, cache, expiration);
@@ -185,7 +185,7 @@ namespace Takenet.Elephant.Tests.Specialized
         public virtual async Task AddWithExpirationShouldExpiresInCache()
         {
             // Arrange
-            var expiration = TimeSpan.FromMilliseconds(100);
+            var expiration = TimeSpan.FromMilliseconds(250);
             var source = CreateSource();
             var cache = CreateCache();
             var map = Create(source, cache, expiration);
@@ -201,7 +201,7 @@ namespace Takenet.Elephant.Tests.Specialized
             // Assert            
             AssertIsTrue(await cache.ContainsKeyAsync(key1));
             AssertIsTrue(await cache.ContainsKeyAsync(key2));
-            await Task.Delay(expiration);
+            await Task.Delay(expiration + expiration);
             AssertIsFalse(await cache.ContainsKeyAsync(key1));
             AssertIsFalse(await cache.ContainsKeyAsync(key2));
         }
