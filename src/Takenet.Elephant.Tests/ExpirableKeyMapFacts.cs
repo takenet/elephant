@@ -97,7 +97,7 @@ namespace Takenet.Elephant.Tests
             var ttl = CreateTtl();
             var now = DateTimeOffset.UtcNow;
             var expiration = now.Add(ttl);
-            var updatedExpiration = now.Add(ttl + ttl);
+            var updatedExpiration = now.Add(ttl + ttl + ttl);
             await map.SetAbsoluteKeyExpirationAsync(key, expiration);
             
             // Act
@@ -107,7 +107,7 @@ namespace Takenet.Elephant.Tests
             await Task.Delay(ttl);
             var actual = await map.GetValueOrDefaultAsync(key);
             AssertEquals(actual, value);
-            await Task.Delay(ttl + ttl);
+            await Task.Delay(ttl + ttl + ttl);
             actual = await map.GetValueOrDefaultAsync(key);
             AssertIsDefault(actual);
         }
