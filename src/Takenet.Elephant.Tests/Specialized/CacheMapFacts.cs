@@ -229,7 +229,7 @@ namespace Takenet.Elephant.Tests.Specialized
         public virtual async Task QueryingWithExpirationSynchonizesTheSourceAndCache()
         {
             // Arrange
-            var expiration = TimeSpan.FromMilliseconds(250);
+            var expiration = TimeSpan.FromMilliseconds(500);
             var source = CreateSource();
             var cache = CreateCache();
             var map = Create(source, cache, expiration);

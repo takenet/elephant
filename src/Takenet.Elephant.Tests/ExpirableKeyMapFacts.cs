@@ -21,7 +21,7 @@ namespace Takenet.Elephant.Tests
 
         public virtual TimeSpan CreateTtl()
         {
-            return TimeSpan.FromMilliseconds(250);
+            return TimeSpan.FromMilliseconds(500);
         }
 
         [Fact(DisplayName = "ExpireExistingKeyByRelativeTtlSucceeds")]

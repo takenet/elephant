@@ -21,7 +21,7 @@ namespace Takenet.Elephant.Tests
             var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
             await queue.EnqueueAsync(item);
-            var timeout = TimeSpan.FromMilliseconds(250);
+            var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout);
             
             // Act
@@ -37,7 +37,7 @@ namespace Takenet.Elephant.Tests
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var timeout = TimeSpan.FromMilliseconds(250);
+            var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout);
             
             // Act
@@ -73,7 +73,7 @@ namespace Takenet.Elephant.Tests
             var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
             await queue.EnqueueAsync(item);            
-            var timeout = TimeSpan.FromMilliseconds(250);
+            var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout);            
             await queue.DequeueAsync(cts.Token);
             
