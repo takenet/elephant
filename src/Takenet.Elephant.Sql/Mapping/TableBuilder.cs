@@ -43,6 +43,11 @@ namespace Takenet.Elephant.Sql.Mapping
         /// </value>
         public HashSet<string> KeyColumns { get; }
 
+        /// <summary>
+        /// Indicates if the table schema is synchronized.
+        /// </summary>
+        public bool SchemaSynchronized { get; private set; }
+
         private TableBuilder(string schema, string name)
         {
             Schema = schema;
@@ -234,12 +239,23 @@ namespace Takenet.Elephant.Sql.Mapping
         }
 
         /// <summary>
+        /// Indicates if the table schema is synchronized and should not be checked.
+        /// </summary>
+        /// <param name="schemaSynchronized"></param>
+        /// <returns></returns>
+        public TableBuilder WithSchemaSynchronized(bool schemaSynchronized)
+        {
+            SchemaSynchronized = schemaSynchronized;
+            return this;
+        }
+
+        /// <summary>
         /// Builds a table with the builder data.
         /// </summary>
         /// <returns></returns>
         public ITable Build()
         {
-            return new Table(Name, KeyColumns.ToArray(), Columns, Schema);
+            return new Table(Name, KeyColumns.ToArray(), Columns, Schema, SchemaSynchronized);
         }
     }
 }

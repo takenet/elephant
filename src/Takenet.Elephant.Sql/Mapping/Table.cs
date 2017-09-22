@@ -6,12 +6,20 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Sql.Mapping
 {
+    /// <inheritdoc />        
     public class Table : ITable
     {
         private readonly SemaphoreSlim _schemaSynchronizedSemaphore;
 
-
-        public Table(string name, string[] keyColumnsNames, IDictionary<string, SqlType> columns, string schema = null)
+        /// <summary>
+        /// Creates a new <see cref="Table"/> instance.
+        /// </summary>
+        /// <param name="name">The table anem</param>
+        /// <param name="keyColumnsNames"></param>
+        /// <param name="columns"></param>
+        /// <param name="schema"></param>
+        /// <param name="schemaSynchronized">Indicates if the table schema is synchronized.</param>
+        public Table(string name, string[] keyColumnsNames, IDictionary<string, SqlType> columns, string schema = null, bool schemaSynchronized = false)
         {
             if (keyColumnsNames == null) throw new ArgumentNullException(nameof(keyColumnsNames));
             var repeatedKeyColumn = keyColumnsNames.GroupBy(k => k).FirstOrDefault(c => c.Count() > 1);
@@ -24,19 +32,26 @@ namespace Takenet.Elephant.Sql.Mapping
             KeyColumnsNames = keyColumnsNames;
             Columns = columns;
             Schema = schema;
+            SchemaSynchronized = schemaSynchronized;
             _schemaSynchronizedSemaphore = new SemaphoreSlim(1);
         }
 
+        /// <inheritdoc />        
         public string Schema { get; }
 
+        /// <inheritdoc />        
         public string Name { get; }
 
+        /// <inheritdoc />        
         public string[] KeyColumnsNames { get; }
 
+        /// <inheritdoc />        
         public IDictionary<string, SqlType> Columns { get; }
 
+        /// <inheritdoc />        
         public bool SchemaSynchronized { get; private set; }
 
+        /// <inheritdoc />        
         public async Task SynchronizeSchemaAsync(string connectionString, IDatabaseDriver databaseDriver, CancellationToken cancellationToken)
         {
             if (!SchemaSynchronized)
