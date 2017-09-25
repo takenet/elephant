@@ -20,6 +20,7 @@ namespace Takenet.Elephant.Sql
         IdentityColumnDefinition,
         In,
         Insert,
+        InsertOutput,
         InsertWhereNotExists,
         Is,
         IsNot,

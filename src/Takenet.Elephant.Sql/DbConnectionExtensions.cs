@@ -150,6 +150,27 @@ namespace Takenet.Elephant.Sql
                 columnValues.Select(c => c.ToDbParameter(databaseDriver)));
         }
 
+        public static DbCommand CreateInsertOutputCommand(
+            this DbConnection connection,
+            IDatabaseDriver databaseDriver,
+            string schemaName,
+            string tableName,
+            IDictionary<string, object> columnValues,
+            string[] outputColumnNames)
+        {
+            return connection.CreateTextCommand(
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertOutput),
+                new
+                {
+                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    columns = columnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
+                    values = columnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate(),
+                    outputColumns = outputColumnNames.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
+                },
+                columnValues.Select(c => c.ToDbParameter(databaseDriver)));
+        }
+
         public static DbCommand CreateInsertWhereNotExistsCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
@@ -292,11 +313,40 @@ namespace Takenet.Elephant.Sql
             string schemaName,
             string tableName,
             IDictionary<string, object> keyValues,
-            IDictionary<string, object> columnValues)
+            IDictionary<string, object> columnValues,
+            IDictionary<string, object> identityKeyValues = null)
         {
             var keyAndColumnValues = keyValues
                 .Union(columnValues)
                 .ToDictionary(c => c.Key, c => c.Value);
+
+            IEnumerable<DbParameter> parameters;
+            string columnNamesAndValues;            
+            
+            var columns = keyAndColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate();
+            string allColumns; // Including identity columns
+            var values = keyAndColumnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate();
+            string allValues; // Including identity columns values
+
+            // If there's identity key values, should be used only for filtering, since it is not possible to insert.
+            if (identityKeyValues != null && identityKeyValues.Count > 0)
+            {
+                keyValues = keyValues.Union(identityKeyValues).ToDictionary(c => c.Key, c => c.Value);
+                var allKeyColumnValues = keyAndColumnValues.Union(identityKeyValues).ToDictionary(c => c.Key, c => c.Value);
+                parameters = allKeyColumnValues.Select(k => k.ToDbParameter(databaseDriver));
+                columnNamesAndValues =
+                    SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, allKeyColumnValues.Keys.ToArray());
+                allColumns = allKeyColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate();
+                allValues = allKeyColumnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate();
+            }
+            else
+            {
+                parameters = keyAndColumnValues.Select(k => k.ToDbParameter(databaseDriver));
+                columnNamesAndValues =
+                    SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, keyAndColumnValues.Keys.ToArray());
+                allColumns = columns;
+                allValues = values;
+            }
 
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Merge),
@@ -304,14 +354,16 @@ namespace Takenet.Elephant.Sql
                 {
                     schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
                     tableName = databaseDriver.ParseIdentifier(tableName),
-                    columnNamesAndValues = SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, keyAndColumnValues.Keys.ToArray()),
+                    columnNamesAndValues = columnNamesAndValues,
                     on = SqlHelper.GetLiteralJoinConditionStatement(databaseDriver, keyValues.Keys.ToArray(), "source", "target"),
                     columnValues = columnValues.Any() ? SqlHelper.GetCommaEqualsStatement(databaseDriver, columnValues.Keys.ToArray()) : databaseDriver.GetSqlStatementTemplate(SqlStatement.DummyEqualsZero),
-                    columns = keyAndColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
-                    values = keyAndColumnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate(),
+                    columns = columns,
+                    allColumns = allColumns,
+                    values = values,
+                    allValues = allValues,
                     keyColumns = keyValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                 },
-                keyAndColumnValues.Select(k => k.ToDbParameter(databaseDriver)));
+                parameters);
         }
 
         public static DbCommand CreateMergeIncrementCommand(

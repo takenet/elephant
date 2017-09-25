@@ -26,7 +26,7 @@ namespace Takenet.Elephant.Sql.Mapping
                 .ToDictionary(k => k.Key, v => v.Value);
         }
 
-        public KeyValuePair<TKey, TValue> Create(IDataRecord record, string[] columns)
+        public KeyValuePair<TKey, TValue> Create(IDataRecord record, string[] columns, KeyValuePair<TKey, TValue> value = default(KeyValuePair<TKey, TValue>))
         {            
             return new KeyValuePair<TKey, TValue>(
                 _keyMapper.Create(record, columns), 

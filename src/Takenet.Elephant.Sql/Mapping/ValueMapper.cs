@@ -33,7 +33,7 @@ namespace Takenet.Elephant.Sql.Mapping
             };
         }
 
-        public virtual T Create(IDataRecord record, string[] columns)
+        public virtual T Create(IDataRecord record, string[] columns, T value = default(T))
         {
             var index = -1;
 

@@ -210,6 +210,9 @@ AND Lower(TABLE_NAME) = Lower('{tableName}')</value>
   <data name="Insert" xml:space="preserve">
     <value>INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values})</value>
   </data>
+  <data name="InsertOutput" xml:space="preserve">
+    <value>INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values}) RETURNING {outputColumns}</value>
+  </data>
   <data name="InsertWhereNotExists" xml:space="preserve">
     <value>INSERT INTO {schemaName}.{tableName} ({columns}) 
 SELECT {values}
@@ -243,7 +246,7 @@ WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} )</valu
     <value>10485760</value>
   </data>
   <data name="Merge" xml:space="preserve">
-    <value>INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values})
+    <value>INSERT INTO {schemaName}.{tableName} ({allColumns}) VALUES ({allValues})
 ON CONFLICT ({keyColumns}) DO UPDATE SET {columnValues}</value>
   </data>
   <data name="MergeIncrement" xml:space="preserve">

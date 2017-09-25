@@ -210,6 +210,9 @@ AND TABLE_NAME = '{tableName}'</value>
   <data name="Insert" xml:space="preserve">
     <value>INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values})</value>
   </data>
+  <data name="InsertOutput" xml:space="preserve">
+    <value>INSERT INTO {schemaName}.{tableName} ({columns}) OUTPUT inserted.{outputColumns} VALUES ({values})</value>
+  </data>
   <data name="InsertWhereNotExists" xml:space="preserve">
     <value>INSERT INTO {schemaName}.{tableName} ({columns}) 
 SELECT {values}

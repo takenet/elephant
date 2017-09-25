@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Takenet.Elephant.Sql.Mapping;
@@ -21,15 +22,57 @@ namespace Takenet.Elephant.Sql
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var columnValues = GetColumnValues(value, true);
-            var keyColumnValues = GetKeyColumnValues(columnValues);
+            
+            var keyColumnValues = GetKeyColumnValues(value, true);
+            var nonIdentityKeyColumnValues = GetKeyColumnValues(keyColumnValues, false);
+            var identityKeyColumnValues = GetKeyColumnValues(GetIdentityColumnValues(keyColumnValues), true);
 
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    using (var command = connection.CreateMergeCommand(DatabaseDriver, Table.Schema, Table.Name, keyColumnValues, columnValues))
+                    // If there's a key, creates a merge command; otherwise:
+                    //   If there's an identity column on the table, creates an insert that returns the inserted key columns; otherwise, just a regular insert.                    
+                    DbCommand command;
+                    string[] outputColumnNames = null;
+
+                    // Merge if there's any non identity key or if there's any identity key with value that is not zero
+                    if (nonIdentityKeyColumnValues.Count > 0 ||
+                        (identityKeyColumnValues.Count > 0 && identityKeyColumnValues.Any(c => c.Value != null && c.Value.ToString() != "0"))) // Using string cast to avoid reflection for checking default values of short, int, long,.
                     {
-                        if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
+                        command = connection.CreateMergeCommand(DatabaseDriver, Table.Schema, Table.Name,
+                            nonIdentityKeyColumnValues, columnValues, identityKeyColumnValues);
+                    }
+                    else if (Table.Columns.Any(c => c.Value.IsIdentity))
+                    {
+                        // Note: We do not set non key identity columns
+                        outputColumnNames =
+                            Table.Columns.Where(c => c.Value.IsIdentity).Select(c => c.Key).ToArray();
+
+                        command = connection.CreateInsertOutputCommand(DatabaseDriver, Table.Schema, Table.Name,
+                            columnValues, outputColumnNames);
+                    }
+                    else
+                    {
+                        command = connection.CreateInsertCommand(DatabaseDriver, Table.Schema, Table.Name,
+                            columnValues);
+                    }
+                    
+                    using (command)
+                    {
+                        if (outputColumnNames != null)
+                        {
+                            using (var reader = await command.ExecuteReaderAsync(cancellationTokenSource.Token).ConfigureAwait(false))
+                            {
+                                if (!await reader.ReadAsync(cancellationTokenSource.Token))
+                                {
+                                    throw new Exception("The database operation failed");
+                                }
+
+                                Mapper.Create(reader, outputColumnNames, value);
+                            }
+                        }
+                        else if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
                         {
                             throw new Exception("The database operation failed");
                         }
@@ -42,7 +85,7 @@ namespace Takenet.Elephant.Sql
         public virtual async Task<bool> TryRemoveAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            var keyColumnValues = GetKeyColumnValues(value);
+            var keyColumnValues = GetKeyColumnValues(value, true);
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
@@ -55,7 +98,7 @@ namespace Takenet.Elephant.Sql
         public virtual async Task<bool> ContainsAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            var keyColumnValues = GetKeyColumnValues(value);
+            var keyColumnValues = GetKeyColumnValues(value, true);
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))

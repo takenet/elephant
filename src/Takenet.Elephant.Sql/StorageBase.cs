@@ -128,14 +128,25 @@ namespace Takenet.Elephant.Sql
         protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitNullValues = false, bool includeIdentityTypes = false)
             => Mapper.GetColumnValues(entity, emitNullValues: emitNullValues, includeIdentityTypes: includeIdentityTypes);
 
-        protected IDictionary<string, object> GetKeyColumnValues(TEntity entity, bool includeIdentityTypes = false) 
-            => GetKeyColumnValues(GetColumnValues(entity, includeIdentityTypes: includeIdentityTypes));
-
-        protected virtual IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues) 
+        protected virtual IDictionary<string, object> GetKeyColumnValues(IDictionary<string, object> columnValues, bool includeIdentityTypes = false)
             => Table
                 .KeyColumnsNames
-                .Where(columnValues.ContainsKey)
+                .Where(s => columnValues.ContainsKey(s) && (includeIdentityTypes || !Table.Columns[s].IsIdentity))
                 .Select(c => new { Key = c, Value = columnValues[c] })
                 .ToDictionary(t => t.Key, t => t.Value);
+
+        protected IDictionary<string, object> GetKeyColumnValues(TEntity entity, bool includeIdentityTypes = false) 
+            => GetKeyColumnValues(GetColumnValues(entity, includeIdentityTypes: includeIdentityTypes), includeIdentityTypes);
+
+        protected virtual IDictionary<string, object> GetIdentityColumnValues(IDictionary<string, object> columnValues, bool emitNullValues = false)
+            => columnValues
+                .Where(c => Table.Columns[c.Key].IsIdentity)
+                .ToDictionary(t => t.Key, t => t.Value);
+
+        protected virtual IDictionary<string, object> GetIdentityColumnValues(TEntity entity, bool emitNullValues = false)
+            => GetIdentityColumnValues(GetColumnValues(entity, includeIdentityTypes: true), emitNullValues);
+
+        protected IDictionary<string, object> GetIdentityKeyColumnValues(TEntity entity, bool emitNullValues = false)
+            => GetKeyColumnValues(GetIdentityColumnValues(entity, emitNullValues), true);
     }
 }

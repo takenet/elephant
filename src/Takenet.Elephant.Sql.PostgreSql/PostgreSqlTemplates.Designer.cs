@@ -20,7 +20,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class PostgreSqlTemplates {
@@ -329,6 +329,15 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values}) RETURNING {outputColumns}.
+        /// </summary>
+        public static string InsertOutput {
+            get {
+                return ResourceManager.GetString("InsertOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) 
         ///SELECT {values}
         ///WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} ).
@@ -421,7 +430,7 @@ namespace Takenet.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) VALUES ({values})
+        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({allColumns}) VALUES ({allValues})
         ///ON CONFLICT ({keyColumns}) DO UPDATE SET {columnValues}.
         /// </summary>
         public static string Merge {

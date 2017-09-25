@@ -71,9 +71,9 @@ namespace Takenet.Elephant.Sql.Mapping
                     p => DbTypeMapper.ToDbType(p.Value, _table.Columns[p.Key].Type, _table.Columns[p.Key].Length));
         }
 
-        public virtual TEntity Create(IDataRecord record, string[] columns)
+        public virtual TEntity Create(IDataRecord record, string[] columns, TEntity value = null)
         {
-            var entity = new TEntity();
+            var entity = value ?? new TEntity();
 
             for (var i = 0; i < columns.Length; i++)
             {

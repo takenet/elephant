@@ -232,6 +232,7 @@
     <Compile Include="Sql\PostgreSql\PostgreSqlIntegerStringMapFacts.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlIntegerStringSetMapFacts.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlItemListFacts.cs" />
+    <Compile Include="Sql\PostgreSql\PostgreSqlIdentityItemSetFacts.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlItemSetFacts.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlCollectionFixture.cs" />
     <Compile Include="Sql\PostgreSql\PostgreSqlItemOrderedQueryableStorageFacts.cs" />
@@ -239,7 +240,9 @@
     <Compile Include="Sql\SqlExpressionTranslatorFacts.cs" />
     <Compile Include="Sql\SqlGuidNumberMapFacts.cs" />
     <Compile Include="Sql\SqlItemOrderedQueryableStorageFacts.cs" />
+    <Compile Include="Sql\SqlIdentityItemSetFacts.cs" />
     <Compile Include="Sql\SqlServer\SqlServerGuidNumberMapFacts.cs" />
+    <Compile Include="Sql\SqlServer\SqlServerIdentityItemSetFacts.cs" />
     <Compile Include="Sql\SqlServer\SqlServerListFactIdentity.cs" />
     <Compile Include="Sql\SqlServer\SqlServerItemOrderedQueryableStorageFacts.cs" />
     <Compile Include="Sql\SqlServer\SqlServerItemSetFacts.cs" />

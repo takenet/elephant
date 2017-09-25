@@ -27,7 +27,8 @@ namespace Takenet.Elephant.Sql.Mapping
         /// </summary>
         /// <param name="record"></param>
         /// <param name="columns"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        TEntity Create(IDataRecord record, string[] columns);
+        TEntity Create(IDataRecord record, string[] columns, TEntity value = default(TEntity));
     }
 }
