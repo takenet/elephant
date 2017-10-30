@@ -360,7 +360,7 @@ namespace Takenet.Elephant
         {
             if (source == null) throw new ArgumentNullException("source");
             if (keySelector == null) throw new ArgumentNullException("keySelector");
-            if (keySelector == null) throw new ArgumentNullException("elementSelector");
+            if (elementSelector == null) throw new ArgumentNullException("elementSelector");
 
             return ToDictionaryAsync(source, keySelector, elementSelector, null, CancellationToken.None);
         }
@@ -394,7 +394,7 @@ namespace Takenet.Elephant
         {
             if (source == null) throw new ArgumentNullException("source");
             if (keySelector == null) throw new ArgumentNullException("keySelector");
-            if (keySelector == null) throw new ArgumentNullException("elementSelector");
+            if (elementSelector == null) throw new ArgumentNullException("elementSelector");
 
             return ToDictionaryAsync(source, keySelector, elementSelector, null, cancellationToken);
         }
@@ -430,7 +430,7 @@ namespace Takenet.Elephant
         {
             if (source == null) throw new ArgumentNullException("source");
             if (keySelector == null) throw new ArgumentNullException("keySelector");
-            if (keySelector == null) throw new ArgumentNullException("elementSelector");
+            if (elementSelector == null) throw new ArgumentNullException("elementSelector");
 
             return ToDictionaryAsync(source, keySelector, elementSelector, comparer, CancellationToken.None);
         }
@@ -467,7 +467,7 @@ namespace Takenet.Elephant
         {
             if (source == null) throw new ArgumentNullException("source");
             if (keySelector == null) throw new ArgumentNullException("keySelector");
-            if (keySelector == null) throw new ArgumentNullException("elementSelector");
+            if (elementSelector == null) throw new ArgumentNullException("elementSelector");
 
             var d = new Dictionary<TKey, TElement>(comparer);
             await
