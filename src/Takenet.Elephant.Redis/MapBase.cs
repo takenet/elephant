@@ -21,8 +21,11 @@ namespace Takenet.Elephant.Redis
         }
 
         public abstract Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false);
+
         public abstract Task<TValue> GetValueOrDefaultAsync(TKey key);
+
         public abstract Task<bool> TryRemoveAsync(TKey key);
+
         public abstract Task<bool> ContainsKeyAsync(TKey key);
         
         #region IExpirableKeyMap<TKey, TValue> Members

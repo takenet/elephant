@@ -15,22 +15,22 @@ namespace Takenet.Elephant.Redis
         {
         }
 
-        public Task<long> IncrementAsync(TKey key)
+        public virtual Task<long> IncrementAsync(TKey key)
         {
             return GetDatabase().StringIncrementAsync(GetRedisKey(key), flags: WriteFlags);
         }
 
-        public Task<long> IncrementAsync(TKey key, long value)
+        public virtual Task<long> IncrementAsync(TKey key, long value)
         {
             return GetDatabase().StringIncrementAsync(GetRedisKey(key), value, WriteFlags);
         }
 
-        public Task<long> DecrementAsync(TKey key)
+        public virtual Task<long> DecrementAsync(TKey key)
         {
             return GetDatabase().StringDecrementAsync(GetRedisKey(key), flags: WriteFlags);
         }
 
-        public Task<long> DecrementAsync(TKey key, long value)
+        public virtual Task<long> DecrementAsync(TKey key, long value)
         {
             return GetDatabase().StringDecrementAsync(GetRedisKey(key), value, WriteFlags);
         }  

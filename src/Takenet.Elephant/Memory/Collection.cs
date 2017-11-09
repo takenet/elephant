@@ -15,19 +15,19 @@ namespace Takenet.Elephant.Memory
             _collection = collection;
         }
 
-        public Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync()
         {
             return Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_collection));
         }
 
-        public Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync()
         {
             return Task.FromResult<long>(_collection.Count);
         }
 
         #region IQueryableStorage<T> Members
 
-        public Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> where,
+        public virtual Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> where,
             Expression<Func<T, TResult>> select,
             int skip,
             int take,
@@ -47,7 +47,7 @@ namespace Takenet.Elephant.Memory
 
         #endregion
 
-        public Task<QueryResult<T>> QueryAsync<TResult, TOrderBy>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, Expression<Func<T, TOrderBy>> orderBy, bool orderByAscending,
+        public virtual Task<QueryResult<T>> QueryAsync<TResult, TOrderBy>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, Expression<Func<T, TOrderBy>> orderBy, bool orderByAscending,
             int skip, int take, CancellationToken cancellationToken)
         {
             if (@where == null) @where = i => true;

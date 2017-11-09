@@ -62,19 +62,19 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult(InternalDictionary.TryAdd(key, value));
         }
 
-        public Task<TValue> GetValueOrDefaultAsync(TKey key)
+        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
             TValue value;
             return Task.FromResult(InternalDictionary.TryGetValue(key, out value) ? value : default(TValue));
         }
 
-        public Task<bool> TryRemoveAsync(TKey key)
+        public virtual Task<bool> TryRemoveAsync(TKey key)
         {
             TValue value;
             return Task.FromResult(InternalDictionary.TryRemove(key, out value));
         }
 
-        public Task<bool> ContainsKeyAsync(TKey key)
+        public virtual Task<bool> ContainsKeyAsync(TKey key)
         {
             return Task.FromResult(InternalDictionary.ContainsKey(key));
         }
@@ -83,7 +83,7 @@ namespace Takenet.Elephant.Memory
 
         #region IUpdatableMap<TKey,TValue> Members
 
-        public Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
+        public virtual Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
         {
             return InternalDictionary.TryUpdate(key, newValue, oldValue).AsCompletedTask();
         }
@@ -94,7 +94,7 @@ namespace Takenet.Elephant.Memory
 
         private readonly ConcurrentDictionary<TKey, Tuple<Task, CancellationTokenSource>> _expirationTaskDictionary = new ConcurrentDictionary<TKey, Tuple<Task, CancellationTokenSource>>();
 
-        public Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
+        public virtual Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!InternalDictionary.ContainsKey(key)) throw new ArgumentException("Invalid key", nameof(key));
@@ -118,7 +118,7 @@ namespace Takenet.Elephant.Memory
             return TaskUtil.CompletedTask;
         }
 
-        public Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
+        public virtual Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
             return SetRelativeKeyExpirationAsync(key, expiration - DateTimeOffset.UtcNow);
         }
@@ -127,7 +127,7 @@ namespace Takenet.Elephant.Memory
 
         #region IPropertyMap<TKey, TValue> Members
 
-        public Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
+        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
             TValue value = GetOrCreateValue(key);
             var property = typeof(TValue).GetProperty(
@@ -140,7 +140,7 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult<object>(null);
         }
 
-        public Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
         {
             TValue value;
             var property = typeof(TValue).GetProperty(
@@ -156,7 +156,7 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult(propertyValue);
         }
 
-        public Task MergeAsync(TKey key, TValue value)
+        public virtual Task MergeAsync(TKey key, TValue value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -211,7 +211,7 @@ namespace Takenet.Elephant.Memory
 
         #region IKeysMap<TKey, TValue> Members
 
-        public Task<IAsyncEnumerable<TKey>> GetKeysAsync()
+        public virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
             return Task.FromResult<IAsyncEnumerable<TKey>>(new AsyncEnumerableWrapper<TKey>(InternalDictionary.Keys));
         }
@@ -220,7 +220,7 @@ namespace Takenet.Elephant.Memory
 
         #region IKeyQueryableMap<TValue> Members
 
-        public Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null &&
@@ -242,7 +242,7 @@ namespace Takenet.Elephant.Memory
 
         #region IQueryableStorage<TValue> Members
 
-        public Task<QueryResult<TValue>> QueryAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TValue, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<TValue>> QueryAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TValue, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null && 
@@ -275,7 +275,7 @@ namespace Takenet.Elephant.Memory
             return value;
         }
 
-        public Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TValue>, bool>> @where, Expression<Func<KeyValuePair<TKey, TValue>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TValue>, bool>> @where, Expression<Func<KeyValuePair<TKey, TValue>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null &&

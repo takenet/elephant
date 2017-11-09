@@ -28,7 +28,7 @@ namespace Takenet.Elephant.Sql
 
         #endregion
 
-        public async Task AddAsync(T value)
+        public virtual async Task AddAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var columnValues = GetColumnValues(value);
@@ -49,7 +49,7 @@ namespace Takenet.Elephant.Sql
             }
         }
         
-        public async Task<long> RemoveAllAsync(T value)
+        public virtual async Task<long> RemoveAllAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(value, includeIdentityTypes: true);

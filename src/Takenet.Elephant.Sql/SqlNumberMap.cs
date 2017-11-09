@@ -27,13 +27,13 @@ namespace Takenet.Elephant.Sql
             _numberColumnName = numberColumnName;
         }
 
-        public Task<long> DecrementAsync(TKey key) => DecrementAsync(key, 1);
+        public virtual Task<long> DecrementAsync(TKey key) => DecrementAsync(key, 1);
 
-        public Task<long> DecrementAsync(TKey key, long value) => IncrementAsync(key, value * -1);
+        public virtual Task<long> DecrementAsync(TKey key, long value) => IncrementAsync(key, value * -1);
 
-        public Task<long> IncrementAsync(TKey key) => IncrementAsync(key, 1);
+        public virtual Task<long> IncrementAsync(TKey key) => IncrementAsync(key, 1);
 
-        public async Task<long> IncrementAsync(TKey key, long value)
+        public virtual async Task<long> IncrementAsync(TKey key, long value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 

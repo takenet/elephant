@@ -20,7 +20,7 @@ namespace Takenet.Elephant.Specialized
         {
         }
 
-        public Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key)
+        public virtual Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key)
         {
             return ExecuteWithFallbackAsync(m => ((ISetMap<TKey, TValue>)m).GetValueOrEmptyAsync(key));
         }

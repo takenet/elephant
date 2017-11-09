@@ -25,7 +25,7 @@ namespace Takenet.Elephant.Sql
             _addIsolationLevel = addIsolationLevel;
         }
 
-        public async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
+        public virtual async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -90,7 +90,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key)
+        public virtual async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             using (var cancellationTokenSource = CreateCancellationTokenSource())
@@ -107,14 +107,14 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));            
             var keyColumnValues = KeyMapper.GetColumnValues(key);
             return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues).AsCompletedTask<ISet<TItem>>();
         }
 
-        public async Task<bool> TryRemoveAsync(TKey key)
+        public virtual async Task<bool> TryRemoveAsync(TKey key)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -125,7 +125,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<bool> ContainsKeyAsync(TKey key)
+        public virtual async Task<bool> ContainsKeyAsync(TKey key)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {

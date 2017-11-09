@@ -30,7 +30,7 @@ namespace Takenet.Elephant.Specialized
             return new OnDemandCacheSet<TValue>(sourceValue, GetKeyExpirationCacheSet(key, cacheValue));
         }
 
-        public async Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key)
+        public virtual async Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key)
         {
             var cacheValue = await ((ISetMap<TKey, TValue>)Cache).GetValueOrEmptyAsync(key).ConfigureAwait(false);
             if (await cacheValue.GetLengthAsync().ConfigureAwait(false) > 0)

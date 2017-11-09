@@ -16,7 +16,7 @@ namespace Takenet.Elephant.Memory
 
         }
 
-        public Task<bool> TryAddAsync(TKey key, IQueue<TItem> value, bool overwrite = false) => 
+        public virtual Task<bool> TryAddAsync(TKey key, IQueue<TItem> value, bool overwrite = false) => 
             base.TryAddAsync(key, new BlockingQueueWrapper<TItem>(value), overwrite);
 
         async Task<IQueue<TItem>> IMap<TKey, IQueue<TItem>>.GetValueOrDefaultAsync(TKey key) => 
@@ -31,22 +31,22 @@ namespace Takenet.Elephant.Memory
                 _queue = queue;
             }
 
-            public Task EnqueueAsync(T item)
+            public virtual Task EnqueueAsync(T item)
             {
                 return _queue.EnqueueAsync(item);
             }
 
-            public Task<T> DequeueOrDefaultAsync()
+            public virtual Task<T> DequeueOrDefaultAsync()
             {
                 return _queue.DequeueOrDefaultAsync();
             }
 
-            public Task<long> GetLengthAsync()
+            public virtual Task<long> GetLengthAsync()
             {
                 return _queue.GetLengthAsync();
             }
 
-            public Task<T> DequeueAsync(CancellationToken cancellationToken)
+            public virtual Task<T> DequeueAsync(CancellationToken cancellationToken)
             {
                 throw new System.NotSupportedException();
             }

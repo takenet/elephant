@@ -18,7 +18,7 @@ namespace Takenet.Elephant.Specialized
             _synchronizationTimeout = synchronizationTimeout;
         }
 
-        public async Task SynchronizeAsync(ISet<T> source, ISet<T> target)
+        public virtual async Task SynchronizeAsync(ISet<T> source, ISet<T> target)
         {
             using (var cts = new CancellationTokenSource(_synchronizationTimeout))
             {

@@ -9,14 +9,18 @@ using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql
 {
-    internal sealed class DbDataReaderAsyncEnumerable<T> : IAsyncEnumerable<T>
+    public class DbDataReaderAsyncEnumerable<T> : IAsyncEnumerable<T>
     {
         private readonly Func<CancellationToken, Task<DbConnection>> _dbConnectionFactory;
         private readonly Func<DbConnection, DbCommand> _dbCommandFactory;
         private readonly IMapper<T> _mapper;
         private readonly string[] _selectColumns;
 
-        public DbDataReaderAsyncEnumerable(Func<CancellationToken, Task<DbConnection>> dbConnectionFactory, Func<DbConnection, DbCommand> dbCommandFactory, IMapper<T> mapper, string[] selectColumns)
+        public DbDataReaderAsyncEnumerable(
+            Func<CancellationToken, Task<DbConnection>> dbConnectionFactory, 
+            Func<DbConnection, DbCommand> dbCommandFactory, 
+            IMapper<T> mapper, 
+            string[] selectColumns)
         {
             _dbConnectionFactory = dbConnectionFactory;
             _dbCommandFactory = dbCommandFactory;
@@ -24,7 +28,7 @@ namespace Takenet.Elephant.Sql
             _selectColumns = selectColumns;
         }
 
-        public async Task<IAsyncEnumerator<T>> GetEnumeratorAsync(CancellationToken cancellationToken)
+        public virtual async Task<IAsyncEnumerator<T>> GetEnumeratorAsync(CancellationToken cancellationToken)
         {
             var dbConnection = await _dbConnectionFactory(cancellationToken).ConfigureAwait(false);
             if (dbConnection.State == ConnectionState.Closed) await dbConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -33,7 +37,7 @@ namespace Takenet.Elephant.Sql
             return new DbDataReaderAsyncEnumerator<T>(dbConnection, dbCommand, dbReader, _mapper, _selectColumns);
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public virtual IEnumerator<T> GetEnumerator()
         {
             return GetEnumeratorAsync(CancellationToken.None).Result;
         }

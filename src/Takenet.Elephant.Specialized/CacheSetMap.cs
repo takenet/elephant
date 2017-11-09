@@ -46,7 +46,7 @@ namespace Takenet.Elephant.Specialized
         {
             public static readonly BypassSynchronizer Instance = new BypassSynchronizer();
 
-            public Task SynchronizeAsync(ISet<TValue> source, ISet<TValue> target)
+            public virtual Task SynchronizeAsync(ISet<TValue> source, ISet<TValue> target)
             {
                 return TaskUtil.CompletedTask;
             }

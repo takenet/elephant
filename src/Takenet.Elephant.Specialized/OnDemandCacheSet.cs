@@ -12,11 +12,11 @@ namespace Takenet.Elephant.Specialized
         {
         }
 
-        public Task AddAsync(T value) => ExecuteWriteFunc(s => s.AddAsync(value));
+        public virtual Task AddAsync(T value) => ExecuteWriteFunc(s => s.AddAsync(value));
 
-        public Task<bool> TryRemoveAsync(T value) => ExecuteWriteFunc(s => s.TryRemoveAsync(value));
+        public virtual Task<bool> TryRemoveAsync(T value) => ExecuteWriteFunc(s => s.TryRemoveAsync(value));
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public virtual async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
         {
             // The AsEnumerableAsync method always returns a value (never is null)
             // and we are not able to check if it is empty before starting enumerating it,
@@ -42,7 +42,7 @@ namespace Takenet.Elephant.Specialized
             return new AsyncEnumerableWrapper<T>(sourceValues);
         }
 
-        public Task<bool> ContainsAsync(T value)
+        public virtual Task<bool> ContainsAsync(T value)
             => ExecuteQueryFunc(
                 set => set.ContainsAsync(value),
                 (result, set) =>
@@ -51,7 +51,7 @@ namespace Takenet.Elephant.Specialized
                     return Task.CompletedTask;
                 });
 
-        public Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync()
             => ExecuteQueryFunc(
                 set => set.GetLengthAsync(),
                 async (result, set) =>

@@ -7,7 +7,7 @@ using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql
 {
-    internal sealed class DbDataReaderAsyncEnumerator<T> : IAsyncEnumerator<T>
+    public class DbDataReaderAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
         private readonly DbConnection _connection;
         private readonly DbCommand _dbCommand;
@@ -17,21 +17,19 @@ namespace Takenet.Elephant.Sql
 
         public DbDataReaderAsyncEnumerator(DbConnection connection, DbCommand dbCommand, DbDataReader sqlDataReader, IMapper<T> mapper, string[] selectColumns)
         {
-            if (sqlDataReader == null) throw new ArgumentNullException(nameof(sqlDataReader));
-            if (mapper == null) throw new ArgumentNullException(nameof(mapper));
-            _connection = connection;
-            _dbCommand = dbCommand;
-            _sqlDataReader = sqlDataReader;
-            _mapper = mapper;
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _dbCommand = dbCommand ?? throw new ArgumentNullException(nameof(dbCommand));
+            _sqlDataReader = sqlDataReader ?? throw new ArgumentNullException(nameof(sqlDataReader));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _selectColumns = selectColumns;
         }
 
-        public bool MoveNext()
+        public virtual bool MoveNext()
         {
             return _sqlDataReader.Read();
         }
 
-        public void Reset()
+        public virtual void Reset()
         {
             throw new NotSupportedException();
         }
@@ -40,7 +38,7 @@ namespace Takenet.Elephant.Sql
 
         public T Current => _mapper.Create(_sqlDataReader, _selectColumns);
 
-        public Task<bool> MoveNextAsync(CancellationToken cancellationToken)
+        public virtual Task<bool> MoveNextAsync(CancellationToken cancellationToken)
         {
             return _sqlDataReader.ReadAsync(cancellationToken);
         }

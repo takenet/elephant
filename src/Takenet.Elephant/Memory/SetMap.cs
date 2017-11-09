@@ -38,7 +38,7 @@ namespace Takenet.Elephant.Memory
             return await base.TryAddAsync(key, set, overwrite).ConfigureAwait(false);
         }
 
-        public async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem item)
+        public virtual async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem item)
         {
             var items = await GetValueOrDefaultAsync(key).ConfigureAwait(false);
             if (items != null)
@@ -51,12 +51,12 @@ namespace Takenet.Elephant.Memory
             return default(TItem);
         }
 
-        public Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
         {
             return InternalDictionary.GetOrAdd(key, k => ValueFactory()).AsCompletedTask();
         }
 
-        public Task<QueryResult<TItem>> QueryAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TItem, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<TItem>> QueryAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TItem, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null &&
@@ -79,7 +79,7 @@ namespace Takenet.Elephant.Memory
                 new QueryResult<TItem>(new AsyncEnumerableWrapper<TItem>(resultValues), totalValues.Count()));
         }
 
-        public Task<QueryResult<KeyValuePair<TKey, TItem>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TItem>, bool>> @where, Expression<Func<KeyValuePair<TKey, TItem>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<KeyValuePair<TKey, TItem>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TItem>, bool>> @where, Expression<Func<KeyValuePair<TKey, TItem>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null &&
@@ -101,7 +101,7 @@ namespace Takenet.Elephant.Memory
                 new QueryResult<KeyValuePair<TKey, TItem>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TItem>>(resultValues), totalValues.Count()));
         }
 
-        public Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take,
+        public virtual Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take,
             CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;

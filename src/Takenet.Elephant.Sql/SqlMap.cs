@@ -29,7 +29,7 @@ namespace Takenet.Elephant.Sql
 
         }
 
-        public async Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
+        public virtual async Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -47,7 +47,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<TValue> GetValueOrDefaultAsync(TKey key)
+        public virtual async Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -68,7 +68,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<bool> TryRemoveAsync(TKey key)
+        public virtual async Task<bool> TryRemoveAsync(TKey key)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -79,7 +79,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<bool> ContainsKeyAsync(TKey key)
+        public virtual async Task<bool> ContainsKeyAsync(TKey key)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -90,14 +90,14 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public Task<IAsyncEnumerable<TKey>> GetKeysAsync()
+        public virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
             var selectColumns = Table.KeyColumnsNames;
             return Task.FromResult<IAsyncEnumerable<TKey>>(
                 new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(DatabaseDriver, Table.Schema, Table.Name, null, selectColumns), KeyMapper, selectColumns));
         }
 
-        public async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
+        public virtual async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));           
@@ -121,7 +121,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task MergeAsync(TKey key, TValue value)
+        public virtual async Task MergeAsync(TKey key, TValue value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -147,7 +147,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        public virtual async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));
@@ -175,7 +175,7 @@ namespace Takenet.Elephant.Sql
             return default(TProperty);
         }
 
-        public async Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
+        public virtual async Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {

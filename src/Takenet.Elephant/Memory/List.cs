@@ -30,7 +30,7 @@ namespace Takenet.Elephant.Memory
             _list = list;
         }
 
-        public Task AddAsync(T value)
+        public virtual Task AddAsync(T value)
         {
             lock (_syncRoot)
             {
@@ -39,7 +39,7 @@ namespace Takenet.Elephant.Memory
             return TaskUtil.CompletedTask;
         }
 
-        public Task<long> RemoveAllAsync(T value)
+        public virtual Task<long> RemoveAllAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             lock (_syncRoot)

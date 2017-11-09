@@ -22,12 +22,7 @@ namespace Takenet.Elephant.Redis
         public RedisStringMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TValue> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
             : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
         {
-            if (serializer == null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
-
-            _serializer = serializer;
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
         #region IMap<TKey,TValue> Members

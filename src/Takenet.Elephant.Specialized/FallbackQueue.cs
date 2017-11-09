@@ -11,17 +11,17 @@ namespace Takenet.Elephant.Specialized
 
         }
 
-        public Task EnqueueAsync(T item)
+        public virtual Task EnqueueAsync(T item)
         {
             return ExecuteWithFallbackAsync(q => q.EnqueueAsync(item));
         }
 
-        public Task<T> DequeueOrDefaultAsync()
+        public virtual Task<T> DequeueOrDefaultAsync()
         {
             return ExecuteWithFallbackAsync(q => q.DequeueOrDefaultAsync());
         }
 
-        public Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync()
         {
             return ExecuteWithFallbackAsync(q => q.GetLengthAsync());
         }

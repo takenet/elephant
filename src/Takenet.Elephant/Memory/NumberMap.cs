@@ -5,12 +5,12 @@ namespace Takenet.Elephant.Memory
 {
     public class NumberMap<TKey> : Map<TKey, long>, INumberMap<TKey>
     {
-        public Task<long> IncrementAsync(TKey key)
+        public virtual Task<long> IncrementAsync(TKey key)
         {
             return IncrementAsync(key, 1);
         }
 
-        public Task<long> IncrementAsync(TKey key, long value)
+        public virtual Task<long> IncrementAsync(TKey key, long value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var updated = false;
@@ -24,12 +24,12 @@ namespace Takenet.Elephant.Memory
             return updatedValue.AsCompletedTask();
         }
 
-        public Task<long> DecrementAsync(TKey key)
+        public virtual Task<long> DecrementAsync(TKey key)
         {
             return DecrementAsync(key, 1);
         }
 
-        public Task<long> DecrementAsync(TKey key, long value)
+        public virtual Task<long> DecrementAsync(TKey key, long value)
         {
             return IncrementAsync(key, -1 * value);
         }

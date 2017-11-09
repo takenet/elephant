@@ -52,7 +52,7 @@ namespace Takenet.Elephant.Sql.Mapping
         public bool SchemaSynchronized { get; private set; }
 
         /// <inheritdoc />        
-        public async Task SynchronizeSchemaAsync(string connectionString, IDatabaseDriver databaseDriver, CancellationToken cancellationToken)
+        public virtual async Task SynchronizeSchemaAsync(string connectionString, IDatabaseDriver databaseDriver, CancellationToken cancellationToken)
         {
             if (!SchemaSynchronized)
             {

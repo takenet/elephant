@@ -21,7 +21,7 @@ namespace Takenet.Elephant.Memory
             _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
         }
 
-        public Task EnqueueAsync(T item)
+        public virtual Task EnqueueAsync(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             lock (_syncRoot)
@@ -44,7 +44,7 @@ namespace Takenet.Elephant.Memory
             }
         }
 
-        public Task<T> DequeueOrDefaultAsync()
+        public virtual Task<T> DequeueOrDefaultAsync()
         {
             lock (_syncRoot)
             {
@@ -55,12 +55,12 @@ namespace Takenet.Elephant.Memory
             }
         }
 
-        public Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync()
         {
             return ((long)_queue.Count).AsCompletedTask();
         }
 
-        public Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public virtual Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             T item;
             if (!_queue.TryDequeue(out item))

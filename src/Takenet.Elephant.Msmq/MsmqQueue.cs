@@ -53,7 +53,7 @@ namespace Takenet.Elephant.Msmq
             Dispose(false);
         }
 
-        public Task EnqueueAsync(T item)
+        public virtual Task EnqueueAsync(T item)
         {
             // Warning: This method is do not support async I/O, but runs asynchronously.
             using (var message = new Message { Recoverable = _recoverable, Formatter = _messageFormatter })
@@ -73,7 +73,7 @@ namespace Takenet.Elephant.Msmq
             }
         }
 
-        public Task<T> DequeueOrDefaultAsync()
+        public virtual Task<T> DequeueOrDefaultAsync()
         {
             try
             {
@@ -90,7 +90,7 @@ namespace Takenet.Elephant.Msmq
             return Task.FromResult(default(T));
         }
 
-        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {                        
             var cancellableTcs = new TaskCompletionSource<object>();
             using (cancellationToken.Register(() => cancellableTcs.TrySetCanceled()))
@@ -110,7 +110,7 @@ namespace Takenet.Elephant.Msmq
             }
         }
 
-        public Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync()
         {
             // Source: https://github.com/hibernating-rhinos/rhino-esb/blob/master/Rhino.ServiceBus/Msmq/MsmqExtensions.cs
             var props = new NativeMethods.MQMGMTPROPS { cProp = 1 };

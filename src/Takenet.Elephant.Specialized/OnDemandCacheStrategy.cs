@@ -20,10 +20,10 @@ namespace Takenet.Elephant.Specialized
             Cache = cache;
         }
 
-        public Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> queryFunc, Func<TResult, T, Task<bool>> writeFunc)
+        public virtual Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> queryFunc, Func<TResult, T, Task<bool>> writeFunc)
             => ExecuteQueryFunc(queryFunc, async (r, s) => { await writeFunc(r, s); }); // DO NOT SIMPLIFY THIS LAMBDA!
 
-        public async Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> queryFunc, Func<TResult, T, Task> writeFunc)
+        public virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> queryFunc, Func<TResult, T, Task> writeFunc)
         {
             // Tries in the cache
             var value = await queryFunc(Cache).ConfigureAwait(false);
@@ -38,7 +38,7 @@ namespace Takenet.Elephant.Specialized
             return value;
         }
 
-        public async Task ExecuteWriteFunc(Func<T, Task> func)
+        public virtual async Task ExecuteWriteFunc(Func<T, Task> func)
         {
             // Writes in the source
             await func(Source).ConfigureAwait(false);
@@ -46,7 +46,7 @@ namespace Takenet.Elephant.Specialized
             await func(Cache).ConfigureAwait(false);
         }
 
-        public async Task<bool> ExecuteWriteFunc(Func<T, Task<bool>> func)
+        public virtual async Task<bool> ExecuteWriteFunc(Func<T, Task<bool>> func)
         {
             // Writes in the source
             if (await func(Source).ConfigureAwait(false))

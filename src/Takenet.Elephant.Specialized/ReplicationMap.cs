@@ -24,22 +24,22 @@ namespace Takenet.Elephant.Specialized
 
         }
 
-        public Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
+        public virtual Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
         {
             return ExecuteWithReplicationAsync(m => m.TryAddAsync(key, value, overwrite));
         }
 
-        public Task<TValue> GetValueOrDefaultAsync(TKey key)
+        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
             return ExecuteWithFallbackAsync(m => m.GetValueOrDefaultAsync(key));
         }
 
-        public Task<bool> TryRemoveAsync(TKey key)
+        public virtual Task<bool> TryRemoveAsync(TKey key)
         {
             return ExecuteWithReplicationAsync(m => m.TryRemoveAsync(key));
         }
 
-        public Task<bool> ContainsKeyAsync(TKey key)
+        public virtual Task<bool> ContainsKeyAsync(TKey key)
         {
             return ExecuteWithFallbackAsync(m => m.ContainsKeyAsync(key));
         }

@@ -31,21 +31,21 @@ namespace Takenet.Elephant.Redis
 
         #region ISet<T> Members
 
-        public Task AddAsync(T value)
+        public virtual Task AddAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var database = GetDatabase();
             return database.SetAddAsync(Name, _serializer.Serialize(value), WriteFlags);
         }
 
-        public Task<bool> TryRemoveAsync(T value)
+        public virtual Task<bool> TryRemoveAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var database = GetDatabase();
             return database.SetRemoveAsync(Name, _serializer.Serialize(value), WriteFlags);
         }
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public virtual async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
         {
             var database = GetDatabase() as IDatabase;
             if (database == null) throw new NotSupportedException("The database instance is not supported");
@@ -63,14 +63,14 @@ namespace Takenet.Elephant.Redis
             return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
         }
 
-        public Task<bool> ContainsAsync(T value)
+        public virtual Task<bool> ContainsAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var database = GetDatabase();
             return database.SetContainsAsync(Name, _serializer.Serialize(value), ReadFlags);
         }
 
-        public Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync()
         {
             var database = GetDatabase();
             return database.SetLengthAsync(Name, ReadFlags);

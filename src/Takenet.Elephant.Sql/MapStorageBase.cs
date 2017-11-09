@@ -21,7 +21,7 @@ namespace Takenet.Elephant.Sql
 
         #region IQueryableStorage<KeyValuePair<TKey, TValue>> Members
 
-        public async Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(
+        public virtual async Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(
             Expression<Func<KeyValuePair<TKey, TValue>, bool>> @where,
             Expression<Func<KeyValuePair<TKey, TValue>, TResult>> @select, int skip, int take,
             CancellationToken cancellationToken)
@@ -72,7 +72,7 @@ namespace Takenet.Elephant.Sql
 
         #region IKeyQueryableMap<TKey, TValue> Members
 
-        public async Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where,
+        public virtual async Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where,
             Expression<Func<TKey, TResult>> @select, int skip, int take,
             CancellationToken cancellationToken)
         {

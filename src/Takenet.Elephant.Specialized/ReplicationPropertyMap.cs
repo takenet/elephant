@@ -24,37 +24,37 @@ namespace Takenet.Elephant.Specialized
             
         }
 
-        public Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
+        public virtual Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
         {
             return ExecuteWithReplicationAsync(m => m.TryAddAsync(key, value, overwrite));
         }
 
-        public Task<TValue> GetValueOrDefaultAsync(TKey key)
+        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key)
         {
             return ExecuteWithFallbackAsync(m => m.GetValueOrDefaultAsync(key));
         }
 
-        public Task<bool> TryRemoveAsync(TKey key)
+        public virtual Task<bool> TryRemoveAsync(TKey key)
         {
             return ExecuteWithReplicationAsync(m => m.TryRemoveAsync(key));
         }
 
-        public Task<bool> ContainsKeyAsync(TKey key)
+        public virtual Task<bool> ContainsKeyAsync(TKey key)
         {
             return ExecuteWithFallbackAsync(m => m.ContainsKeyAsync(key));
         }
 
-        public Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
+        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
             return ExecuteWithReplicationAsync(m => m.SetPropertyValueAsync(key, propertyName, propertyValue));
         }
 
-        public Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
         {
             return ExecuteWithFallbackAsync(m => m.GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName));
         }
 
-        public Task MergeAsync(TKey key, TValue value)
+        public virtual Task MergeAsync(TKey key, TValue value)
         {
             return ExecuteWithReplicationAsync(m => m.MergeAsync(key, value));
         }

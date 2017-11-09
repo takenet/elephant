@@ -65,7 +65,7 @@ namespace Takenet.Elephant.Redis
             return null;
         }
 
-        public Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
         {
             return CreateSet(key).AsCompletedTask<ISet<TItem>>();
         }

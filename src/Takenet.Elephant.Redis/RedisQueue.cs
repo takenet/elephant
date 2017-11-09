@@ -33,7 +33,7 @@ namespace Takenet.Elephant.Redis
 
         #region IQueue<T> Members
 
-        public async Task EnqueueAsync(T item)
+        public virtual async Task EnqueueAsync(T item)
         {            
             if (item == null) throw new ArgumentNullException(nameof(item));
             var database = GetDatabase();
@@ -66,14 +66,14 @@ namespace Takenet.Elephant.Redis
             await Task.WhenAll(enqueueTask, publishTask).ConfigureAwait(false);
         }
 
-        public async Task<T> DequeueOrDefaultAsync()
+        public virtual async Task<T> DequeueOrDefaultAsync()
         {
             var database = GetDatabase();
             var result = await database.ListRightPopAsync(Name, ReadFlags).ConfigureAwait(false);
             return !result.IsNull ? _serializer.Deserialize((string)result) : default(T);
         }
 
-        public Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync()
         {
             var database = GetDatabase();
             return database.ListLengthAsync(Name, ReadFlags);
@@ -83,7 +83,7 @@ namespace Takenet.Elephant.Redis
 
         #region IBlockingQueue<T> Members
 
-        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<T>();
             using (var registration = cancellationToken.Register(() => tcs.TrySetCanceled()))

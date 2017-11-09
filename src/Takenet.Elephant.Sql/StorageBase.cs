@@ -44,7 +44,7 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public async Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken)
+        public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken)
         {
             if (select != null && 
                 select.ReturnType != typeof(TEntity))
@@ -59,7 +59,7 @@ namespace Takenet.Elephant.Sql
             return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns);
         }
 
-        public async Task<QueryResult<TEntity>> QueryAsync<TResult, TOrderBy>(Expression<Func<TEntity, bool>> @where, Expression<Func<TEntity, TResult>> @select, Expression<Func<TEntity, TOrderBy>> orderBy, bool orderByAscending, int skip, int take, CancellationToken cancellationToken)
+        public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult, TOrderBy>(Expression<Func<TEntity, bool>> @where, Expression<Func<TEntity, TResult>> @select, Expression<Func<TEntity, TOrderBy>> orderBy, bool orderByAscending, int skip, int take, CancellationToken cancellationToken)
         {
             if (select != null &&
                 select.ReturnType != typeof(TEntity))

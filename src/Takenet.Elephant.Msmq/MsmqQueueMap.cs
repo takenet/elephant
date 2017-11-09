@@ -27,9 +27,9 @@ namespace Takenet.Elephant.Msmq
             _recoverable = recoverable;
         }
 
-        public Task<bool> TryAddAsync(TKey key, IBlockingQueue<TItem> value, bool overwrite = false) => TryAddAsync(key, (IQueue<TItem>)value, overwrite);
+        public virtual Task<bool> TryAddAsync(TKey key, IBlockingQueue<TItem> value, bool overwrite = false) => TryAddAsync(key, (IQueue<TItem>)value, overwrite);
 
-        public async Task<bool> TryAddAsync(TKey key, IQueue<TItem> value, bool overwrite = false)
+        public virtual async Task<bool> TryAddAsync(TKey key, IQueue<TItem> value, bool overwrite = false)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -54,7 +54,7 @@ namespace Takenet.Elephant.Msmq
 
         async Task<IQueue<TItem>> IMap<TKey, IQueue<TItem>>.GetValueOrDefaultAsync(TKey key) => await GetValueOrDefaultAsync(key).ConfigureAwait(false);
 
-        public Task<IBlockingQueue<TItem>> GetValueOrDefaultAsync(TKey key)
+        public virtual Task<IBlockingQueue<TItem>> GetValueOrDefaultAsync(TKey key)
         {            
             if (MessageQueue.Exists(GetQueuePath(key, _pathTemplate)))
             {
@@ -64,7 +64,7 @@ namespace Takenet.Elephant.Msmq
             return Task.FromResult<IBlockingQueue<TItem>>(null);            
         }
 
-        public Task<bool> TryRemoveAsync(TKey key)
+        public virtual Task<bool> TryRemoveAsync(TKey key)
         {
             var queuePath = GetQueuePath(key, _pathTemplate);
             if (MessageQueue.Exists(queuePath))
@@ -76,7 +76,7 @@ namespace Takenet.Elephant.Msmq
             return Task.FromResult(false);
         }
 
-        public Task<bool> ContainsKeyAsync(TKey key)
+        public virtual Task<bool> ContainsKeyAsync(TKey key)
         {
             var queuePath = GetQueuePath(key, _pathTemplate);
             return MessageQueue.Exists(queuePath).AsCompletedTask();
