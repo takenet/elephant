@@ -1,338 +1,44 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5288FBD3-4FE6-42A2-8256-D004C17A86F1}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Takenet.Elephant.Tests</RootNamespace>
-    <AssemblyName>Takenet.Elephant.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Microsoft.Azure.Amqp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.Amqp.2.1.0\lib\net45\Microsoft.Azure.Amqp.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Azure.ServiceBus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7e34167dcc6d6d8c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.ServiceBus.1.0.0-RC1\lib\net451\Microsoft.Azure.ServiceBus.dll</HintPath>
-    </Reference>
-    <Reference Include="Moq, Version=4.2.1507.118, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NFluent, Version=1.3.1.0, Culture=neutral, PublicKeyToken=18828b37b84b1437, processorArchitecture=MSIL">
-      <HintPath>..\packages\NFluent.1.3.1.0\lib\net40\NFluent.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ploeh.AutoFixture, Version=3.30.8.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoFixture.3.30.8\lib\net40\Ploeh.AutoFixture.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RabbitMQ.Client, Version=3.6.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\packages\RabbitMQ.Client.3.6.0\lib\net45\RabbitMQ.Client.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="StackExchange.Redis, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StackExchange.Redis.1.2.3\lib\net46\StackExchange.Redis.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
+    <PackageReference Include="AutoFixture" Version="3.30.8" />
+    <PackageReference Include="Moq" Version="4.2.1507.0118" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="NFluent" Version="1.3.1.0" />
+    <PackageReference Include="NSubstitute" Version="2.0.3" />
+    <PackageReference Include="Shouldly" Version="2.8.3" />
+    <PackageReference Include="TeamCity.VSTest.TestAdapter" Version="1.0.3" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.console" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Takenet.Elephant.Azure\Takenet.Elephant.Azure.csproj" />
+    <ProjectReference Include="..\Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj" />
+    <ProjectReference Include="..\Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj" />
+    <ProjectReference Include="..\Takenet.Elephant.Specialized\Takenet.Elephant.Specialized.csproj" />
+    <ProjectReference Include="..\Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj" />
+    <ProjectReference Include="..\Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj" />
+    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System.Messaging" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization.Xml, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.Serialization.Xml.4.3.0\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="xunit.assert, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.assert.2.2.0\lib\netstandard1.1\xunit.assert.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.core, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.core.2.2.0\lib\netstandard1.1\xunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.execution.desktop, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.execution.2.2.0\lib\net452\xunit.execution.desktop.dll</HintPath>
-    </Reference>
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Azure\AzureServiceBusItemBlockingQueueFacts.cs" />
-    <Compile Include="BlockingQueueFacts.cs" />
-    <Compile Include="ClassListFacts.cs" />
-    <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="ItemOrderedQueryableStorageFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemScopedSetMapFacts.cs" />
-    <Compile Include="Memory\MemoryItemOrderedQueryableStorageFacts.cs" />
-    <Compile Include="Msmq\MsmqGuidItemQueueMapFacts.cs" />
-    <Compile Include="Msmq\MsmqItemBlockingQueueFacts.cs" />
-    <Compile Include="OrderedQueryableStorageFacts.cs" />
-    <Compile Include="ItemListFacts.cs" />
-    <Compile Include="ListFacts.cs" />
-    <Compile Include="Redis\RedisGuidItemScopedSetMapFacts.cs" />
-    <Compile Include="Specialized\CacheSetFacts.cs" />
-    <Compile Include="ExpirableKeyMapFacts.cs" />
-    <Compile Include="FactsBase.cs" />
-    <Compile Include="ClassQueueFacts.cs" />
-    <Compile Include="ClassSetFacts.cs" />
-    <Compile Include="GuidItemExpirableKeyMapFacts.cs" />
-    <Compile Include="GuidItemItemSetMapFacts.cs" />
-    <Compile Include="GuidItemKeysMapFacts.cs" />
-    <Compile Include="GuidItemKeyValueMapQueryableStorageFacts.cs" />
-    <Compile Include="GuidItemMapFacts.cs" />
-    <Compile Include="GuidItemKeyQueryableMapFacts.cs" />
-    <Compile Include="GuidItemMapQueryableStorageFacts.cs" />
-    <Compile Include="GuidItemPropertyMapFacts.cs" />
-    <Compile Include="GuidItemQueueMapFacts.cs" />
-    <Compile Include="GuidItemSetMapFacts.cs" />
-    <Compile Include="GuidItemUpdatableMapFacts.cs" />
-    <Compile Include="GuidNumberMapFacts.cs" />
-    <Compile Include="IntegerStringMapFacts.cs" />
-    <Compile Include="IntegerStringQueueMapFacts.cs" />
-    <Compile Include="IntegerStringSetMapFacts.cs" />
-    <Compile Include="Item.cs" />
-    <Compile Include="ItemBlockingQueueFacts.cs" />
-    <Compile Include="ItemSetFacts.cs" />
-    <Compile Include="ItemSetMapFacts.cs" />
-    <Compile Include="KeyQueryableMapFacts.cs" />
-    <Compile Include="KeysMapFacts.cs" />
-    <Compile Include="MapFacts.cs" />
-    <Compile Include="KeyValueMapQueryableStorageFacts.cs" />
-    <Compile Include="MapQueryableStorageFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemExpirableKeyMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemItemSetMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemKeysMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemSetMapKeyQueryableMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemSetMapQueryableStorageFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemKeyValueSetMapQueryableStorageFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemKeyValueMapQueryableStorageFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemKeyQueryableMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemUpdatableMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemPropertyMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidNumberMapFacts.cs" />
-    <Compile Include="Memory\MemoryIntegerStringQueueMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemQueueMapFacts.cs" />
-    <Compile Include="Memory\MemoryIntegerStringMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemSetMapFacts.cs" />
-    <Compile Include="Memory\MemoryIntegerStringSetMapFacts.cs" />
-    <Compile Include="Memory\MemoryItemBlockingQueueFacts.cs" />
-    <Compile Include="Memory\MemoryItemSetFacts.cs" />
-    <Compile Include="Memory\MemoryItemQueueFacts.cs" />
-    <Compile Include="Memory\MemoryGuidQueueFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemMapQueryableStorageFacts.cs" />
-    <Compile Include="Memory\MemoryStringSetFacts.cs" />
-    <Compile Include="NumberMapFacts.cs" />
-    <Compile Include="ObjectExtensions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyMapFacts.cs" />
-    <Compile Include="QueryableStorageFacts.cs" />
-    <Compile Include="QueueFacts.cs" />
-    <Compile Include="QueueMapFacts.cs" />
-    <Compile Include="Redis\ItemSerializer.cs" />
-    <Compile Include="Redis\RedisCollectionFixture.cs" />
-    <Compile Include="Redis\RedisGuidItemExpirableKeyMapFacts.cs" />
-    <Compile Include="Redis\RedisGuidItemQueueMapFacts.cs" />
-    <Compile Include="Redis\RedisGuidNumberMapFacts.cs" />
-    <Compile Include="Redis\RedisHashGuidItemPropertyMapFacts.cs" />
-    <Compile Include="Redis\RedisIntegerStringQueueMapFacts.cs" />
-    <Compile Include="Redis\RedisItemBlockingQueueFacts.cs" />
-    <Compile Include="Redis\RedisItemQueueFacts.cs" />
-    <Compile Include="Redis\RedisGuidQueueFacts.cs" />
-    <Compile Include="Redis\RedisHashGuidItemMapFacts.cs" />
-    <Compile Include="Redis\RedisHashIntegerStringMapFacts.cs" />
-    <Compile Include="Redis\RedisGuidItemSetMapFacts.cs" />
-    <Compile Include="Redis\RedisIntegerStringSetMapFacts.cs" />
-    <Compile Include="Redis\RedisItemSetFacts.cs" />
-    <Compile Include="Redis\RedisStringGuidItemMapFacts.cs" />
-    <Compile Include="Redis\RedisStringIntegerStringMapFacts.cs" />
-    <Compile Include="Redis\RedisFixture.cs" />
-    <Compile Include="Redis\RedisGuidSetFacts.cs" />
-    <Compile Include="SetFacts.cs" />
-    <Compile Include="SetMapFacts.cs" />
-    <Compile Include="Specialized\CacheMapFacts.cs" />
-    <Compile Include="Specialized\GuidItemOnDemandCacheSetMapFacts.cs" />
-    <Compile Include="Specialized\ItemOnDemandCacheSetFacts.cs" />
-    <Compile Include="Specialized\MemoryItemOnDemandCacheSetFacts.cs" />
-    <Compile Include="Specialized\OnDemandCacheSetFacts.cs" />
-    <Compile Include="Specialized\OnDemandCacheSetMapFacts.cs" />
-    <Compile Include="Specialized\CacheSetMapFacts.cs" />
-    <Compile Include="Specialized\FallbackQueueFacts.cs" />
-    <Compile Include="Specialized\GuidItemCacheMapFacts.cs" />
-    <Compile Include="Specialized\GuidItemCacheSetMapFacts.cs" />
-    <Compile Include="Specialized\GuidItemOnDemandCacheMapFacts.cs" />
-    <Compile Include="Specialized\GuidItemReplicationMapFacts.cs" />
-    <Compile Include="Specialized\GuidItemScopedMapFacts.cs" />
-    <Compile Include="Specialized\GuidItemScopedSetMapFacts.cs" />
-    <Compile Include="Specialized\GuidSerializer.cs" />
-    <Compile Include="Specialized\ItemCacheSetFacts.cs" />
-    <Compile Include="Specialized\ItemFallbackQueueFacts.cs" />
-    <Compile Include="Redis\RedisGuidItemScopedMapFacts.cs" />
-    <Compile Include="Memory\MemoryGuidItemScopedMapFacts.cs" />
-    <Compile Include="Specialized\OnDemandCacheMapFacts.cs" />
-    <Compile Include="Specialized\ReplicationMapFacts.cs" />
-    <Compile Include="Specialized\ScopedSetMapFacts.cs" />
-    <Compile Include="Specialized\ScopedMapFacts.cs" />
-    <Compile Include="Specialized\SqlRedisCollectionFixture.cs" />
-    <Compile Include="Specialized\SqlRedisConnectionFixture.cs" />
-    <Compile Include="Specialized\SqlRedisGuidItemCacheMapFacts.cs" />
-    <Compile Include="Specialized\MemoryGuidItemCacheSetMapFacts.cs" />
-    <Compile Include="Specialized\SqlRedisGuidItemCacheSetMapFacts.cs" />
-    <Compile Include="Specialized\MemoryGuidItemOnDemandCacheSetMapFacts.cs" />
-    <Compile Include="Specialized\SqlRedisGuidItemOnDemandCacheSetMapFacts.cs" />
-    <Compile Include="Specialized\SqlRedisGuidItemOnDemandCacheMapFacts.cs" />
-    <Compile Include="Specialized\SqlRedisItemCacheSetFacts.cs" />
-    <Compile Include="Specialized\SqlRedisItemOnDemandCacheSetFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlFixture.cs" />
-    <Compile Include="Sql\ISqlFixture.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidItemItemSetMapFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidItemKeyQueryableMapFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidItemKeyQueryableSetMapFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidItemKeyValueMapQueryableStorageFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidItemMapFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidItemMapQueryableStorageFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidItemPropertyMapFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidItemSetMapFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidItemUpdatableMapFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidSetFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlIntegerStringMapFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlIntegerStringSetMapFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlItemListFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlIdentityItemSetFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlItemSetFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlCollectionFixture.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlItemOrderedQueryableStorageFacts.cs" />
-    <Compile Include="Sql\PostgreSql\PostgreSqlGuidNumberMapFacts.cs" />
-    <Compile Include="Sql\SqlExpressionTranslatorFacts.cs" />
-    <Compile Include="Sql\SqlGuidNumberMapFacts.cs" />
-    <Compile Include="Sql\SqlItemOrderedQueryableStorageFacts.cs" />
-    <Compile Include="Sql\SqlIdentityItemSetFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidNumberMapFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerIdentityItemSetFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerListFactIdentity.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerItemOrderedQueryableStorageFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerItemSetFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerItemListFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerIntegerStringSetMapFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerIntegerStringMapFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidSetFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidItemUpdatableMapFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidItemSetMapFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidItemPropertyMapFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidItemMapQueryableStorageFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidItemMapFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidItemKeyQueryableSetMapFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidItemKeyValueMapQueryableStorageFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerFixture.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerCollectionFixture.cs" />
-    <Compile Include="Sql\SqlGuidItemItemSetMapFacts.cs" />
-    <Compile Include="Sql\SqlGuidItemKeyQueryableSetMapFacts.cs" />
-    <Compile Include="Sql\SqlGuidItemKeyValueMapQueryableStorageFacts.cs" />
-    <Compile Include="Redis\RedisGuidItemKeysMapFacts.cs" />
-    <Compile Include="Sql\SqlGuidItemMapFacts.cs" />
-    <Compile Include="Sql\SqlGuidItemKeyQueryableMapFacts.cs" />
-    <Compile Include="Sql\SqlGuidItemPropertyMapFacts.cs" />
-    <Compile Include="Sql\SqlGuidItemUpdatableMapFacts.cs" />
-    <Compile Include="Sql\SqlIntegerStringMapFacts.cs" />
-    <Compile Include="Sql\SqlGuidItemSetMapFacts.cs" />
-    <Compile Include="Sql\SqlIntegerStringSetMapFacts.cs" />
-    <Compile Include="Sql\SqlItemListFacts.cs" />
-    <Compile Include="Sql\SqlItemSetFacts.cs" />
-    <Compile Include="Sql\SqlGuidItemMapQueryableStorageFacts.cs" />
-    <Compile Include="Sql\SqlGuidSetFacts.cs" />
-    <Compile Include="ItemQueueFacts.cs" />
-    <Compile Include="GuidQueueFacts.cs" />
-    <Compile Include="GuidSetFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidItemItemSetMapFacts.cs" />
-    <Compile Include="Sql\SqlServer\SqlServerGuidItemKeyQueryableMapFacts.cs" />
-    <Compile Include="UpdatableMapFacts.cs" />
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Takenet.Elephant.Azure\Takenet.Elephant.Azure.csproj">
-      <Project>{1b2a7a7a-d1c8-49d1-8c15-362cc80925e0}</Project>
-      <Name>Takenet.Elephant.Azure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Takenet.Elephant.Msmq\Takenet.Elephant.Msmq.csproj">
-      <Project>{aa377435-8103-498f-8a3e-203b4ff8be92}</Project>
-      <Name>Takenet.Elephant.Msmq</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Takenet.Elephant.Redis\Takenet.Elephant.Redis.csproj">
-      <Project>{f68ed17e-e1f8-4c39-9f38-6c5610f0bfe1}</Project>
-      <Name>Takenet.Elephant.Redis</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Takenet.Elephant.Specialized\Takenet.Elephant.Specialized.csproj">
-      <Project>{b103d47a-3430-41eb-9f6d-c483c617d3ad}</Project>
-      <Name>Takenet.Elephant.Specialized</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Takenet.Elephant.Sql.PostgreSql\Takenet.Elephant.Sql.PostgreSql.csproj">
-      <Project>{1f4e1df4-bc73-4f94-b8a5-9bf01504d955}</Project>
-      <Name>Takenet.Elephant.Sql.PostgreSql</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Takenet.Elephant.Sql\Takenet.Elephant.Sql.csproj">
-      <Project>{3c906350-8559-4754-b79c-b165d1d5529d}</Project>
-      <Name>Takenet.Elephant.Sql</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Takenet.Elephant\Takenet.Elephant.csproj">
-      <Project>{5826c539-f664-4f71-82b6-180461ff0e81}</Project>
-      <Name>Takenet.Elephant</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-    <None Include="xunit.runner.json">
+    <None Update="xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
