@@ -22,11 +22,7 @@ after_build:
 - dotnet pack src/Takenet.Elephant.Azure/Takenet.Elephant.Azure.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 services:
   - msmq
-test:
-  categories:
-    only:
-      - Memory
-      - Msmq
+test: off
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
