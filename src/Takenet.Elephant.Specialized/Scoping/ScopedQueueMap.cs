@@ -13,5 +13,11 @@ namespace Takenet.Elephant.Specialized.Scoping
         {
 
         }
+
+        public virtual Task<IQueue<TItem>> GetValueOrEmptyAsync(TKey key)
+        {
+            throw new NotImplementedException("This method is not yet implemented");
+        }
+
     }
 }

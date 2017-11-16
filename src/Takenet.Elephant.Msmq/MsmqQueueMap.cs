@@ -64,6 +64,11 @@ namespace Takenet.Elephant.Msmq
             return Task.FromResult<IBlockingQueue<TItem>>(null);            
         }
 
+        public Task<IQueue<TItem>> GetValueOrEmptyAsync(TKey key)
+        {
+            return Task.FromResult<IQueue<TItem>>(CreateQueue(key));
+        }
+
         public virtual Task<bool> TryRemoveAsync(TKey key)
         {
             var queuePath = GetQueuePath(key, _pathTemplate);
@@ -117,5 +122,7 @@ namespace Takenet.Elephant.Msmq
                 Key = key;
             }
         }
+
+
     }
 }

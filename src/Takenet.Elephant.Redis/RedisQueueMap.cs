@@ -70,6 +70,9 @@ namespace Takenet.Elephant.Redis
             return null;
         }
 
+        public Task<IQueue<TItem>> GetValueOrEmptyAsync(TKey key) 
+            => CreateQueue(key).AsCompletedTask<IQueue<TItem>>();
+
         public override Task<bool> TryRemoveAsync(TKey key)
         {
             var database = GetDatabase();

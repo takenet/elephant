@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Takenet.Elephant.Memory;
 
 namespace Takenet.Elephant
 {

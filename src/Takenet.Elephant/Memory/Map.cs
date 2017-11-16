@@ -62,11 +62,8 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult(InternalDictionary.TryAdd(key, value));
         }
 
-        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key)
-        {
-            TValue value;
-            return Task.FromResult(InternalDictionary.TryGetValue(key, out value) ? value : default(TValue));
-        }
+        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key) 
+            => Task.FromResult(InternalDictionary.TryGetValue(key, out var value) ? value : default(TValue));
 
         public virtual Task<bool> TryRemoveAsync(TKey key)
         {
@@ -74,10 +71,8 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult(InternalDictionary.TryRemove(key, out value));
         }
 
-        public virtual Task<bool> ContainsKeyAsync(TKey key)
-        {
-            return Task.FromResult(InternalDictionary.ContainsKey(key));
-        }
+        public virtual Task<bool> ContainsKeyAsync(TKey key) 
+            => Task.FromResult(InternalDictionary.ContainsKey(key));
 
         #endregion
 
