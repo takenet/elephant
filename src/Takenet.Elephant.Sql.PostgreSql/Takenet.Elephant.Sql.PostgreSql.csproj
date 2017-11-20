@@ -13,6 +13,7 @@
     <Copyright>Copyright © 2015 Curupira S/A</Copyright>
     <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
