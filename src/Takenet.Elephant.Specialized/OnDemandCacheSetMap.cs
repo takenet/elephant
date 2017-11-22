@@ -47,7 +47,6 @@ namespace Takenet.Elephant.Specialized
             return new OnDemandCacheSet<TValue>(sourceValue, GetKeyExpirationCacheSet(key, cacheValue));
         }
 
-
         private ISet<TValue> GetKeyExpirationCacheSet(TKey key, ISet<TValue> cacheSet)
         {
             // Provides a set that calls a function to expires the key when a value is added

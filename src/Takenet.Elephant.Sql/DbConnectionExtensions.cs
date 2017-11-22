@@ -200,11 +200,12 @@ namespace Takenet.Elephant.Sql
             string schemaName,
             string tableName,
             IDictionary<string, object> filterValues,
-            string[] selectColumns)
+            string[] selectColumns,
+            bool distinct = false)
         {
             if (selectColumns == null) throw new ArgumentNullException(nameof(selectColumns));
             return connection.CreateTextCommand(
-                databaseDriver.GetSqlStatementTemplate(SqlStatement.Select),
+                databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinct : SqlStatement.Select),
                 new
                 {
                     schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
@@ -264,7 +265,8 @@ namespace Takenet.Elephant.Sql
             int take,
             string[] orderByColumns,
             bool orderByAscending = true,
-            IDictionary<string, object> filterValues = null)
+            IDictionary<string, object> filterValues = null,
+            bool distinct = false)
         {
             var orderBy = orderByColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate();
             if (!orderByAscending)
@@ -273,7 +275,7 @@ namespace Takenet.Elephant.Sql
             }
 
             return connection.CreateTextCommand(
-                databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectSkipTake),
+                databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinctSkipTake : SqlStatement.SelectSkipTake),
                 new
                 {
                     schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),

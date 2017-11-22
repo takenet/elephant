@@ -588,6 +588,24 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT DISTINCT {columns} FROM {schemaName}.{tableName} WHERE {filter}.
+        /// </summary>
+        public static string SelectDistinct {
+            get {
+                return ResourceManager.GetString("SelectDistinct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT DISTINCT {columns} FROM {schemaName}.{tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY.
+        /// </summary>
+        public static string SelectDistinctSkipTake {
+            get {
+                return ResourceManager.GetString("SelectDistinctSkipTake", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY.
         /// </summary>
         public static string SelectSkipTake {

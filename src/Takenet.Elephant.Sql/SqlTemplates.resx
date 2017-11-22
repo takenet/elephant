@@ -307,6 +307,12 @@ OUTPUT inserted.{incrementColumnName};</value>
   <data name="SelectCount" xml:space="preserve">
     <value>SELECT COUNT(*) FROM {schemaName}.{tableName} WHERE {filter}</value>
   </data>
+  <data name="SelectDistinct" xml:space="preserve">
+    <value>SELECT DISTINCT {columns} FROM {schemaName}.{tableName} WHERE {filter}</value>
+  </data>
+  <data name="SelectDistinctSkipTake" xml:space="preserve">
+    <value>SELECT DISTINCT {columns} FROM {schemaName}.{tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY</value>
+  </data>
   <data name="SelectSkipTake" xml:space="preserve">
     <value>SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter} ORDER BY {orderBy} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY</value>
   </data>

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Specialized
 {
-    public class OnDemandCacheMap<TKey, TValue> : OnDemandCacheStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
+    public class OnDemandCacheMap<TKey, TValue> : OnDemandCacheStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
     {
         protected readonly TimeSpan CacheExpiration;
 
@@ -61,6 +61,46 @@ namespace Takenet.Elephant.Specialized
             }
 
             return added;
+        }
+
+        public async Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
+        {
+            if (!(Source is IExpirableKeyMap<TKey, TValue> expirableSource))
+            {
+                throw new NotSupportedException("The source map doesn't implement IExpirableKeyMap");
+            }
+
+            if (!(Cache is IExpirableKeyMap<TKey, TValue> expirableCache))
+            {
+                throw new NotSupportedException("The cache map doesn't implement IExpirableKeyMap");
+            }
+
+            await expirableSource.SetRelativeKeyExpirationAsync(key, ttl);
+
+            if (ttl < CacheExpiration)
+            {
+                await expirableCache.SetRelativeKeyExpirationAsync(key, ttl);
+            }
+        }
+
+        public async Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
+        {
+            if (!(Source is IExpirableKeyMap<TKey, TValue> expirableSource))
+            {
+                throw new NotSupportedException("The source map doesn't implement IExpirableKeyMap");
+            }
+
+            if (!(Cache is IExpirableKeyMap<TKey, TValue> expirableCache))
+            {
+                throw new NotSupportedException("The cache map doesn't implement IExpirableKeyMap");
+            }
+
+            await expirableSource.SetAbsoluteKeyExpirationAsync(key, expiration);
+
+            if (expiration - DateTimeOffset.UtcNow < CacheExpiration)
+            {
+                await expirableCache.SetAbsoluteKeyExpirationAsync(key, expiration);
+            }
         }
     }
 }

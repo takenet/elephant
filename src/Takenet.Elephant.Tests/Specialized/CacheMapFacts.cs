@@ -8,7 +8,7 @@ using Takenet.Elephant.Specialized.Scoping;
 using Xunit;
 
 namespace Takenet.Elephant.Tests.Specialized
-{
+{    
     public abstract class CacheMapFacts<TKey, TValue> : MapFacts<TKey, TValue>
     {
         public abstract IMap<TKey, TValue> CreateSource();
