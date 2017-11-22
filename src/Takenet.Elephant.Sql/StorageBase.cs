@@ -100,7 +100,7 @@ namespace Takenet.Elephant.Sql
                 }
 
                 int totalCount;
-                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter, filterValues))
+                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter, filterValues, distinct: distinct))
                 {
                     totalCount = Convert.ToInt32(
                         await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));

@@ -44,7 +44,7 @@ namespace Takenet.Elephant.Tests
             AssertEquals(actual.Total, 3);
         }
 
-        [Fact(DisplayName = nameof(QueryDistinctValuesSucceeds))]
+        [Fact(DisplayName = nameof(QueryNonDistinctValuesSucceeds))]
         public virtual async Task QueryNonDistinctValuesSucceeds()
         {
             // Arrange            
@@ -68,8 +68,5 @@ namespace Takenet.Elephant.Tests
             Check.That(actualList).Contains(value3);
             AssertEquals(actual.Total, 6);
         }
-
-
-
     }
 }

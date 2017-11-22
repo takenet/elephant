@@ -721,6 +721,9 @@ ZONE</value>
   <data name="SelectCount" xml:space="preserve">
     <value>SELECT COUNT(*) FROM {schemaName}.{tableName} WHERE {filter}</value>
   </data>
+  <data name="SelectCountDistinct" xml:space="preserve">
+    <value>SELECT COUNT(*) FROM (SELECT DISTINCT * FROM {schemaName}.{tableName} WHERE {filter}) AS t</value>
+  </data>
   <data name="SelectDistinct" xml:space="preserve">
     <value>SELECT {columns} FROM {schemaName}.{tableName} WHERE {filter}</value>
   </data>

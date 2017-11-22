@@ -222,11 +222,12 @@ namespace Takenet.Elephant.Sql
             string schemaName,
             string tableName,
             string filter = null,
-            IDictionary<string, object> filterValues = null)
+            IDictionary<string, object> filterValues = null,
+            bool distinct = false)
         {
             if (filter == null) filter = databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
             return connection.CreateTextCommand(
-                databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectCount),
+                databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectCountDistinct : SqlStatement.SelectCount),
                 new
                 {
                     schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
@@ -268,7 +269,10 @@ namespace Takenet.Elephant.Sql
             IDictionary<string, object> filterValues = null,
             bool distinct = false)
         {
-            var orderBy = orderByColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate();
+            var orderBy = orderByColumns.Length > 0
+                ? orderByColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
+                : "1";
+
             if (!orderByAscending)
             {
                 orderBy = $"{orderBy} {databaseDriver.GetSqlStatementTemplate(SqlStatement.Desc)}";

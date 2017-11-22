@@ -33,6 +33,7 @@ namespace Takenet.Elephant.Sql
         QueryLessThen,
         Select,
         SelectCount,
+        SelectCountDistinct,
         SelectSkipTake,
         SelectTop1,
         SelectDistinct,

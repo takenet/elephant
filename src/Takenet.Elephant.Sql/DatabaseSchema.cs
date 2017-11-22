@@ -19,11 +19,6 @@ namespace Takenet.Elephant.Sql
                 throw new InvalidOperationException("The table mapper has no defined columns");
             }
 
-            if (!table.KeyColumnsNames.Any())
-            {
-                throw new InvalidOperationException("The table mapper has no defined key columns");
-            }
-
             // Schema
             var schemaName = table.Schema ?? databaseDriver.DefaultSchema;
             using (var command = connection.CreateCommand())
@@ -41,15 +36,20 @@ namespace Takenet.Elephant.Sql
             createTableSqlBuilder.AppendLine(GetColumnsDefinitionSql(databaseDriver, table, table.Columns));
 
             // Constraints
-            createTableSqlBuilder.AppendLine(
-                databaseDriver.GetSqlStatementTemplate(SqlStatement.PrimaryKeyConstraintDefinition).Format(
-                    new
-                    {
-                        schemaName = schemaName,
-                        tableName = table.Name,
-                        columns = table.KeyColumnsNames.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
-                    })
-            );
+            if (table.KeyColumnsNames.Length > 0)
+            {
+                createTableSqlBuilder.AppendLine(
+                    databaseDriver
+                        .GetSqlStatementTemplate(SqlStatement.PrimaryKeyConstraintDefinition)
+                        .Format(
+                            new
+                            {
+                                schemaName = schemaName,
+                                tableName = table.Name,
+                                columns = table.KeyColumnsNames.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
+                            })
+                );
+            }
 
             // Create table 
             var createTableSql = databaseDriver.GetSqlStatementTemplate(SqlStatement.CreateTable).Format(
@@ -57,7 +57,7 @@ namespace Takenet.Elephant.Sql
                 {
                     schemaName = databaseDriver.ParseIdentifier(schemaName),
                     tableName = databaseDriver.ParseIdentifier(table.Name),
-                    tableDefinition = createTableSqlBuilder.ToString()
+                    tableDefinition = createTableSqlBuilder.ToString().TrimEnd(',', '\n', '\r')
                 });
 
             using (var command = connection.CreateCommand())

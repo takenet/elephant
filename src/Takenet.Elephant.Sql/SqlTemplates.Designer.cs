@@ -588,6 +588,15 @@ namespace Takenet.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT COUNT(*) FROM (SELECT DISTINCT * FROM {schemaName}.{tableName} WHERE {filter}) AS t.
+        /// </summary>
+        public static string SelectCountDistinct {
+            get {
+                return ResourceManager.GetString("SelectCountDistinct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT DISTINCT {columns} FROM {schemaName}.{tableName} WHERE {filter}.
         /// </summary>
         public static string SelectDistinct {
