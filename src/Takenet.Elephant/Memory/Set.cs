@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Memory
@@ -14,8 +11,7 @@ namespace Takenet.Elephant.Memory
     public class Set<T> : Collection<T>, ISet<T>
     {
         private readonly HashSet<T> _hashSet;
-        private object _syncRoot = new object();
-
+        private readonly object _syncRoot = new object();
 
         public Set()
             : this(EqualityComparer<T>.Default)
@@ -47,7 +43,6 @@ namespace Takenet.Elephant.Memory
             _hashSet = hashSet;
         }
 
-
         public virtual Task AddAsync(T value)
         {
             lock (_syncRoot)
@@ -77,7 +72,5 @@ namespace Takenet.Elephant.Memory
             if (value == null) throw new ArgumentNullException(nameof(value));
             return Task.FromResult(_hashSet.Contains(value));
         }
-
-        
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Takenet.Elephant.Memory
 {
-    public abstract class Collection<T> : ICollection<T>, IQueryableStorage<T>, IOrderedQueryableStorage<T>
+    public abstract class Collection<T> : ICollection<T>, IQueryableStorage<T>, IOrderedQueryableStorage<T>, IDistinctQueryableStorage<T>
     {
         private readonly System.Collections.Generic.ICollection<T> _collection;
 
@@ -15,27 +15,24 @@ namespace Takenet.Elephant.Memory
             _collection = collection;
         }
 
-        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync()
-        {
-            return Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_collection));
-        }
+        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync() => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_collection));
 
-        public virtual Task<long> GetLengthAsync()
-        {
-            return Task.FromResult<long>(_collection.Count);
-        }
-
-        #region IQueryableStorage<T> Members
+        public virtual Task<long> GetLengthAsync() => Task.FromResult<long>(_collection.Count);
 
         public virtual Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> where,
             Expression<Func<T, TResult>> select,
             int skip,
             int take,
+            CancellationToken cancellationToken) => QueryAsync<TResult>(@where, @select, false, skip, take, cancellationToken);
+
+        public virtual Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, bool distinct, int skip, int take,
             CancellationToken cancellationToken)
-        {
+        {            
             if (@where == null) @where = i => true;
             var predicate = where.Compile();
             var totalValues = _collection.Where(predicate.Invoke);
+            if (distinct) totalValues = totalValues.Distinct();
+
             var resultValues = totalValues
                 .Skip(skip)
                 .Take(take)
@@ -44,8 +41,6 @@ namespace Takenet.Elephant.Memory
             var result = new QueryResult<T>(new AsyncEnumerableWrapper<T>(resultValues), totalValues.Count());
             return Task.FromResult(result);
         }
-
-        #endregion
 
         public virtual Task<QueryResult<T>> QueryAsync<TResult, TOrderBy>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, Expression<Func<T, TOrderBy>> orderBy, bool orderByAscending,
             int skip, int take, CancellationToken cancellationToken)

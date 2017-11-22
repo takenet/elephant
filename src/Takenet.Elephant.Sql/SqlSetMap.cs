@@ -214,7 +214,8 @@ namespace Takenet.Elephant.Sql
                 CancellationToken cancellationToken,
                 string[] orderByColumns,
                 bool orderByAscending = true,
-                IDictionary<string, object> filterValues = null)
+                IDictionary<string, object> filterValues = null,
+                bool distinct = false)
             {
                 if (filterValues == null)
                 {
@@ -227,7 +228,7 @@ namespace Takenet.Elephant.Sql
                         .ToDictionary(k => k.Key, v => v.Value);
                 }
 
-                return base.QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, orderByAscending, filterValues);
+                return base.QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, orderByAscending, filterValues, distinct);
             }
         }
     }

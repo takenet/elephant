@@ -9,7 +9,7 @@ using Takenet.Elephant.Sql.Mapping;
 
 namespace Takenet.Elephant.Sql
 {
-    public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>, IOrderedQueryableStorage<TEntity>
+    public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>, IOrderedQueryableStorage<TEntity>, IDistinctQueryableStorage<TEntity>
     {
         protected StorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TEntity> mapper)
         {
@@ -44,9 +44,13 @@ namespace Takenet.Elephant.Sql
             }
         }
 
-        public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken) 
+            => QueryAsync<TResult>(@where, @select, false, skip, take, cancellationToken);
+
+        public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> @where, Expression<Func<TEntity, TResult>> @select, bool distinct, int skip, int take,
+            CancellationToken cancellationToken)
         {
-            if (select != null && 
+            if (select != null &&
                 select.ReturnType != typeof(TEntity))
             {
                 throw new NotImplementedException("The select parameter is not supported yet");
@@ -56,7 +60,7 @@ namespace Takenet.Elephant.Sql
             var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
             var orderByColumns = Table.KeyColumnsNames;
 
-            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns);
+            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, distinct: distinct);
         }
 
         public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult, TOrderBy>(Expression<Func<TEntity, bool>> @where, Expression<Func<TEntity, TResult>> @select, Expression<Func<TEntity, TOrderBy>> orderBy, bool orderByAscending, int skip, int take, CancellationToken cancellationToken)
@@ -85,7 +89,7 @@ namespace Takenet.Elephant.Sql
         }
 
         protected virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(string filter, string[] selectColumns, int skip, int take,
-            CancellationToken cancellationToken, string[] orderByColumns, bool orderByAscending = true, IDictionary<string, object> filterValues = null)
+            CancellationToken cancellationToken, string[] orderByColumns, bool orderByAscending = true, IDictionary<string, object> filterValues = null, bool distinct = false)
         {
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
@@ -107,7 +111,7 @@ namespace Takenet.Elephant.Sql
                         GetConnectionAsync,
                         c =>
                             c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter, skip, take,
-                                orderByColumns, orderByAscending, filterValues),
+                                orderByColumns, orderByAscending, filterValues, distinct),
                         Mapper,
                         selectColumns),
                     totalCount);
@@ -148,5 +152,7 @@ namespace Takenet.Elephant.Sql
 
         protected IDictionary<string, object> GetIdentityKeyColumnValues(TEntity entity, bool emitNullValues = false)
             => GetKeyColumnValues(GetIdentityColumnValues(entity, emitNullValues), true);
+
+
     }
 }
