@@ -14,7 +14,7 @@ namespace Takenet.Elephant.Memory
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>, IQueryableStorage<KeyValuePair<TKey, TValue>>, IKeyQueryableMap<TKey, TValue>
+    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>, IOrderedQueryableStorage<TValue>, IQueryableStorage<KeyValuePair<TKey, TValue>>, IKeyQueryableMap<TKey, TValue>
     {
         public Map()
             : this(() => (TValue)Activator.CreateInstance(typeof(TValue)))
@@ -258,6 +258,38 @@ namespace Takenet.Elephant.Memory
 
         #endregion
 
+        public virtual Task<QueryResult<TValue>> QueryAsync<TResult, TOrderBy>(Expression<Func<TValue, bool>> where, Expression<Func<TValue, TResult>> select, Expression<Func<TValue, TOrderBy>> orderBy, bool orderByAscending, int skip, int take, CancellationToken cancellationToken)
+        {
+            if (@where == null) @where = value => true;
+            if (select != null &&
+                select.ReturnType != typeof(TValue))
+            {
+                throw new NotImplementedException("The select parameter is not supported yet");
+            }
+
+            var totalValues = InternalDictionary
+                .Values
+                .Where(value => where.Compile().Invoke(value));
+            var orderByFunc = orderBy.Compile();
+
+            IOrderedEnumerable<TValue> orderedTotalValues;
+            if (orderByAscending)
+            {
+                orderedTotalValues = totalValues.OrderBy(orderByFunc.Invoke);
+            }
+            else
+            {
+                orderedTotalValues = totalValues.OrderByDescending(orderByFunc.Invoke);
+            }
+
+            var resultValues = orderedTotalValues
+                .Skip(skip)
+                .Take(take)
+                .Select(value => value);
+            return Task.FromResult(
+                new QueryResult<TValue>(new AsyncEnumerableWrapper<TValue>(resultValues), totalValues.Count()));
+        }
+
         protected TValue GetOrCreateValue(TKey key)
         {
             TValue value;
@@ -287,5 +319,7 @@ namespace Takenet.Elephant.Memory
             return Task.FromResult(
                 new QueryResult<KeyValuePair<TKey, TValue>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TValue>>(resultValues), totalValues.Count()));
         }
+
+
     }
 }
