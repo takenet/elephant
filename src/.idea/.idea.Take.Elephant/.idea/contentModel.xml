@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\and\.nuget\packages\xunit.runner.visualstudio\2.2.0\build\_common\xunit.abstractions.dll" t="Include" />
+    <e p="C:\Users\and\.nuget\packages\xunit.runner.visualstudio\2.2.0\build\_common\xunit.runner.reporters.net452.dll" t="Include" />
+    <e p="C:\Users\and\.nuget\packages\xunit.runner.visualstudio\2.2.0\build\_common\xunit.runner.utility.net35.dll" t="Include" />
+    <e p="C:\Users\and\.nuget\packages\xunit.runner.visualstudio\2.2.0\build\_common\xunit.runner.visualstudio.testadapter.dll" t="Include" />
+    <e p="C:\Users\and\.Rider2018.1\system\resharper-host\local\Transient\ReSharperHost\v12\SolutionCaches\_Take.Elephant.-921594467.00" t="ExcludeRecursive" />
+    <e p="D:\Repositories\elephant\appveyor.yml" t="Include" />
+    <e p="D:\Repositories\elephant\LICENSE" t="Include" />
+    <e p="D:\Repositories\elephant\README.md" t="Include" />
+    <e p="D:\Repositories\elephant\src" t="IncludeFlat">
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Solution Items" t="Include" />
+      <e p="Take.Elephant" t="IncludeRecursive">
+        <e p="AsyncEnumerableExtensions.cs" t="Include" />
+        <e p="AsyncEnumerableWrapper.cs" t="Include" />
+        <e p="AsyncEnumeratorWrapper.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="DictionaryConverter.cs" t="Include" />
+        <e p="EnumerableExtensions.cs" t="Include" />
+        <e p="Group.cs" t="Include" />
+        <e p="IAsyncEnumerable.cs" t="Include" />
+        <e p="IAsyncEnumerator.cs" t="Include" />
+        <e p="IBlockingQueue.cs" t="Include" />
+        <e p="IBlockingQueueMap.cs" t="Include" />
+        <e p="ICloneable.cs" t="Include" />
+        <e p="ICloseable.cs" t="Include" />
+        <e p="ICollection.cs" t="Include" />
+        <e p="IDictionaryConverter.cs" t="Include" />
+        <e p="IDistinctQueryableStorage.cs" t="Include" />
+        <e p="IExpirableKeyMap.cs" t="Include" />
+        <e p="IGroupableMap.cs" t="Include" />
+        <e p="IItemSetMap.cs" t="Include" />
+        <e p="IKeyQueryableMap.cs" t="Include" />
+        <e p="IKeysMap.cs" t="Include" />
+        <e p="IList.cs" t="Include" />
+        <e p="IMap.cs" t="Include" />
+        <e p="INumberMap.cs" t="Include" />
+        <e p="IOrderedQueryableStorage.cs" t="Include" />
+        <e p="IPropertyMap.cs" t="Include" />
+        <e p="IQueryableStorage.cs" t="Include" />
+        <e p="IQueue.cs" t="Include" />
+        <e p="IQueueMap.cs" t="Include" />
+        <e p="ISerializer.cs" t="Include" />
+        <e p="ISet.cs" t="Include" />
+        <e p="ISetMap.cs" t="Include" />
+        <e p="IUpdatableMap.cs" t="Include" />
+        <e p="Memory" t="Include">
+          <e p="Collection.cs" t="Include" />
+          <e p="List.cs" t="Include" />
+          <e p="Map.cs" t="Include" />
+          <e p="NumberMap.cs" t="Include" />
+          <e p="Queue.cs" t="Include" />
+          <e p="QueueMap.cs" t="Include" />
+          <e p="Set.cs" t="Include" />
+          <e p="SetMap.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net461" t="Include">
+              <e p="Take.Elephant.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netstandard1.6" t="Include">
+              <e p="Take.Elephant.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="ObjectExtensions.cs" t="Include" />
+        <e p="QueryResult.cs" t="Include" />
+        <e p="QueueExtensions.cs" t="Include" />
+        <e p="QueueMapExtensions.cs" t="Include" />
+        <e p="SetExtensions.cs" t="Include" />
+        <e p="SetMapExtensions.cs" t="Include" />
+        <e p="StringExtensions.cs" t="Include" />
+        <e p="Take.Elephant.csproj" t="IncludeRecursive" />
+        <e p="TaskUtil.cs" t="Include" />
+        <e p="TypeExtensions.cs" t="Include" />
+        <e p="TypeUtil.cs" t="Include" />
+      </e>
+      <e p="Take.Elephant.Azure" t="IncludeRecursive">
+        <e p="AzureEventHubSenderQueue.cs" t="Include" />
+        <e p="AzureServiceBusQueue.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net461" t="Include">
+              <e p="Take.Elephant.Azure.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netstandard2.0" t="Include">
+              <e p="Take.Elephant.Azure.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Take.Elephant.Azure.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="Take.Elephant.Msmq" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="MsmqQueue.cs" t="Include" />
+        <e p="MsmqQueueMap.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net461" t="Include">
+              <e p="Take.Elephant.Msmq.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Take.Elephant.Msmq.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="Take.Elephant.Redis" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Converters" t="Include">
+          <e p="TypeRedisDictionaryConverter.cs" t="Include" />
+          <e p="ValueRedisDictionaryConverter.cs" t="Include" />
+        </e>
+        <e p="IRedisDictionaryConverter.cs" t="Include" />
+        <e p="MapBase.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net461" t="Include">
+              <e p="Take.Elephant.Redis.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netstandard1.6" t="Include">
+              <e p="Take.Elephant.Redis.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="RedisHashMap.cs" t="Include" />
+        <e p="RedisNumberMap.cs" t="Include" />
+        <e p="RedisQueue.cs" t="Include" />
+        <e p="RedisQueueMap.cs" t="Include" />
+        <e p="RedisSet.cs" t="Include" />
+        <e p="RedisSetMap.cs" t="Include" />
+        <e p="RedisStringMap.cs" t="Include" />
+        <e p="RedisValueExtensions.cs" t="Include" />
+        <e p="Serializers" t="Include">
+          <e p="LowerValueSerializer.cs" t="Include" />
+          <e p="StringSerializer.cs" t="Include" />
+          <e p="ValueSerializer.cs" t="Include" />
+        </e>
+        <e p="StorageBase.cs" t="Include" />
+        <e p="Take.Elephant.Redis.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="Take.Elephant.Samples" t="IncludeRecursive">
+        <e p="app.config" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Data.cs" t="Include" />
+        <e p="Implementation.cs" t="Include" />
+        <e p="Map" t="Include">
+          <e p="IDataMap.cs" t="Include" />
+          <e p="MemoryDataMap.cs" t="Include" />
+          <e p="RedisDataMap.cs" t="Include" />
+          <e p="SqlDataMap.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.0" t="Include">
+              <e p="Take.Elephant.Samples.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Set" t="Include">
+          <e p="IDataSet.cs" t="Include" />
+          <e p="MemoryDataSet.cs" t="Include" />
+          <e p="RedisDataset.cs" t="Include" />
+          <e p="SqlDataSet.cs" t="Include" />
+        </e>
+        <e p="SetMap" t="Include">
+          <e p="IDataSetMap.cs" t="Include" />
+          <e p="MemoryDataSetMap.cs" t="Include" />
+          <e p="RedisDataSetMap.cs" t="Include" />
+          <e p="SqlDataSetMap.cs" t="Include" />
+        </e>
+        <e p="Take.Elephant.Samples.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="Take.Elephant.sln" t="IncludeFlat" />
+      <e p="Take.Elephant.Specialized" t="IncludeRecursive">
+        <e p="BackupMap.cs" t="Include" />
+        <e p="BackupPropertyMap.cs" t="Include" />
+        <e p="BackupSetMap.cs" t="Include" />
+        <e p="BackupStrategy.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="CacheMap.cs" t="Include" />
+        <e p="CacheSet.cs" t="Include" />
+        <e p="CacheSetMap.cs" t="Include" />
+        <e p="CacheStrategy.cs" t="Include" />
+        <e p="CopyMapSynchronizer.cs" t="Include" />
+        <e p="CopyQueueSynchronizer.cs" t="Include" />
+        <e p="DifferentialMapSynchronizer.cs" t="Include" />
+        <e p="ExceptionEventArgs.cs" t="Include" />
+        <e p="FallbackBlockingQueue.cs" t="Include" />
+        <e p="FallbackQueue.cs" t="Include" />
+        <e p="IntersectionMapSynchronizer.cs" t="Include" />
+        <e p="ISemaphore.cs" t="Include" />
+        <e p="ISynchronizer.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net461" t="Include">
+              <e p="Take.Elephant.Specialized.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netstandard1.6" t="Include">
+              <e p="Take.Elephant.Specialized.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="OnDemandCacheMap.cs" t="Include" />
+        <e p="OnDemandCacheSet.cs" t="Include" />
+        <e p="OnDemandCacheSetMap.cs" t="Include" />
+        <e p="OnDemandCacheStrategy.cs" t="Include" />
+        <e p="OverwriteMapSynchronizer.cs" t="Include" />
+        <e p="OverwriteSetSynchronizer.cs" t="Include" />
+        <e p="ReplicationMap.cs" t="Include" />
+        <e p="ReplicationPropertyMap.cs" t="Include" />
+        <e p="ReplicationSetMap.cs" t="Include" />
+        <e p="ReplicationStrategy.cs" t="Include" />
+        <e p="Scoping" t="Include">
+          <e p="IdentifierKey.cs" t="Include" />
+          <e p="IScope.cs" t="Include" />
+          <e p="IScopedMap.cs" t="Include" />
+          <e p="MapScope.cs" t="Include" />
+          <e p="ScopedMap.cs" t="Include" />
+          <e p="ScopedQueueMap.cs" t="Include" />
+          <e p="ScopedSetMap.cs" t="Include" />
+        </e>
+        <e p="Take.Elephant.Specialized.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="Take.Elephant.Sql" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="DatabaseSchema.cs" t="Include" />
+        <e p="DbConnectionExtensions.cs" t="Include" />
+        <e p="DbDataReaderAsyncEnumerable.cs" t="Include" />
+        <e p="DbDataReaderAsyncEnumerator.cs" t="Include" />
+        <e p="DbTypeMapper.cs" t="Include" />
+        <e p="ExpirableKeySqlMap.cs" t="Include" />
+        <e p="IDatabaseDriver.cs" t="Include" />
+        <e p="IDbTypeMapper.cs" t="Include" />
+        <e p="Mapping" t="Include">
+          <e p="IMapper.cs" t="Include" />
+          <e p="ITable.cs" t="Include" />
+          <e p="KeyValuePairMapper.cs" t="Include" />
+          <e p="MapperExtensions.cs" t="Include" />
+          <e p="PropertyInfoExtensions.cs" t="Include" />
+          <e p="SqlType.cs" t="Include" />
+          <e p="Table.cs" t="Include" />
+          <e p="TableBuilder.cs" t="Include" />
+          <e p="TypeMapper.cs" t="Include" />
+          <e p="ValueMapper.cs" t="Include" />
+        </e>
+        <e p="MapStorageBase.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net461" t="Include">
+              <e p="Take.Elephant.Sql.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netstandard1.6" t="Include">
+              <e p="Take.Elephant.Sql.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="SqlCollectionBase.cs" t="Include" />
+        <e p="SqlDatabaseDriver.cs" t="Include" />
+        <e p="SqlExpressionTranslator.cs" t="Include" />
+        <e p="SqlExtensions.cs" t="Include" />
+        <e p="SqlHelper.cs" t="Include" />
+        <e p="SqlList.cs" t="Include" />
+        <e p="SqlMap.cs" t="Include" />
+        <e p="SqlNumberMap.cs" t="Include" />
+        <e p="SqlSet.cs" t="Include" />
+        <e p="SqlSetMap.cs" t="Include" />
+        <e p="SqlStatement.cs" t="Include" />
+        <e p="SqlTemplates.Designer.cs" t="Include" />
+        <e p="SqlTemplates.resx" t="Include" />
+        <e p="StorageBase.cs" t="Include" />
+        <e p="Take.Elephant.Sql.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="Take.Elephant.Sql.PostgreSql" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net461" t="Include">
+              <e p="Take.Elephant.Sql.PostgreSql.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netstandard1.6" t="Include">
+              <e p="Take.Elephant.Sql.PostgreSql.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="PostgreSqlDatabaseDriver.cs" t="Include" />
+        <e p="PostgreSqlTemplates.Designer.cs" t="Include" />
+        <e p="PostgreSqlTemplates.resx" t="Include" />
+        <e p="Take.Elephant.Sql.PostgreSql.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="Take.Elephant.Tests" t="IncludeRecursive">
+        <e p="app.config" t="Include" />
+        <e p="Azure" t="Include">
+          <e p="AzureServiceBusItemBlockingQueueFacts.cs" t="Include" />
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="BlockingQueueFacts.cs" t="Include" />
+        <e p="ClassListFacts.cs" t="Include" />
+        <e p="ClassQueueFacts.cs" t="Include" />
+        <e p="ClassSetFacts.cs" t="Include" />
+        <e p="DistinctQueryableStorageFacts.cs" t="Include" />
+        <e p="EnumerableExtensions.cs" t="Include" />
+        <e p="ExpirableKeyMapFacts.cs" t="Include" />
+        <e p="FactsBase.cs" t="Include" />
+        <e p="GuidItemExpirableKeyMapFacts.cs" t="Include" />
+        <e p="GuidItemItemSetMapFacts.cs" t="Include" />
+        <e p="GuidItemKeyQueryableMapFacts.cs" t="Include" />
+        <e p="GuidItemKeysMapFacts.cs" t="Include" />
+        <e p="GuidItemKeyValueMapQueryableStorageFacts.cs" t="Include" />
+        <e p="GuidItemMapFacts.cs" t="Include" />
+        <e p="GuidItemMapQueryableStorageFacts.cs" t="Include" />
+        <e p="GuidItemPropertyMapFacts.cs" t="Include" />
+        <e p="GuidItemQueueMapFacts.cs" t="Include" />
+        <e p="GuidItemSetMapFacts.cs" t="Include" />
+        <e p="GuidItemUpdatableMapFacts.cs" t="Include" />
+        <e p="GuidNumberMapFacts.cs" t="Include" />
+        <e p="GuidQueueFacts.cs" t="Include" />
+        <e p="GuidSetFacts.cs" t="Include" />
+        <e p="IntegerStringMapFacts.cs" t="Include" />
+        <e p="IntegerStringQueueMapFacts.cs" t="Include" />
+        <e p="IntegerStringSetMapFacts.cs" t="Include" />
+        <e p="Item.cs" t="Include" />
+        <e p="ItemBlockingQueueFacts.cs" t="Include" />
+        <e p="ItemDistinctQueryableStorageFacts.cs" t="Include" />
+        <e p="ItemListFacts.cs" t="Include" />
+        <e p="ItemOrderedQueryableStorageFacts.cs" t="Include" />
+        <e p="ItemQueueFacts.cs" t="Include" />
+        <e p="ItemSetFacts.cs" t="Include" />
+        <e p="ItemSetMapFacts.cs" t="Include" />
+        <e p="KeyQueryableMapFacts.cs" t="Include" />
+        <e p="KeysMapFacts.cs" t="Include" />
+        <e p="KeyValueMapQueryableStorageFacts.cs" t="Include" />
+        <e p="ListFacts.cs" t="Include" />
+        <e p="MapFacts.cs" t="Include" />
+        <e p="MapQueryableStorageFacts.cs" t="Include" />
+        <e p="Memory" t="Include">
+          <e p="MemoryGuidItemExpirableKeyMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemItemSetMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemKeyQueryableMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemKeysMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemKeyValueMapQueryableStorageFacts.cs" t="Include" />
+          <e p="MemoryGuidItemKeyValueSetMapQueryableStorageFacts.cs" t="Include" />
+          <e p="MemoryGuidItemMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemMapQueryableStorageFacts.cs" t="Include" />
+          <e p="MemoryGuidItemPropertyMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemQueueMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemScopedMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemScopedSetMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemSetMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemSetMapKeyQueryableMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemSetMapQueryableStorageFacts.cs" t="Include" />
+          <e p="MemoryGuidItemUpdatableMapFacts.cs" t="Include" />
+          <e p="MemoryGuidNumberMapFacts.cs" t="Include" />
+          <e p="MemoryGuidQueueFacts.cs" t="Include" />
+          <e p="MemoryIntegerStringMapFacts.cs" t="Include" />
+          <e p="MemoryIntegerStringQueueMapFacts.cs" t="Include" />
+          <e p="MemoryIntegerStringSetMapFacts.cs" t="Include" />
+          <e p="MemoryItemBlockingQueueFacts.cs" t="Include" />
+          <e p="MemoryItemDistinctQueryableStorageFacts.cs" t="Include" />
+          <e p="MemoryItemOrderedQueryableStorageFacts.cs" t="Include" />
+          <e p="MemoryItemQueueFacts.cs" t="Include" />
+          <e p="MemoryItemSetFacts.cs" t="Include" />
+          <e p="MemoryStringSetFacts.cs" t="Include" />
+        </e>
+        <e p="Msmq" t="Include">
+          <e p="MsmqGuidItemQueueMapFacts.cs" t="Include" />
+          <e p="MsmqItemBlockingQueueFacts.cs" t="Include" />
+        </e>
+        <e p="NumberMapFacts.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net461" t="Include">
+              <e p="Take.Elephant.Tests.AssemblyInfo.cs" t="Include" />
+              <e p="Take.Elephant.Tests.Program.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="ObjectExtensions.cs" t="Include" />
+        <e p="OrderedQueryableStorageFacts.cs" t="Include" />
+        <e p="PropertyMapFacts.cs" t="Include" />
+        <e p="QueryableStorageFacts.cs" t="Include" />
+        <e p="QueueFacts.cs" t="Include" />
+        <e p="QueueMapFacts.cs" t="Include" />
+        <e p="Redis" t="Include">
+          <e p="ItemSerializer.cs" t="Include" />
+          <e p="RedisCollectionFixture.cs" t="Include" />
+          <e p="RedisFixture.cs" t="Include" />
+          <e p="RedisGuidItemExpirableKeyMapFacts.cs" t="Include" />
+          <e p="RedisGuidItemKeysMapFacts.cs" t="Include" />
+          <e p="RedisGuidItemQueueMapFacts.cs" t="Include" />
+          <e p="RedisGuidItemScopedMapFacts.cs" t="Include" />
+          <e p="RedisGuidItemScopedSetMapFacts.cs" t="Include" />
+          <e p="RedisGuidItemSetMapFacts.cs" t="Include" />
+          <e p="RedisGuidNumberMapFacts.cs" t="Include" />
+          <e p="RedisGuidQueueFacts.cs" t="Include" />
+          <e p="RedisGuidSetFacts.cs" t="Include" />
+          <e p="RedisHashGuidItemMapFacts.cs" t="Include" />
+          <e p="RedisHashGuidItemPropertyMapFacts.cs" t="Include" />
+          <e p="RedisHashIntegerStringMapFacts.cs" t="Include" />
+          <e p="RedisIntegerStringQueueMapFacts.cs" t="Include" />
+          <e p="RedisIntegerStringSetMapFacts.cs" t="Include" />
+          <e p="RedisItemBlockingQueueFacts.cs" t="Include" />
+          <e p="RedisItemQueueFacts.cs" t="Include" />
+          <e p="RedisItemSetFacts.cs" t="Include" />
+          <e p="RedisStringGuidItemMapFacts.cs" t="Include" />
+          <e p="RedisStringIntegerStringMapFacts.cs" t="Include" />
+        </e>
+        <e p="SetFacts.cs" t="Include" />
+        <e p="SetMapFacts.cs" t="Include" />
+        <e p="Specialized" t="Include">
+          <e p="CacheMapFacts.cs" t="Include" />
+          <e p="CacheSetFacts.cs" t="Include" />
+          <e p="CacheSetMapFacts.cs" t="Include" />
+          <e p="FallbackQueueFacts.cs" t="Include" />
+          <e p="GuidItemCacheMapFacts.cs" t="Include" />
+          <e p="GuidItemCacheSetMapFacts.cs" t="Include" />
+          <e p="GuidItemOnDemandCacheMapFacts.cs" t="Include" />
+          <e p="GuidItemOnDemandCacheSetMapFacts.cs" t="Include" />
+          <e p="GuidItemReplicationMapFacts.cs" t="Include" />
+          <e p="GuidItemScopedMapFacts.cs" t="Include" />
+          <e p="GuidItemScopedSetMapFacts.cs" t="Include" />
+          <e p="GuidSerializer.cs" t="Include" />
+          <e p="ItemCacheSetFacts.cs" t="Include" />
+          <e p="ItemFallbackQueueFacts.cs" t="Include" />
+          <e p="ItemOnDemandCacheSetFacts.cs" t="Include" />
+          <e p="MemoryGuidItemCacheSetMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemOnDemandCacheSetMapFacts.cs" t="Include" />
+          <e p="MemoryItemOnDemandCacheSetFacts.cs" t="Include" />
+          <e p="OnDemandCacheMapFacts.cs" t="Include" />
+          <e p="OnDemandCacheSetFacts.cs" t="Include" />
+          <e p="OnDemandCacheSetMapFacts.cs" t="Include" />
+          <e p="ReplicationMapFacts.cs" t="Include" />
+          <e p="ScopedMapFacts.cs" t="Include" />
+          <e p="ScopedSetMapFacts.cs" t="Include" />
+          <e p="SqlRedisCollectionFixture.cs" t="Include" />
+          <e p="SqlRedisConnectionFixture.cs" t="Include" />
+          <e p="SqlRedisGuidItemCacheMapFacts.cs" t="Include" />
+          <e p="SqlRedisGuidItemCacheSetMapFacts.cs" t="Include" />
+          <e p="SqlRedisGuidItemOnDemandCacheMapFacts.cs" t="Include" />
+          <e p="SqlRedisGuidItemOnDemandCacheSetMapFacts.cs" t="Include" />
+          <e p="SqlRedisItemCacheSetFacts.cs" t="Include" />
+          <e p="SqlRedisItemOnDemandCacheSetFacts.cs" t="Include" />
+        </e>
+        <e p="Sql" t="Include">
+          <e p="ISqlFixture.cs" t="Include" />
+          <e p="PostgreSql" t="Include">
+            <e p="PostgreSqlCollectionFixture.cs" t="Include" />
+            <e p="PostgreSqlFixture.cs" t="Include" />
+            <e p="PostgreSqlGuidItemExpirableKeyMapFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidItemItemSetMapFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidItemKeyQueryableMapFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidItemKeyQueryableSetMapFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidItemKeyValueMapQueryableStorageFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidItemMapFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidItemMapQueryableStorageFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidItemPropertyMapFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidItemSetMapFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidItemUpdatableMapFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidNumberMapFacts.cs" t="Include" />
+            <e p="PostgreSqlGuidSetFacts.cs" t="Include" />
+            <e p="PostgreSqlIdentityItemSetFacts.cs" t="Include" />
+            <e p="PostgreSqlIntegerStringMapFacts.cs" t="Include" />
+            <e p="PostgreSqlIntegerStringSetMapFacts.cs" t="Include" />
+            <e p="PostgreSqlItemDistinctQueryableStorageFacts.cs" t="Include" />
+            <e p="PostgreSqlItemListFacts.cs" t="Include" />
+            <e p="PostgreSqlItemOrderedQueryableStorageFacts.cs" t="Include" />
+            <e p="PostgreSqlItemSetFacts.cs" t="Include" />
+          </e>
+          <e p="SqlExpressionTranslatorFacts.cs" t="Include" />
+          <e p="SqlGuidItemExpirableKeyMapFacts.cs" t="Include" />
+          <e p="SqlGuidItemItemSetMapFacts.cs" t="Include" />
+          <e p="SqlGuidItemKeyQueryableMapFacts.cs" t="Include" />
+          <e p="SqlGuidItemKeyQueryableSetMapFacts.cs" t="Include" />
+          <e p="SqlGuidItemKeyValueMapQueryableStorageFacts.cs" t="Include" />
+          <e p="SqlGuidItemMapFacts.cs" t="Include" />
+          <e p="SqlGuidItemMapQueryableStorageFacts.cs" t="Include" />
+          <e p="SqlGuidItemPropertyMapFacts.cs" t="Include" />
+          <e p="SqlGuidItemSetMapFacts.cs" t="Include" />
+          <e p="SqlGuidItemUpdatableMapFacts.cs" t="Include" />
+          <e p="SqlGuidNumberMapFacts.cs" t="Include" />
+          <e p="SqlGuidSetFacts.cs" t="Include" />
+          <e p="SqlIdentityItemSetFacts.cs" t="Include" />
+          <e p="SqlIntegerStringMapFacts.cs" t="Include" />
+          <e p="SqlIntegerStringSetMapFacts.cs" t="Include" />
+          <e p="SqlItemDistinctQueryableStorageFacts.cs" t="Include" />
+          <e p="SqlItemListFacts.cs" t="Include" />
+          <e p="SqlItemOrderedQueryableStorageFacts.cs" t="Include" />
+          <e p="SqlItemSetFacts.cs" t="Include" />
+          <e p="SqlServer" t="Include">
+            <e p="SqlServerCollectionFixture.cs" t="Include" />
+            <e p="SqlServerFixture.cs" t="Include" />
+            <e p="SqlServerGuidItemExpirableKeyMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemItemSetMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemKeyQueryableMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemKeyQueryableSetMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemKeyValueMapQueryableStorageFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemMapQueryableStorageFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemPropertyMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemSetMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemUpdatableMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidNumberMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidSetFacts.cs" t="Include" />
+            <e p="SqlServerIdentityItemSetFacts.cs" t="Include" />
+            <e p="SqlServerIntegerStringMapFacts.cs" t="Include" />
+            <e p="SqlServerIntegerStringSetMapFacts.cs" t="Include" />
+            <e p="SqlServerItemDistinctQueryableStorageFacts.cs" t="Include" />
+            <e p="SqlServerItemListFacts.cs" t="Include" />
+            <e p="SqlServerItemOrderedQueryableStorageFacts.cs" t="Include" />
+            <e p="SqlServerItemSetFacts.cs" t="Include" />
+            <e p="SqlServerListFactIdentity.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Take.Elephant.Tests.csproj" t="IncludeRecursive" />
+        <e p="UpdatableMapFacts.cs" t="Include" />
+        <e p="xunit.runner.json" t="Include" />
+      </e>
+    </e>
+  </component>
+</project>

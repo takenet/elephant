@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RIDER_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.2.0/build/_common/xunit.abstractions.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.2.0/build/_common/xunit.runner.reporters.net452.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.2.0/build/_common/xunit.runner.utility.net35.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.2.0/build/_common/xunit.runner.visualstudio.testadapter.dll" />
+    <content url="file://$MODULE_DIR$/../../../LICENSE" />
+    <content url="file://$MODULE_DIR$/../../../README.md" />
+    <content url="file://$MODULE_DIR$/../../../appveyor.yml" />
+    <content url="file://$MODULE_DIR$/../.." />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
