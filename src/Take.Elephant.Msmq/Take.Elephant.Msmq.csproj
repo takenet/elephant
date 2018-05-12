@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>Take.Elephant.Msmq</AssemblyName>
+    <RootNamespace>Take.Elephant.Msmq</RootNamespace>
+    <Version>0.5.0</Version>
+    <Authors>takenet</Authors>
+    <Company>Take</Company>
+    <Product>Elephant Microsoft Message Queue MSMQ</Product>
+    <Description>Elephant storage library</Description>
+    <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Copyright © 2015 Curupira S/A</Copyright>
+    <PackageTags>elephant</PackageTags>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Take.Elephant\Take.Elephant.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
+
+</Project>

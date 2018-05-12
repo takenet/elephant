@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Take.Elephant.Redis\Take.Elephant.Redis.csproj" />
+    <ProjectReference Include="..\Take.Elephant.Specialized\Take.Elephant.Specialized.csproj" />
+    <ProjectReference Include="..\Take.Elephant.Sql.PostgreSql\Take.Elephant.Sql.PostgreSql.csproj" />
+    <ProjectReference Include="..\Take.Elephant.Sql\Take.Elephant.Sql.csproj" />
+    <ProjectReference Include="..\Take.Elephant\Take.Elephant.csproj" />
+  </ItemGroup>
+
+</Project>

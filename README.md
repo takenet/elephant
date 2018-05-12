@@ -71,12 +71,12 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 
 ### NuGet
 
-* [Takenet.Elephant](https://nuget.org/packages/Takenet.Elephant/)
-* [Takenet.Elephant.Redis](https://nuget.org/packages/Takenet.Elephant.Redis/)
-* [Takenet.Elephant.Sql](https://nuget.org/packages/Takenet.Elephant.Sql/)
-* [Takenet.Elephant.Sql.PostgreSql](https://nuget.org/packages/Takenet.Elephant.Sql.PostgreSql/)
-* [Takenet.Elephant.RabbitMQ](https://nuget.org/packages/Takenet.Elephant.RabbitMQ/)
-* [Takenet.Elephant.Msmq](https://nuget.org/packages/Takenet.Elephant.Msmq/)
+* [Take.Elephant](https://nuget.org/packages/Take.Elephant/)
+* [Take.Elephant.Redis](https://nuget.org/packages/Take.Elephant.Redis/)
+* [Take.Elephant.Sql](https://nuget.org/packages/Take.Elephant.Sql/)
+* [Take.Elephant.Sql.PostgreSql](https://nuget.org/packages/Take.Elephant.Sql.PostgreSql/)
+* [Take.Elephant.RabbitMQ](https://nuget.org/packages/Take.Elephant.RabbitMQ/)
+* [Take.Elephant.Msmq](https://nuget.org/packages/Take.Elephant.Msmq/)
 
 ### Samples
 
@@ -161,4 +161,4 @@ if (await setMap.TryRemoveItemAsync(id, data))
 
 ```
 
-Please check the project ```Takenet.Elephant.Samples``` for more samples and the ```Takenet.Elephant.Tests``` project for details of each supported structure.
+Please check the project ```Take.Elephant.Samples``` for more samples and the ```Take.Elephant.Tests``` project for details of each supported structure.

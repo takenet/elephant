@@ -1,4 +1,4 @@
-version: 0.5.{build}
+version: 0.6.{build}
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
@@ -7,19 +7,19 @@ branches:
   only:
     - master
 before_build:
-- dotnet restore src/Takenet.Elephant.sln
+- dotnet restore src/Take.Elephant.sln
 build:
   parallel: true
-  project: src/Takenet.Elephant.sln
+  project: src/Take.Elephant.sln
   verbosity: minimal
 after_build:
-- dotnet pack src/Takenet.Elephant/Takenet.Elephant.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
-- dotnet pack src/Takenet.Elephant.Msmq/Takenet.Elephant.Msmq.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
-- dotnet pack src/Takenet.Elephant.Redis/Takenet.Elephant.Redis.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
-- dotnet pack src/Takenet.Elephant.Sql/Takenet.Elephant.Sql.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
-- dotnet pack src/Takenet.Elephant.Sql.PostgreSql/Takenet.Elephant.Sql.PostgreSql.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
-- dotnet pack src/Takenet.Elephant.Specialized/Takenet.Elephant.Specialized.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
-- dotnet pack src/Takenet.Elephant.Azure/Takenet.Elephant.Azure.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
+- dotnet pack src/Take.Elephant/Take.Elephant.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
+- dotnet pack src/Take.Elephant.Msmq/Take.Elephant.Msmq.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
+- dotnet pack src/Take.Elephant.Redis/Take.Elephant.Redis.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
+- dotnet pack src/Take.Elephant.Sql/Take.Elephant.Sql.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
+- dotnet pack src/Take.Elephant.Sql.PostgreSql/Take.Elephant.Sql.PostgreSql.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
+- dotnet pack src/Take.Elephant.Specialized/Take.Elephant.Specialized.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
+- dotnet pack src/Take.Elephant.Azure/Take.Elephant.Azure.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 services:
   - msmq
 test: off
@@ -30,7 +30,7 @@ assembly_info:
   assembly_version: '{version}'
   assembly_informational_version: '{version}'
 artifacts:
-  - path: '**\Takenet.Elephant*.nupkg'
+  - path: '**\Take.Elephant*.nupkg'
 deploy:
 - provider: NuGet
   api_key:

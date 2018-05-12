@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
+    <Description>Elephant storage library</Description>
+    <Company>Take</Company>
+    <Authors>takenet,andrebires</Authors>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Copyright © 2015 Curupira S/A</Copyright>
+    <Product>Elephant</Product>
+    <PackageTags>elephant</PackageTags>
+    <Version>0.5.0</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SmartFormat.Net" Version="2.1.0.1" />
+    <PackageReference Include="System.Reflection" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

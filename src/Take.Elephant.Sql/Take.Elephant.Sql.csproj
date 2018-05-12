@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Version>0.5.0</Version>
+    <Authors>takenet,andrebires</Authors>
+    <Company>Take</Company>
+    <Product>Elephant Sql and Sql Server</Product>
+    <Description>Elephant storage library</Description>
+    <Copyright>Copyright © 2015 Curupira S/A</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.3.1" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Take.Elephant\Take.Elephant.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="SqlTemplates.Designer.cs">
+      <DependentUpon>SqlTemplates.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="SqlTemplates.resx">
+      <LastGenOutput>SqlTemplates.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
