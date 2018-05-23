@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql" Version="3.2.4.1" />
+    <PackageReference Include="Npgsql" Version="3.2.7" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
   </ItemGroup>
 

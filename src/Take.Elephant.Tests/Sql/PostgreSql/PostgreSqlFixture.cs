@@ -15,7 +15,7 @@ namespace Take.Elephant.Tests.Sql.PostgreSql
         public IDatabaseDriver DatabaseDriver { get; }
 
         public string ConnectionString { get; } =
-            @"Server=localhost;Port=5432;Database=Elephant;User Id=elephant;Password=elephant;";
+            @"Server=localhost;Port=5432;Database=elephant;User Id=elephant;Password=elephant;";
 
         public void DropTable(string schemaName, string tableName)
         {
