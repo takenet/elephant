@@ -156,6 +156,9 @@
   <data name="DbTypeDateTimeOffset" xml:space="preserve">
     <value>TIMESTAMPTZ(3)</value>
   </data>
+  <data name="DbTypeDecimal" xml:space="preserve">
+    <value>NUMERIC</value>
+  </data>
   <data name="DbTypeDouble" xml:space="preserve">
     <value>DOUBLE PRECISION</value>
   </data>
@@ -170,6 +173,9 @@
   </data>
   <data name="DbTypeInt64" xml:space="preserve">
     <value>BIGINT</value>
+  </data>
+  <data name="DbTypeSingle" xml:space="preserve">
+    <value>REAL</value>
   </data>
   <data name="DbTypeString" xml:space="preserve">
     <value>VARCHAR({length})</value>

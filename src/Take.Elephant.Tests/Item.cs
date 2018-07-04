@@ -15,6 +15,10 @@ namespace Take.Elephant.Tests
 
         public Uri UriProperty { get; set; }
 
+        public decimal DecimalProperty { get; set; }
+
+        public float FloatProperty { get; set; }
+
         private DateTimeOffset _dateProperty;
 
         public DateTimeOffset DateProperty
@@ -35,7 +39,7 @@ namespace Take.Elephant.Tests
 
         public override string ToString()
         {
-            return $"{StringProperty ?? "<null>"};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{BooleanProperty};{RandomProperty ?? "<null>"}";
+            return $"{StringProperty ?? "<null>"};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{BooleanProperty};{DecimalProperty};{FloatProperty};{RandomProperty ?? "<null>"}";
         }
 
         public static Item Parse(string s)
@@ -52,7 +56,9 @@ namespace Take.Elephant.Tests
                 DateProperty = DateTimeOffset.Parse(values[4], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
                 Select = (ItemOptions)Enum.Parse(typeof(ItemOptions), values[5]),
                 BooleanProperty = bool.Parse(values[6]),
-                RandomProperty = values[6] == "<null>" ? null : values[7],
+                DecimalProperty = decimal.Parse(values[7]),
+                FloatProperty = float.Parse(values[8]),
+                RandomProperty = values[9] == "<null>" ? null : values[9],
             };
         }
 

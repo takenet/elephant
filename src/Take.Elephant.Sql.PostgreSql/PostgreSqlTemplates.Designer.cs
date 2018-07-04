@@ -173,6 +173,15 @@ namespace Take.Elephant.Sql.PostgreSql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NUMERIC.
+        /// </summary>
+        public static string DbTypeDecimal {
+            get {
+                return ResourceManager.GetString("DbTypeDecimal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DOUBLE PRECISION.
         /// </summary>
         public static string DbTypeDouble {
@@ -214,6 +223,15 @@ namespace Take.Elephant.Sql.PostgreSql {
         public static string DbTypeInt64 {
             get {
                 return ResourceManager.GetString("DbTypeInt64", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to REAL.
+        /// </summary>
+        public static string DbTypeSingle {
+            get {
+                return ResourceManager.GetString("DbTypeSingle", resourceCulture);
             }
         }
         

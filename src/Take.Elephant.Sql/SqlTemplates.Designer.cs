@@ -173,6 +173,15 @@ namespace Take.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DECIMAL.
+        /// </summary>
+        public static string DbTypeDecimal {
+            get {
+                return ResourceManager.GetString("DbTypeDecimal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FLOAT.
         /// </summary>
         public static string DbTypeDouble {
@@ -214,6 +223,15 @@ namespace Take.Elephant.Sql {
         public static string DbTypeInt64 {
             get {
                 return ResourceManager.GetString("DbTypeInt64", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to REAL.
+        /// </summary>
+        public static string DbTypeSingle {
+            get {
+                return ResourceManager.GetString("DbTypeSingle", resourceCulture);
             }
         }
         
