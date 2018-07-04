@@ -39,7 +39,7 @@ namespace Take.Elephant.Tests
 
         public override string ToString()
         {
-            return $"{StringProperty ?? "<null>"};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{BooleanProperty};{DecimalProperty};{FloatProperty};{RandomProperty ?? "<null>"}";
+            return $"{StringProperty ?? "<null>"};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{BooleanProperty};{string.Format("{0:0.000}",DecimalProperty)};{FloatProperty};{RandomProperty ?? "<null>"}";
         }
 
         public static Item Parse(string s)
