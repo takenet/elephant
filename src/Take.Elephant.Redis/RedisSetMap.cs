@@ -9,18 +9,20 @@ namespace Take.Elephant.Redis
     public class RedisSetMap<TKey, TItem> : MapBase<TKey, ISet<TItem>>, ISetMap<TKey, TItem>
     {
         private readonly ISerializer<TItem> _serializer;
+        private readonly bool _useScanOnEnumeration;
 
-        public RedisSetMap(string mapName, string configuration, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
+        public RedisSetMap(string mapName, string configuration, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
             : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags)
         {
-            
+            _useScanOnEnumeration = useScanOnEnumeration;
         }
 
-        public RedisSetMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
+        public RedisSetMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
             : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             _serializer = serializer;
+            _useScanOnEnumeration = useScanOnEnumeration;
         }
 
         public override async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
@@ -82,9 +84,9 @@ namespace Take.Elephant.Redis
             return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
         }
 
-        protected InternalSet CreateSet(TKey key, ITransaction transaction = null, bool useScanOnEnumeration = true)
+        protected virtual InternalSet CreateSet(TKey key, ITransaction transaction = null)
         {
-            return new InternalSet(key, GetRedisKey(key), _serializer, ConnectionMultiplexer, Db, ReadFlags, WriteFlags, transaction, useScanOnEnumeration);
+            return new InternalSet(key, GetRedisKey(key), _serializer, ConnectionMultiplexer, Db, ReadFlags, WriteFlags, transaction, _useScanOnEnumeration);
         }
 
         protected class InternalSet : RedisSet<TItem>
