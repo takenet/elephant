@@ -32,5 +32,5 @@ namespace Take.Elephant
         /// <param name="item"></param>
         /// <returns></returns>
         Task EnqueueAsync(T item);
-    }        
+    }
 }
