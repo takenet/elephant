@@ -10,13 +10,17 @@ namespace Take.Elephant.Memory
     /// Implements the <see cref="ISortedSet{T}"/> interface using the <see cref="System.Collections.Generic.HashSet{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SortedSet<T> : ISortedSet<T>
+    public class SortedSet<T> : Collection<T>, ISortedSet<T>
     {
         private readonly SortedList<float, T> _sortedList;
 
-        public SortedSet(SortedList<float, T> sortedList)
+        protected SortedSet(System.Collections.Generic.ICollection<T> collection) : base(collection)
         {
-            _sortedList = sortedList;
+        }
+
+        public SortedSet()
+        {
+            _sortedList = new SortedList<float, T>(new DuplicateKeyComparer<float>());
         }
 
         public Task<IAsyncEnumerable<T>> AsEnumerableAsync()
@@ -54,4 +58,19 @@ namespace Take.Elephant.Memory
             throw new NotImplementedException();
         }
     }
+
+    public class DuplicateKeyComparer<TKey> :
+             IComparer<TKey> where TKey : IComparable
+    {
+        public int Compare(TKey x, TKey y)
+        {
+            int result = x.CompareTo(y);
+
+            if (result == 0)
+                return 1;
+            else
+                return result;
+        }
+    }
+
 }
