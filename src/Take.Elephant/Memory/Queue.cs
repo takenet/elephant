@@ -16,7 +16,7 @@ namespace Take.Elephant.Memory
         private readonly object _syncRoot = new object();
 
         public Queue()
-        {            
+        {
             _queue = new ConcurrentQueue<T>();
             _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
         }

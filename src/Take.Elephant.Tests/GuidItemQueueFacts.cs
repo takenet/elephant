@@ -2,7 +2,7 @@
 
 namespace Take.Elephant.Tests
 {
-    public abstract class GuidQueueFacts : QueueFacts<Guid>
+    public abstract class GuidItemQueueFacts : QueueFacts<Guid>
     {
         
     }

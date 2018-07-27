@@ -4,7 +4,7 @@ using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Tests.Sql
 {
-    public abstract class SqlGuidNumberMapFacts : GuidNumberMapFacts
+    public abstract class SqlGuidNumberMapFacts : GuidItemNumberMapFacts
     {
         private readonly ISqlFixture _serverFixture;
 
