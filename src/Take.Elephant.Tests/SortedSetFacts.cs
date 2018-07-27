@@ -21,7 +21,7 @@ namespace Take.Elephant.Tests
             var item = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(item, 0.01f);
+            await sortedSet.EnqueueAsync(item, 0.01);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 1);
@@ -38,8 +38,8 @@ namespace Take.Elephant.Tests
             var secondItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(firstItem, 0.02f);
-            await sortedSet.EnqueueAsync(secondItem, 0.01f);
+            await sortedSet.EnqueueAsync(firstItem, 0.02);
+            await sortedSet.EnqueueAsync(secondItem, 0.01);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
@@ -66,7 +66,7 @@ namespace Take.Elephant.Tests
             var tasks = Enumerable
                 .Range(0, count)
                 .Where(i => enumerator.MoveNext())
-                .Select(i => Task.Run(async () => await queue.EnqueueAsync(enumerator.Current, 0.01f)));
+                .Select(i => Task.Run(async () => await queue.EnqueueAsync(enumerator.Current, 0.01)));
 
             await Task.WhenAll(tasks);
 
@@ -103,8 +103,8 @@ namespace Take.Elephant.Tests
             var secondItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(firstItem, 0.02f);
-            await sortedSet.EnqueueAsync(secondItem, 0.01f);
+            await sortedSet.EnqueueAsync(firstItem, 0.02);
+            await sortedSet.EnqueueAsync(secondItem, 0.01);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
@@ -123,8 +123,8 @@ namespace Take.Elephant.Tests
             var secondItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(firstItem, 0.02f);
-            await sortedSet.EnqueueAsync(secondItem, 0.01f);
+            await sortedSet.EnqueueAsync(firstItem, 0.02);
+            await sortedSet.EnqueueAsync(secondItem, 0.01);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
@@ -144,7 +144,7 @@ namespace Take.Elephant.Tests
             {
                 var item = Fixture.Create<T>();
                 items.Add(item);
-                await sortedSet.EnqueueAsync(item, 0.01f);
+                await sortedSet.EnqueueAsync(item, 0.01);
             }
 
             var timeout = TimeSpan.FromMilliseconds(500);
@@ -172,7 +172,7 @@ namespace Take.Elephant.Tests
             // Arrange
             var queue = Create();
             var item = Fixture.Create<T>();
-            await queue.EnqueueAsync(item, 0.01f);
+            await queue.EnqueueAsync(item, 0.01);
             var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout);
 
@@ -210,7 +210,7 @@ namespace Take.Elephant.Tests
             var dequeueTask = queue.DequeueMinAsync(cts.Token);
             await Task.Delay(timeout);
             AssertIsFalse(dequeueTask.IsCompleted);
-            await queue.EnqueueAsync(item, 0.01f);
+            await queue.EnqueueAsync(item, 0.01);
             var actual = await dequeueTask;
 
             // Assert
@@ -224,7 +224,7 @@ namespace Take.Elephant.Tests
             // Arrange
             var queue = Create();
             var item = Fixture.Create<T>();
-            await queue.EnqueueAsync(item, 0.01f);
+            await queue.EnqueueAsync(item, 0.01);
             var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout);
             await queue.DequeueMinAsync(cts.Token);
@@ -245,7 +245,7 @@ namespace Take.Elephant.Tests
             {
                 var item = Fixture.Create<T>();
                 items.Add(item);
-                await queue.EnqueueAsync(item, 0.01f);
+                await queue.EnqueueAsync(item, 0.01);
             }
 
             var timeout = TimeSpan.FromMilliseconds(30000);

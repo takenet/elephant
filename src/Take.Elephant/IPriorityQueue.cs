@@ -32,6 +32,6 @@ namespace Take.Elephant
         /// <param name="item"></param>
         /// <param name="score"></param>
         /// <returns></returns>
-        Task EnqueueAsync(T item, float score);
+        Task EnqueueAsync(T item, double score);
     }
 }

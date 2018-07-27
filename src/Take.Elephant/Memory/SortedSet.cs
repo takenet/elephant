@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 namespace Take.Elephant.Memory
 {
     /// <summary>
-    /// Implements the <see cref="ISortedSet{T}"/> interface using the <see cref="System.Collections.Generic.SortedList{float, T}"/> class.
+    /// Implements the <see cref="ISortedSet{T}"/> interface using the <see cref="System.Collections.Generic.SortedList{double, T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class SortedSet<T> : ISortedSet<T>
     {
-        private readonly SortedList<float, T> _sortedList;
+        private readonly SortedList<double, T> _sortedList;
         private readonly ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue;
         private readonly object _syncRoot = new object();
 
-        public SortedSet() : this(new SortedList<float, T>(new DuplicateKeyComparer<float>()))
+        public SortedSet() : this(new SortedList<double, T>(new DuplicateKeyComparer<double>()))
         { }
 
-        private SortedSet(SortedList<float, T> sortedList)
+        private SortedSet(SortedList<double, T> sortedList)
         {
             _sortedList = sortedList;
             _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
@@ -102,7 +102,7 @@ namespace Take.Elephant.Memory
             return item.AsCompletedTask();
         }
 
-        public Task EnqueueAsync(T item, float score)
+        public Task EnqueueAsync(T item, double score)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             lock (_syncRoot)
