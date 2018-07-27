@@ -7,13 +7,7 @@ namespace Take.Elephant
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IPriorityQueue<T> : IPriorityReceiverQueue<T>, IPrioritySenderQueue<T>
-    {
-        /// <summary>
-        /// Gets the number of items in the queue.
-        /// </summary>
-        /// <returns></returns>
-        Task<long> GetLengthAsync();
-    }
+    { }
 
     public interface IPriorityReceiverQueue<T>
     {
