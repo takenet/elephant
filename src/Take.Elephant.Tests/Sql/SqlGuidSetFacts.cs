@@ -6,7 +6,7 @@ using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Tests.Sql
 {
-    public abstract class SqlGuidSetFacts : GuidSetFacts
+    public abstract class SqlGuidSetFacts : GuidItemSetFacts
     {
         private readonly ISqlFixture _serverFixture;
 

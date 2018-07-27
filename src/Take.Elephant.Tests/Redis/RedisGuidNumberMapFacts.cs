@@ -7,7 +7,7 @@ namespace Take.Elephant.Tests.Redis
 {
     [Trait("Category", nameof(Redis))]
     [Collection(nameof(Redis))]
-    public class RedisGuidNumberMapFacts : GuidNumberMapFacts
+    public class RedisGuidNumberMapFacts : GuidItemNumberMapFacts
     {
         private readonly RedisFixture _redisFixture;
 

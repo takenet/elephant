@@ -82,12 +82,12 @@ namespace Take.Elephant.Tests
                 queue.DequeueAsync(cts.Token));
         }
 
-        [Fact(DisplayName = "DequeueMultipleItemsInParallelSucceeds")]
-        public virtual async Task DequeueMultipleItemsInParallelSucceeds()
+        [Fact(DisplayName = "DequeueBlockingMultipleItemsInParallelSucceeds")]
+        public virtual async Task DequeueBlockingMultipleItemsInParallelSucceeds()
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var items = new List<T>();;
+            var items = new List<T>();
             var count = 100;
             for (var i = 0; i < count; i++)
             {

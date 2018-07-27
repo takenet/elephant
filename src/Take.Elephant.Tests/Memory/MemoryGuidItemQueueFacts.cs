@@ -4,7 +4,7 @@ using Xunit;
 namespace Take.Elephant.Tests.Memory
 {
     [Trait("Category", nameof(Memory))]
-    public class MemoryGuidQueueFacts : GuidQueueFacts
+    public class MemoryGuidItemQueueFacts : GuidItemQueueFacts
     {
         public override IQueue<Guid> Create()
         {
