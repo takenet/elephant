@@ -7,21 +7,21 @@ namespace Take.Elephant.Tests.Redis
 {
     [Trait("Category", nameof(Redis))]
     [Collection(nameof(Redis))]
-    public class RedisGuidSetFacts : GuidItemSetFacts
+    public class RedisGuidItemQueueFacts : GuidItemQueueFacts
     {
         private readonly RedisFixture _redisFixture;
 
-        public RedisGuidSetFacts(RedisFixture redisFixture)
+        public RedisGuidItemQueueFacts(RedisFixture redisFixture)
         {
             _redisFixture = redisFixture;            
         }
 
-        public override ISet<Guid> Create()
+        public override IQueue<Guid> Create()
         {
-            var db = 1;
+            int db = 2;
             _redisFixture.Server.FlushDatabase(db);
             const string setName = "guids";            
-            return new RedisSet<Guid>(setName, _redisFixture.Connection.Configuration, new ValueSerializer<Guid>(), db);
+            return new RedisQueue<Guid>(setName, _redisFixture.Connection.Configuration, new ValueSerializer<Guid>(), db);
         }
     }
 }
