@@ -10,5 +10,17 @@ namespace Take.Elephant.Tests.Memory
         {
             return new ListMap<Guid, Item>();
         }
+
+        public override IList<Item> CreateValue(Guid key, bool populate)
+        {
+            var list = new List<Item>();
+            if (populate)
+            {
+                list.AddAsync(Fixture.Create<Item>()).Wait();
+                list.AddAsync(Fixture.Create<Item>()).Wait();
+                list.AddAsync(Fixture.Create<Item>()).Wait();
+            }
+            return list;
+        }
     }
 }
