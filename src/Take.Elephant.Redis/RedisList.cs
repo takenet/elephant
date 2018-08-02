@@ -11,10 +11,7 @@ namespace Take.Elephant.Redis
     /// <typeparam name="T"></typeparam>   
     public class RedisList<T> : StorageBase<T>, IList<T>
     {
-
         private readonly ISerializer<T> _serializer;
-
-        #region constructors
 
         public RedisList(string listName, string configuration, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
             : this(listName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags)
@@ -27,8 +24,6 @@ namespace Take.Elephant.Redis
             _serializer = serializer;
         }
 
-        #endregion
-
         public Task AddAsync(T value)
         {
             var database = GetDatabase();
@@ -38,7 +33,7 @@ namespace Take.Elephant.Redis
         public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
         {
             var database = GetDatabase();
-            var values = await database.ListRangeAsync(Name);
+            var values = await database.ListRangeAsync(Name).ConfigureAwait(false);
             return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
         }
 
@@ -48,10 +43,10 @@ namespace Take.Elephant.Redis
             return database.ListLengthAsync(Name);
         }
 
-        public async Task<long> RemoveAllAsync(T value)
+        public Task<long> RemoveAllAsync(T value)
         {
             var database = GetDatabase();
-            return await database.ListRemoveAsync(Name, _serializer.Serialize(value));
+            return database.ListRemoveAsync(Name, _serializer.Serialize(value));
         }
     }
 }
