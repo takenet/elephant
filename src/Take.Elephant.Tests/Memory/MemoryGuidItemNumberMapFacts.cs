@@ -5,7 +5,7 @@ using Xunit;
 namespace Take.Elephant.Tests.Memory
 {
     [Trait("Category", nameof(Memory))]
-    public class MemoryGuidNumberMapFacts : GuidNumberMapFacts
+    public class MemoryGuidItemNumberMapFacts : GuidItemNumberMapFacts
     {
         public override INumberMap<Guid> Create()
         {

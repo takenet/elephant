@@ -47,7 +47,6 @@ namespace Take.Elephant.Tests
             AssertEquals(await queue.GetLengthAsync(), 0);
         }
 
-
         [Fact(DisplayName = "EnqueueMultipleItemsSucceeds")]
         public virtual async Task EnqueueMultipleItemsSucceeds()
         {
@@ -76,7 +75,7 @@ namespace Take.Elephant.Tests
             {
                 var item = await queue.DequeueOrDefaultAsync();
                 AssertIsTrue(items.Contains(item));
-            }                        
+            }
             AssertEquals(await queue.GetLengthAsync(), 0);
         }
 
@@ -94,13 +93,12 @@ namespace Take.Elephant.Tests
             AssertEquals(await queue.GetLengthAsync(), 0);
         }
 
-
         [Fact(DisplayName = "DequeueMultipleItemsInParallelSucceeds")]
         public virtual async Task DequeueMultipleItemsInParallelSucceeds()
         {
             // Arrange
             var queue = Create();
-            var items = new HashSet<T>(); ;
+            var items = new HashSet<T>();
             var count = 100;
             for (var i = 0; i < count; i++)
             {

@@ -2,7 +2,7 @@ using System;
 
 namespace Take.Elephant.Tests
 {
-    public abstract class GuidSetFacts : SetFacts<Guid>
+    public abstract class GuidItemSetFacts : SetFacts<Guid>
     {
     }
 }
