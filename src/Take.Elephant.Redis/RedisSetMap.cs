@@ -1,8 +1,8 @@
-﻿using System;
+﻿using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using StackExchange.Redis;
 
 namespace Take.Elephant.Redis
 {
@@ -31,7 +31,7 @@ namespace Take.Elephant.Redis
             if (value == null) throw new ArgumentNullException(nameof(value));
 
             var internalSet = value as InternalSet;
-            if (internalSet != null) return internalSet.Key.Equals(key) && overwrite;            
+            if (internalSet != null) return internalSet.Key.Equals(key) && overwrite;
 
             var database = GetDatabase() as IDatabase;
             if (database == null) throw new NotSupportedException("The database instance type is not supported");
@@ -75,7 +75,7 @@ namespace Take.Elephant.Redis
         public override Task<bool> TryRemoveAsync(TKey key)
         {
             var database = GetDatabase();
-            return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);            
+            return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key)
@@ -95,10 +95,10 @@ namespace Take.Elephant.Redis
 
             public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags, ITransaction transaction = null, bool useScanOnEnumeration = true)
                 : base(setName, connectionMultiplexer, serializer, db, readFlags, writeFlags, useScanOnEnumeration)
-            {                
+            {
                 if (key == null) throw new ArgumentNullException(nameof(key));
                 Key = key;
- 
+
                 _transaction = transaction;
             }
 

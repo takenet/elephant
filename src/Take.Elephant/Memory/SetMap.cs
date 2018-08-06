@@ -19,7 +19,6 @@ namespace Take.Elephant.Memory
         public SetMap()
             : this(EqualityComparer<TItem>.Default)
         {
-
         }
 
         public SetMap(IEqualityComparer<TItem> valueEqualityComparer)
@@ -51,7 +50,7 @@ namespace Take.Elephant.Memory
             return default(TItem);
         }
 
-        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key) 
+        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
             => InternalDictionary.GetOrAdd(key, k => ValueFactory()).AsCompletedTask();
 
         public virtual Task<QueryResult<TItem>> QueryAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TItem, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
@@ -110,7 +109,7 @@ namespace Take.Elephant.Memory
             }
 
             var predicate = where.Compile();
-            var totalValues = this.InternalDictionary                
+            var totalValues = this.InternalDictionary
                 .Where(pair =>
                     pair.Value.AsEnumerableAsync().Result.Any(m =>
                         predicate.Invoke(m)));
