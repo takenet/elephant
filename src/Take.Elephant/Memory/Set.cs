@@ -16,25 +16,21 @@ namespace Take.Elephant.Memory
         public Set()
             : this(EqualityComparer<T>.Default)
         {
-
         }
 
         public Set(IEqualityComparer<T> equalityComparer)
             : this(new HashSet<T>(equalityComparer))
         {
-            
         }
 
         public Set(IEnumerable<T> collection)
             : this(collection, EqualityComparer<T>.Default)
         {
-
         }
 
         public Set(IEnumerable<T> collection, IEqualityComparer<T> equalityComparer)
             : this(new HashSet<T>(collection, equalityComparer))
         {
-
         }
 
         private Set(HashSet<T> hashSet)
@@ -66,7 +62,7 @@ namespace Take.Elephant.Memory
                 return Task.FromResult(_hashSet.Remove(value));
             }
         }
-       
+
         public virtual Task<bool> ContainsAsync(T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));

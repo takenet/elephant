@@ -1,9 +1,25 @@
-﻿using Ploeh.AutoFixture;
+﻿using NFluent;
+using Ploeh.AutoFixture;
 
 namespace Take.Elephant.Tests
 {
     public abstract class ListMapFacts<TKey, TValue> : MapFacts<TKey, IList<TValue>>
     {
+        public override void AssertEquals<T>(T actual, T expected)
+        {
+            if (typeof(IList<TValue>).IsAssignableFrom(typeof(T)) &&
+                actual != null && expected != null)
+            {
+                var actualSet = (IList<TValue>)actual;
+                var expectedSet = (IList<TValue>)expected;
+                Check.That(actualSet.AsEnumerableAsync().Result.ToListAsync().Result).Contains(expectedSet.AsEnumerableAsync().Result.ToListAsync().Result);
+            }
+            else
+            {
+                base.AssertEquals(actual, expected);
+            }
+        }
+
         public virtual TValue CreateItem()
         {
             return Fixture.Create<TValue>();

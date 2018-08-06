@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Memory
 {
     /// <summary>
-    /// Implements the <see cref="ILIst{T}"/> interface using the <see cref="System.Collections.Generic.List{T}"/> class.
+    /// Implements the <see cref="IList{T}"/> interface using the <see cref="System.Collections.Generic.List{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class List<T> : Collection<T>, IList<T>
@@ -17,12 +13,9 @@ namespace Take.Elephant.Memory
 
         private object _syncRoot = new object();
 
-
         public List()
             : this(new System.Collections.Generic.List<T>())
-        {
-            
-        }
+        { }
 
         private List(System.Collections.Generic.List<T> list)
             : base(list)
