@@ -1,5 +1,5 @@
-﻿using System;
-using Ploeh.AutoFixture;
+﻿using Ploeh.AutoFixture;
+using System;
 using Take.Elephant.Memory;
 
 namespace Take.Elephant.Tests.Memory
