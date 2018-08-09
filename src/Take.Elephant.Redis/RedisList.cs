@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 namespace Take.Elephant.Redis
 {
     /// <summary>
-    /// Implements the <see cref="IList{T}"/> interface using Redis set data structure.
+    /// Implements the <see cref="IListAddableOnHead{T}"/> interface using Redis set data structure.
     /// </summary>
-    /// <typeparam name="T"></typeparam>   
-    public class RedisList<T> : StorageBase<T>, IList<T>
+    /// <typeparam name="T"></typeparam>
+    public class RedisList<T> : StorageBase<T>, IListAddableOnHead<T>
     {
         private readonly ISerializer<T> _serializer;
 
@@ -28,6 +28,12 @@ namespace Take.Elephant.Redis
         {
             var database = GetDatabase();
             return database.ListRightPushAsync(Name, _serializer.Serialize(value));
+        }
+
+        public Task AddToStartAsync(T value)
+        {
+            var database = GetDatabase();
+            return database.ListLeftPushAsync(Name, _serializer.Serialize(value));
         }
 
         public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
