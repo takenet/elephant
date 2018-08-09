@@ -16,6 +16,6 @@ namespace Take.Elephant
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns></returns>
-        Task AddToStartAsync(T value);
+        Task AddToHeadAsync(T value);
     }
 }

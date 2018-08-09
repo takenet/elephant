@@ -30,7 +30,7 @@ namespace Take.Elephant.Redis
             return database.ListRightPushAsync(Name, _serializer.Serialize(value));
         }
 
-        public Task AddToStartAsync(T value)
+        public Task AddToHeadAsync(T value)
         {
             var database = GetDatabase();
             return database.ListLeftPushAsync(Name, _serializer.Serialize(value));

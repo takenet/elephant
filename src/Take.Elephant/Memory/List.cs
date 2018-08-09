@@ -32,7 +32,7 @@ namespace Take.Elephant.Memory
             return TaskUtil.CompletedTask;
         }
 
-        public Task AddToStartAsync(T value)
+        public Task AddToHeadAsync(T value)
         {
             lock (_syncRoot)
             {

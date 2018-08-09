@@ -13,8 +13,8 @@ namespace Take.Elephant.Tests
             return Fixture.Create<T>();
         }
 
-        [Fact(DisplayName = nameof(AddNewItemToStartSucceeds))]
-        public virtual async Task AddNewItemToStartSucceeds()
+        [Fact(DisplayName = nameof(AddNewItemToHeadSucceeds))]
+        public virtual async Task AddNewItemToHeadSucceeds()
         {
             // Arrange
             var list = Create();
@@ -23,7 +23,7 @@ namespace Take.Elephant.Tests
 
             // Act
             await list.AddAsync(item);
-            await list.AddToStartAsync(item2);
+            await list.AddToHeadAsync(item2);
 
             // Assert
             AssertEquals(await list.GetLengthAsync(), 2);
