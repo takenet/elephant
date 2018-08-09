@@ -74,6 +74,7 @@ namespace Take.Elephant.Tests
             while (await queue.GetLengthAsync() > 0)
             {
                 var item = await queue.DequeueOrDefaultAsync();
+                if (item == null) continue;
                 AssertIsTrue(items.Contains(item));
             }
             AssertEquals(await queue.GetLengthAsync(), 0);

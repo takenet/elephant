@@ -2,73 +2,153 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
+using Microsoft.Azure.ServiceBus.Management;
 
 namespace Take.Elephant.Azure
 {
     public class AzureServiceBusQueue<T> : IBlockingQueue<T>, ICloseable
     {
+        private const int MIN_RECEIVE_TIMEOUT = 250;
+        private const int MAX_RECEIVE_TIMEOUT = 15000;
+
         private readonly ISerializer<T> _serializer;        
         private readonly MessageSender _messageSender;
         private readonly MessageReceiver _messageReceiver;
-        private readonly BufferBlock<Message> _messageBufferBlock;
+        private readonly ManagementClient _managementClient;
+        
+        private readonly string _path;
+        private readonly SemaphoreSlim _queueCreationSemaphore;
+        private bool _queueExists;
+        private QueueDescription _queueDescription;
 
         public AzureServiceBusQueue(
-            string connectionString, 
-            string entityPath, 
+            string connectionString,
+            string path,
             ISerializer<T> serializer,
-            int receiverBoundedCapacity = 1)
+            QueueDescription queueDescription = null)
         {
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));                        
-            _messageSender = new MessageSender(connectionString, entityPath);
-            _messageReceiver = new MessageReceiver(connectionString, entityPath);            
-            _messageBufferBlock = new BufferBlock<Message>(
-                new DataflowBlockOptions()
-                {
-                    BoundedCapacity = receiverBoundedCapacity,
-                    EnsureOrdered = true
-                });           
-            _messageReceiver.RegisterMessageHandler(
-                _messageBufferBlock.SendAsync,
-                args => Task.CompletedTask);
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _path = path;
+            _messageSender = new MessageSender(connectionString, path);
+            _messageReceiver = new MessageReceiver(connectionString, path, ReceiveMode.PeekLock);            
+            _managementClient = new ManagementClient(connectionString);
+            _queueCreationSemaphore = new SemaphoreSlim(1, 1);
+            _queueDescription = queueDescription;            
         }
 
-        public Task EnqueueAsync(T item)
-        {            
+        public async Task EnqueueAsync(T item)
+        {
+            await CreateQueueIfNotExistsAsync();
             var serializedItem = _serializer.Serialize(item);
-            return _messageSender.SendAsync(new Message(Encoding.UTF8.GetBytes(serializedItem)));            
+            await _messageSender.SendAsync(new Message(Encoding.UTF8.GetBytes(serializedItem)));
         }
 
-        public Task<T> DequeueOrDefaultAsync()
+        public async Task<T> DequeueOrDefaultAsync()
         {
-            if (!_messageBufferBlock.TryReceive(out var message))
-            {
-                return default(T).AsCompletedTask();
-            }
+            await CreateQueueIfNotExistsAsync();
 
-            return CreateItemAndCompleteAsync(message);
+            try
+            {
+                var message = await _messageReceiver.ReceiveAsync(
+                    TimeSpan.FromMilliseconds(MIN_RECEIVE_TIMEOUT));
+                if (message != null)
+                {
+                    return await CreateItemAndCompleteAsync(message);
+                }
+            }
+            catch (ServiceBusTimeoutException) { }
+
+            return default(T);
         }
-        
+
+
         public async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
-            var message = await _messageBufferBlock.ReceiveAsync(cancellationToken);
-            return await CreateItemAndCompleteAsync(message);
+            await CreateQueueIfNotExistsAsync(cancellationToken);
+
+            var tryCount = 0;
+
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                try
+                {
+                    tryCount++;
+                    var timeout = tryCount * MIN_RECEIVE_TIMEOUT;
+                    if (timeout > MAX_RECEIVE_TIMEOUT)
+                    {
+                        timeout = MAX_RECEIVE_TIMEOUT;
+                    }
+                    
+                    var message = await _messageReceiver.ReceiveAsync(
+                        TimeSpan.FromMilliseconds(timeout));
+                    if (message != null)
+                    {
+                        return await CreateItemAndCompleteAsync(message);
+                    }
+                }
+                catch (ServiceBusTimeoutException) { }
+            }
         }
 
-        public Task<long> GetLengthAsync()
+        public async Task<long> GetLengthAsync()
         {
-            throw new NotImplementedException();          
+            await CreateQueueIfNotExistsAsync();
+           
+            var queueRuntimeInfo = await _managementClient.GetQueueRuntimeInfoAsync(_path);
+            return queueRuntimeInfo.MessageCount;
         }
 
-        public Task CloseAsync(CancellationToken cancellationToken)
+        public async Task CloseAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             
-            return Task.WhenAll(
+            await Task.WhenAll(
                 _messageSender.CloseAsync(),
-                _messageReceiver.CloseAsync());
+                _messageReceiver.CloseAsync(),
+                _managementClient.CloseAsync());
+        }
+
+        private async Task CreateQueueIfNotExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (_queueExists) return;
+
+            await _queueCreationSemaphore.WaitAsync(cancellationToken);
+            try
+            {
+                if (_queueExists) return;
+
+                _queueExists = await _managementClient.QueueExistsAsync(_path, cancellationToken);
+
+                if (!_queueExists)
+                {
+                    if (_queueDescription != null)
+                    {
+                        _queueDescription.Path = _path;
+                    }
+
+                    try
+                    {
+                        _queueDescription = await _managementClient.CreateQueueAsync(
+                            _queueDescription ??
+                            new QueueDescription(_path),
+                            cancellationToken);
+                    }
+                    catch (MessagingEntityAlreadyExistsException)
+                    {
+                        // Concurrency creation handling
+                    }
+
+                    _queueExists = true;
+                }
+            }
+            finally
+            {
+                _queueCreationSemaphore.Release();
+            }
         }
 
         private async Task<T> CreateItemAndCompleteAsync(Message message)

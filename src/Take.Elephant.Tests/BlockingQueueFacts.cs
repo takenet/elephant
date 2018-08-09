@@ -37,7 +37,7 @@ namespace Take.Elephant.Tests
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var timeout = TimeSpan.FromMilliseconds(500);
+            var timeout = TimeSpan.FromMilliseconds(5000);
             var cts = new CancellationTokenSource(timeout);
             
             // Act
@@ -51,7 +51,7 @@ namespace Take.Elephant.Tests
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
             var item = Fixture.Create<T>();
-            var timeout = TimeSpan.FromMilliseconds(500);
+            var timeout = TimeSpan.FromMilliseconds(1000);
             var cts = new CancellationTokenSource(timeout + timeout);
 
             // Act
