@@ -31,7 +31,7 @@ namespace Take.Elephant.Redis
             return database.ListRightPushAsync(Name, _serializer.Serialize(value));
         }
 
-        public async Task AddToPositionAsync(T value, int position = 0)
+        public async Task AddToPositionAsync(T value, int position)
         {
             var database = GetDatabase();
             try
