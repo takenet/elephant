@@ -71,7 +71,7 @@ namespace Take.Elephant.Redis
             return null;
         }
 
-        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             return CreateSet(key).AsCompletedTask<ISet<TItem>>();
         }

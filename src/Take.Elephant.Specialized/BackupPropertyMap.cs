@@ -25,27 +25,24 @@ namespace Take.Elephant.Specialized
             
         }
 
-        public virtual Task<bool> TryAddAsync(TKey key,
-            TValue value,
-            bool overwrite = false,
-            CancellationToken cancellationToken = default)
+        public virtual Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false, CancellationToken cancellationToken = default)
         {
-            return ExecuteWriteFunc(m => m.TryAddAsync(key, value, overwrite));
+            return ExecuteWriteFunc(m => m.TryAddAsync(key, value, overwrite, cancellationToken));
         }
 
         public virtual Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            return ExecuteQueryFunc(m => m.GetValueOrDefaultAsync(key));
+            return ExecuteQueryFunc(m => m.GetValueOrDefaultAsync(key, cancellationToken));
         }
 
         public virtual Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            return ExecuteWriteFunc(m => m.TryRemoveAsync(key));
+            return ExecuteWriteFunc(m => m.TryRemoveAsync(key, cancellationToken));
         }
 
         public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            return ExecuteQueryFunc(m => m.ContainsKeyAsync(key));
+            return ExecuteQueryFunc(m => m.ContainsKeyAsync(key, cancellationToken));
         }
 
         public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)

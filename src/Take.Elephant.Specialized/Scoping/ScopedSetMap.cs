@@ -28,7 +28,8 @@ namespace Take.Elephant.Specialized.Scoping
             return _removeOnEmptySet ? new SetWrapper(key, items, _scope, Identifier, _keySerializer) : items;
         }
 
-        public virtual async Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        public virtual async Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key,
+            CancellationToken cancellationToken = default)
         {
             var setMap = (ISetMap<TKey, TItem>) Map;
             var items = await setMap.GetValueOrEmptyAsync(key);            

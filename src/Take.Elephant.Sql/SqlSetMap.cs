@@ -111,7 +111,7 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));            
             var keyColumnValues = KeyMapper.GetColumnValues(key);

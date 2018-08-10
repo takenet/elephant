@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Specialized
@@ -26,9 +27,9 @@ namespace Take.Elephant.Specialized
         {
         }
 
-        public virtual Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key)
+        public virtual Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            return ExecuteQueryFunc(m => ((ISetMap<TKey, TValue>)m).GetValueOrEmptyAsync(key));            
+            return ExecuteQueryFunc(m => ((ISetMap<TKey, TValue>)m).GetValueOrEmptyAsync(key, cancellationToken));
         }
     }
 }
