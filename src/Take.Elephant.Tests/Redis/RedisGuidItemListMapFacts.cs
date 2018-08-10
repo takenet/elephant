@@ -20,14 +20,14 @@ namespace Take.Elephant.Tests.Redis
             _db = 1;
         }
 
-        public override IMap<Guid, IList<Item>> Create()
+        public override IMap<Guid, IPositionList<Item>> Create()
         {
             _redisFixture.Server.FlushDatabase(_db);
             var setMap = new RedisListMap<Guid, Item>(MapName, _redisFixture.Connection.Configuration, new ItemSerializer(), _db);
             return setMap;
         }
 
-        public override IList<Item> CreateValue(Guid key, bool populate)
+        public override IPositionList<Item> CreateValue(Guid key, bool populate)
         {
             var set = new List<Item>();
             if (populate)

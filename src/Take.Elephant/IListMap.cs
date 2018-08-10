@@ -10,7 +10,7 @@ namespace Take.Elephant
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TItem"></typeparam>
-    public interface IListMap<TKey, TItem> : IMap<TKey, IList<TItem>>
+    public interface IListMap<TKey, TItem> : IMap<TKey, IPositionList<TItem>>
     {
         /// <summary>
         /// Gets the value for the key if the exists or a new list for the type, if not.
@@ -18,6 +18,6 @@ namespace Take.Elephant
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>An existing list if the key exists; otherwise, an empty list.</returns>
-        Task<IList<TItem>> GetValueOrEmptyAsync(TKey key);
+        Task<IPositionList<TItem>> GetValueOrEmptyAsync(TKey key);
     }
 }

@@ -6,12 +6,12 @@ namespace Take.Elephant.Tests.Memory
 {
     public class MemoryGuidItemListMapFacts : GuidItemListMapFacts
     {
-        public override IMap<Guid, IList<Item>> Create()
+        public override IMap<Guid, IPositionList<Item>> Create()
         {
             return new ListMap<Guid, Item>();
         }
 
-        public override IList<Item> CreateValue(Guid key, bool populate)
+        public override IPositionList<Item> CreateValue(Guid key, bool populate)
         {
             var list = new List<Item>();
             if (populate)
