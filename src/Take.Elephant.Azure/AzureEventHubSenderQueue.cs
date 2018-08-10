@@ -24,7 +24,7 @@ namespace Take.Elephant.Azure
             _eventHubClient = EventHubClient.CreateFromConnectionString(connectionStringBuilder.ToString());
         }
         
-        public Task EnqueueAsync(T item)
+        public Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             var serializedItem = _serializer.Serialize(item);

@@ -38,14 +38,14 @@ namespace Take.Elephant.Azure
             _queueDescription = queueDescription;
         }
 
-        public async Task EnqueueAsync(T item)
+        public async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync();
             var serializedItem = _serializer.Serialize(item);
             await _messageSender.SendAsync(new Message(Encoding.UTF8.GetBytes(serializedItem)));
         }
 
-        public async Task<T> DequeueOrDefaultAsync()
+        public async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync();
 
@@ -95,7 +95,7 @@ namespace Take.Elephant.Azure
             }
         }
 
-        public async Task<long> GetLengthAsync()
+        public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync();
            

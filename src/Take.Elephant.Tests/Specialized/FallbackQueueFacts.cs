@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using Ploeh.AutoFixture;
@@ -31,7 +32,7 @@ namespace Take.Elephant.Tests.Specialized
             var queue = Create(master.Object, slave);
             var item = Fixture.Create<T>();
             master
-                .Setup(q => q.EnqueueAsync(It.IsAny<T>()))
+                .Setup(q => q.EnqueueAsync(It.IsAny<T>(), It.IsAny<CancellationToken>()))
                 .Throws(new Exception());
 
             // Act
@@ -41,7 +42,7 @@ namespace Take.Elephant.Tests.Specialized
             AssertEquals(await slave.GetLengthAsync(), 1);
             AssertEquals(await slave.DequeueOrDefaultAsync(), item);
             AssertEquals(await slave.GetLengthAsync(), 0);
-            master.Verify(q => q.EnqueueAsync(item), Times.Once);
+            master.Verify(q => q.EnqueueAsync(item, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact(DisplayName = "EnqueueMultipleTimesWhenMasterIsDownShouldSynchronizeAfterRecovery")]
@@ -58,7 +59,7 @@ namespace Take.Elephant.Tests.Specialized
             var item5 = Fixture.Create<T>();
             var item6 = Fixture.Create<T>();
             master
-                .SetupSequence(q => q.EnqueueAsync(It.IsAny<T>()))
+                .SetupSequence(q => q.EnqueueAsync(It.IsAny<T>(), It.IsAny<CancellationToken>()))
                     .Returns(TaskUtil.CompletedTask)
                     .Throws(new Exception())
                     .Throws(new Exception())
@@ -79,12 +80,12 @@ namespace Take.Elephant.Tests.Specialized
 
             // Assert
             AssertEquals(await slave.GetLengthAsync(), 0);
-            master.Verify(q => q.EnqueueAsync(item1), Times.Once);
-            master.Verify(q => q.EnqueueAsync(item2), Times.Exactly(2));
-            master.Verify(q => q.EnqueueAsync(item3), Times.Exactly(2));
-            master.Verify(q => q.EnqueueAsync(item4), Times.Once);
-            master.Verify(q => q.EnqueueAsync(item5), Times.Exactly(2));
-            master.Verify(q => q.EnqueueAsync(item6), Times.Once);
+            master.Verify(q => q.EnqueueAsync(item1, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(q => q.EnqueueAsync(item2, It.IsAny<CancellationToken>()), Times.Exactly(2));
+            master.Verify(q => q.EnqueueAsync(item3, It.IsAny<CancellationToken>()), Times.Exactly(2));
+            master.Verify(q => q.EnqueueAsync(item4, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(q => q.EnqueueAsync(item5, It.IsAny<CancellationToken>()), Times.Exactly(2));
+            master.Verify(q => q.EnqueueAsync(item6, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact(DisplayName = "EnqueueMultipleTimesWhenMasterIsUpShouldNotSynchronize")]
@@ -98,7 +99,7 @@ namespace Take.Elephant.Tests.Specialized
             var item2 = Fixture.Create<T>();
             var item3 = Fixture.Create<T>();
             master
-                .SetupSequence(q => q.EnqueueAsync(It.IsAny<T>()))
+                .SetupSequence(q => q.EnqueueAsync(It.IsAny<T>(), It.IsAny<CancellationToken>()))
                     .Returns(TaskUtil.CompletedTask)
                     .Returns(TaskUtil.CompletedTask)
                     .Returns(TaskUtil.CompletedTask);
@@ -110,9 +111,9 @@ namespace Take.Elephant.Tests.Specialized
 
             // Assert
             AssertEquals(await slave.GetLengthAsync(), 0);
-            master.Verify(q => q.EnqueueAsync(item1), Times.Once);
-            master.Verify(q => q.EnqueueAsync(item2), Times.Once);
-            master.Verify(q => q.EnqueueAsync(item3), Times.Once);
+            master.Verify(q => q.EnqueueAsync(item1, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(q => q.EnqueueAsync(item2, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(q => q.EnqueueAsync(item3, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact(DisplayName = "DequeueWhenMasterIsDownShouldSucceed")]
@@ -124,10 +125,10 @@ namespace Take.Elephant.Tests.Specialized
             var queue = Create(master.Object, slave);
             var item = Fixture.Create<T>();
             master
-                .Setup(q => q.EnqueueAsync(It.IsAny<T>()))
+                .Setup(q => q.EnqueueAsync(It.IsAny<T>(), It.IsAny<CancellationToken>()))
                 .Throws(new Exception());
             master
-                .Setup(q => q.DequeueOrDefaultAsync())
+                .Setup(q => q.DequeueOrDefaultAsync(It.IsAny<CancellationToken>()))
                 .Throws(new Exception());
 
             // Act

@@ -39,17 +39,17 @@ namespace Take.Elephant.Memory
                 _queue = queue;
             }
 
-            public virtual Task EnqueueAsync(T item)
+            public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
             {
                 return _queue.EnqueueAsync(item);
             }
 
-            public virtual Task<T> DequeueOrDefaultAsync()
+            public virtual Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
             {
                 return _queue.DequeueOrDefaultAsync();
             }
 
-            public virtual Task<long> GetLengthAsync()
+            public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
             {
                 return _queue.GetLengthAsync();
             }

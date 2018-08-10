@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Take.Elephant
 {
@@ -11,8 +12,9 @@ namespace Take.Elephant
         /// <summary>
         /// Gets the number of items in the queue.
         /// </summary>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<long> GetLengthAsync();
+        Task<long> GetLengthAsync(CancellationToken cancellationToken = default);
     }
 
     public interface IReceiverQueue<T>
@@ -20,8 +22,9 @@ namespace Take.Elephant
         /// <summary>
         /// Dequeues an item from the queue, if available.
         /// </summary>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<T> DequeueOrDefaultAsync();
+        Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default);
     }
 
     public interface ISenderQueue<T>
@@ -30,7 +33,8 @@ namespace Take.Elephant
         /// Enqueues an item.
         /// </summary>
         /// <param name="item"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task EnqueueAsync(T item);
+        Task EnqueueAsync(T item, CancellationToken cancellationToken = default);
     }
 }
