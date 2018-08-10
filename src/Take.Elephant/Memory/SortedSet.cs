@@ -27,7 +27,7 @@ namespace Take.Elephant.Memory
             _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
         }
 
-        public Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_sortedList.Values));
 
         public Task<T> DequeueMaxAsync(CancellationToken cancellationToken)
@@ -125,7 +125,7 @@ namespace Take.Elephant.Memory
             }
         }
 
-        public Task<long> GetLengthAsync()
+        public Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             return _sortedList.LongCount().AsCompletedTask();
         }

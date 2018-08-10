@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Sql.Mapping;
 
@@ -27,7 +28,10 @@ namespace Take.Elephant.Sql
 
         }
 
-        public virtual async Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
+        public virtual async Task<bool> TryAddAsync(TKey key,
+            TValue value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -45,7 +49,8 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task<TValue> GetValueOrDefaultAsync(TKey key)
+        public virtual async Task<TValue> GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -66,7 +71,7 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task<bool> TryRemoveAsync(TKey key)
+        public virtual async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -77,7 +82,7 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task<bool> ContainsKeyAsync(TKey key)
+        public virtual async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Take.Elephant
 {
@@ -15,28 +16,32 @@ namespace Take.Elephant
         /// <param name="key">The item key</param>
         /// <param name="value">The value.</param>
         /// <param name="overwrite">Indicates if the item should be overwritten if the key already exists.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false);
+        Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets the value for the key if the exists or default for the type, if not.
         /// </summary>
         /// <param name="key">The key.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>The mapper value if the key exists; otherwise, the <see cref="TValue"/> default value.</returns>
-        Task<TValue> GetValueOrDefaultAsync(TKey key);
+        Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Tries the remove the item for the key if it exists on the map.
         /// </summary>
         /// <param name="key">The key.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> TryRemoveAsync(TKey key);
+        Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Checks if the key exists on the map.
         /// </summary>
         /// <param name="key">The key.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> ContainsKeyAsync(TKey key);
+        Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using StackExchange.Redis;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Redis
@@ -51,14 +52,14 @@ namespace Take.Elephant.Redis
             }
         }
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.ListRangeAsync(Name).ConfigureAwait(false);
             return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
         }
 
-        public Task<long> GetLengthAsync()
+        public Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.ListLengthAsync(Name);

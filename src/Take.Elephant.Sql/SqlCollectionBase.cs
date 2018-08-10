@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Sql.Mapping;
 
@@ -14,7 +15,7 @@ namespace Take.Elephant.Sql
 
         }
 
-        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
         {
             var selectColumns = Table.Columns.Keys.ToArray();
             return Task.FromResult<IAsyncEnumerable<T>>(
@@ -25,7 +26,7 @@ namespace Take.Elephant.Sql
                     selectColumns));
         }
 
-        public virtual async Task<long> GetLengthAsync()
+        public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {

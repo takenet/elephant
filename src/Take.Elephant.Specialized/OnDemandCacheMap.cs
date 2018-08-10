@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Specialized
@@ -19,18 +20,21 @@ namespace Take.Elephant.Specialized
             CacheExpiration = cacheExpiration;
         }
 
-        public virtual Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
+        public virtual Task<bool> TryAddAsync(TKey key,
+            TValue value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
             => ExecuteWriteFunc(map => TryAddToMapAsync(key, value, overwrite, map));
 
-        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key) 
+        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default) 
             => ExecuteQueryFunc(
                 map => map.GetValueOrDefaultAsync(key),
                 (result, m) => TryAddToMapAsync(key, result, true, m));
 
-        public virtual Task<bool> TryRemoveAsync(TKey key) 
+        public virtual Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default) 
             => ExecuteWriteFunc(map => map.TryRemoveAsync(key));
 
-        public virtual Task<bool> ContainsKeyAsync(TKey key)
+        public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             return ExecuteQueryFunc(
                 map => map.ContainsKeyAsync(key),
