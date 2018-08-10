@@ -15,9 +15,9 @@ namespace Take.Elephant.Memory
             _collection = collection;
         }
 
-        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync() => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_collection));
+        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default) => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_collection));
 
-        public virtual Task<long> GetLengthAsync() => Task.FromResult<long>(_collection.Count);
+        public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default) => Task.FromResult<long>(_collection.Count);
 
         public virtual Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> where,
             Expression<Func<T, TResult>> select,

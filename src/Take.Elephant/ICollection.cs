@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant
@@ -15,13 +16,15 @@ namespace Take.Elephant
         /// <summary>
         /// Gets an IEnumerable with the values of the collection.
         /// </summary>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IAsyncEnumerable<T>> AsEnumerableAsync();
+        Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets the number of items in the collection.
         /// </summary>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<long> GetLengthAsync();
+        Task<long> GetLengthAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Memory
@@ -39,7 +40,7 @@ namespace Take.Elephant.Memory
             _hashSet = hashSet;
         }
 
-        public virtual Task AddAsync(T value)
+        public virtual Task AddAsync(T value, CancellationToken cancellationToken = default)
         {
             lock (_syncRoot)
             {
@@ -54,7 +55,7 @@ namespace Take.Elephant.Memory
             return TaskUtil.CompletedTask;
         }
 
-        public virtual Task<bool> TryRemoveAsync(T value)
+        public virtual Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             lock (_syncRoot)
@@ -63,7 +64,7 @@ namespace Take.Elephant.Memory
             }
         }
 
-        public virtual Task<bool> ContainsAsync(T value)
+        public virtual Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             return Task.FromResult(_hashSet.Contains(value));

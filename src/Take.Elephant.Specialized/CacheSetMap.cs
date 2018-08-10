@@ -22,9 +22,9 @@ namespace Take.Elephant.Specialized
         public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key,
             CancellationToken cancellationToken = default)
         {
-            var value = await base.GetValueOrDefaultAsync(key).ConfigureAwait(false);
+            var value = await base.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
             if (value == null) return null;            
-            var sourceValue = await Source.GetValueOrDefaultAsync(key).ConfigureAwait(false);
+            var sourceValue = await Source.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
             if (sourceValue == null) return null; // The value might changed in this while, but we are not going to check it.
             return new InternalCacheSet(sourceValue, value);
         }

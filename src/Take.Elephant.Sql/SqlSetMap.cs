@@ -183,7 +183,8 @@ namespace Take.Elephant.Sql
                     .ToDictionary(k => k.Key, k => k.Value);
             }
 
-            public override Task<IAsyncEnumerable<TItem>> AsEnumerableAsync()
+            public override Task<IAsyncEnumerable<TItem>> AsEnumerableAsync(CancellationToken cancellationToken =
+                default)
             {                                
                 var selectColumns = Table.Columns.Keys.ToArray();                
                 return Task.FromResult<IAsyncEnumerable<TItem>>(
@@ -194,7 +195,7 @@ namespace Take.Elephant.Sql
                         selectColumns));
             }
 
-            public override async Task<long> GetLengthAsync()
+            public override async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
             {
                 using (var cancellationTokenSource = CreateCancellationTokenSource())
                 {

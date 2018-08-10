@@ -71,19 +71,19 @@ namespace Take.Elephant.Specialized
                 _addTrigger = addTrigger;
             }
 
-            public async Task AddAsync(T value)
+            public async Task AddAsync(T value, CancellationToken cancellationToken = default)
             {
                 await _set.AddAsync(value).ConfigureAwait(false);
                 await _addTrigger(value).ConfigureAwait(false);
             }
 
-            public Task<IAsyncEnumerable<T>> AsEnumerableAsync() => _set.AsEnumerableAsync();
+            public Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default) => _set.AsEnumerableAsync();
 
-            public Task<bool> ContainsAsync(T value) => _set.ContainsAsync(value);
+            public Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default) => _set.ContainsAsync(value);
 
-            public Task<long> GetLengthAsync() => _set.GetLengthAsync();
+            public Task<long> GetLengthAsync(CancellationToken cancellationToken = default) => _set.GetLengthAsync();
 
-            public Task<bool> TryRemoveAsync(T value) => _set.TryRemoveAsync(value);
+            public Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default) => _set.TryRemoveAsync(value);
         }
 
         private sealed class LazySet<T> : ISet<T>
@@ -95,31 +95,31 @@ namespace Take.Elephant.Specialized
                 _lazySet = new Lazy<Task<ISet<T>>>(factory);
             }
 
-            public async Task AddAsync(T value)
+            public async Task AddAsync(T value, CancellationToken cancellationToken = default)
             {
                 var set = await GetSetAsync().ConfigureAwait(false);
                 await set.AddAsync(value).ConfigureAwait(false);
             }
 
-            public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+            public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
             {
                 var set = await GetSetAsync().ConfigureAwait(false);
                 return await set.AsEnumerableAsync().ConfigureAwait(false);
             }
 
-            public async Task<bool> ContainsAsync(T value)
+            public async Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
             {
                 var set = await GetSetAsync().ConfigureAwait(false);
                 return await set.ContainsAsync(value).ConfigureAwait(false);
             }
 
-            public async Task<long> GetLengthAsync()
+            public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
             {
                 var set = await GetSetAsync().ConfigureAwait(false);
                 return await set.GetLengthAsync().ConfigureAwait(false);
             }
 
-            public async Task<bool> TryRemoveAsync(T value)
+            public async Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default)
             {
                 var set = await GetSetAsync().ConfigureAwait(false);
                 return await set.TryRemoveAsync(value).ConfigureAwait(false);

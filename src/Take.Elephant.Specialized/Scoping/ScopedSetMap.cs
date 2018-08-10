@@ -65,22 +65,23 @@ namespace Take.Elephant.Specialized.Scoping
                 _keySerializer = keySerializer;
             }
 
-            public virtual Task<IAsyncEnumerable<TItem>> AsEnumerableAsync()
+            public virtual Task<IAsyncEnumerable<TItem>> AsEnumerableAsync(CancellationToken cancellationToken =
+                default)
             {
                 return _set.AsEnumerableAsync();
             }
 
-            public virtual Task<long> GetLengthAsync()
+            public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
             {
                 return _set.GetLengthAsync();
             }
 
-            public virtual Task AddAsync(TItem value)
+            public virtual Task AddAsync(TItem value, CancellationToken cancellationToken = default)
             {
                 return _set.AddAsync(value);
             }
 
-            public virtual async Task<bool> TryRemoveAsync(TItem value)
+            public virtual async Task<bool> TryRemoveAsync(TItem value, CancellationToken cancellationToken = default)
             {
                 if (!await _set.TryRemoveAsync(value).ConfigureAwait(false)) return false;
                 if (await GetLengthAsync() == 0)
@@ -90,7 +91,7 @@ namespace Take.Elephant.Specialized.Scoping
                 return true;
             }
 
-            public virtual Task<bool> ContainsAsync(TItem value)
+            public virtual Task<bool> ContainsAsync(TItem value, CancellationToken cancellationToken = default)
             {
                 return _set.ContainsAsync(value);
             }
