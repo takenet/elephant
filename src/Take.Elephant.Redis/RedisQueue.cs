@@ -31,7 +31,6 @@ namespace Take.Elephant.Redis
             SubscribeChannel();
         }
 
-        #region IQueue<T> Members
 
         public virtual async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {            
@@ -78,11 +77,7 @@ namespace Take.Elephant.Redis
             var database = GetDatabase();
             return database.ListLengthAsync(Name, ReadFlags);
         }
-
-        #endregion
-
-        #region IBlockingQueue<T> Members
-
+    
         public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<T>();
@@ -93,8 +88,6 @@ namespace Take.Elephant.Redis
                 return await tcs.Task.ConfigureAwait(false);
             }
         }
-
-        #endregion
 
         private void SubscribeChannel()
         {
