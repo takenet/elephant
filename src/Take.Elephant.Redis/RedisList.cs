@@ -46,9 +46,9 @@ namespace Take.Elephant.Redis
                     await database.ListInsertBeforeAsync(Name, pivot, _serializer.Serialize(value));
                 }
             }
-            catch (ArgumentException e)
+            catch (ArgumentException ex)
             {
-                throw new ArgumentOutOfRangeException(e.Message, e);
+                throw new ArgumentOutOfRangeException(ex.Message, ex);
             }
         }
 
