@@ -7,17 +7,17 @@ namespace Take.Elephant.Tests.Redis
 {
     [Trait("Category", nameof(Redis))]
     [Collection(nameof(Redis))]
-    public class RedisGuidItemListAddableOnHeadFacts : GuidItemListAddableOnHeadFacts
+    public class RedisGuidItemPositionListFacts : GuidItemPositionListFacts
     {
         private readonly RedisFixture _redisFixture;
         public const string ListName = "guid-list-items";
 
-        public RedisGuidItemListAddableOnHeadFacts(RedisFixture redisFixture)
+        public RedisGuidItemPositionListFacts(RedisFixture redisFixture)
         {
             _redisFixture = redisFixture;
         }
 
-        public override IListAddableOnHead<Guid> Create()
+        public override IPositionList<Guid> Create()
         {
             int db = 2;
             _redisFixture.Server.FlushDatabase(db);

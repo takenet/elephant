@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 namespace Take.Elephant.Redis
 {
     /// <summary>
-    /// Implements the <see cref="IListAddableOnHead{T}"/> interface using Redis set data structure.
+    /// Implements the <see cref="IPositionList{T}"/> interface using Redis set data structure.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class RedisList<T> : StorageBase<T>, IListAddableOnHead<T>
+    public class RedisList<T> : StorageBase<T>, IPositionList<T>
     {
         private readonly ISerializer<T> _serializer;
 
@@ -30,10 +30,25 @@ namespace Take.Elephant.Redis
             return database.ListRightPushAsync(Name, _serializer.Serialize(value));
         }
 
-        public Task AddToHeadAsync(T value)
+        public async Task AddToPositionAsync(T value, int position = 0)
         {
             var database = GetDatabase();
-            return database.ListLeftPushAsync(Name, _serializer.Serialize(value));
+            try
+            {
+                if (position == await database.ListLengthAsync(Name))
+                {
+                    await database.ListRightPushAsync(Name, _serializer.Serialize(value));
+                }
+                else
+                {
+                    var pivot = await database.ListGetByIndexAsync(Name, position);
+                    await database.ListInsertBeforeAsync(Name, pivot, _serializer.Serialize(value));
+                }
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentOutOfRangeException(e.Message, e);
+            }
         }
 
         public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()

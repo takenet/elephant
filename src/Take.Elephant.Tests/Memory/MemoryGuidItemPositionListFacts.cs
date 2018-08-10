@@ -5,9 +5,9 @@ using Xunit;
 namespace Take.Elephant.Tests.Memory
 {
     [Trait("Category", nameof(Memory))]
-    public class MemoryGuidItemListAddableOnHeadFacts : GuidItemListAddableOnHeadFacts
+    public class MemoryGuidItemPositionListFacts : GuidItemPositionListFacts
     {
-        public override IListAddableOnHead<Guid> Create()
+        public override IPositionList<Guid> Create()
         {
             return new List<Guid>();
         }
