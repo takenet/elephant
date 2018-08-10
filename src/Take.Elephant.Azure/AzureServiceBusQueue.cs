@@ -11,9 +11,9 @@ namespace Take.Elephant.Azure
     public class AzureServiceBusQueue<T> : IBlockingQueue<T>, ICloseable
     {
         private const int MIN_RECEIVE_TIMEOUT = 250;
-        private const int MAX_RECEIVE_TIMEOUT = 15000;
+        private const int MAX_RECEIVE_TIMEOUT = 30000;
 
-        private readonly ISerializer<T> _serializer;        
+        private readonly ISerializer<T> _serializer;
         private readonly MessageSender _messageSender;
         private readonly MessageReceiver _messageReceiver;
         private readonly ManagementClient _managementClient;
@@ -32,10 +32,10 @@ namespace Take.Elephant.Azure
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _path = path;
             _messageSender = new MessageSender(connectionString, path);
-            _messageReceiver = new MessageReceiver(connectionString, path, ReceiveMode.PeekLock);            
+            _messageReceiver = new MessageReceiver(connectionString, path, ReceiveMode.PeekLock);
             _managementClient = new ManagementClient(connectionString);
             _queueCreationSemaphore = new SemaphoreSlim(1, 1);
-            _queueDescription = queueDescription;            
+            _queueDescription = queueDescription;
         }
 
         public async Task EnqueueAsync(T item)
@@ -76,8 +76,7 @@ namespace Take.Elephant.Azure
 
                 try
                 {
-                    tryCount++;
-                    var timeout = tryCount * MIN_RECEIVE_TIMEOUT;
+                    var timeout = MIN_RECEIVE_TIMEOUT * Math.Pow(2, tryCount);
                     if (timeout > MAX_RECEIVE_TIMEOUT)
                     {
                         timeout = MAX_RECEIVE_TIMEOUT;
@@ -91,6 +90,8 @@ namespace Take.Elephant.Azure
                     }
                 }
                 catch (ServiceBusTimeoutException) { }
+
+                tryCount++;
             }
         }
 
