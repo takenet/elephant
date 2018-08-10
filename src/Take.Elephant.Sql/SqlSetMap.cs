@@ -25,7 +25,10 @@ namespace Take.Elephant.Sql
             _addIsolationLevel = addIsolationLevel;
         }
 
-        public virtual async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
+        public virtual async Task<bool> TryAddAsync(TKey key,
+            ISet<TItem> value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -90,7 +93,8 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key)
+        public virtual async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             using (var cancellationTokenSource = CreateCancellationTokenSource())
@@ -114,7 +118,7 @@ namespace Take.Elephant.Sql
             return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues).AsCompletedTask<ISet<TItem>>();
         }
 
-        public virtual async Task<bool> TryRemoveAsync(TKey key)
+        public virtual async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -125,7 +129,7 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task<bool> ContainsKeyAsync(TKey key)
+        public virtual async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {

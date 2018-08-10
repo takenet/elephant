@@ -27,7 +27,10 @@ namespace Take.Elephant.Memory
             _valueEqualityComparer = valueEqualityComparer;
         }
 
-        public override async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
+        public override async Task<bool> TryAddAsync(TKey key,
+            ISet<TItem> value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
         {
             var set = ValueFactory();
             var enumerable = await value.AsEnumerableAsync().ConfigureAwait(false);

@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Specialized
@@ -24,22 +25,25 @@ namespace Take.Elephant.Specialized
             
         }
 
-        public virtual Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
+        public virtual Task<bool> TryAddAsync(TKey key,
+            TValue value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
         {
             return ExecuteWithReplicationAsync(m => m.TryAddAsync(key, value, overwrite));
         }
 
-        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key)
+        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
             return ExecuteWithFallbackAsync(m => m.GetValueOrDefaultAsync(key));
         }
 
-        public virtual Task<bool> TryRemoveAsync(TKey key)
+        public virtual Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             return ExecuteWithReplicationAsync(m => m.TryRemoveAsync(key));
         }
 
-        public virtual Task<bool> ContainsKeyAsync(TKey key)
+        public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             return ExecuteWithFallbackAsync(m => m.ContainsKeyAsync(key));
         }

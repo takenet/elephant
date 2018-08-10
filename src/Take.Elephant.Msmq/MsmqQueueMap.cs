@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Messaging;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Msmq
@@ -27,9 +28,9 @@ namespace Take.Elephant.Msmq
             _recoverable = recoverable;
         }
 
-        public virtual Task<bool> TryAddAsync(TKey key, IBlockingQueue<TItem> value, bool overwrite = false) => TryAddAsync(key, (IQueue<TItem>)value, overwrite);
+        public virtual Task<bool> TryAddAsync(TKey key, IBlockingQueue<TItem> value, bool overwrite = false, CancellationToken cancellation = default) => TryAddAsync(key, (IQueue<TItem>)value, overwrite);
 
-        public virtual async Task<bool> TryAddAsync(TKey key, IQueue<TItem> value, bool overwrite = false)
+        public virtual async Task<bool> TryAddAsync(TKey key, IQueue<TItem> value, bool overwrite = false, CancellationToken cancellation = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -52,9 +53,9 @@ namespace Take.Elephant.Msmq
             return true;
         }
 
-        async Task<IQueue<TItem>> IMap<TKey, IQueue<TItem>>.GetValueOrDefaultAsync(TKey key) => await GetValueOrDefaultAsync(key).ConfigureAwait(false);
+        async Task<IQueue<TItem>> IMap<TKey, IQueue<TItem>>.GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken) => await GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
 
-        public virtual Task<IBlockingQueue<TItem>> GetValueOrDefaultAsync(TKey key)
+        public virtual Task<IBlockingQueue<TItem>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellation = default)
         {            
             if (MessageQueue.Exists(GetQueuePath(key, _pathTemplate)))
             {
@@ -69,7 +70,7 @@ namespace Take.Elephant.Msmq
             return Task.FromResult<IQueue<TItem>>(CreateQueue(key));
         }
 
-        public virtual Task<bool> TryRemoveAsync(TKey key)
+        public virtual Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellation = default)
         {
             var queuePath = GetQueuePath(key, _pathTemplate);
             if (MessageQueue.Exists(queuePath))
@@ -81,7 +82,7 @@ namespace Take.Elephant.Msmq
             return Task.FromResult(false);
         }
 
-        public virtual Task<bool> ContainsKeyAsync(TKey key)
+        public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellation = default)
         {
             var queuePath = GetQueuePath(key, _pathTemplate);
             return MessageQueue.Exists(queuePath).AsCompletedTask();

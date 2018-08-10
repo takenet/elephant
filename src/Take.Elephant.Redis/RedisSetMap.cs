@@ -25,7 +25,10 @@ namespace Take.Elephant.Redis
             _useScanOnEnumeration = useScanOnEnumeration;
         }
 
-        public override async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
+        public override async Task<bool> TryAddAsync(TKey key,
+            ISet<TItem> value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -56,7 +59,8 @@ namespace Take.Elephant.Redis
             return success;
         }
 
-        public override async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key)
+        public override async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             if (await database.KeyExistsAsync(GetRedisKey(key), ReadFlags).ConfigureAwait(false))
@@ -72,13 +76,13 @@ namespace Take.Elephant.Redis
             return CreateSet(key).AsCompletedTask<ISet<TItem>>();
         }
 
-        public override Task<bool> TryRemoveAsync(TKey key)
+        public override Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);
         }
 
-        public override Task<bool> ContainsKeyAsync(TKey key)
+        public override Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);

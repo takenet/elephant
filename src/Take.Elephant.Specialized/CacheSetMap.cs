@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Specialized
@@ -18,7 +19,8 @@ namespace Take.Elephant.Specialized
         {
         }
 
-        public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key)
+        public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default)
         {
             var value = await base.GetValueOrDefaultAsync(key).ConfigureAwait(false);
             if (value == null) return null;            

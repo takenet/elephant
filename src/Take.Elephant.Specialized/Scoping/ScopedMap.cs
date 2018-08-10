@@ -26,24 +26,27 @@ namespace Take.Elephant.Specialized.Scoping
             KeySerializer = keySerializer;            
         }
 
-        public virtual async Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
+        public virtual async Task<bool> TryAddAsync(TKey key,
+            TValue value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
         {
             if (!await Map.TryAddAsync(key, value, overwrite).ConfigureAwait(false)) return false;
             await Scope.AddKeyAsync(Identifier, KeySerializer.Serialize(key)).ConfigureAwait(false);
             return true;
         }
 
-        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key) => 
+        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default) => 
             Map.GetValueOrDefaultAsync(key);
 
-        public virtual async Task<bool> TryRemoveAsync(TKey key)
+        public virtual async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             if (!await Map.TryRemoveAsync(key).ConfigureAwait(false)) return false;
             await Scope.RemoveKeyAsync(Identifier, KeySerializer.Serialize(key)).ConfigureAwait(false);
             return true;
         }
 
-        public virtual Task<bool> ContainsKeyAsync(TKey key) => 
+        public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default) => 
             Map.ContainsKeyAsync(key);
 
         public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue) => 

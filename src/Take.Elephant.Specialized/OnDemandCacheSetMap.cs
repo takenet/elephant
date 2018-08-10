@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Memory;
 
@@ -11,7 +12,8 @@ namespace Take.Elephant.Specialized
         {
         }
 
-        public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key)
+        public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default)
         {
             var cacheValue = await Cache.GetValueOrDefaultAsync(key).ConfigureAwait(false);
             if (cacheValue != null)
