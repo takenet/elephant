@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 namespace Take.Elephant.Memory
 {
     /// <summary>
-    /// Implements the <see cref="IList{T}"/> interface using the <see cref="System.Collections.Generic.List{T}"/> class.
+    /// Implements the <see cref="IPositionList{T}"/> interface using the <see cref="System.Collections.Generic.List{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class List<T> : Collection<T>, IList<T>
+    public class List<T> : Collection<T>, IPositionList<T>
     {
         private readonly System.Collections.Generic.List<T> _list;
 
@@ -28,6 +28,15 @@ namespace Take.Elephant.Memory
             lock (_syncRoot)
             {
                 _list.Add(value);
+            }
+            return TaskUtil.CompletedTask;
+        }
+
+        public Task AddToPositionAsync(T value, int position)
+        {
+            lock (_syncRoot)
+            {
+                _list.Insert(position, value);
             }
             return TaskUtil.CompletedTask;
         }
