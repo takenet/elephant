@@ -13,29 +13,42 @@ namespace Take.Elephant.Azure
         private const int MIN_RECEIVE_TIMEOUT = 250;
         private const int MAX_RECEIVE_TIMEOUT = 30000;
 
+        private readonly string _entityPath;
         private readonly ISerializer<T> _serializer;
+        private QueueDescription _queueDescription;
+        private readonly ReceiveMode _receiveMode;
         private readonly MessageSender _messageSender;
         private readonly MessageReceiver _messageReceiver;
         private readonly ManagementClient _managementClient;
-        
-        private readonly string _path;
         private readonly SemaphoreSlim _queueCreationSemaphore;
         private bool _queueExists;
-        private QueueDescription _queueDescription;
 
         public AzureServiceBusQueue(
             string connectionString,
-            string path,
+            string entityPath,
             ISerializer<T> serializer,
+            ReceiveMode receiveMode = ReceiveMode.PeekLock,
+            RetryPolicy retryPolicy = null,
+            int receiverPrefetchCount = 0,
             QueueDescription queueDescription = null)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-            _path = path;
-            _messageSender = new MessageSender(connectionString, path);
-            _messageReceiver = new MessageReceiver(connectionString, path, ReceiveMode.PeekLock);
+            _entityPath = entityPath;
+            _receiveMode = receiveMode;
+            _messageSender = new MessageSender(connectionString, entityPath, retryPolicy);
+            _messageReceiver = new MessageReceiver(connectionString, entityPath, _receiveMode, retryPolicy, receiverPrefetchCount);
             _managementClient = new ManagementClient(connectionString);
             _queueCreationSemaphore = new SemaphoreSlim(1, 1);
-            _queueDescription = queueDescription;
+
+            if (queueDescription != null)
+            {
+                queueDescription.Path = _entityPath;
+                _queueDescription = queueDescription;
+            }
+            else
+            {
+                _queueDescription = new QueueDescription(_entityPath);
+            }
         }
 
         public async Task EnqueueAsync(T item)
@@ -60,7 +73,7 @@ namespace Take.Elephant.Azure
             }
             catch (ServiceBusTimeoutException) { }
 
-            return default(T);
+            return default;
         }
 
 
@@ -99,7 +112,7 @@ namespace Take.Elephant.Azure
         {
             await CreateQueueIfNotExistsAsync();
            
-            var queueRuntimeInfo = await _managementClient.GetQueueRuntimeInfoAsync(_path);
+            var queueRuntimeInfo = await _managementClient.GetQueueRuntimeInfoAsync(_entityPath);
             return queueRuntimeInfo.MessageCount;
         }
 
@@ -122,21 +135,13 @@ namespace Take.Elephant.Azure
             {
                 if (_queueExists) return;
 
-                _queueExists = await _managementClient.QueueExistsAsync(_path, cancellationToken);
+                _queueExists = await _managementClient.QueueExistsAsync(_entityPath, cancellationToken);
 
                 if (!_queueExists)
                 {
-                    if (_queueDescription != null)
-                    {
-                        _queueDescription.Path = _path;
-                    }
-
                     try
                     {
-                        _queueDescription = await _managementClient.CreateQueueAsync(
-                            _queueDescription ??
-                            new QueueDescription(_path),
-                            cancellationToken);
+                        _queueDescription = await _managementClient.CreateQueueAsync(_queueDescription, cancellationToken);
                     }
                     catch (MessagingEntityAlreadyExistsException)
                     {
@@ -155,8 +160,11 @@ namespace Take.Elephant.Azure
         private async Task<T> CreateItemAndCompleteAsync(Message message)
         {
             var serializedItem = Encoding.UTF8.GetString(message.Body);
-            var item = _serializer.Deserialize(serializedItem);                    
-            await _messageReceiver.CompleteAsync(message.SystemProperties.LockToken);
+            var item = _serializer.Deserialize(serializedItem);
+            if (_receiveMode == ReceiveMode.PeekLock)
+            {
+                await _messageReceiver.CompleteAsync(message.SystemProperties.LockToken);
+            }
             return item;
         }
     }
