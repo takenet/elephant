@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 
@@ -20,13 +21,16 @@ namespace Take.Elephant.Redis
 
         }
 
-        public abstract Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false);
+        public abstract Task<bool> TryAddAsync(TKey key,
+            TValue value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default);
 
-        public abstract Task<TValue> GetValueOrDefaultAsync(TKey key);
+        public abstract Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default);
 
-        public abstract Task<bool> TryRemoveAsync(TKey key);
+        public abstract Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default);
 
-        public abstract Task<bool> ContainsKeyAsync(TKey key);
+        public abstract Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default);
         
         #region IExpirableKeyMap<TKey, TValue> Members
 

@@ -31,9 +31,8 @@ namespace Take.Elephant.Redis
             SubscribeChannel();
         }
 
-        #region IQueue<T> Members
 
-        public virtual async Task EnqueueAsync(T item)
+        public virtual async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {            
             if (item == null) throw new ArgumentNullException(nameof(item));
             var database = GetDatabase();
@@ -66,23 +65,19 @@ namespace Take.Elephant.Redis
             await Task.WhenAll(enqueueTask, publishTask).ConfigureAwait(false);
         }
 
-        public virtual async Task<T> DequeueOrDefaultAsync()
+        public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var result = await database.ListRightPopAsync(Name, ReadFlags).ConfigureAwait(false);
             return !result.IsNull ? _serializer.Deserialize((string)result) : default(T);
         }
 
-        public virtual Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.ListLengthAsync(Name, ReadFlags);
         }
-
-        #endregion
-
-        #region IBlockingQueue<T> Members
-
+    
         public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<T>();
@@ -93,8 +88,6 @@ namespace Take.Elephant.Redis
                 return await tcs.Task.ConfigureAwait(false);
             }
         }
-
-        #endregion
 
         private void SubscribeChannel()
         {

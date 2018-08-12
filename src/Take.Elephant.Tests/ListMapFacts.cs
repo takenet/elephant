@@ -3,7 +3,7 @@ using Ploeh.AutoFixture;
 
 namespace Take.Elephant.Tests
 {
-    public abstract class ListMapFacts<TKey, TValue> : MapFacts<TKey, IList<TValue>>
+    public abstract class ListMapFacts<TKey, TValue> : MapFacts<TKey, IPositionList<TValue>>
     {
         public override void AssertEquals<T>(T actual, T expected)
         {
@@ -25,11 +25,11 @@ namespace Take.Elephant.Tests
             return Fixture.Create<TValue>();
         }
 
-        public override IList<TValue> CreateValue(TKey key)
+        public override IPositionList<TValue> CreateValue(TKey key)
         {
             return CreateValue(key, true);
         }
 
-        public abstract IList<TValue> CreateValue(TKey key, bool populate);
+        public abstract IPositionList<TValue> CreateValue(TKey key, bool populate);
     }
 }

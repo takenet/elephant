@@ -16,10 +16,14 @@ namespace Take.Elephant.Memory
 
         }
 
-        public virtual Task<bool> TryAddAsync(TKey key, IQueue<TItem> value, bool overwrite = false) => 
+        public virtual Task<bool> TryAddAsync(TKey key,
+            IQueue<TItem> value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default) => 
             base.TryAddAsync(key, new BlockingQueueWrapper<TItem>(value), overwrite);
 
-        async Task<IQueue<TItem>> IMap<TKey, IQueue<TItem>>.GetValueOrDefaultAsync(TKey key) => 
+        async Task<IQueue<TItem>> IMap<TKey, IQueue<TItem>>.GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default) => 
             await GetValueOrDefaultAsync(key).ConfigureAwait(false);
 
 
@@ -35,17 +39,17 @@ namespace Take.Elephant.Memory
                 _queue = queue;
             }
 
-            public virtual Task EnqueueAsync(T item)
+            public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
             {
                 return _queue.EnqueueAsync(item);
             }
 
-            public virtual Task<T> DequeueOrDefaultAsync()
+            public virtual Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
             {
                 return _queue.DequeueOrDefaultAsync();
             }
 
-            public virtual Task<long> GetLengthAsync()
+            public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
             {
                 return _queue.GetLengthAsync();
             }

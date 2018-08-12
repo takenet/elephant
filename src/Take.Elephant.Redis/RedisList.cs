@@ -1,15 +1,16 @@
 ﻿using StackExchange.Redis;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Redis
 {
     /// <summary>
-    /// Implements the <see cref="IList{T}"/> interface using Redis set data structure.
+    /// Implements the <see cref="IPositionList{T}"/> interface using Redis set data structure.
     /// </summary>
-    /// <typeparam name="T"></typeparam>   
-    public class RedisList<T> : StorageBase<T>, IList<T>
+    /// <typeparam name="T"></typeparam>
+    public class RedisList<T> : StorageBase<T>, IPositionList<T>
     {
         private readonly ISerializer<T> _serializer;
 
@@ -30,14 +31,35 @@ namespace Take.Elephant.Redis
             return database.ListRightPushAsync(Name, _serializer.Serialize(value));
         }
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public async Task AddToPositionAsync(T value, int position)
+        {
+            var database = GetDatabase();
+            try
+            {
+                if (position == await database.ListLengthAsync(Name))
+                {
+                    await database.ListRightPushAsync(Name, _serializer.Serialize(value));
+                }
+                else
+                {
+                    var pivot = await database.ListGetByIndexAsync(Name, position);
+                    await database.ListInsertBeforeAsync(Name, pivot, _serializer.Serialize(value));
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentOutOfRangeException(ex.Message, ex);
+            }
+        }
+
+        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.ListRangeAsync(Name).ConfigureAwait(false);
             return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
         }
 
-        public Task<long> GetLengthAsync()
+        public Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.ListLengthAsync(Name);

@@ -5,12 +5,12 @@ namespace Take.Elephant.Tests.Memory
 {
     public class MemoryIntegerStringListMapFacts : IntegerStringListMapFacts
     {
-        public override IMap<int, IList<string>> Create()
+        public override IMap<int, IPositionList<string>> Create()
         {
             return new ListMap<int, string>();
         }
 
-        public override IList<string> CreateValue(int key, bool populate)
+        public override IPositionList<string> CreateValue(int key, bool populate)
         {
             var list = new List<string>();
             if (populate)

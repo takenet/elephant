@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using Take.Elephant.Memory;
@@ -47,11 +48,11 @@ namespace Take.Elephant.Tests.Specialized
             // Arrange
             var master = new Mock<IMap<TKey, TValue>>();
             master
-                .Setup(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>()))
+                .Setup(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception())
                 .Verifiable();
             master
-                .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>()))
+                .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception());
 
             var slave = new Map<TKey, TValue>();
@@ -84,12 +85,12 @@ namespace Take.Elephant.Tests.Specialized
             var key3 = CreateKey();
             var value3 = CreateValue(key3);
             master
-                .SetupSequence(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>()))
+                .SetupSequence(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                     .Throws(new Exception())
                     .Throws(new Exception())
                     .Returns(Task.FromResult(true));                            
             master
-                .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>()))
+                .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception());
 
             // Act
@@ -103,13 +104,13 @@ namespace Take.Elephant.Tests.Specialized
             AssertIsTrue(actual3);
             AssertEquals(await map.GetValueOrDefaultAsync(key1), value1);
             AssertEquals(await map.GetValueOrDefaultAsync(key2), value2);
-            master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
-            master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
-            master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, true, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, true, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, true, It.IsAny<CancellationToken>()), Times.Once);
             // Synchronization
-            master.Verify(m => m.TryAddAsync(key1, value1, false), Times.Once);
-            master.Verify(m => m.TryAddAsync(key2, value2, false), Times.Once);
-            master.Verify(m => m.TryAddAsync(key3, value3, false), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, false, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key2, value2, false, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key3, value3, false, It.IsAny<CancellationToken>()), Times.Once);
         }
 
 
@@ -127,13 +128,13 @@ namespace Take.Elephant.Tests.Specialized
             var key3 = CreateKey();
             var value3 = CreateValue(key3);
             master
-                .SetupSequence(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>()))
+                .SetupSequence(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                     .Returns(Task.FromResult(true))
                     .Throws(new Exception())
                     .Returns(Task.FromResult(true));
 
             master
-                .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>()))
+                .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception());
 
             // Act
@@ -148,13 +149,13 @@ namespace Take.Elephant.Tests.Specialized
             AssertEquals(await map.GetValueOrDefaultAsync(key1), value1);
             AssertEquals(await map.GetValueOrDefaultAsync(key2), value2);
             AssertEquals(await map.GetValueOrDefaultAsync(key3), value3);
-            master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
-            master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
-            master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, true, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, true, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, true, It.IsAny<CancellationToken>()), Times.Once);
             // Synchronization
-            master.Verify(m => m.TryAddAsync(key1, value1, false), Times.Once);
-            master.Verify(m => m.TryAddAsync(key2, value2, false), Times.Once);
-            master.Verify(m => m.TryAddAsync(key3, value3, false), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, false, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key2, value2, false, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key3, value3, false, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact(DisplayName = "TryAddMultipleTimesWhenMasterIsUpShouldNotSynchronize")]
@@ -171,13 +172,13 @@ namespace Take.Elephant.Tests.Specialized
             var key3 = CreateKey();
             var value3 = CreateValue(key3);
             master
-                .SetupSequence(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>()))
+                .SetupSequence(m => m.TryAddAsync(It.IsAny<TKey>(), It.IsAny<TValue>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                     .Returns(Task.FromResult(true))
                     .Returns(Task.FromResult(true))
                     .Returns(Task.FromResult(true));
 
             master
-                .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>()))
+                .Setup(m => m.GetValueOrDefaultAsync(It.IsAny<TKey>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception());
 
             // Act
@@ -192,13 +193,13 @@ namespace Take.Elephant.Tests.Specialized
             AssertEquals(await map.GetValueOrDefaultAsync(key1), value1);
             AssertEquals(await map.GetValueOrDefaultAsync(key2), value2);
             AssertEquals(await map.GetValueOrDefaultAsync(key3), value3);
-            master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
-            master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
-            master.Verify(m => m.TryAddAsync(key1, value1, true), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, true, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, true, It.IsAny<CancellationToken>()), Times.Once);
+            master.Verify(m => m.TryAddAsync(key1, value1, true, It.IsAny<CancellationToken>()), Times.Once);
             // Synchronization
-            master.Verify(m => m.TryAddAsync(key1, value1, false), Times.Never);
-            master.Verify(m => m.TryAddAsync(key2, value2, false), Times.Never);
-            master.Verify(m => m.TryAddAsync(key3, value3, false), Times.Never);
+            master.Verify(m => m.TryAddAsync(key1, value1, false, It.IsAny<CancellationToken>()), Times.Never);
+            master.Verify(m => m.TryAddAsync(key2, value2, false, It.IsAny<CancellationToken>()), Times.Never);
+            master.Verify(m => m.TryAddAsync(key3, value3, false, It.IsAny<CancellationToken>()), Times.Never);
         }
     }
 }

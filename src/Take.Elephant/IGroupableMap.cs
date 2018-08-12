@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant
@@ -15,7 +16,8 @@ namespace Take.Elephant
         /// </summary>
         /// <param name="key"></param>
         /// <param name="propertyName"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Group<TValue>[]> GroupByPropertyAsync(TKey key, string propertyName);
+        Task<Group<TValue>[]> GroupByPropertyAsync(TKey key, string propertyName, CancellationToken cancellationToken = default);
     }
 }

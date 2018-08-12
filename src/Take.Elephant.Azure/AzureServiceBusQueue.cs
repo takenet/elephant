@@ -51,16 +51,16 @@ namespace Take.Elephant.Azure
             }
         }
 
-        public async Task EnqueueAsync(T item)
+        public async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
-            await CreateQueueIfNotExistsAsync();
+            await CreateQueueIfNotExistsAsync(cancellationToken);
             var serializedItem = _serializer.Serialize(item);
             await _messageSender.SendAsync(new Message(Encoding.UTF8.GetBytes(serializedItem)));
         }
 
-        public async Task<T> DequeueOrDefaultAsync()
+        public async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
-            await CreateQueueIfNotExistsAsync();
+            await CreateQueueIfNotExistsAsync(cancellationToken);
 
             try
             {
@@ -75,7 +75,6 @@ namespace Take.Elephant.Azure
 
             return default;
         }
-
 
         public async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
@@ -108,11 +107,11 @@ namespace Take.Elephant.Azure
             }
         }
 
-        public async Task<long> GetLengthAsync()
+        public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
-            await CreateQueueIfNotExistsAsync();
+            await CreateQueueIfNotExistsAsync(cancellationToken);
            
-            var queueRuntimeInfo = await _managementClient.GetQueueRuntimeInfoAsync(_entityPath);
+            var queueRuntimeInfo = await _managementClient.GetQueueRuntimeInfoAsync(_path, cancellationToken);
             return queueRuntimeInfo.MessageCount;
         }
 

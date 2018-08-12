@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Sql.Mapping;
 
@@ -18,7 +19,7 @@ namespace Take.Elephant.Sql
         {
         } 
 
-        public virtual async Task AddAsync(T value)
+        public virtual async Task AddAsync(T value, CancellationToken cancellationToken = default)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var columnValues = GetColumnValues(value, true);
@@ -82,7 +83,7 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task<bool> TryRemoveAsync(T value)
+        public virtual async Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(value, true);
@@ -95,7 +96,7 @@ namespace Take.Elephant.Sql
             }
         }        
 
-        public virtual async Task<bool> ContainsAsync(T value)
+        public virtual async Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(value, true);

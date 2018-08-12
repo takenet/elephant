@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 
@@ -27,7 +28,10 @@ namespace Take.Elephant.Redis
 
         #region IMap<TKey,TValue> Members
 
-        public override Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false)
+        public override Task<bool> TryAddAsync(TKey key,
+            TValue value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.StringSetAsync(
@@ -37,20 +41,21 @@ namespace Take.Elephant.Redis
                 flags: WriteFlags);
         }
 
-        public override async Task<TValue> GetValueOrDefaultAsync(TKey key)
+        public override async Task<TValue> GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var redisValue = await database.StringGetAsync(GetRedisKey(key), ReadFlags);
             return redisValue.IsNull ? default(TValue) : _serializer.Deserialize(redisValue);
         }
 
-        public override Task<bool> TryRemoveAsync(TKey key)
+        public override Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);
         }
 
-        public override Task<bool> ContainsKeyAsync(TKey key)
+        public override Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
