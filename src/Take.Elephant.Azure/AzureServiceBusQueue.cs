@@ -111,7 +111,7 @@ namespace Take.Elephant.Azure
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
            
-            var queueRuntimeInfo = await _managementClient.GetQueueRuntimeInfoAsync(_path, cancellationToken);
+            var queueRuntimeInfo = await _managementClient.GetQueueRuntimeInfoAsync(_entityPath, cancellationToken);
             return queueRuntimeInfo.MessageCount;
         }
 
