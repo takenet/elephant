@@ -15,7 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.EventHubs" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.1.0-preview" />
+    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.1.0" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.9.0" />
   </ItemGroup>
   <ItemGroup>

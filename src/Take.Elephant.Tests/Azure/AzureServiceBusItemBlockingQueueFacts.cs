@@ -12,7 +12,7 @@ namespace Take.Elephant.Tests.Azure
     {
         public override IQueue<Item> Create()
         {
-            var connectionString = "";
+            var connectionString = "Endpoint=sb://hmg-blip.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Z3aOZOCnqQtjX0/xINB1dZypAWCrql+qhwK2Ig79TN4=";
             var path = "items";
 
             DeleteQueueAsync(connectionString, path).Wait();
