@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant
@@ -36,5 +37,16 @@ namespace Take.Elephant
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task EnqueueAsync(T item, CancellationToken cancellationToken = default);
+    }
+
+    public interface IBatchSenderQueue<T>
+    {
+        /// <summary>
+        /// Enqueues a batch of items.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using Microsoft.Azure.ServiceBus.Management;
 
 namespace Take.Elephant.Azure
 {
-    public class AzureServiceBusQueue<T> : IBlockingQueue<T>, ICloseable
+    public class AzureServiceBusQueue<T> : IBlockingQueue<T>, IBatchSenderQueue<T>, ICloseable
     {
         private const int MIN_RECEIVE_TIMEOUT = 250;
         private const int MAX_RECEIVE_TIMEOUT = 30000;
@@ -54,8 +55,22 @@ namespace Take.Elephant.Azure
         public async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
-            var serializedItem = _serializer.Serialize(item);
-            await _messageSender.SendAsync(new Message(Encoding.UTF8.GetBytes(serializedItem)));
+            var message = CreateMessage(item);
+            await _messageSender.SendAsync(message);
+        }
+        
+        public async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
+        {
+            await CreateQueueIfNotExistsAsync(cancellationToken);
+            var batch = new List<Message>();
+
+            foreach (var item in items)
+            {
+                var message = CreateMessage(item);
+                batch.Add(message);
+            }
+            
+            await _messageSender.SendAsync(batch);
         }
 
         public async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
@@ -154,6 +169,12 @@ namespace Take.Elephant.Azure
             {
                 _queueCreationSemaphore.Release();
             }
+        }
+
+        private Message CreateMessage(T item)
+        {
+            var serializedItem = _serializer.Serialize(item);
+            return new Message(Encoding.UTF8.GetBytes(serializedItem));
         }
 
         private async Task<T> CreateItemAndCompleteAsync(Message message)
