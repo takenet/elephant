@@ -23,15 +23,15 @@ namespace Take.Elephant.Azure
             };
             _eventHubClient = EventHubClient.CreateFromConnectionString(connectionStringBuilder.ToString());
         }
-        
-        public Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
+
+        public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             var serializedItem = _serializer.Serialize(item);
             return _eventHubClient.SendAsync(new EventData(Encoding.UTF8.GetBytes(serializedItem)));                        
         }
 
-        public Task CloseAsync(CancellationToken cancellationToken)
+        public virtual Task CloseAsync(CancellationToken cancellationToken)
         {
             return _eventHubClient.CloseAsync();
         }

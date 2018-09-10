@@ -45,7 +45,7 @@ namespace Take.Elephant.Memory
             }
         }
 
-        public async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
+        public virtual async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
         {
             if (items == null) throw new ArgumentNullException(nameof(items));
 

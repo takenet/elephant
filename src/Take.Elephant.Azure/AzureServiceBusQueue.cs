@@ -52,14 +52,14 @@ namespace Take.Elephant.Azure
             }
         }
 
-        public async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
+        public virtual async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
             var message = CreateMessage(item);
             await _messageSender.SendAsync(message);
         }
-        
-        public async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
+
+        public virtual async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
             var batch = new List<Message>();
@@ -73,7 +73,7 @@ namespace Take.Elephant.Azure
             await _messageSender.SendAsync(batch);
         }
 
-        public async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
 
@@ -91,7 +91,7 @@ namespace Take.Elephant.Azure
             return default;
         }
 
-        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
 
@@ -122,7 +122,7 @@ namespace Take.Elephant.Azure
             }
         }
 
-        public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
            
@@ -130,7 +130,7 @@ namespace Take.Elephant.Azure
             return queueRuntimeInfo.MessageCount;
         }
 
-        public async Task CloseAsync(CancellationToken cancellationToken)
+        public virtual async Task CloseAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             
