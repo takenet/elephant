@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace Take.Elephant.Memory
     /// Implements the <see cref="IQueue{T}"/> interface using the <see cref="System.Collections.Concurrent.ConcurrentQueue{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Queue<T> : IBlockingQueue<T>, ICloneable
+    public class Queue<T> : IBlockingQueue<T>, IBatchSenderQueue<T>, ICloneable
     {
         private readonly ConcurrentQueue<T> _queue;
         private readonly ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue;
@@ -41,6 +42,16 @@ namespace Take.Elephant.Memory
 
                 _queue.Enqueue(item);
                 return TaskUtil.CompletedTask;
+            }
+        }
+
+        public async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
+        {
+            if (items == null) throw new ArgumentNullException(nameof(items));
+
+            foreach (var item in items)
+            {
+                await EnqueueAsync(item, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -100,5 +111,7 @@ namespace Take.Elephant.Memory
         {
             return Clone();
         }
+
+
     }
 }
