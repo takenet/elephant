@@ -12,7 +12,7 @@ namespace Take.Elephant.Tests.Azure
     {
         public override IQueue<Item> Create()
         {
-            var connectionString = "DefaultEndpointsProtocol=https;AccountName=hmgblipstorage;AccountKey=8Zg/Bmk1vwU0Daap6T+orTk0btf63tdPwNOOrhLLdya2Oym2q/J979PZWXGcNGrI9KZKikhuk8/t3LOD5w7isw==;EndpointSuffix=core.windows.net";
+            var connectionString = "";
             var queueName = "items";
 
             DeleteQueueAsync(connectionString, queueName).Wait();
