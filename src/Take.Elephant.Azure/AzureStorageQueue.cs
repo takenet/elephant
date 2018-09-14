@@ -19,7 +19,7 @@ namespace Take.Elephant.Azure
 
         private bool _queueExists;
 
-        public AzureStorageQueue(string storageConnectionString, string queueName, ISerializer<T> serializer)
+        public AzureStorageQueue(string storageConnectionString, string queueName, ISerializer<T> serializer, bool encodeMessage = false)
         {
             Guard.Argument(storageConnectionString).NotNull().NotEmpty();
             Guard.Argument(queueName).NotNull().NotEmpty();
@@ -30,6 +30,7 @@ namespace Take.Elephant.Azure
             var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
             var client = storageAccount.CreateCloudQueueClient();
             _queue = client.GetQueueReference(queueName);
+            _queue.EncodeMessage = encodeMessage;
             _queueCreationSemaphore = new SemaphoreSlim(1, 1);
         }
 
