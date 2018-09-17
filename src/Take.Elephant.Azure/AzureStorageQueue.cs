@@ -34,7 +34,7 @@ namespace Take.Elephant.Azure
             _queueCreationSemaphore = new SemaphoreSlim(1, 1);
         }
 
-        public async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
+        public virtual async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
 
@@ -42,7 +42,7 @@ namespace Take.Elephant.Azure
             await _queue.AddMessageAsync(message, null, null, null, null, cancellationToken);
         }
 
-        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
 
@@ -73,7 +73,7 @@ namespace Take.Elephant.Azure
             }
         }
 
-        public async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
 
@@ -95,7 +95,7 @@ namespace Take.Elephant.Azure
             return item;
         }
 
-        public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
 #if NET461
@@ -134,6 +134,7 @@ namespace Take.Elephant.Azure
         private CloudQueueMessage CreateMessage(T item)
         {
             var serializedItem = _serializer.Serialize(item);
+
             return new CloudQueueMessage(serializedItem);
         }
     }

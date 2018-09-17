@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAzure.Storage;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Take.Elephant.Azure;
 using Take.Elephant.Tests.Redis;
@@ -20,7 +21,7 @@ namespace Take.Elephant.Tests.Azure
             return new AzureStorageQueue<Item>(
                 connectionString,
                 queueName,
-                new ItemSerializer());
+                new JsonItemSerializer());
         }
 
         private async Task DeleteQueueAsync(string connectionString, string queueName)
@@ -34,5 +35,26 @@ namespace Take.Elephant.Tests.Azure
                 await queue.ClearAsync();
             }
         }
+
+        protected override Item CreateItem()
+        {
+            var item = base.CreateItem();
+            item.StringProperty = $"<any>{item.StringProperty}</any>";
+            return item;
+        }
     }
+
+    public class JsonItemSerializer : ISerializer<Item>
+    {
+        public Item Deserialize(string value)
+        {
+            return JsonConvert.DeserializeObject<Item>(value);
+        }
+
+        public string Serialize(Item value)
+        {
+            return JsonConvert.SerializeObject(value);
+        }
+    }
+
 }
