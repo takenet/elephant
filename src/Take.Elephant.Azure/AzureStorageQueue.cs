@@ -19,7 +19,7 @@ namespace Take.Elephant.Azure
 
         private bool _queueExists;
 
-        public AzureStorageQueue(string storageConnectionString, string queueName, ISerializer<T> serializer, bool encodeMessage = false)
+        public AzureStorageQueue(string storageConnectionString, string queueName, ISerializer<T> serializer, bool encodeMessage = true)
         {
             Guard.Argument(storageConnectionString).NotNull().NotEmpty();
             Guard.Argument(queueName).NotNull().NotEmpty();
