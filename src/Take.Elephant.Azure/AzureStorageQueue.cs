@@ -84,7 +84,7 @@ namespace Take.Elephant.Azure
 #endif
             if (message == null) return default(T);
 
-            var item = _serializer.Deserialize(message.AsString);
+            var item = CreateItem(message);
 
 #if NET461
             await _queue.DeleteMessageAsync(message, cancellationToken);
@@ -104,6 +104,18 @@ namespace Take.Elephant.Azure
             await _queue.FetchAttributesAsync();
 #endif
             return _queue.ApproximateMessageCount ?? 0;
+        }
+
+        protected virtual CloudQueueMessage CreateMessage(T item)
+        {
+            var serializedItem = _serializer.Serialize(item);
+
+            return new CloudQueueMessage(serializedItem);
+        }
+
+        protected virtual T CreateItem(CloudQueueMessage message)
+        {
+            return _serializer.Deserialize(message.AsString);
         }
 
         private async Task CreateQueueIfNotExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -131,11 +143,6 @@ namespace Take.Elephant.Azure
             }
         }
 
-        protected virtual CloudQueueMessage CreateMessage(T item)
-        {
-            var serializedItem = _serializer.Serialize(item);
 
-            return new CloudQueueMessage(serializedItem);
-        }
     }
 }
