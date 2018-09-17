@@ -131,7 +131,7 @@ namespace Take.Elephant.Azure
             }
         }
 
-        private CloudQueueMessage CreateMessage(T item)
+        protected virtual CloudQueueMessage CreateMessage(T item)
         {
             var serializedItem = _serializer.Serialize(item);
 
