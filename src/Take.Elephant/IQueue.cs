@@ -49,4 +49,15 @@ namespace Take.Elephant
         /// <returns></returns>
         Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default);
     }
+
+    public interface IBatchReceiverQueue<T>
+    {
+        /// <summary>
+        /// Enqueues a batch of items.
+        /// </summary>
+        /// <param name="batchSize"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> DequeueBatchAsync(int batchSize, CancellationToken cancellationToken);
+    }
 }

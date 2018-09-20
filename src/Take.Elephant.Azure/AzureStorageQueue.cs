@@ -2,12 +2,14 @@
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Azure
 {
-    public class AzureStorageQueue<T> : IBlockingQueue<T> where T : class
+    public class AzureStorageQueue<T> : IBlockingQueue<T>, IBatchReceiverQueue<T> where T : class
     {
         private const int MIN_RECEIVE_RETRY_DELAY = 250;
         private const int MAX_RECEIVE_RETRY_DELAY = 30000;
@@ -84,15 +86,21 @@ namespace Take.Elephant.Azure
 #endif
             if (message == null) return default(T);
 
-            var item = CreateItem(message);
+            return await CreateItemAndDeleteMessageAsync(message, cancellationToken);
+        }
 
+        public virtual async Task<IEnumerable<T>> DequeueBatchAsync(int batchSize, CancellationToken cancellationToken)
+        {
+            await CreateQueueIfNotExistsAsync(cancellationToken);
 #if NET461
-            await _queue.DeleteMessageAsync(message, cancellationToken);
+            var messages = await _queue.GetMessagesAsync(batchSize, cancellationToken);
 #else
-            await _queue.DeleteMessageAsync(message);
+            var messages = await _queue.GetMessagesAsync(batchSize, null, null, null, cancellationToken);
 #endif
+            if (messages == null) return Enumerable.Empty<T>();
 
-            return item;
+            return await Task.WhenAll(
+                messages.Select(m => CreateItemAndDeleteMessageAsync(m, cancellationToken)));
         }
 
         public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
@@ -113,9 +121,16 @@ namespace Take.Elephant.Azure
             return new CloudQueueMessage(serializedItem);
         }
 
-        protected virtual T CreateItem(CloudQueueMessage message)
+        protected virtual async Task<T> CreateItemAndDeleteMessageAsync(CloudQueueMessage message, CancellationToken cancellationToken)
         {
-            return _serializer.Deserialize(message.AsString);
+            var item = _serializer.Deserialize(message.AsString);
+
+#if NET461
+            await _queue.DeleteMessageAsync(message, cancellationToken);
+#else
+            await _queue.DeleteMessageAsync(message);
+#endif
+            return item;
         }
 
         private async Task CreateQueueIfNotExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -142,7 +157,5 @@ namespace Take.Elephant.Azure
                 _queueCreationSemaphore.Release();
             }
         }
-
-
     }
 }
