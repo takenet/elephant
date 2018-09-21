@@ -89,13 +89,13 @@ namespace Take.Elephant.Azure
             return await CreateItemAndDeleteMessageAsync(message, cancellationToken);
         }
 
-        public virtual async Task<IEnumerable<T>> DequeueBatchAsync(int batchSize, CancellationToken cancellationToken)
+        public virtual async Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
 #if NET461
-            var messages = await _queue.GetMessagesAsync(batchSize, cancellationToken);
+            var messages = await _queue.GetMessagesAsync(maxBatchSize, cancellationToken);
 #else
-            var messages = await _queue.GetMessagesAsync(batchSize, null, null, null, cancellationToken);
+            var messages = await _queue.GetMessagesAsync(maxBatchSize, null, null, null, cancellationToken);
 #endif
             if (messages == null) return Enumerable.Empty<T>();
 

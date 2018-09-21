@@ -55,9 +55,9 @@ namespace Take.Elephant
         /// <summary>
         /// Enqueues a batch of items.
         /// </summary>
-        /// <param name="batchSize"></param>
+        /// <param name="maxBatchSize"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> DequeueBatchAsync(int batchSize, CancellationToken cancellationToken);
+        Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken);
     }
 }
