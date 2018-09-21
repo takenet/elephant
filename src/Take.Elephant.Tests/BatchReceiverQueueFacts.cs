@@ -35,8 +35,8 @@ namespace Take.Elephant.Tests
             Check.That(actualItems).ContainsExactly(items);
         }
 
-        [Fact(DisplayName = nameof(DequeueLessThanEnqueuedReturnsExisting))]
-        public virtual async Task DequeueLessThanEnqueuedReturnsExisting()
+        [Fact(DisplayName = nameof(DequeueLessThanExistingReturnsRequested))]
+        public virtual async Task DequeueLessThanExistingReturnsRequested()
         {
             // Arrange
             var batchSize = 20;
@@ -54,8 +54,8 @@ namespace Take.Elephant.Tests
             Check.That(actualItems).ContainsExactly(items.Take(dequeueBatchSize));
         }
 
-        [Fact(DisplayName = nameof(DequeueMoreThanEnqueuedReturnsExisting))]
-        public virtual async Task DequeueMoreThanEnqueuedReturnsExisting()
+        [Fact(DisplayName = nameof(DequeueMoreThanExistingReturnsExisting))]
+        public virtual async Task DequeueMoreThanExistingReturnsExisting()
         {
             // Arrange
             var batchSize = 10;
