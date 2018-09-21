@@ -1,12 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Ploeh.AutoFixture;
+using System;
+using Take.Elephant.Memory;
 
 namespace Take.Elephant.Tests.Memory
 {
-    public class MemoryGuidItemSortedSetMapFacts
+    public class MemoryGuidItemSortedSetMapFacts : GuidItemSortedSetMapFacts
     {
+        public override IMap<Guid, ISortedSet<Item>> Create()
+        {
+            return new SortedSetMap<Guid, Item>();
+        }
+
+        public override ISortedSet<Item> CreateValue(Guid key, bool populate)
+        {
+            var list = new SortedSet<Item>();
+            if (populate)
+            {
+                list.EnqueueAsync(Fixture.Create<Item>(), Fixture.Create<double>()).Wait();
+                list.EnqueueAsync(Fixture.Create<Item>(), Fixture.Create<double>()).Wait();
+                list.EnqueueAsync(Fixture.Create<Item>(), Fixture.Create<double>()).Wait();
+            }
+            return list;
+        }
     }
 }

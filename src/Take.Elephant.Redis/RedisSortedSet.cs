@@ -9,13 +9,13 @@ namespace Take.Elephant.Redis
     {
         private readonly ISerializer<T> _serializer;
 
-        protected RedisSortedSet(string name, ISerializer<T> serializer, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags)
+        protected RedisSortedSet(string name, ISerializer<T> serializer, IConnectionMultiplexer connectionMultiplexer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
             : base(name, connectionMultiplexer, db, readFlags, writeFlags)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
-        public RedisSortedSet(string name, string configuration, int db, ISerializer<T> serializer, CommandFlags readFlags, CommandFlags writeFlags)
+        public RedisSortedSet(string name, string configuration, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
             : base(name, configuration, db, readFlags, writeFlags)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
@@ -65,6 +65,19 @@ namespace Take.Elephant.Redis
         {
             var database = GetDatabase();
             return database.SortedSetLengthAsync(Name);
+        }
+
+        public Task<bool> RemoveAsync(T value)
+        {
+            var database = GetDatabase();
+            return database.SortedSetRemoveAsync(Name, _serializer.Serialize(value));
+        }
+
+        public async Task<IAsyncEnumerable<T>> RangeByRankAsync(long initial = 0, long end = -1)
+        {
+            var database = GetDatabase();
+            var values = await database.SortedSetRangeByRankAsync(Name, initial, end);
+            return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
         }
     }
 }

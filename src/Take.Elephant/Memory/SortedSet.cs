@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -129,6 +128,36 @@ namespace Take.Elephant.Memory
         {
             return _sortedList.LongCount().AsCompletedTask();
         }
+
+        public async Task<IAsyncEnumerable<T>> RangeByRankAsync(long initial = 0, long end = -1)
+        {
+            var length = await GetLengthAsync();
+            if (initial < 0)
+            {
+                initial = length - initial;
+            }
+            if (end < 0)
+            {
+                end = length - end;
+            }
+
+            System.Collections.Generic.ICollection<T> list = new System.Collections.Generic.List<T>();
+            for (var i = initial; i < end; i++)
+            {
+                if (i < length && i >= 0)
+                {
+                    list.Add(_sortedList.Values[(int)i]);
+                }
+            }
+            return await Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(list));
+        }
+
+        public Task<bool> RemoveAsync(T value)
+        {
+            var item = _sortedList.IndexOfValue(value);
+            _sortedList.RemoveAt(item);
+            return true.AsCompletedTask();
+        }
     }
 
     /// <summary>
@@ -148,5 +177,4 @@ namespace Take.Elephant.Memory
                 return result;
         }
     }
-
 }
