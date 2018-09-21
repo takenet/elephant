@@ -7,7 +7,15 @@ namespace Take.Elephant
     /// Defines a queue that allows to await for messages when dequeueing.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IBlockingQueue<T> : IQueue<T>
+    public interface IBlockingQueue<T> : IBlockingReceiverQueue<T>, IQueue<T>
+    {
+    }
+
+    /// <summary>
+    /// Defines a receiver queue that allows to await for messages when dequeueing.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IBlockingReceiverQueue<T>
     {
         /// <summary>
         /// Dequeues a value from the queue, awaiting for a new value if the queue is empty.
