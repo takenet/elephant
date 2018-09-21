@@ -13,7 +13,7 @@ namespace Take.Elephant
     public interface IList<T> : ICollection<T>
     {
         /// <summary>
-        /// Adds an item to the list.         
+        /// Adds an item to the end of the list.         
         /// </summary>
         /// <param name="value">The value.</param>        
         /// <returns></returns>

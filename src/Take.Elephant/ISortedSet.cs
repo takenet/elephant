@@ -11,6 +11,6 @@ namespace Take.Elephant
     /// The items are unique, scores may be repeated.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ISortedSet<T> : IPriorityBlockingQueue<T>, ICollection<T>
+    public interface ISortedSet<T> : IPriorityQueue<T>, ICollection<T>
     {}
 }
