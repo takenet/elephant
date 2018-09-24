@@ -137,26 +137,32 @@ namespace Take.Elephant.Memory
         public async Task<IAsyncEnumerable<T>> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default)
         {
             await _semaphore.WaitAsync();
-            var length = await GetLengthAsync();
-            if (initial < 0)
+            try
             {
-                initial = length - initial;
-            }
-            if (end < 0)
-            {
-                end = length - end;
-            }
-
-            var list = new System.Collections.Generic.List<T>();
-            for (var i = initial; i <= end; i++)
-            {
-                if (i < length && i >= 0)
+                var length = await GetLengthAsync();
+                if (initial < 0)
                 {
-                    list.Add(_sortedList.Values[(int)i]);
+                    initial = length - initial;
                 }
+                if (end < 0)
+                {
+                    end = length - end;
+                }
+
+                var list = new System.Collections.Generic.List<T>();
+                for (var i = initial; i <= end; i++)
+                {
+                    if (i < length && i >= 0)
+                    {
+                        list.Add(_sortedList.Values[(int)i]);
+                    }
+                }
+                return await Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(list));
             }
-            _semaphore.Release();
-            return await Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(list));
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
         public Task<bool> RemoveAsync(T value, CancellationToken cancellationToken = default)
@@ -169,6 +175,9 @@ namespace Take.Elephant.Memory
             _sortedList.RemoveAt(item);
             return true.AsCompletedTask();
         }
+
+        public Task<IAsyncEnumerable<T>> GetRangeByScoreAsync(double start = 0, double stop = 0, CancellationToken cancellationToken = default)
+            => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_sortedList.Where(i => i.Key >= start && i.Key <= stop).Select(i => i.Value)));
     }
 
     /// <summary>

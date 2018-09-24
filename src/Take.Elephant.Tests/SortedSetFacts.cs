@@ -97,6 +97,97 @@ namespace Take.Elephant.Tests
             AssertEquals(await sortedSet.GetLengthAsync(), 1);
         }
 
+        [Fact(DisplayName = "RangeByScoreTwoItensAsyncItensSucceeds")]
+        public virtual async Task RangeByScoreTwoItensAsyncItensSucceeds()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
+
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(thirdItem, 0.03);
+
+            // Act
+            var rangedItens = await sortedSet.GetRangeByScoreAsync(0.02, 0.03);
+
+            // Assert
+            AssertEquals(rangedItens.Count(), 2);
+            AssertEquals(rangedItens.FirstOrDefault(), secondItem);
+            AssertEquals(rangedItens.LastOrDefault(), thirdItem);
+        }
+
+        [Fact(DisplayName = "RangeByScoreOneItemAsyncSucceeds")]
+        public virtual async Task RangeByScoreOneItensAsyncSucceeds()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
+
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(thirdItem, 0.03);
+
+            // Act
+            var rangedItens = await sortedSet.GetRangeByScoreAsync(0.02, 0.02);
+
+            // Assert
+            AssertEquals(rangedItens.Count(), 1);
+            AssertEquals(rangedItens.FirstOrDefault(), secondItem);
+        }
+
+        [Fact(DisplayName = "RangeByScoreWithMultipleItensSameScoreSucceeds")]
+        public virtual async Task RangeByScoreWithMultipleItensSameScoreSucceeds()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
+
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(firstItem, 0.02);
+            await sortedSet.AddAsync(thirdItem, 0.03);
+
+            // Act
+            var rangedItens = await sortedSet.GetRangeByScoreAsync(0.02, 0.02);
+
+            // Assert
+            AssertEquals(rangedItens.Count(), 2);
+        }
+
+        [Fact(DisplayName = "RangeByScoreOutOfRangeSucceeds")]
+        public virtual async Task RangeByScoreOutOfRangeSucceeds()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
+
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(firstItem, 0.02);
+            await sortedSet.AddAsync(thirdItem, 0.03);
+
+            // Act
+            var rangedItens = await sortedSet.GetRangeByScoreAsync(1, 2);
+
+            // Assert
+            AssertEquals(rangedItens.Count(), 0);
+        }
+
         [Fact(DisplayName = "RangeByRankTwoItensAsyncItensSucceeds")]
         public virtual async Task RangeByRankTwoItensAsyncItensSucceeds()
         {

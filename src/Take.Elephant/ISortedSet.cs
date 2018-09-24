@@ -38,6 +38,19 @@ namespace Take.Elephant
         Task<IAsyncEnumerable<T>> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default);
 
         /// <summary>
+        ///  Returns the specified range of elements in the sorted set stored at key. By default
+        ///  the elements are considered to be ordered from the lowest to the highest score.
+        ///  Lexicographical order is used for elements with equal score. Start and stop are
+        ///  used to specify the min and max range for score values. Similar to other range
+        ///  methods the values are inclusive.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="stop"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IAsyncEnumerable<T>> GetRangeByScoreAsync(double start = 0, double stop = 0, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Gets an IEnumerable with the keyValuePair with the values and respective score on the collection.
         /// </summary>
         /// <returns></returns>

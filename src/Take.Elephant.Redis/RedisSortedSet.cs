@@ -91,5 +91,12 @@ namespace Take.Elephant.Redis
             var values = await database.SortedSetRangeByRankAsync(Name, initial, end);
             return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
         }
+
+        public async Task<IAsyncEnumerable<T>> GetRangeByScoreAsync(double start = 0, double stop = 0, CancellationToken cancellationToken = default)
+        {
+            var database = GetDatabase();
+            var values = await database.SortedSetRangeByScoreAsync(Name, start, stop);
+            return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
+        }
     }
 }
