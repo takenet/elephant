@@ -38,7 +38,7 @@ namespace Take.Elephant.Redis
             return null;
         }
 
-        public Task<ISortedSet<TItem>> GetValueOrEmptyAsync(TKey key)
+        public Task<ISortedSet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancelationToken = default)
         {
             return CreateList(key).AsCompletedTask<ISortedSet<TItem>>();
         }
@@ -66,7 +66,7 @@ namespace Take.Elephant.Redis
             var enumerable = await value.AsEnumerableWithScoreAsync().ConfigureAwait(false);
             foreach (var item in enumerable)
             {
-                commandTasks.Add(internalSet.EnqueueAsync(item.Value, item.Key));
+                commandTasks.Add(internalSet.AddAsync(item.Value, item.Key));
             }
 
             var success = await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false);

@@ -18,11 +18,11 @@ namespace Take.Elephant.Tests
             var item = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(item, 0.01);
+            await sortedSet.AddAsync(item, 0.01);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 1);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), item);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), item);
             AssertEquals(await sortedSet.GetLengthAsync(), 0);
         }
 
@@ -35,13 +35,13 @@ namespace Take.Elephant.Tests
             var secondItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(firstItem, 0.02);
-            await sortedSet.EnqueueAsync(secondItem, 0.01);
+            await sortedSet.AddAsync(firstItem, 0.02);
+            await sortedSet.AddAsync(secondItem, 0.01);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), secondItem);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), firstItem);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), secondItem);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), firstItem);
             AssertEquals(await sortedSet.GetLengthAsync(), 0);
         }
 
@@ -54,8 +54,8 @@ namespace Take.Elephant.Tests
             var secondItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(firstItem, 0.02);
-            await sortedSet.EnqueueAsync(secondItem, 0.01);
+            await sortedSet.AddAsync(firstItem, 0.02);
+            await sortedSet.AddAsync(secondItem, 0.01);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
@@ -89,7 +89,7 @@ namespace Take.Elephant.Tests
             var secondItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(firstItem, 0.02);
+            await sortedSet.AddAsync(firstItem, 0.02);
             var result = await sortedSet.RemoveAsync(secondItem);
 
             // Assert
@@ -107,13 +107,13 @@ namespace Take.Elephant.Tests
             var thirdItem = Fixture.Create<T>();
             var fourthItem = Fixture.Create<T>();
 
-            await sortedSet.EnqueueAsync(secondItem, 0.02);
-            await sortedSet.EnqueueAsync(fourthItem, 0.04);
-            await sortedSet.EnqueueAsync(firstItem, 0.01);
-            await sortedSet.EnqueueAsync(thirdItem, 0.03);
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.RangeByRankAsync(2, 3);
+            var rangedItens = await sortedSet.GetRangeByRankAsync(2, 3);
 
             // Assert
             AssertEquals(rangedItens.Count(), 2);
@@ -131,13 +131,13 @@ namespace Take.Elephant.Tests
             var thirdItem = Fixture.Create<T>();
             var fourthItem = Fixture.Create<T>();
 
-            await sortedSet.EnqueueAsync(secondItem, 0.02);
-            await sortedSet.EnqueueAsync(fourthItem, 0.04);
-            await sortedSet.EnqueueAsync(firstItem, 0.01);
-            await sortedSet.EnqueueAsync(thirdItem, 0.03);
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.RangeByRankAsync(3, 6);
+            var rangedItens = await sortedSet.GetRangeByRankAsync(3, 6);
 
             // Assert
             AssertEquals(rangedItens.Count(), 1);
@@ -154,10 +154,10 @@ namespace Take.Elephant.Tests
             var thirdItem = Fixture.Create<T>();
             var fourthItem = Fixture.Create<T>();
 
-            await sortedSet.EnqueueAsync(secondItem, 0.02);
-            await sortedSet.EnqueueAsync(firstItem, 0.01);
-            await sortedSet.EnqueueAsync(fourthItem, 0.04);
-            await sortedSet.EnqueueAsync(thirdItem, 0.03);
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
             var rangedItens = await sortedSet.AsEnumerableAsync();
@@ -178,10 +178,10 @@ namespace Take.Elephant.Tests
             var thirdItem = Fixture.Create<T>();
             var fourthItem = Fixture.Create<T>();
 
-            await sortedSet.EnqueueAsync(secondItem, 0.02);
-            await sortedSet.EnqueueAsync(firstItem, 0.01);
-            await sortedSet.EnqueueAsync(fourthItem, 0.04);
-            await sortedSet.EnqueueAsync(thirdItem, 0.03);
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
             var rangedItens = await sortedSet.AsEnumerableWithScoreAsync();
@@ -199,7 +199,7 @@ namespace Take.Elephant.Tests
             var sortedSet = Create();
 
             // Act
-            var actual = await sortedSet.DequeueMinOrDefaultAsync();
+            var actual = await sortedSet.RemoveMinOrDefaultAsync();
 
             // Assert
             AssertIsDefault(actual);
@@ -217,15 +217,15 @@ namespace Take.Elephant.Tests
             var fourthItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(secondItem, 0.02);
-            await sortedSet.EnqueueAsync(firstItem, 0.01);
-            await sortedSet.EnqueueAsync(fourthItem, 0.04);
-            await sortedSet.EnqueueAsync(thirdItem, 0.03);
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 4);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), firstItem);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), secondItem);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), firstItem);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), secondItem);
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
         }
 
@@ -240,118 +240,16 @@ namespace Take.Elephant.Tests
             var fourthItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(secondItem, 0.02);
-            await sortedSet.EnqueueAsync(firstItem, 0.01);
-            await sortedSet.EnqueueAsync(fourthItem, 0.04);
-            await sortedSet.EnqueueAsync(thirdItem, 0.03);
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 4);
-            AssertEquals(await sortedSet.DequeueMaxOrDefaultAsync(), fourthItem);
-            AssertEquals(await sortedSet.DequeueMaxOrDefaultAsync(), thirdItem);
+            AssertEquals(await sortedSet.RemoveMaxOrDefaultAsync(), fourthItem);
+            AssertEquals(await sortedSet.RemoveMaxOrDefaultAsync(), thirdItem);
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
         }
-
-        //Priority blocking queue tests
-        //[Fact(DisplayName = "DequeueExistingItemSucceeds")]
-        //public virtual async Task DequeueExistingItemSucceeds()
-        //{
-        //    // Arrange
-        //    var queue = Create();
-        //    var item = Fixture.Create<T>();
-        //    await queue.EnqueueAsync(item, 0.01);
-        //    var timeout = TimeSpan.FromMilliseconds(500);
-        //    var cts = new CancellationTokenSource(timeout);
-
-        //    // Act
-        //    var actual = await queue.DequeueMinAsync(cts.Token);
-
-        //    // Assert
-        //    AssertEquals(actual, item);
-        //    AssertEquals(await queue.GetLengthAsync(), 0);
-        //}
-
-        //[Fact(DisplayName = nameof(DequeueEmptyQueueThrowsOperationCanceledException))]
-        //public virtual async Task DequeueEmptyQueueThrowsOperationCanceledException()
-        //{
-        //    // Arrange
-        //    var queue = Create();
-        //    var timeout = TimeSpan.FromMilliseconds(500);
-        //    var cts = new CancellationTokenSource(timeout);
-
-        //    // Act
-        //    await AssertThrowsAsync<OperationCanceledException>(() =>
-        //        queue.DequeueMinAsync(cts.Token));
-        //}
-
-        //[Fact(DisplayName = "DequeueEmptyQueueAddingAfterDequeueWasCalledSucceeds")]
-        //public virtual async Task DequeueEmptyQueueAddingAfterDequeueWasCalledSucceeds()
-        //{
-        //    // Arrange
-        //    var queue = Create();
-        //    var item = Fixture.Create<T>();
-        //    var timeout = TimeSpan.FromMilliseconds(500);
-        //    var cts = new CancellationTokenSource(timeout + timeout);
-
-        //    // Act
-        //    var dequeueTask = queue.DequeueMinAsync(cts.Token);
-        //    await Task.Delay(timeout);
-        //    AssertIsFalse(dequeueTask.IsCompleted);
-        //    await queue.EnqueueAsync(item, 0.01);
-        //    var actual = await dequeueTask;
-
-        //    // Assert
-        //    AssertEquals(actual, item);
-        //    AssertEquals(await queue.GetLengthAsync(), 0);
-        //}
-
-        //[Fact(DisplayName = nameof(DequeueTwiceWithSingleItemThrowsOperationCanceledException))]
-        //public virtual async Task DequeueTwiceWithSingleItemThrowsOperationCanceledException()
-        //{
-        //    // Arrange
-        //    var queue = Create();
-        //    var item = Fixture.Create<T>();
-        //    await queue.EnqueueAsync(item, 0.01);
-        //    var timeout = TimeSpan.FromMilliseconds(500);
-        //    var cts = new CancellationTokenSource(timeout);
-        //    await queue.DequeueMinAsync(cts.Token);
-
-        //    // Act
-        //    await AssertThrowsAsync<OperationCanceledException>(() =>
-        //        queue.DequeueMinAsync(cts.Token));
-        //}
-
-        //[Fact(DisplayName = "DequeueBlockingMultipleItemsInParallelSucceeds")]
-        //public virtual async Task DequeueBlockingMultipleItemsInParallelSucceeds()
-        //{
-        //    // Arrange
-        //    var queue = Create();
-        //    var items = new List<T>();
-        //    var count = 100;
-        //    for (var i = 0; i < count; i++)
-        //    {
-        //        var item = Fixture.Create<T>();
-        //        items.Add(item);
-        //        await queue.EnqueueAsync(item, 0.01);
-        //    }
-
-        //    var timeout = TimeSpan.FromMilliseconds(30000);
-        //    var cts = new CancellationTokenSource(timeout);
-
-        //    // Act
-        //    var actualItems = new ConcurrentBag<T>();
-        //    var tasks = Enumerable
-        //        .Range(0, count)
-        //        .Select(i => Task.Run(async () => actualItems.Add(await queue.DequeueMinAsync(cts.Token))));
-
-        //    await Task.WhenAll(tasks);
-
-        //    // Assert
-        //    AssertEquals(await queue.GetLengthAsync(), 0);
-        //    foreach (var item in items)
-        //    {
-        //        AssertIsTrue(actualItems.Contains(item));
-        //    }
-        //}
     }
 }

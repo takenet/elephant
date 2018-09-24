@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Memory
@@ -17,8 +18,9 @@ namespace Take.Elephant.Memory
         /// If the later, the item is automatically added to the map.
         /// </summary>
         /// <param name="key">The key.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>An existing sorted set if the key exists; otherwise, an empty sorted set.</returns>
-        public Task<ISortedSet<TValue>> GetValueOrEmptyAsync(TKey key)
+        public Task<ISortedSet<TValue>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
             => InternalDictionary.GetOrAdd(key, k => ValueFactory()).AsCompletedTask();
     }
 }

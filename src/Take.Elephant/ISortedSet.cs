@@ -12,14 +12,15 @@ namespace Take.Elephant
     /// The items are unique, scores may be repeated.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ISortedSet<T> : IPriorityQueue<T>, ICollection<T>
+    public interface ISortedSet<T> : IPrioritySet<T>, ICollection<T>
     {
         /// <summary>
         /// Remove value of the sorted set.
         /// </summary>
         /// <param name="value"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns>The number of removed items</returns>
-        Task<bool> RemoveAsync(T value);
+        Task<bool> RemoveAsync(T value, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Returns the specified range of elements in the sorted set stored at key. By default
@@ -32,8 +33,9 @@ namespace Take.Elephant
         /// </summary>
         /// <param name="initial"></param>
         /// <param name="end"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IAsyncEnumerable<T>> RangeByRankAsync(long initial = 0, long end = -1);
+        Task<IAsyncEnumerable<T>> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets an IEnumerable with the keyValuePair with the values and respective score on the collection.

@@ -16,9 +16,9 @@ namespace Take.Elephant.Tests.Memory
             var list = new SortedSet<string>();
             if (populate)
             {
-                list.EnqueueAsync(Fixture.Create<string>(), Fixture.Create<double>()).Wait();
-                list.EnqueueAsync(Fixture.Create<string>(), Fixture.Create<double>()).Wait();
-                list.EnqueueAsync(Fixture.Create<string>(), Fixture.Create<double>()).Wait();
+                list.AddAsync(Fixture.Create<string>(), Fixture.Create<double>()).Wait();
+                list.AddAsync(Fixture.Create<string>(), Fixture.Create<double>()).Wait();
+                list.AddAsync(Fixture.Create<string>(), Fixture.Create<double>()).Wait();
             }
             return list;
         }

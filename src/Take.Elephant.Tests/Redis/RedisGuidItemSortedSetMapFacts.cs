@@ -31,9 +31,9 @@ namespace Take.Elephant.Tests.Redis
             var sortedSet = new SortedSet<Item>();
             if (populate)
             {
-                sortedSet.EnqueueAsync(Fixture.Create<Item>(), 1).Wait();
-                sortedSet.EnqueueAsync(Fixture.Create<Item>(), 1).Wait();
-                sortedSet.EnqueueAsync(Fixture.Create<Item>(), 1).Wait();
+                sortedSet.AddAsync(Fixture.Create<Item>(), 1).Wait();
+                sortedSet.AddAsync(Fixture.Create<Item>(), 1).Wait();
+                sortedSet.AddAsync(Fixture.Create<Item>(), 1).Wait();
             }
             return sortedSet;
         }

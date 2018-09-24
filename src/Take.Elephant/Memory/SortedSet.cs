@@ -54,7 +54,7 @@ namespace Take.Elephant.Memory
             return item.AsCompletedTask();
         }
 
-        public Task<T> DequeueMaxOrDefaultAsync()
+        public Task<T> RemoveMaxOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             T item;
             lock (_syncRoot)
@@ -90,7 +90,7 @@ namespace Take.Elephant.Memory
             return item.AsCompletedTask();
         }
 
-        public Task<T> DequeueMinOrDefaultAsync()
+        public Task<T> RemoveMinOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             T item;
             lock (_syncRoot)
@@ -104,7 +104,7 @@ namespace Take.Elephant.Memory
             return item.AsCompletedTask();
         }
 
-        public Task EnqueueAsync(T item, double score)
+        public Task AddAsync(T item, double score, CancellationToken cancellationToken = default)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             lock (_syncRoot)
@@ -132,7 +132,7 @@ namespace Take.Elephant.Memory
             return _sortedList.LongCount().AsCompletedTask();
         }
 
-        public async Task<IAsyncEnumerable<T>> RangeByRankAsync(long initial = 0, long end = -1)
+        public async Task<IAsyncEnumerable<T>> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default)
         {
             var length = await GetLengthAsync();
             if (initial < 0)
@@ -155,7 +155,7 @@ namespace Take.Elephant.Memory
             return await Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(list));
         }
 
-        public Task<bool> RemoveAsync(T value)
+        public Task<bool> RemoveAsync(T value, CancellationToken cancellationToken = default)
         {
             var item = _sortedList.IndexOfValue(value);
             if (item == -1)

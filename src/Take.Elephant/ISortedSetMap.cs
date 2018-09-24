@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Take.Elephant
 {
@@ -14,7 +15,8 @@ namespace Take.Elephant
         /// If the later, the item is automatically added to the map.
         /// </summary>
         /// <param name="key">The key.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>An existing sorted set if the key exists; otherwise, an empty sorted set.</returns>
-        Task<ISortedSet<TItem>> GetValueOrEmptyAsync(TKey key);
+        Task<ISortedSet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default);
     }
 }

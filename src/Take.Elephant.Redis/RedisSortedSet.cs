@@ -41,7 +41,7 @@ namespace Take.Elephant.Redis
             );
         }
 
-        public async Task<T> DequeueMaxOrDefaultAsync()
+        public async Task<T> RemoveMaxOrDefaultAsync(CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
             var values = await database.SortedSetRangeByRankAsync(Name, -1, -1);
@@ -54,7 +54,7 @@ namespace Take.Elephant.Redis
             return !result.IsNull ? _serializer.Deserialize(result) : default(T);
         }
 
-        public async Task<T> DequeueMinOrDefaultAsync()
+        public async Task<T> RemoveMinOrDefaultAsync(CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
             var values = await database.SortedSetRangeByRankAsync(Name, 0, 0);
@@ -67,7 +67,7 @@ namespace Take.Elephant.Redis
             return !result.IsNull ? _serializer.Deserialize(result) : default(T);
         }
 
-        public Task EnqueueAsync(T item, double score)
+        public Task AddAsync(T item, double score, CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
             return database.SortedSetAddAsync(Name, _serializer.Serialize(item), score, WriteFlags);
@@ -79,13 +79,13 @@ namespace Take.Elephant.Redis
             return database.SortedSetLengthAsync(Name);
         }
 
-        public Task<bool> RemoveAsync(T value)
+        public Task<bool> RemoveAsync(T value, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.SortedSetRemoveAsync(Name, _serializer.Serialize(value));
         }
 
-        public async Task<IAsyncEnumerable<T>> RangeByRankAsync(long initial = 0, long end = -1)
+        public async Task<IAsyncEnumerable<T>> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.SortedSetRangeByRankAsync(Name, initial, end);
