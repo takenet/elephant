@@ -16,6 +16,7 @@ namespace Take.Elephant.Memory
         private readonly SortedList<double, T> _sortedList;
         private readonly ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue;
         private readonly object _syncRoot = new object();
+        private readonly SemaphoreSlim _semaphore;
 
         public SortedSet() : this(new SortedList<double, T>(new DuplicateKeyComparer<double>()))
         { }
@@ -24,6 +25,7 @@ namespace Take.Elephant.Memory
         {
             _sortedList = sortedList;
             _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
+            _semaphore = new SemaphoreSlim(1);
         }
 
         public Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
@@ -134,6 +136,7 @@ namespace Take.Elephant.Memory
 
         public async Task<IAsyncEnumerable<T>> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default)
         {
+            await _semaphore.WaitAsync();
             var length = await GetLengthAsync();
             if (initial < 0)
             {
@@ -144,7 +147,7 @@ namespace Take.Elephant.Memory
                 end = length - end;
             }
 
-            System.Collections.Generic.ICollection<T> list = new System.Collections.Generic.List<T>();
+            var list = new System.Collections.Generic.List<T>();
             for (var i = initial; i <= end; i++)
             {
                 if (i < length && i >= 0)
@@ -152,6 +155,7 @@ namespace Take.Elephant.Memory
                     list.Add(_sortedList.Values[(int)i]);
                 }
             }
+            _semaphore.Release();
             return await Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(list));
         }
 
