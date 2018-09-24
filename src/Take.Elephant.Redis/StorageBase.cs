@@ -4,7 +4,7 @@ using StackExchange.Redis;
 namespace Take.Elephant.Redis
 {
     public class StorageBase<TKey> : IDisposable
-    {        
+    {
         protected readonly IConnectionMultiplexer ConnectionMultiplexer;
         protected readonly string Name;
         protected readonly int Db;
@@ -14,14 +14,13 @@ namespace Take.Elephant.Redis
         public StorageBase(string name, string configuration, int db, CommandFlags readFlags, CommandFlags writeFlags)
             : this(name, StackExchange.Redis.ConnectionMultiplexer.Connect(ConfigurationOptions.Parse(configuration)), db, readFlags, writeFlags)
         {
-            
         }
 
         protected StorageBase(string name, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (connectionMultiplexer == null) throw new ArgumentNullException(nameof(connectionMultiplexer));
-            Name = name;                        
+            Name = name;
             ConnectionMultiplexer = connectionMultiplexer;
             ConnectionMultiplexer.PreserveAsyncOrder = false;
             Db = db;
@@ -46,7 +45,6 @@ namespace Take.Elephant.Redis
 
         protected virtual ISubscriber GetSubscriber() => ConnectionMultiplexer.GetSubscriber();
 
-
         #region IDisposable Members
 
         protected virtual void Dispose(bool disposing)
@@ -63,6 +61,6 @@ namespace Take.Elephant.Redis
             GC.SuppressFinalize(this);
         }
 
-        #endregion
+        #endregion IDisposable Members
     }
 }

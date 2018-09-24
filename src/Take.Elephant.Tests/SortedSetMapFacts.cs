@@ -1,5 +1,7 @@
 ﻿using NFluent;
 using Ploeh.AutoFixture;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace Take.Elephant.Tests
 {

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 namespace Take.Elephant
 {
     /// <summary>
-    /// Defines a set of unique items, associated with scores, that is used to take the sorted set ordered, 
-    /// from the smallest to the greatest score. 
+    /// Defines a set of unique items, associated with scores, that is used to take the sorted set ordered,
+    /// from the smallest to the greatest score.
     /// The items are unique, scores may be repeated.
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -33,5 +33,11 @@ namespace Take.Elephant
         /// <param name="end"></param>
         /// <returns></returns>
         Task<IAsyncEnumerable<T>> RangeByRankAsync(long initial = 0, long end = -1);
+
+        /// <summary>
+        /// Gets an IEnumerable with the keyValuePair with the values and respective score on the collection.
+        /// </summary>
+        /// <returns></returns>
+        Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync();
     }
 }

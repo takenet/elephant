@@ -29,6 +29,9 @@ namespace Take.Elephant.Memory
         public Task<IAsyncEnumerable<T>> AsEnumerableAsync()
             => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_sortedList.Values));
 
+        public Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync()
+            => Task.FromResult<IAsyncEnumerable<KeyValuePair<double, T>>>(new AsyncEnumerableWrapper<KeyValuePair<double, T>>(_sortedList.ToList()));
+
         public Task<T> DequeueMaxAsync(CancellationToken cancellationToken)
         {
             T item;
@@ -142,7 +145,7 @@ namespace Take.Elephant.Memory
             }
 
             System.Collections.Generic.ICollection<T> list = new System.Collections.Generic.List<T>();
-            for (var i = initial; i < end; i++)
+            for (var i = initial; i <= end; i++)
             {
                 if (i < length && i >= 0)
                 {
@@ -155,6 +158,10 @@ namespace Take.Elephant.Memory
         public Task<bool> RemoveAsync(T value)
         {
             var item = _sortedList.IndexOfValue(value);
+            if (item == -1)
+            {
+                return false.AsCompletedTask();
+            }
             _sortedList.RemoveAt(item);
             return true.AsCompletedTask();
         }

@@ -1,5 +1,6 @@
 ﻿using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,10 +30,20 @@ namespace Take.Elephant.Redis
             return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
         }
 
+        public async Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync()
+        {
+            var database = GetDatabase();
+
+            var values = await database.SortedSetRangeByScoreWithScoresAsync(Name);
+            return new AsyncEnumerableWrapper<KeyValuePair<double, T>>(
+                values.Select(k => new KeyValuePair<double, T>(k.Score, _serializer.Deserialize(k.Element)))
+            );
+        }
+
         public async Task<T> DequeueMaxOrDefaultAsync()
         {
             var database = GetDatabase();
-            var values = await database.SortedSetRangeByRankAsync(Name, -2, -1);
+            var values = await database.SortedSetRangeByRankAsync(Name, -1, -1);
             if (values == null || values.Length == 0)
             {
                 return default(T);
@@ -45,7 +56,7 @@ namespace Take.Elephant.Redis
         public async Task<T> DequeueMinOrDefaultAsync()
         {
             var database = GetDatabase();
-            var values = await database.SortedSetRangeByRankAsync(Name, 0, 1);
+            var values = await database.SortedSetRangeByRankAsync(Name, 0, 0);
             if (values == null || values.Length == 0)
             {
                 return default(T);
@@ -58,7 +69,7 @@ namespace Take.Elephant.Redis
         public Task EnqueueAsync(T item, double score)
         {
             var database = GetDatabase();
-            return database.SortedSetAddAsync(Name, _serializer.Serialize(item), score);
+            return database.SortedSetAddAsync(Name, _serializer.Serialize(item), score, WriteFlags);
         }
 
         public Task<long> GetLengthAsync()
