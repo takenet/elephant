@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 
@@ -20,13 +21,13 @@ namespace Take.Elephant.Redis
             _serializer = serializer;
         }
 
-        public override Task<bool> ContainsKeyAsync(TKey key)
+        public override Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
         }
 
-        public override async Task<ISortedSet<TItem>> GetValueOrDefaultAsync(TKey key)
+        public override async Task<ISortedSet<TItem>> GetValueOrDefaultAsync(TKey key, CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
             if (await database.KeyExistsAsync(GetRedisKey(key), ReadFlags).ConfigureAwait(false))
@@ -42,7 +43,7 @@ namespace Take.Elephant.Redis
             return CreateList(key).AsCompletedTask<ISortedSet<TItem>>();
         }
 
-        public override async Task<bool> TryAddAsync(TKey key, ISortedSet<TItem> value, bool overwrite = false)
+        public override async Task<bool> TryAddAsync(TKey key, ISortedSet<TItem> value, bool overwrite = false, CancellationToken cancelationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -73,7 +74,7 @@ namespace Take.Elephant.Redis
             return success;
         }
 
-        public override Task<bool> TryRemoveAsync(TKey key)
+        public override Task<bool> TryRemoveAsync(TKey key, CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
             return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant
@@ -38,6 +39,6 @@ namespace Take.Elephant
         /// Gets an IEnumerable with the keyValuePair with the values and respective score on the collection.
         /// </summary>
         /// <returns></returns>
-        Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync();
+        Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync(CancellationToken cancelationToken = default);
     }
 }

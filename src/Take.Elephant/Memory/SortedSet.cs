@@ -29,7 +29,7 @@ namespace Take.Elephant.Memory
         public Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_sortedList.Values));
 
-        public Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync()
+        public Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync(CancellationToken cancelationToken = default)
             => Task.FromResult<IAsyncEnumerable<KeyValuePair<double, T>>>(new AsyncEnumerableWrapper<KeyValuePair<double, T>>(_sortedList.ToList()));
 
         public Task<T> DequeueMaxAsync(CancellationToken cancellationToken)

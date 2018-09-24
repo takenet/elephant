@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Redis
@@ -22,7 +23,7 @@ namespace Take.Elephant.Redis
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync()
+        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
 
@@ -30,7 +31,7 @@ namespace Take.Elephant.Redis
             return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
         }
 
-        public async Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync()
+        public async Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync(CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
 
@@ -72,7 +73,7 @@ namespace Take.Elephant.Redis
             return database.SortedSetAddAsync(Name, _serializer.Serialize(item), score, WriteFlags);
         }
 
-        public Task<long> GetLengthAsync()
+        public Task<long> GetLengthAsync(CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
             return database.SortedSetLengthAsync(Name);
