@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,6 +51,13 @@ namespace Take.Elephant.Sql.Mapping
 
         /// <inheritdoc />        
         public bool SchemaSynchronized { get; private set; }
+
+        public event EventHandler<DbCommandEventArgs> SchemaChanged;
+
+        internal void RaiseSchemaChanged(DbCommand dbCommand)
+        {
+            SchemaChanged?.Invoke(this, new DbCommandEventArgs(dbCommand));
+        }
 
         /// <inheritdoc />        
         public virtual async Task SynchronizeSchemaAsync(string connectionString, IDatabaseDriver databaseDriver, CancellationToken cancellationToken)

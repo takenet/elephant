@@ -12,7 +12,11 @@ namespace Take.Elephant.Sql
 {
     internal static class DatabaseSchema
     {
-        internal static async Task CreateTableAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, CancellationToken cancellationToken)
+        internal static async Task CreateTableAsync(
+            IDatabaseDriver databaseDriver,
+            DbConnection connection,
+            ITable table,
+            CancellationToken cancellationToken)
         {
             if (table.Columns.Count == 0)
             {
@@ -29,6 +33,7 @@ namespace Take.Elephant.Sql
                         schemaName = schemaName
                     });
                 await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+                (table as Table)?.RaiseSchemaChanged(command);
             }
 
             // Table columns
@@ -64,10 +69,15 @@ namespace Take.Elephant.Sql
             {
                 command.CommandText = createTableSql;
                 await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+                (table as Table)?.RaiseSchemaChanged(command);
             }
         }
 
-        internal static async Task UpdateTableSchemaAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, CancellationToken cancellationToken)
+        internal static async Task UpdateTableSchemaAsync(
+            IDatabaseDriver databaseDriver,
+            DbConnection connection,
+            ITable table,
+            CancellationToken cancellationToken)
         {
             var tableColumnsDictionary = new Dictionary<string, string>();
 
@@ -163,6 +173,7 @@ namespace Take.Elephant.Sql
                         });
 
                 await command.ExecuteNonQueryAsync(cancellationToken);
+                (table as Table)?.RaiseSchemaChanged(command);
             }
         }
 

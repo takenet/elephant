@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,5 +46,10 @@ namespace Take.Elephant.Sql.Mapping
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task SynchronizeSchemaAsync(string connectionString, IDatabaseDriver databaseDriver,  CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Occurs when the table schema is changed in the database.
+        /// </summary>
+        event EventHandler<DbCommandEventArgs> SchemaChanged;
     }
 }
