@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using Ploeh.AutoFixture;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Ploeh.AutoFixture;
 using Xunit;
 
 namespace Take.Elephant.Tests
@@ -21,11 +18,11 @@ namespace Take.Elephant.Tests
             var item = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(item, 0.01);
+            await sortedSet.AddAsync(item, 0.01);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 1);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), item);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), item);
             AssertEquals(await sortedSet.GetLengthAsync(), 0);
         }
 
@@ -38,46 +35,161 @@ namespace Take.Elephant.Tests
             var secondItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(firstItem, 0.02);
-            await sortedSet.EnqueueAsync(secondItem, 0.01);
+            await sortedSet.AddAsync(firstItem, 0.02);
+            await sortedSet.AddAsync(secondItem, 0.01);
 
             // Assert
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), secondItem);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), firstItem);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), secondItem);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), firstItem);
             AssertEquals(await sortedSet.GetLengthAsync(), 0);
         }
 
-        [Fact(DisplayName = "EnqueueMultipleItemsSucceeds")]
-        public virtual async Task EnqueueMultipleItemsSucceeds()
+        [Fact(DisplayName = "RemoveExistingItemSucceeds")]
+        public virtual async Task RemoveExistingItemSucceeds()
         {
             // Arrange
-            var queue = Create();
-            var items = new ConcurrentBag<T>();
-            var count = 100;
-            for (int i = 0; i < count; i++)
-            {
-                var item = Fixture.Create<T>();
-                items.Add(item);
-            }
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
 
-            // Act                           
-            var enumerator = items.GetEnumerator();
-            var tasks = Enumerable
-                .Range(0, count)
-                .Where(i => enumerator.MoveNext())
-                .Select(i => Task.Run(async () => await queue.EnqueueAsync(enumerator.Current, 0.01)));
-
-            await Task.WhenAll(tasks);
+            // Act
+            await sortedSet.AddAsync(firstItem, 0.02);
+            await sortedSet.AddAsync(secondItem, 0.01);
 
             // Assert
-            AssertEquals(await queue.GetLengthAsync(), count);
-            while (await queue.GetLengthAsync() > 0)
-            {
-                var item = await queue.DequeueMinOrDefaultAsync();
-                AssertIsTrue(items.Contains(item));
-            }
-            AssertEquals(await queue.GetLengthAsync(), 0);
+            AssertEquals(await sortedSet.GetLengthAsync(), 2);
+            AssertEquals(await sortedSet.RemoveAsync(firstItem), true);
+            AssertEquals(await sortedSet.GetLengthAsync(), 1);
+            AssertEquals(await sortedSet.RemoveAsync(secondItem), true);
+            AssertEquals(await sortedSet.GetLengthAsync(), 0);
+        }
+
+        [Fact(DisplayName = "RemoveEmptyFails")]
+        public virtual async Task RemoveEmptyFails()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+
+            // Act
+            var result = await sortedSet.RemoveAsync(firstItem);
+
+            // Assert
+            AssertEquals(result, false);
+            AssertEquals(await sortedSet.GetLengthAsync(), 0);
+        }
+
+        [Fact(DisplayName = "RemoveNonExistingItemFails")]
+        public virtual async Task RemoveNonExistingItemFails()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
+
+            // Act
+            await sortedSet.AddAsync(firstItem, 0.02);
+            var result = await sortedSet.RemoveAsync(secondItem);
+
+            // Assert
+            AssertEquals(result, false);
+            AssertEquals(await sortedSet.GetLengthAsync(), 1);
+        }
+
+        [Fact(DisplayName = "RangeByRankTwoItensAsyncItensSucceeds")]
+        public virtual async Task RangeByRankTwoItensAsyncItensSucceeds()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
+
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(thirdItem, 0.03);
+
+            // Act
+            var rangedItens = await sortedSet.GetRangeByRankAsync(2, 3);
+
+            // Assert
+            AssertEquals(rangedItens.Count(), 2);
+            AssertEquals(rangedItens.FirstOrDefault(), thirdItem);
+            AssertEquals(rangedItens.LastOrDefault(), fourthItem);
+        }
+
+        [Fact(DisplayName = "RangeByRankMoreIndexesOnlyOneItensSucceeds")]
+        public virtual async Task RangeByRankMoreIndexesOnlyOneItensSucceeds()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
+
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(thirdItem, 0.03);
+
+            // Act
+            var rangedItens = await sortedSet.GetRangeByRankAsync(3, 6);
+
+            // Assert
+            AssertEquals(rangedItens.Count(), 1);
+            AssertEquals(rangedItens.FirstOrDefault(), fourthItem);
+        }
+
+        [Fact(DisplayName = "GetListEnumerableSucceeds")]
+        public virtual async Task GetListEnumerableSucceeds()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
+
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(thirdItem, 0.03);
+
+            // Act
+            var rangedItens = await sortedSet.AsEnumerableAsync();
+
+            // Assert
+            AssertEquals(rangedItens.Count(), 4);
+            AssertEquals(rangedItens.FirstOrDefault(), firstItem);
+            AssertEquals(rangedItens.LastOrDefault(), fourthItem);
+        }
+
+        [Fact(DisplayName = "GetListEnumerableWithScoreSucceeds")]
+        public virtual async Task GetListEnumerableWithScoreSucceeds()
+        {
+            // Arrange
+            var sortedSet = Create();
+            var firstItem = Fixture.Create<T>();
+            var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
+
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(thirdItem, 0.03);
+
+            // Act
+            var rangedItens = await sortedSet.AsEnumerableWithScoreAsync();
+
+            // Assert
+            AssertEquals(rangedItens.Count(), 4);
+            AssertEquals(rangedItens.FirstOrDefault(), new KeyValuePair<double, T>(0.01, firstItem));
+            AssertEquals(rangedItens.LastOrDefault(), new KeyValuePair<double, T>(0.04, fourthItem));
         }
 
         [Fact(DisplayName = "DequeueEmptyReturnsDefault")]
@@ -87,184 +199,57 @@ namespace Take.Elephant.Tests
             var sortedSet = Create();
 
             // Act
-            var actual = await sortedSet.DequeueMinOrDefaultAsync();
+            var actual = await sortedSet.RemoveMinOrDefaultAsync();
 
             // Assert
             AssertIsDefault(actual);
             AssertEquals(await sortedSet.GetLengthAsync(), 0);
         }
 
-        [Fact(DisplayName = "DequeueOrderedExistingItemPerMinimumSucceeds")]
-        public virtual async Task DequeueOrderedExistingItemPerMinimumSucceeds()
+        [Fact(DisplayName = "DequeueMinExistingItemSucceeds")]
+        public virtual async Task DequeueMinExistingItemPerMinimumSucceeds()
         {
             // Arrange
             var sortedSet = Create();
             var firstItem = Fixture.Create<T>();
             var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(firstItem, 0.02);
-            await sortedSet.EnqueueAsync(secondItem, 0.01);
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Assert
+            AssertEquals(await sortedSet.GetLengthAsync(), 4);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), firstItem);
+            AssertEquals(await sortedSet.RemoveMinOrDefaultAsync(), secondItem);
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), secondItem);
-            AssertEquals(await sortedSet.DequeueMinOrDefaultAsync(), firstItem);
-            AssertEquals(await sortedSet.GetLengthAsync(), 0);
         }
 
-
-        [Fact(DisplayName = "DequeueOrderedExistingItemPerMaximumSucceeds")]
-        public virtual async Task DequeueOrderedExistingItemPerMaximumSucceeds()
+        [Fact(DisplayName = "DequeueMaxExistingItemSucceeds")]
+        public virtual async Task DequeueMaxExistingItemPerMinimumSucceeds()
         {
             // Arrange
             var sortedSet = Create();
             var firstItem = Fixture.Create<T>();
             var secondItem = Fixture.Create<T>();
+            var thirdItem = Fixture.Create<T>();
+            var fourthItem = Fixture.Create<T>();
 
             // Act
-            await sortedSet.EnqueueAsync(firstItem, 0.02);
-            await sortedSet.EnqueueAsync(secondItem, 0.01);
+            await sortedSet.AddAsync(secondItem, 0.02);
+            await sortedSet.AddAsync(firstItem, 0.01);
+            await sortedSet.AddAsync(fourthItem, 0.04);
+            await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Assert
+            AssertEquals(await sortedSet.GetLengthAsync(), 4);
+            AssertEquals(await sortedSet.RemoveMaxOrDefaultAsync(), fourthItem);
+            AssertEquals(await sortedSet.RemoveMaxOrDefaultAsync(), thirdItem);
             AssertEquals(await sortedSet.GetLengthAsync(), 2);
-            AssertEquals(await sortedSet.DequeueMaxOrDefaultAsync(), firstItem);
-            AssertEquals(await sortedSet.DequeueMaxOrDefaultAsync(), secondItem);
-            AssertEquals(await sortedSet.GetLengthAsync(), 0);
-        }
-
-        [Fact(DisplayName = "DequeueMultipleItemsInParallelSucceeds")]
-        public virtual async Task DequeueMultipleItemsInParallelSucceeds()
-        {
-            // Arrange
-            var sortedSet = Create();
-            var items = new HashSet<T>();
-            var count = 100;
-            for (var i = 0; i < count; i++)
-            {
-                var item = Fixture.Create<T>();
-                items.Add(item);
-                await sortedSet.EnqueueAsync(item, 0.01);
-            }
-
-            var timeout = TimeSpan.FromMilliseconds(500);
-            var cts = new CancellationTokenSource(timeout);
-
-            // Act
-            var actualItems = new ConcurrentBag<T>();
-            var tasks = Enumerable
-                .Range(0, count)
-                .Select(i => Task.Run(async () => actualItems.Add(await sortedSet.DequeueMinOrDefaultAsync())));
-
-            await Task.WhenAll(tasks);
-
-            // Assert
-            AssertEquals(await sortedSet.GetLengthAsync(), 0);
-            foreach (var item in items)
-            {
-                AssertIsTrue(actualItems.Contains(item));
-            }
-        }
-
-        [Fact(DisplayName = "DequeueExistingItemSucceeds")]
-        public virtual async Task DequeueExistingItemSucceeds()
-        {
-            // Arrange
-            var queue = Create();
-            var item = Fixture.Create<T>();
-            await queue.EnqueueAsync(item, 0.01);
-            var timeout = TimeSpan.FromMilliseconds(500);
-            var cts = new CancellationTokenSource(timeout);
-
-            // Act
-            var actual = await queue.DequeueMinAsync(cts.Token);
-
-            // Assert
-            AssertEquals(actual, item);
-            AssertEquals(await queue.GetLengthAsync(), 0);
-        }
-
-        [Fact(DisplayName = nameof(DequeueEmptyQueueThrowsOperationCanceledException))]
-        public virtual async Task DequeueEmptyQueueThrowsOperationCanceledException()
-        {
-            // Arrange
-            var queue = Create();
-            var timeout = TimeSpan.FromMilliseconds(500);
-            var cts = new CancellationTokenSource(timeout);
-
-            // Act
-            await AssertThrowsAsync<OperationCanceledException>(() =>
-                queue.DequeueMinAsync(cts.Token));
-        }
-
-        [Fact(DisplayName = "DequeueEmptyQueueAddingAfterDequeueWasCalledSucceeds")]
-        public virtual async Task DequeueEmptyQueueAddingAfterDequeueWasCalledSucceeds()
-        {
-            // Arrange
-            var queue = Create();
-            var item = Fixture.Create<T>();
-            var timeout = TimeSpan.FromMilliseconds(500);
-            var cts = new CancellationTokenSource(timeout + timeout);
-
-            // Act
-            var dequeueTask = queue.DequeueMinAsync(cts.Token);
-            await Task.Delay(timeout);
-            AssertIsFalse(dequeueTask.IsCompleted);
-            await queue.EnqueueAsync(item, 0.01);
-            var actual = await dequeueTask;
-
-            // Assert
-            AssertEquals(actual, item);
-            AssertEquals(await queue.GetLengthAsync(), 0);
-        }
-
-        [Fact(DisplayName = nameof(DequeueTwiceWithSingleItemThrowsOperationCanceledException))]
-        public virtual async Task DequeueTwiceWithSingleItemThrowsOperationCanceledException()
-        {
-            // Arrange
-            var queue = Create();
-            var item = Fixture.Create<T>();
-            await queue.EnqueueAsync(item, 0.01);
-            var timeout = TimeSpan.FromMilliseconds(500);
-            var cts = new CancellationTokenSource(timeout);
-            await queue.DequeueMinAsync(cts.Token);
-
-            // Act
-            await AssertThrowsAsync<OperationCanceledException>(() =>
-                queue.DequeueMinAsync(cts.Token));
-        }
-
-        [Fact(DisplayName = "DequeueBlockingMultipleItemsInParallelSucceeds")]
-        public virtual async Task DequeueBlockingMultipleItemsInParallelSucceeds()
-        {
-            // Arrange
-            var queue = Create();
-            var items = new List<T>();
-            var count = 100;
-            for (var i = 0; i < count; i++)
-            {
-                var item = Fixture.Create<T>();
-                items.Add(item);
-                await queue.EnqueueAsync(item, 0.01);
-            }
-
-            var timeout = TimeSpan.FromMilliseconds(30000);
-            var cts = new CancellationTokenSource(timeout);
-
-            // Act
-            var actualItems = new ConcurrentBag<T>();
-            var tasks = Enumerable
-                .Range(0, count)
-                .Select(i => Task.Run(async () => actualItems.Add(await queue.DequeueMinAsync(cts.Token))));
-
-            await Task.WhenAll(tasks);
-
-            // Assert
-            AssertEquals(await queue.GetLengthAsync(), 0);
-            foreach (var item in items)
-            {
-                AssertIsTrue(actualItems.Contains(item));
-            }
         }
     }
 }
