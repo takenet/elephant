@@ -25,7 +25,10 @@ namespace Take.Elephant.Sql
             _addIsolationLevel = addIsolationLevel;
         }
 
-        public virtual async Task<bool> TryAddAsync(TKey key, ISet<TItem> value, bool overwrite = false)
+        public virtual async Task<bool> TryAddAsync(TKey key,
+            ISet<TItem> value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -90,7 +93,8 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key)
+        public virtual async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             using (var cancellationTokenSource = CreateCancellationTokenSource())
@@ -107,14 +111,14 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key)
+        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));            
             var keyColumnValues = KeyMapper.GetColumnValues(key);
             return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues).AsCompletedTask<ISet<TItem>>();
         }
 
-        public virtual async Task<bool> TryRemoveAsync(TKey key)
+        public virtual async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -125,7 +129,7 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task<bool> ContainsKeyAsync(TKey key)
+        public virtual async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
@@ -179,7 +183,8 @@ namespace Take.Elephant.Sql
                     .ToDictionary(k => k.Key, k => k.Value);
             }
 
-            public override Task<IAsyncEnumerable<TItem>> AsEnumerableAsync()
+            public override Task<IAsyncEnumerable<TItem>> AsEnumerableAsync(CancellationToken cancellationToken =
+                default)
             {                                
                 var selectColumns = Table.Columns.Keys.ToArray();                
                 return Task.FromResult<IAsyncEnumerable<TItem>>(
@@ -190,7 +195,7 @@ namespace Take.Elephant.Sql
                         selectColumns));
             }
 
-            public override async Task<long> GetLengthAsync()
+            public override async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
             {
                 using (var cancellationTokenSource = CreateCancellationTokenSource())
                 {

@@ -14,12 +14,13 @@ namespace Take.Elephant.Tests
     {
         public abstract override IQueue<T> Create();
 
+
         [Fact(DisplayName = "DequeueExistingItemSucceeds")]
         public virtual async Task DequeueExistingItemSucceeds()
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var item = Fixture.Create<T>();
+            var item = CreateItem();
             await queue.EnqueueAsync(item);
             var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout);
@@ -37,7 +38,7 @@ namespace Take.Elephant.Tests
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var timeout = TimeSpan.FromMilliseconds(500);
+            var timeout = TimeSpan.FromMilliseconds(5000);
             var cts = new CancellationTokenSource(timeout);
             
             // Act
@@ -50,8 +51,8 @@ namespace Take.Elephant.Tests
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var item = Fixture.Create<T>();
-            var timeout = TimeSpan.FromMilliseconds(500);
+            var item = CreateItem();
+            var timeout = TimeSpan.FromMilliseconds(3000);
             var cts = new CancellationTokenSource(timeout + timeout);
 
             // Act
@@ -71,7 +72,7 @@ namespace Take.Elephant.Tests
         {
             // Arrange
             var queue = (IBlockingQueue<T>)Create();
-            var item = Fixture.Create<T>();
+            var item = CreateItem();
             await queue.EnqueueAsync(item);            
             var timeout = TimeSpan.FromMilliseconds(500);
             var cts = new CancellationTokenSource(timeout);            
@@ -91,7 +92,7 @@ namespace Take.Elephant.Tests
             var count = 100;
             for (var i = 0; i < count; i++)
             {
-                var item = Fixture.Create<T>();
+                var item = CreateItem();
                 items.Add(item);
                 await queue.EnqueueAsync(item);
             }

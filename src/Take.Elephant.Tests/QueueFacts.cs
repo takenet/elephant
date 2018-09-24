@@ -13,12 +13,17 @@ namespace Take.Elephant.Tests
     {
         public abstract IQueue<T> Create();
 
+        protected virtual T CreateItem()
+        {
+            return Fixture.Create<T>();
+        }
+
         [Fact(DisplayName = "EnqueueNewItemSucceeds")]
         public virtual async Task EnqueueNewItemSucceeds()
         {
             // Arrange
             var queue = Create();
-            var item = Fixture.Create<T>();
+            var item = CreateItem();
 
             // Act
             await queue.EnqueueAsync(item);
@@ -34,7 +39,7 @@ namespace Take.Elephant.Tests
         {
             // Arrange
             var queue = Create();
-            var item = Fixture.Create<T>();
+            var item = CreateItem();
             await queue.EnqueueAsync(item);
 
             // Act
@@ -56,7 +61,7 @@ namespace Take.Elephant.Tests
             var count = 100;
             for (int i = 0; i < count; i++)
             {
-                var item = Fixture.Create<T>();
+                var item = CreateItem();
                 items.Add(item);
             }
 
@@ -74,6 +79,7 @@ namespace Take.Elephant.Tests
             while (await queue.GetLengthAsync() > 0)
             {
                 var item = await queue.DequeueOrDefaultAsync();
+                if (item == null) continue;
                 AssertIsTrue(items.Contains(item));
             }
             AssertEquals(await queue.GetLengthAsync(), 0);
@@ -102,7 +108,7 @@ namespace Take.Elephant.Tests
             var count = 100;
             for (var i = 0; i < count; i++)
             {
-                var item = Fixture.Create<T>();
+                var item = CreateItem();
                 items.Add(item);
                 await queue.EnqueueAsync(item);
             }

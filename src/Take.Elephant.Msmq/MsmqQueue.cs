@@ -53,7 +53,7 @@ namespace Take.Elephant.Msmq
             Dispose(false);
         }
 
-        public virtual Task EnqueueAsync(T item)
+        public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             // Warning: This method is do not support async I/O, but runs asynchronously.
             using (var message = new Message { Recoverable = _recoverable, Formatter = _messageFormatter })
@@ -73,7 +73,7 @@ namespace Take.Elephant.Msmq
             }
         }
 
-        public virtual Task<T> DequeueOrDefaultAsync()
+        public virtual Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Take.Elephant.Msmq
             }
         }
 
-        public virtual Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             // Source: https://github.com/hibernating-rhinos/rhino-esb/blob/master/Rhino.ServiceBus/Msmq/MsmqExtensions.cs
             var props = new NativeMethods.MQMGMTPROPS { cProp = 1 };

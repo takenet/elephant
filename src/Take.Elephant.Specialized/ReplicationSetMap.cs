@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Specialized
@@ -20,9 +21,9 @@ namespace Take.Elephant.Specialized
         {
         }
 
-        public virtual Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key)
+        public virtual Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            return ExecuteWithFallbackAsync(m => ((ISetMap<TKey, TValue>)m).GetValueOrEmptyAsync(key));
+            return ExecuteWithFallbackAsync(m => ((ISetMap<TKey, TValue>)m).GetValueOrEmptyAsync(key, cancellationToken));
         }
     }
 }

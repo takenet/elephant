@@ -7,7 +7,7 @@ namespace Take.Elephant.Memory
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class ListMap<TKey, TValue> : Map<TKey, IList<TValue>>, IListMap<TKey, TValue>
+    public class ListMap<TKey, TValue> : Map<TKey, IPositionList<TValue>>, IListMap<TKey, TValue>
     {
         public ListMap()
             : base(() => new List<TValue>())
@@ -20,7 +20,7 @@ namespace Take.Elephant.Memory
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>An existing list if the key exists; otherwise, an empty list.</returns>
-        public Task<IList<TValue>> GetValueOrEmptyAsync(TKey key)
+        public Task<IPositionList<TValue>> GetValueOrEmptyAsync(TKey key)
             => InternalDictionary.GetOrAdd(key, k => ValueFactory()).AsCompletedTask();
     }
 }

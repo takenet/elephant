@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Take.Elephant
 {
@@ -14,11 +15,15 @@ namespace Take.Elephant
         /// <param name="setMap">The set map.</param>
         /// <param name="key">The key.</param>
         /// <param name="item">The item.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task AddItemAsync<TKey, TItem>(this ISetMap<TKey, TItem> setMap, TKey key, TItem item)
+        public static async Task AddItemAsync<TKey, TItem>(this ISetMap<TKey, TItem> setMap,
+            TKey key,
+            TItem item,
+            CancellationToken cancellationToken = default)
         {
-            var set = await setMap.GetValueOrEmptyAsync(key).ConfigureAwait(false);
-            await set.AddAsync(item).ConfigureAwait(false);
+            var set = await setMap.GetValueOrEmptyAsync(key, cancellationToken).ConfigureAwait(false);
+            await set.AddAsync(item, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -29,12 +34,15 @@ namespace Take.Elephant
         /// <param name="setMap">The set map.</param>
         /// <param name="key">The key.</param>
         /// <param name="item">The item.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<bool> TryRemoveItemAsync<TKey, TItem>(this ISetMap<TKey, TItem> setMap, TKey key,
-            TItem item)
+        public static async Task<bool> TryRemoveItemAsync<TKey, TItem>(this ISetMap<TKey, TItem> setMap,
+            TKey key,
+            TItem item,
+            CancellationToken cancellationToken = default)
         {
-            var set = await setMap.GetValueOrEmptyAsync(key).ConfigureAwait(false);
-            return await set.TryRemoveAsync(item).ConfigureAwait(false);
+            var set = await setMap.GetValueOrEmptyAsync(key, cancellationToken).ConfigureAwait(false);
+            return await set.TryRemoveAsync(item, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -45,12 +53,15 @@ namespace Take.Elephant
         /// <param name="setMap">The set map.</param>
         /// <param name="key">The key.</param>
         /// <param name="item">The item.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<bool> ContainsItemAsync<TKey, TItem>(this ISetMap<TKey, TItem> setMap, TKey key,
-            TItem item)
+        public static async Task<bool> ContainsItemAsync<TKey, TItem>(this ISetMap<TKey, TItem> setMap,
+            TKey key,
+            TItem item,
+            CancellationToken cancellationToken = default)
         {
-            var set = await setMap.GetValueOrEmptyAsync(key).ConfigureAwait(false);
-            return await set.ContainsAsync(item).ConfigureAwait(false);
+            var set = await setMap.GetValueOrEmptyAsync(key, cancellationToken).ConfigureAwait(false);
+            return await set.ContainsAsync(item, cancellationToken).ConfigureAwait(false);
         }
     }
 }

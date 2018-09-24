@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 
@@ -23,9 +24,15 @@ namespace Take.Elephant.Redis
 
         #region IMap<TKey,IBlockingQueue<TItem>> Members
 
-        public override Task<bool> TryAddAsync(TKey key, IBlockingQueue<TItem> value, bool overwrite = false) => TryAddAsync(key, (IQueue<TItem>) value, overwrite);
+        public override Task<bool> TryAddAsync(TKey key,
+            IBlockingQueue<TItem> value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default) => TryAddAsync(key, (IQueue<TItem>) value, overwrite);
 
-        public virtual async Task<bool> TryAddAsync(TKey key, IQueue<TItem> value, bool overwrite = false)
+        public virtual async Task<bool> TryAddAsync(TKey key,
+            IQueue<TItem> value,
+            bool overwrite = false,
+            CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -57,9 +64,11 @@ namespace Take.Elephant.Redis
             return success;
         }
 
-        async Task<IQueue<TItem>> IMap<TKey, IQueue<TItem>>.GetValueOrDefaultAsync(TKey key) => await GetValueOrDefaultAsync(key).ConfigureAwait(false);
+        async Task<IQueue<TItem>> IMap<TKey, IQueue<TItem>>.GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default) => await GetValueOrDefaultAsync(key).ConfigureAwait(false);
 
-        public override async Task<IBlockingQueue<TItem>> GetValueOrDefaultAsync(TKey key)
+        public override async Task<IBlockingQueue<TItem>> GetValueOrDefaultAsync(TKey key,
+            CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             if (await database.KeyExistsAsync(GetRedisKey(key)).ConfigureAwait(false))
@@ -73,13 +82,13 @@ namespace Take.Elephant.Redis
         public Task<IQueue<TItem>> GetValueOrEmptyAsync(TKey key) 
             => CreateQueue(key).AsCompletedTask<IQueue<TItem>>();
 
-        public override Task<bool> TryRemoveAsync(TKey key)
+        public override Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);
         }
 
-        public override Task<bool> ContainsKeyAsync(TKey key)
+        public override Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);

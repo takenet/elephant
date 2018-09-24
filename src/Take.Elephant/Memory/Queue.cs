@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace Take.Elephant.Memory
     /// Implements the <see cref="IQueue{T}"/> interface using the <see cref="System.Collections.Concurrent.ConcurrentQueue{T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Queue<T> : IBlockingQueue<T>, ICloneable
+    public class Queue<T> : IBlockingQueue<T>, IBatchSenderQueue<T>, IBatchReceiverQueue<T>, ICloneable
     {
         private readonly ConcurrentQueue<T> _queue;
         private readonly ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue;
@@ -21,7 +22,7 @@ namespace Take.Elephant.Memory
             _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>>();
         }
 
-        public virtual Task EnqueueAsync(T item)
+        public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             lock (_syncRoot)
@@ -44,7 +45,17 @@ namespace Take.Elephant.Memory
             }
         }
 
-        public virtual Task<T> DequeueOrDefaultAsync()
+        public virtual async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
+        {
+            if (items == null) throw new ArgumentNullException(nameof(items));
+
+            foreach (var item in items)
+            {
+                await EnqueueAsync(item, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        public virtual Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             lock (_syncRoot)
             {
@@ -55,7 +66,7 @@ namespace Take.Elephant.Memory
             }
         }
 
-        public virtual Task<long> GetLengthAsync()
+        public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             return ((long)_queue.Count).AsCompletedTask();
         }
@@ -80,6 +91,19 @@ namespace Take.Elephant.Memory
             }
 
             return item.AsCompletedTask();
+        }
+
+        public virtual async Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken)
+        {
+            var items = new System.Collections.Generic.List<T>();
+            while (items.Count < maxBatchSize)
+            {
+                var item = await DequeueOrDefaultAsync(cancellationToken);
+                if (item == default) break;
+                items.Add(item);
+            }
+
+            return items;
         }
 
         /// <summary>

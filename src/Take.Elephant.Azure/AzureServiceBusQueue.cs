@@ -1,81 +1,190 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
+using Microsoft.Azure.ServiceBus.Management;
 
 namespace Take.Elephant.Azure
 {
-    public class AzureServiceBusQueue<T> : IBlockingQueue<T>, ICloseable
+    public class AzureServiceBusQueue<T> : IBlockingQueue<T>, IBatchSenderQueue<T>, ICloseable
     {
-        private readonly ISerializer<T> _serializer;        
+        private const int MIN_RECEIVE_TIMEOUT = 250;
+        private const int MAX_RECEIVE_TIMEOUT = 30000;
+
+        private readonly string _entityPath;
+        private readonly ISerializer<T> _serializer;
+        private QueueDescription _queueDescription;
+        private readonly ReceiveMode _receiveMode;
         private readonly MessageSender _messageSender;
         private readonly MessageReceiver _messageReceiver;
-        private readonly BufferBlock<Message> _messageBufferBlock;
+        private readonly ManagementClient _managementClient;
+        private readonly SemaphoreSlim _queueCreationSemaphore;
+        private bool _queueExists;
 
         public AzureServiceBusQueue(
-            string connectionString, 
-            string entityPath, 
+            string connectionString,
+            string entityPath,
             ISerializer<T> serializer,
-            int receiverBoundedCapacity = 1)
+            ReceiveMode receiveMode = ReceiveMode.PeekLock,
+            RetryPolicy retryPolicy = null,
+            int receiverPrefetchCount = 0,
+            QueueDescription queueDescription = null)
         {
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));                        
-            _messageSender = new MessageSender(connectionString, entityPath);
-            _messageReceiver = new MessageReceiver(connectionString, entityPath);            
-            _messageBufferBlock = new BufferBlock<Message>(
-                new DataflowBlockOptions()
-                {
-                    BoundedCapacity = receiverBoundedCapacity,
-                    EnsureOrdered = true
-                });           
-            _messageReceiver.RegisterMessageHandler(
-                _messageBufferBlock.SendAsync,
-                args => Task.CompletedTask);
-        }
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _entityPath = entityPath;
+            _receiveMode = receiveMode;
+            _messageSender = new MessageSender(connectionString, entityPath, retryPolicy);
+            _messageReceiver = new MessageReceiver(connectionString, entityPath, _receiveMode, retryPolicy, receiverPrefetchCount);
+            _managementClient = new ManagementClient(connectionString);
+            _queueCreationSemaphore = new SemaphoreSlim(1, 1);
 
-        public Task EnqueueAsync(T item)
-        {            
-            var serializedItem = _serializer.Serialize(item);
-            return _messageSender.SendAsync(new Message(Encoding.UTF8.GetBytes(serializedItem)));            
-        }
-
-        public Task<T> DequeueOrDefaultAsync()
-        {
-            if (!_messageBufferBlock.TryReceive(out var message))
+            if (queueDescription != null)
             {
-                return default(T).AsCompletedTask();
+                queueDescription.Path = _entityPath;
+                _queueDescription = queueDescription;
             }
-
-            return CreateItemAndCompleteAsync(message);
+            else
+            {
+                _queueDescription = new QueueDescription(_entityPath);
+            }
         }
-        
-        public async Task<T> DequeueAsync(CancellationToken cancellationToken)
+
+        public virtual async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
-            var message = await _messageBufferBlock.ReceiveAsync(cancellationToken);
-            return await CreateItemAndCompleteAsync(message);
+            await CreateQueueIfNotExistsAsync(cancellationToken);
+            var message = CreateMessage(item);
+            await _messageSender.SendAsync(message);
         }
 
-        public Task<long> GetLengthAsync()
+        public virtual async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();          
+            await CreateQueueIfNotExistsAsync(cancellationToken);
+            var batch = new List<Message>();
+
+            foreach (var item in items)
+            {
+                var message = CreateMessage(item);
+                batch.Add(message);
+            }
+            
+            await _messageSender.SendAsync(batch);
         }
 
-        public Task CloseAsync(CancellationToken cancellationToken)
+        public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
+        {
+            await CreateQueueIfNotExistsAsync(cancellationToken);
+
+            try
+            {
+                var message = await _messageReceiver.ReceiveAsync(
+                    TimeSpan.FromMilliseconds(MIN_RECEIVE_TIMEOUT));
+                if (message != null)
+                {
+                    return await CreateItemAndCompleteAsync(message);
+                }
+            }
+            catch (ServiceBusTimeoutException) { }
+
+            return default;
+        }
+
+        public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
+        {
+            await CreateQueueIfNotExistsAsync(cancellationToken);
+
+            var tryCount = 0;
+
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                try
+                {
+                    var timeout = MIN_RECEIVE_TIMEOUT * Math.Pow(2, tryCount);
+                    if (timeout > MAX_RECEIVE_TIMEOUT)
+                    {
+                        timeout = MAX_RECEIVE_TIMEOUT;
+                    }
+                    
+                    var message = await _messageReceiver.ReceiveAsync(
+                        TimeSpan.FromMilliseconds(timeout));
+                    if (message != null)
+                    {
+                        return await CreateItemAndCompleteAsync(message);
+                    }
+                }
+                catch (ServiceBusTimeoutException) { }
+
+                tryCount++;
+            }
+        }
+
+        public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
+        {
+            await CreateQueueIfNotExistsAsync(cancellationToken);
+           
+            var queueRuntimeInfo = await _managementClient.GetQueueRuntimeInfoAsync(_entityPath, cancellationToken);
+            return queueRuntimeInfo.MessageCount;
+        }
+
+        public virtual async Task CloseAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             
-            return Task.WhenAll(
+            await Task.WhenAll(
                 _messageSender.CloseAsync(),
-                _messageReceiver.CloseAsync());
+                _messageReceiver.CloseAsync(),
+                _managementClient.CloseAsync());
+        }
+
+        private async Task CreateQueueIfNotExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (_queueExists) return;
+
+            await _queueCreationSemaphore.WaitAsync(cancellationToken);
+            try
+            {
+                if (_queueExists) return;
+
+                _queueExists = await _managementClient.QueueExistsAsync(_entityPath, cancellationToken);
+
+                if (!_queueExists)
+                {
+                    try
+                    {
+                        _queueDescription = await _managementClient.CreateQueueAsync(_queueDescription, cancellationToken);
+                    }
+                    catch (MessagingEntityAlreadyExistsException)
+                    {
+                        // Concurrency creation handling
+                    }
+
+                    _queueExists = true;
+                }
+            }
+            finally
+            {
+                _queueCreationSemaphore.Release();
+            }
+        }
+
+        private Message CreateMessage(T item)
+        {
+            var serializedItem = _serializer.Serialize(item);
+            return new Message(Encoding.UTF8.GetBytes(serializedItem));
         }
 
         private async Task<T> CreateItemAndCompleteAsync(Message message)
         {
             var serializedItem = Encoding.UTF8.GetString(message.Body);
-            var item = _serializer.Deserialize(serializedItem);                    
-            await _messageReceiver.CompleteAsync(message.SystemProperties.LockToken);
+            var item = _serializer.Deserialize(serializedItem);
+            if (_receiveMode == ReceiveMode.PeekLock)
+            {
+                await _messageReceiver.CompleteAsync(message.SystemProperties.LockToken);
+            }
             return item;
         }
     }
