@@ -15,7 +15,7 @@ namespace Take.Elephant.Redis
         {
         }
 
-        public RedisSortedSetMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db, CommandFlags readFlags, CommandFlags writeFlags)
+        public RedisSortedSetMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
             : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
         {
             _serializer = serializer;
