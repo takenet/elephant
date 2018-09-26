@@ -84,7 +84,7 @@ namespace Take.Elephant.Redis
             using (var registration = cancellationToken.Register(() => tcs.TrySetCanceled()))
             {
                 _promisesQueue.Enqueue(Tuple.Create(tcs, registration));
-                GetSubscriber().Publish(_channelName, string.Empty, CommandFlags.FireAndForget);
+                await GetSubscriber().PublishAsync(_channelName, string.Empty, CommandFlags.FireAndForget);
                 return await tcs.Task.ConfigureAwait(false);
             }
         }
