@@ -39,6 +39,12 @@ namespace Take.Elephant.Redis
             return $"{Name}:{KeyToString(key)}";
         }
 
+        protected virtual TKey GetKeyFromString(string value)
+        {
+            if (typeof(TKey) == typeof(string)) return (TKey)(object)value;
+            return TypeUtil.GetParseFunc<TKey>()(value);
+        }
+
         protected virtual string KeyToString(TKey key) => key.ToString();
 
         protected virtual IDatabaseAsync GetDatabase() => ConnectionMultiplexer.GetDatabase(Db);

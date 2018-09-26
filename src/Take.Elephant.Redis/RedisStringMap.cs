@@ -10,7 +10,7 @@ namespace Take.Elephant.Redis
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class RedisStringMap<TKey, TValue> : MapBase<TKey, TValue>, IBus<TKey, TValue>
+    public class RedisStringMap<TKey, TValue> : MapBase<TKey, TValue>
     {
         protected readonly ISerializer<TValue> _serializer;
 
@@ -73,38 +73,6 @@ namespace Take.Elephant.Redis
 
             var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
-        }
-
-        public virtual Task SubscribeAsync(TKey channel, Func<TKey, TValue, CancellationToken, Task> handler, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return GetSubscriber().SubscribeAsync(
-                GetRedisChannel(channel),
-                (c, v) =>
-                {
-                    var parsedChannel = GetChannelFromString(c);
-                    var message = _serializer.Deserialize(v);
-                    Task.Run(() => handler(parsedChannel, message, CancellationToken.None));
-                });
-        }
-
-        public virtual Task UnsubscribeAsync(TKey channel, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return GetSubscriber().UnsubscribeAsync(GetRedisChannel(channel));
-        }
-
-        public virtual Task PublishAsync(TKey channel, TValue message, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return GetSubscriber().PublishAsync(GetRedisChannel(channel), _serializer.Serialize(message));
-        }
-
-        protected virtual string GetRedisChannel(TKey channel) => GetRedisKey(channel);
-
-        protected virtual TKey GetChannelFromString(string value) => GetKeyFromString(value);
+        }        
     }
 }

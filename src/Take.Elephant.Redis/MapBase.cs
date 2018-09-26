@@ -56,12 +56,6 @@ namespace Take.Elephant.Redis
 
         #endregion
 
-        protected virtual TKey GetKeyFromString(string value)
-        {
-            if (typeof (TKey) == typeof (string)) return (TKey)(object)value;
-            return TypeUtil.GetParseFunc<TKey>()(value);
-        }
-
         public virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
             var endpoint = ConnectionMultiplexer.GetEndPoints(true).FirstOrDefault();
