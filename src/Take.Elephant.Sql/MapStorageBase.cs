@@ -50,11 +50,14 @@ namespace Take.Elephant.Sql
             var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, expressionParameterReplacementDictionary);
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
-                int totalCount;
-                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter))
+                int totalCount = 0;
+                if (FetchQueryResultTotal)
                 {
-                    totalCount = Convert.ToInt32(
-                        await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
+                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter))
+                    {
+                        totalCount = Convert.ToInt32(
+                            await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
+                    }
                 }
 
                 return new QueryResult<KeyValuePair<TKey, TValue>>(
@@ -86,11 +89,14 @@ namespace Take.Elephant.Sql
 
                 var selectColumns = Table.KeyColumnsNames;
                 var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
-                int totalCount;
-                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter))
+                int totalCount = 0;
+                if (FetchQueryResultTotal)
                 {
-                    totalCount = Convert.ToInt32(
-                        await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
+                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter))
+                    {
+                        totalCount = Convert.ToInt32(
+                            await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
+                    }
                 }
 
                 return new QueryResult<TKey>(
