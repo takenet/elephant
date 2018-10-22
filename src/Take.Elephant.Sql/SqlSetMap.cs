@@ -106,7 +106,10 @@ namespace Take.Elephant.Sql
                     {
                         return null;
                     }
-                    return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues);
+                    return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues)
+                    {
+                        FetchQueryResultTotal = this.FetchQueryResultTotal
+                    };
                 }
             }
         }
@@ -115,7 +118,11 @@ namespace Take.Elephant.Sql
         {
             if (key == null) throw new ArgumentNullException(nameof(key));            
             var keyColumnValues = KeyMapper.GetColumnValues(key);
-            return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues).AsCompletedTask<ISet<TItem>>();
+            return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues)
+            {
+                FetchQueryResultTotal = this.FetchQueryResultTotal
+            }
+            .AsCompletedTask<ISet<TItem>>();
         }
 
         public virtual async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
