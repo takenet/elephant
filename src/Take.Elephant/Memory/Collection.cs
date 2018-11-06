@@ -15,6 +15,12 @@ namespace Take.Elephant.Memory
             _collection = collection;
         }
 
+        /// <summary>
+        /// Enable/disable fetching of total record count on Queries.
+        /// Default: Enabled.
+        /// </summary>
+        public bool FetchQueryResultTotal { get; set; } = true;
+
         public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default) => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_collection));
 
         public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default) => Task.FromResult<long>(_collection.Count);
@@ -38,7 +44,13 @@ namespace Take.Elephant.Memory
                 .Take(take)
                 .ToArray();
 
-            var result = new QueryResult<T>(new AsyncEnumerableWrapper<T>(resultValues), totalValues.Count());
+            int totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+
+            var result = new QueryResult<T>(new AsyncEnumerableWrapper<T>(resultValues), totalCount);
             return Task.FromResult(result);
         }
 
@@ -65,7 +77,13 @@ namespace Take.Elephant.Memory
                 .Take(take)
                 .ToArray();
 
-            var result = new QueryResult<T>(new AsyncEnumerableWrapper<T>(resultValues), totalValues.Count());
+            int totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+
+            var result = new QueryResult<T>(new AsyncEnumerableWrapper<T>(resultValues), totalCount);
             return Task.FromResult(result);
         }
     }

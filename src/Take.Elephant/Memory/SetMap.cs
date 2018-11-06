@@ -75,8 +75,15 @@ namespace Take.Elephant.Memory
                 .Take(take)
                 .Select(pair => pair);
 
+            int totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+
+
             return Task.FromResult(
-                new QueryResult<TItem>(new AsyncEnumerableWrapper<TItem>(resultValues), totalValues.Count()));
+                new QueryResult<TItem>(new AsyncEnumerableWrapper<TItem>(resultValues), totalCount));
         }
 
         public virtual Task<QueryResult<KeyValuePair<TKey, TItem>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TItem>, bool>> @where, Expression<Func<KeyValuePair<TKey, TItem>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
@@ -97,8 +104,14 @@ namespace Take.Elephant.Memory
                 .Skip(skip)
                 .Take(take);
 
+            int totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+
             return Task.FromResult(
-                new QueryResult<KeyValuePair<TKey, TItem>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TItem>>(resultValues), totalValues.Count()));
+                new QueryResult<KeyValuePair<TKey, TItem>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TItem>>(resultValues), totalCount));
         }
 
         public virtual Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take,
@@ -122,8 +135,15 @@ namespace Take.Elephant.Memory
                 .Take(take)
                 .Select(pair => pair.Key);
 
+            int totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+
+
             return Task.FromResult(
-                new QueryResult<TKey>(new AsyncEnumerableWrapper<TKey>(resultValues), totalValues.Count()));
+                new QueryResult<TKey>(new AsyncEnumerableWrapper<TKey>(resultValues), totalCount));
         }
     }
 }

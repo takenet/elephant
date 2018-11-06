@@ -14,10 +14,17 @@ namespace Take.Elephant.Sql
         protected StorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TEntity> mapper)
         {
             ConnectionString = connectionString;
-            Table = table;            
+            Table = table;
             Mapper = mapper;
             DatabaseDriver = databaseDriver;
         }
+
+        /// <summary>
+        /// Enable/disable fetching of total record count on Queries.
+        /// On enabled, causes an additional roundtrip on database, besideds the query itself.
+        /// Default: Enabled.
+        /// </summary>
+        public bool FetchQueryResultTotal { get; set; } = true;
 
         protected IDatabaseDriver DatabaseDriver { get; }
 
@@ -31,7 +38,7 @@ namespace Take.Elephant.Sql
         {
             using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues))
             {
-                if (sqlTransaction != null) command.Transaction = sqlTransaction;                
+                if (sqlTransaction != null) command.Transaction = sqlTransaction;
                 return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
             }
         }
@@ -44,7 +51,7 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken) 
+        public virtual Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken)
             => QueryAsync<TResult>(@where, @select, false, skip, take, cancellationToken);
 
         public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> @where, Expression<Func<TEntity, TResult>> @select, bool distinct, int skip, int take,
@@ -82,7 +89,7 @@ namespace Take.Elephant.Sql
                     throw new ArgumentException("Only ordering by a single member is supported by now");
                 }
 
-                orderByColumns = new[] {memberExpression.Member.Name};
+                orderByColumns = new[] { memberExpression.Member.Name };
             }
 
             return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, orderByAscending);
@@ -99,11 +106,14 @@ namespace Take.Elephant.Sql
                     filter = $"{filter} {DatabaseDriver.GetSqlStatementTemplate(SqlStatement.And)} ({filterValuesSql})";
                 }
 
-                int totalCount;
-                using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter, filterValues, distinct: distinct))
+                int totalCount = 0;
+                if (FetchQueryResultTotal)
                 {
-                    totalCount = Convert.ToInt32(
-                        await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
+                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter, filterValues, distinct: distinct))
+                    {
+                        totalCount = Convert.ToInt32(
+                            await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
+                    }
                 }
 
                 return new QueryResult<TEntity>(
@@ -139,7 +149,7 @@ namespace Take.Elephant.Sql
                 .Select(c => new { Key = c, Value = columnValues[c] })
                 .ToDictionary(t => t.Key, t => t.Value);
 
-        protected IDictionary<string, object> GetKeyColumnValues(TEntity entity, bool includeIdentityTypes = false) 
+        protected IDictionary<string, object> GetKeyColumnValues(TEntity entity, bool includeIdentityTypes = false)
             => GetKeyColumnValues(GetColumnValues(entity, includeIdentityTypes: includeIdentityTypes), includeIdentityTypes);
 
         protected virtual IDictionary<string, object> GetIdentityColumnValues(IDictionary<string, object> columnValues, bool emitNullValues = false)
@@ -152,7 +162,5 @@ namespace Take.Elephant.Sql
 
         protected IDictionary<string, object> GetIdentityKeyColumnValues(TEntity entity, bool emitNullValues = false)
             => GetKeyColumnValues(GetIdentityColumnValues(entity, emitNullValues), true);
-
-
     }
 }

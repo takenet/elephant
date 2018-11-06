@@ -43,6 +43,12 @@ namespace Take.Elephant.Memory
             InternalDictionary = internalDictionary ?? throw new ArgumentNullException(nameof(internalDictionary));
         }
 
+        /// <summary>
+        /// Enable/disable fetching of total record count on Queries.
+        /// Default: Enabled.
+        /// </summary>
+        public bool FetchQueryResultTotal { get; set; } = true;
+
         protected Func<TValue> ValueFactory { get; }
 
         protected IDictionaryConverter<TValue> DictionaryConverter { get; }
@@ -232,8 +238,15 @@ namespace Take.Elephant.Memory
                 .Skip(skip)
                 .Take(take)
                 .Select(pair => pair.Key);
+
+            int totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+
             return Task.FromResult(
-                new QueryResult<TKey>(new AsyncEnumerableWrapper<TKey>(resultValues), totalValues.Count()));
+                new QueryResult<TKey>(new AsyncEnumerableWrapper<TKey>(resultValues), totalCount));
         }
 
         #endregion
@@ -255,8 +268,15 @@ namespace Take.Elephant.Memory
                 .Skip(skip)
                 .Take(take)
                 .Select(pair => pair.Value);
+
+            int totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+
             return Task.FromResult(
-                new QueryResult<TValue>(new AsyncEnumerableWrapper<TValue>(resultValues), totalValues.Count()));
+                new QueryResult<TValue>(new AsyncEnumerableWrapper<TValue>(resultValues), totalCount));
         }
 
         #endregion
@@ -289,8 +309,16 @@ namespace Take.Elephant.Memory
                 .Skip(skip)
                 .Take(take)
                 .Select(value => value);
+
+            int totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+
+
             return Task.FromResult(
-                new QueryResult<TValue>(new AsyncEnumerableWrapper<TValue>(resultValues), totalValues.Count()));
+                new QueryResult<TValue>(new AsyncEnumerableWrapper<TValue>(resultValues), totalCount));
         }
 
         protected TValue GetOrCreateValue(TKey key)
@@ -319,8 +347,14 @@ namespace Take.Elephant.Memory
                 .Skip(skip)
                 .Take(take);
 
+            int totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+
             return Task.FromResult(
-                new QueryResult<KeyValuePair<TKey, TValue>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TValue>>(resultValues), totalValues.Count()));
+                new QueryResult<KeyValuePair<TKey, TValue>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TValue>>(resultValues), totalCount));
         }
 
 
