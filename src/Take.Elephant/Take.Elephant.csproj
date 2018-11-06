@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SmartFormat.Net" Version="2.1.0.1" />
+    <PackageReference Include="SmartFormat.Net" Version="2.3.0" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
   </ItemGroup>
 
