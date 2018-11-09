@@ -1,5 +1,7 @@
 # Elephant
 
+![Logo](/logo/logo-horizontal.png)
+
 Persistence library that provides common data structures as composable elements to abstract any storage engine, including SQL databases.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/g7bhodvyl8ymy9dp?svg=true)](https://ci.appveyor.com/project/Take/elephant)
