@@ -1,6 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Take.Elephant.Azure;
 using Take.Elephant.Tests.Redis;
 using Xunit;
