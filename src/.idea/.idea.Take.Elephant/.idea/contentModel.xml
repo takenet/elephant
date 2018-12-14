@@ -55,6 +55,7 @@
         <e p="ISetMap.cs" t="Include" />
         <e p="ISortedSet.cs" t="Include" />
         <e p="ISortedSetMap.cs" t="Include" />
+        <e p="ITransactionalStorage.cs" t="Include" />
         <e p="IUpdatableMap.cs" t="Include" />
         <e p="Memory" t="Include">
           <e p="Bus.cs" t="Include" />
@@ -318,6 +319,7 @@
         <e p="Azure" t="Include">
           <e p="AzureServiceBusItemBlockingQueueFacts.cs" t="Include" />
           <e p="AzureStorageItemBatchReceiverQueueFacts.cs" t="Include" />
+          <e p="AzureStorageItemTransactionalBlockingQueueFacts.cs" t="Include" />
           <e p="AzureStorageQueueBlockingQueueFacts.cs" t="Include" />
         </e>
         <e p="BatchReceiverQueueFacts.cs" t="Include" />
@@ -363,6 +365,7 @@
         <e p="ItemQueueFacts.cs" t="Include" />
         <e p="ItemSetFacts.cs" t="Include" />
         <e p="ItemSetMapFacts.cs" t="Include" />
+        <e p="ItemTransactionalBlockingQueueFacts.cs" t="Include" />
         <e p="KeyQueryableMapFacts.cs" t="Include" />
         <e p="KeysMapFacts.cs" t="Include" />
         <e p="KeyValueMapQueryableStorageFacts.cs" t="Include" />
@@ -566,6 +569,7 @@
           </e>
         </e>
         <e p="Take.Elephant.Tests.csproj" t="IncludeRecursive" />
+        <e p="TransactionalBlockingQueueFacts.cs" t="Include" />
         <e p="UpdatableMapFacts.cs" t="Include" />
         <e p="xunit.runner.json" t="Include" />
       </e>

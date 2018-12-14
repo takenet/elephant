@@ -9,26 +9,38 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant.Azure
 {
-    public class AzureStorageQueue<T> : IBlockingQueue<T>, IBatchReceiverQueue<T> where T : class
-    {
-        private const int MIN_RECEIVE_RETRY_DELAY = 250;
-        private const int MAX_RECEIVE_RETRY_DELAY = 30000;
-
+    public class AzureStorageQueue<T> : 
+        IBlockingQueue<T>,
+        IBatchReceiverQueue<T>,
+        IBlockingReceiverQueue<StorageTransaction<T>>,
+        IBatchReceiverQueue<StorageTransaction<T>>,
+        ITransactionalStorage<T> where T : class
+    {        
         private readonly CloudQueue _queue;
-        private readonly string _queueName;
         private readonly ISerializer<T> _serializer;
-        private readonly SemaphoreSlim _queueCreationSemaphore;
+        private readonly SemaphoreSlim _queueCreationSemaphore;        
+        private readonly int _minReceiveRetryDelay;
+        private readonly int _maxReceiveRetryDelay;
 
         private bool _queueExists;
 
-        public AzureStorageQueue(string storageConnectionString, string queueName, ISerializer<T> serializer, bool encodeMessage = true)
+        public AzureStorageQueue(
+            string storageConnectionString,
+            string queueName,
+            ISerializer<T> serializer,
+            bool encodeMessage = true,
+            int minReceiveRetryDelay = 250,
+            int maxReceiveRetryDelay = 30000)
         {
             Guard.Argument(storageConnectionString).NotNull().NotEmpty();
             Guard.Argument(queueName).NotNull().NotEmpty();
             Guard.Argument(serializer).NotNull();
+            Guard.Argument(minReceiveRetryDelay).Positive();
+            Guard.Argument(maxReceiveRetryDelay).Min(minReceiveRetryDelay);
 
-            _queueName = queueName;
             _serializer = serializer;
+            _minReceiveRetryDelay = minReceiveRetryDelay;
+            _maxReceiveRetryDelay = maxReceiveRetryDelay;
             var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
             var client = storageAccount.CreateCloudQueueClient();
             _queue = client.GetQueueReference(queueName);
@@ -49,7 +61,7 @@ namespace Take.Elephant.Azure
             await CreateQueueIfNotExistsAsync(cancellationToken);
 
             var tryCount = 0;
-            var delay = MIN_RECEIVE_RETRY_DELAY;
+            var delay = _minReceiveRetryDelay;
 
             while (true)
             {
@@ -64,12 +76,12 @@ namespace Take.Elephant.Azure
                 await Task.Delay(delay, cancellationToken);
                 tryCount++;
 
-                if (delay < MAX_RECEIVE_RETRY_DELAY)
+                if (delay < _maxReceiveRetryDelay)
                 {
-                    delay = MIN_RECEIVE_RETRY_DELAY * (int)Math.Pow(2, tryCount);
-                    if (delay > MAX_RECEIVE_RETRY_DELAY)
+                    delay = _minReceiveRetryDelay * (int)Math.Pow(2, tryCount);
+                    if (delay > _maxReceiveRetryDelay)
                     {
-                        delay = MAX_RECEIVE_RETRY_DELAY;
+                        delay = _maxReceiveRetryDelay;
                     }
                 }
             }
@@ -78,12 +90,7 @@ namespace Take.Elephant.Azure
         public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
-
-#if NET461
             var message = await _queue.GetMessageAsync(cancellationToken);
-#else
-            var message = await _queue.GetMessageAsync(null, null, null, cancellationToken);
-#endif
             if (message == null) return default(T);
 
             return await CreateItemAndDeleteMessageAsync(message, cancellationToken);
@@ -92,11 +99,7 @@ namespace Take.Elephant.Azure
         public virtual async Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
-#if NET461
             var messages = await _queue.GetMessagesAsync(maxBatchSize, cancellationToken);
-#else
-            var messages = await _queue.GetMessagesAsync(maxBatchSize, null, null, null, cancellationToken);
-#endif
             if (messages == null) return Enumerable.Empty<T>();
 
             return await Task.WhenAll(
@@ -106,13 +109,38 @@ namespace Take.Elephant.Azure
         public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
-#if NET461
             await _queue.FetchAttributesAsync(cancellationToken);
-#else
-            await _queue.FetchAttributesAsync();
-#endif
             return _queue.ApproximateMessageCount ?? 0;
+        }        
+
+        async Task<StorageTransaction<T>> IBlockingReceiverQueue<StorageTransaction<T>>.DequeueAsync(CancellationToken cancellationToken)
+        {
+            var message = await _queue.GetMessageAsync(cancellationToken);
+            if (message == null) return null;
+            
+            return CreateStorageTransaction(message);
         }
+
+        async Task<IEnumerable<StorageTransaction<T>>> IBatchReceiverQueue<StorageTransaction<T>>.DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken)
+        {
+            var messages = await _queue.GetMessagesAsync(maxBatchSize, cancellationToken);
+            if (messages == null) return Enumerable.Empty<StorageTransaction<T>>();
+            
+            return messages.Select(CreateStorageTransaction);
+        }
+
+        public Task CommitAsync(StorageTransaction<T> transaction, CancellationToken cancellationToken)
+        {
+            var message = CreateCloudQueueMessage(transaction);
+            return _queue.DeleteMessageAsync(message, cancellationToken);
+        }
+
+        public Task RollbackAsync(StorageTransaction<T> transaction, CancellationToken cancellationToken)
+        {
+            var message = CreateCloudQueueMessage(transaction);
+
+            return _queue.UpdateMessageAsync(message, TimeSpan.Zero, MessageUpdateFields.Visibility, cancellationToken);
+        }        
 
         protected virtual CloudQueueMessage CreateMessage(T item)
         {
@@ -123,14 +151,15 @@ namespace Take.Elephant.Azure
 
         protected virtual async Task<T> CreateItemAndDeleteMessageAsync(CloudQueueMessage message, CancellationToken cancellationToken)
         {
-            var item = _serializer.Deserialize(message.AsString);
-
-#if NET461
+            var item = CreateItem(message);
             await _queue.DeleteMessageAsync(message, cancellationToken);
-#else
-            await _queue.DeleteMessageAsync(message);
-#endif
             return item;
+        }
+        
+        protected virtual StorageTransaction<T> CreateStorageTransaction(CloudQueueMessage message)
+        {
+            var item = CreateItem(message);            
+            return new StorageTransaction<T>(message, item);
         }
 
         private async Task CreateQueueIfNotExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -141,21 +170,32 @@ namespace Take.Elephant.Azure
             try
             {
                 if (_queueExists) return;
-#if NET461
 
                 await _queue.CreateIfNotExistsAsync(cancellationToken);
-#else
-                await _queue.CreateIfNotExistsAsync(
-                    null, 
-                    null, 
-                    cancellationToken);
-#endif
+
                 _queueExists = true;
             }
             finally
             {
                 _queueCreationSemaphore.Release();
             }
+        }
+       
+        private T CreateItem(CloudQueueMessage message)
+        {
+            var item = _serializer.Deserialize(message.AsString);
+            return item;
+        }
+
+        private static CloudQueueMessage CreateCloudQueueMessage(StorageTransaction<T> transaction)
+        {
+            if (transaction == null) throw new ArgumentNullException(nameof(transaction));
+            if (!(transaction.Transaction is CloudQueueMessage cloudQueueMessage))
+            {
+                throw new ArgumentException("Invalid transaction type", nameof(transaction));
+            }
+
+            return cloudQueueMessage;
         }
     }
 }
