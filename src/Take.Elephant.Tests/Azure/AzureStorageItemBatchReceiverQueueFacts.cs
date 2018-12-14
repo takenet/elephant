@@ -13,7 +13,7 @@ namespace Take.Elephant.Tests.Azure
     {
         public override IBatchReceiverQueue<Item> Create(params Item[] items)
         {
-            var connectionString = "DefaultEndpointsProtocol=https;AccountName=hmgblipqueues2;AccountKey=0qG1Lc5dz/xu5LYFgJTdXAlzYpBtbHAsMvquI1EM9y4dD3x9VspOsEGMAKRNrM/0yszFSID1pRgDG+zGCV++9A==;EndpointSuffix=core.windows.net";
+            var connectionString = "";
             var queueName = "batchitems";
 
             DeleteQueueAsync(connectionString, queueName).Wait();
