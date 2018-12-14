@@ -21,7 +21,7 @@ namespace Take.Elephant.Azure
             {
                 EntityPath = eventHubName
             };
-            _eventHubClient = EventHubClient.CreateFromConnectionString(connectionStringBuilder.ToString());
+            _eventHubClient = EventHubClient.CreateFromConnectionString(connectionStringBuilder.ToString());            
         }
 
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)

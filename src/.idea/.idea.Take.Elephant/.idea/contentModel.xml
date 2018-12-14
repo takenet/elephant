@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\and\.nuget\packages\xunit.runner.visualstudio\2.2.0\build\_common\xunit.abstractions.dll" t="Include" />
-    <e p="C:\Users\and\.nuget\packages\xunit.runner.visualstudio\2.2.0\build\_common\xunit.runner.reporters.net452.dll" t="Include" />
-    <e p="C:\Users\and\.nuget\packages\xunit.runner.visualstudio\2.2.0\build\_common\xunit.runner.utility.net35.dll" t="Include" />
-    <e p="C:\Users\and\.nuget\packages\xunit.runner.visualstudio\2.2.0\build\_common\xunit.runner.visualstudio.testadapter.dll" t="Include" />
-    <e p="C:\Users\and\.Rider2018.1\system\resharper-host\local\Transient\ReSharperHost\v12\SolutionCaches\_Take.Elephant.-921594467.00" t="ExcludeRecursive" />
+    <e p="C:\Users\andreb\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\_common\xunit.abstractions.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\_common\xunit.runner.reporters.net452.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\_common\xunit.runner.utility.net452.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\_common\xunit.runner.visualstudio.testadapter.dll" t="Include" />
+    <e p="C:\Users\andreb\.Rider2018.2\config\scratches" t="IncludeRecursive" />
+    <e p="C:\Users\andreb\.Rider2018.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\andreb\.Rider2018.2\system\resharper-host\local\Transient\ReSharperHost\v182\SolutionCaches\_Take.Elephant.-921594467.00" t="ExcludeRecursive" />
     <e p="D:\Repositories\elephant\appveyor.yml" t="Include" />
     <e p="D:\Repositories\elephant\LICENSE" t="Include" />
     <e p="D:\Repositories\elephant\README.md" t="Include" />
@@ -24,6 +26,7 @@
         <e p="IAsyncEnumerator.cs" t="Include" />
         <e p="IBlockingQueue.cs" t="Include" />
         <e p="IBlockingQueueMap.cs" t="Include" />
+        <e p="IBus.cs" t="Include" />
         <e p="ICloneable.cs" t="Include" />
         <e p="ICloseable.cs" t="Include" />
         <e p="ICollection.cs" t="Include" />
@@ -35,9 +38,14 @@
         <e p="IKeyQueryableMap.cs" t="Include" />
         <e p="IKeysMap.cs" t="Include" />
         <e p="IList.cs" t="Include" />
+        <e p="IListMap.cs" t="Include" />
         <e p="IMap.cs" t="Include" />
         <e p="INumberMap.cs" t="Include" />
         <e p="IOrderedQueryableStorage.cs" t="Include" />
+        <e p="IPositionList.cs" t="Include" />
+        <e p="IPriorityBlockingQueue.cs" t="Include" />
+        <e p="IPriorityQueue.cs" t="Include" />
+        <e p="IPrioritySet.cs" t="Include" />
         <e p="IPropertyMap.cs" t="Include" />
         <e p="IQueryableStorage.cs" t="Include" />
         <e p="IQueue.cs" t="Include" />
@@ -45,16 +53,22 @@
         <e p="ISerializer.cs" t="Include" />
         <e p="ISet.cs" t="Include" />
         <e p="ISetMap.cs" t="Include" />
+        <e p="ISortedSet.cs" t="Include" />
+        <e p="ISortedSetMap.cs" t="Include" />
         <e p="IUpdatableMap.cs" t="Include" />
         <e p="Memory" t="Include">
+          <e p="Bus.cs" t="Include" />
           <e p="Collection.cs" t="Include" />
           <e p="List.cs" t="Include" />
+          <e p="ListMap.cs" t="Include" />
           <e p="Map.cs" t="Include" />
           <e p="NumberMap.cs" t="Include" />
           <e p="Queue.cs" t="Include" />
           <e p="QueueMap.cs" t="Include" />
           <e p="Set.cs" t="Include" />
           <e p="SetMap.cs" t="Include" />
+          <e p="SortedSet.cs" t="Include" />
+          <e p="SortedSetMap.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -67,6 +81,7 @@
           </e>
         </e>
         <e p="ObjectExtensions.cs" t="Include" />
+        <e p="PriorityItem.cs" t="Include" />
         <e p="QueryResult.cs" t="Include" />
         <e p="QueueExtensions.cs" t="Include" />
         <e p="QueueMapExtensions.cs" t="Include" />
@@ -81,6 +96,7 @@
       <e p="Take.Elephant.Azure" t="IncludeRecursive">
         <e p="AzureEventHubSenderQueue.cs" t="Include" />
         <e p="AzureServiceBusQueue.cs" t="Include" />
+        <e p="AzureStorageQueue.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -120,17 +136,22 @@
             <e p="net461" t="Include">
               <e p="Take.Elephant.Redis.AssemblyInfo.cs" t="Include" />
             </e>
-            <e p="netstandard1.6" t="Include">
+            <e p="netstandard2.0" t="Include">
               <e p="Take.Elephant.Redis.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>
+        <e p="RedisBus.cs" t="Include" />
         <e p="RedisHashMap.cs" t="Include" />
+        <e p="RedisList.cs" t="Include" />
+        <e p="RedisListMap.cs" t="Include" />
         <e p="RedisNumberMap.cs" t="Include" />
         <e p="RedisQueue.cs" t="Include" />
         <e p="RedisQueueMap.cs" t="Include" />
         <e p="RedisSet.cs" t="Include" />
         <e p="RedisSetMap.cs" t="Include" />
+        <e p="RedisSortedSet.cs" t="Include" />
+        <e p="RedisSortedSetMap.cs" t="Include" />
         <e p="RedisStringMap.cs" t="Include" />
         <e p="RedisValueExtensions.cs" t="Include" />
         <e p="Serializers" t="Include">
@@ -236,6 +257,7 @@
         <e p="IDatabaseDriver.cs" t="Include" />
         <e p="IDbTypeMapper.cs" t="Include" />
         <e p="Mapping" t="Include">
+          <e p="DbCommandEventArgs.cs" t="Include" />
           <e p="IMapper.cs" t="Include" />
           <e p="ITable.cs" t="Include" />
           <e p="KeyValuePairMapper.cs" t="Include" />
@@ -253,7 +275,7 @@
             <e p="net461" t="Include">
               <e p="Take.Elephant.Sql.AssemblyInfo.cs" t="Include" />
             </e>
-            <e p="netstandard1.6" t="Include">
+            <e p="netstandard2.0" t="Include">
               <e p="Take.Elephant.Sql.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
@@ -281,7 +303,7 @@
             <e p="net461" t="Include">
               <e p="Take.Elephant.Sql.PostgreSql.AssemblyInfo.cs" t="Include" />
             </e>
-            <e p="netstandard1.6" t="Include">
+            <e p="netstandard2.0" t="Include">
               <e p="Take.Elephant.Sql.PostgreSql.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
@@ -295,7 +317,10 @@
         <e p="app.config" t="Include" />
         <e p="Azure" t="Include">
           <e p="AzureServiceBusItemBlockingQueueFacts.cs" t="Include" />
+          <e p="AzureStorageItemBatchReceiverQueueFacts.cs" t="Include" />
+          <e p="AzureStorageQueueBlockingQueueFacts.cs" t="Include" />
         </e>
+        <e p="BatchReceiverQueueFacts.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="BlockingQueueFacts.cs" t="Include" />
         <e p="ClassListFacts.cs" t="Include" />
@@ -310,19 +335,27 @@
         <e p="GuidItemKeyQueryableMapFacts.cs" t="Include" />
         <e p="GuidItemKeysMapFacts.cs" t="Include" />
         <e p="GuidItemKeyValueMapQueryableStorageFacts.cs" t="Include" />
+        <e p="GuidItemListFacts.cs" t="Include" />
+        <e p="GuidItemListMapFacts.cs" t="Include" />
         <e p="GuidItemMapFacts.cs" t="Include" />
         <e p="GuidItemMapQueryableStorageFacts.cs" t="Include" />
+        <e p="GuidItemNumberMapFacts.cs" t="Include" />
+        <e p="GuidItemPositionListFacts.cs" t="Include" />
         <e p="GuidItemPropertyMapFacts.cs" t="Include" />
+        <e p="GuidItemQueueFacts.cs" t="Include" />
         <e p="GuidItemQueueMapFacts.cs" t="Include" />
+        <e p="GuidItemSetFacts.cs" t="Include" />
         <e p="GuidItemSetMapFacts.cs" t="Include" />
+        <e p="GuidItemSortedSetFacts.cs" t="Include" />
+        <e p="GuidItemSortedSetMapFacts.cs" t="Include" />
         <e p="GuidItemUpdatableMapFacts.cs" t="Include" />
-        <e p="GuidNumberMapFacts.cs" t="Include" />
-        <e p="GuidQueueFacts.cs" t="Include" />
-        <e p="GuidSetFacts.cs" t="Include" />
+        <e p="IntegerStringListMapFacts.cs" t="Include" />
         <e p="IntegerStringMapFacts.cs" t="Include" />
         <e p="IntegerStringQueueMapFacts.cs" t="Include" />
         <e p="IntegerStringSetMapFacts.cs" t="Include" />
+        <e p="IntegerStringSortedSetMapFacts.cs" t="Include" />
         <e p="Item.cs" t="Include" />
+        <e p="ItemBatchReceiverQueueFacts.cs" t="Include" />
         <e p="ItemBlockingQueueFacts.cs" t="Include" />
         <e p="ItemDistinctQueryableStorageFacts.cs" t="Include" />
         <e p="ItemListFacts.cs" t="Include" />
@@ -334,6 +367,7 @@
         <e p="KeysMapFacts.cs" t="Include" />
         <e p="KeyValueMapQueryableStorageFacts.cs" t="Include" />
         <e p="ListFacts.cs" t="Include" />
+        <e p="ListMapFacts.cs" t="Include" />
         <e p="MapFacts.cs" t="Include" />
         <e p="MapQueryableStorageFacts.cs" t="Include" />
         <e p="Memory" t="Include">
@@ -343,27 +377,35 @@
           <e p="MemoryGuidItemKeysMapFacts.cs" t="Include" />
           <e p="MemoryGuidItemKeyValueMapQueryableStorageFacts.cs" t="Include" />
           <e p="MemoryGuidItemKeyValueSetMapQueryableStorageFacts.cs" t="Include" />
+          <e p="MemoryGuidItemListFacts.cs" t="Include" />
+          <e p="MemoryGuidItemListMapFacts.cs" t="Include" />
           <e p="MemoryGuidItemMapFacts.cs" t="Include" />
           <e p="MemoryGuidItemMapQueryableStorageFacts.cs" t="Include" />
+          <e p="MemoryGuidItemNumberMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemPositionListFacts.cs" t="Include" />
           <e p="MemoryGuidItemPropertyMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemQueueFacts.cs" t="Include" />
           <e p="MemoryGuidItemQueueMapFacts.cs" t="Include" />
           <e p="MemoryGuidItemScopedMapFacts.cs" t="Include" />
           <e p="MemoryGuidItemScopedSetMapFacts.cs" t="Include" />
+          <e p="MemoryGuidItemSetFacts.cs" t="Include" />
           <e p="MemoryGuidItemSetMapFacts.cs" t="Include" />
           <e p="MemoryGuidItemSetMapKeyQueryableMapFacts.cs" t="Include" />
           <e p="MemoryGuidItemSetMapQueryableStorageFacts.cs" t="Include" />
+          <e p="MemoryGuidItemSortedSetFacts.cs" t="Include" />
+          <e p="MemoryGuidItemSortedSetMapFacts.cs" t="Include" />
           <e p="MemoryGuidItemUpdatableMapFacts.cs" t="Include" />
-          <e p="MemoryGuidNumberMapFacts.cs" t="Include" />
-          <e p="MemoryGuidQueueFacts.cs" t="Include" />
+          <e p="MemoryIntegerStringListMapFacts.cs" t="Include" />
           <e p="MemoryIntegerStringMapFacts.cs" t="Include" />
           <e p="MemoryIntegerStringQueueMapFacts.cs" t="Include" />
           <e p="MemoryIntegerStringSetMapFacts.cs" t="Include" />
+          <e p="MemoryIntegerStringSortedSetMapFacts.cs" t="Include" />
+          <e p="MemoryItemBatchReceiverQueueFacts.cs" t="Include" />
           <e p="MemoryItemBlockingQueueFacts.cs" t="Include" />
           <e p="MemoryItemDistinctQueryableStorageFacts.cs" t="Include" />
           <e p="MemoryItemOrderedQueryableStorageFacts.cs" t="Include" />
           <e p="MemoryItemQueueFacts.cs" t="Include" />
           <e p="MemoryItemSetFacts.cs" t="Include" />
-          <e p="MemoryStringSetFacts.cs" t="Include" />
         </e>
         <e p="Msmq" t="Include">
           <e p="MsmqGuidItemQueueMapFacts.cs" t="Include" />
@@ -374,12 +416,12 @@
           <e p="Debug" t="Include">
             <e p="net461" t="Include">
               <e p="Take.Elephant.Tests.AssemblyInfo.cs" t="Include" />
-              <e p="Take.Elephant.Tests.Program.cs" t="Include" />
             </e>
           </e>
         </e>
         <e p="ObjectExtensions.cs" t="Include" />
         <e p="OrderedQueryableStorageFacts.cs" t="Include" />
+        <e p="PositionListFacts.cs" t="Include" />
         <e p="PropertyMapFacts.cs" t="Include" />
         <e p="QueryableStorageFacts.cs" t="Include" />
         <e p="QueueFacts.cs" t="Include" />
@@ -390,13 +432,18 @@
           <e p="RedisFixture.cs" t="Include" />
           <e p="RedisGuidItemExpirableKeyMapFacts.cs" t="Include" />
           <e p="RedisGuidItemKeysMapFacts.cs" t="Include" />
+          <e p="RedisGuidItemListFacts.cs" t="Include" />
+          <e p="RedisGuidItemListMapFacts.cs" t="Include" />
+          <e p="RedisGuidItemNumberMapFacts.cs" t="Include" />
+          <e p="RedisGuidItemPositionListFacts.cs" t="Include" />
+          <e p="RedisGuidItemQueueFacts.cs" t="Include" />
           <e p="RedisGuidItemQueueMapFacts.cs" t="Include" />
           <e p="RedisGuidItemScopedMapFacts.cs" t="Include" />
           <e p="RedisGuidItemScopedSetMapFacts.cs" t="Include" />
+          <e p="RedisGuidItemSetFacts.cs" t="Include" />
           <e p="RedisGuidItemSetMapFacts.cs" t="Include" />
-          <e p="RedisGuidNumberMapFacts.cs" t="Include" />
-          <e p="RedisGuidQueueFacts.cs" t="Include" />
-          <e p="RedisGuidSetFacts.cs" t="Include" />
+          <e p="RedisGuidItemSortedSetFacts.cs" t="Include" />
+          <e p="RedisGuidItemSortedSetMapFacts.cs" t="Include" />
           <e p="RedisHashGuidItemMapFacts.cs" t="Include" />
           <e p="RedisHashGuidItemPropertyMapFacts.cs" t="Include" />
           <e p="RedisHashIntegerStringMapFacts.cs" t="Include" />
@@ -410,6 +457,8 @@
         </e>
         <e p="SetFacts.cs" t="Include" />
         <e p="SetMapFacts.cs" t="Include" />
+        <e p="SortedSetFacts.cs" t="Include" />
+        <e p="SortedSetMapFacts.cs" t="Include" />
         <e p="Specialized" t="Include">
           <e p="CacheMapFacts.cs" t="Include" />
           <e p="CacheSetFacts.cs" t="Include" />
@@ -479,6 +528,7 @@
           <e p="SqlGuidItemMapQueryableStorageFacts.cs" t="Include" />
           <e p="SqlGuidItemPropertyMapFacts.cs" t="Include" />
           <e p="SqlGuidItemSetMapFacts.cs" t="Include" />
+          <e p="SqlGuidItemSetMapWithDisabledQueryTotalsFacts.cs" t="Include" />
           <e p="SqlGuidItemUpdatableMapFacts.cs" t="Include" />
           <e p="SqlGuidNumberMapFacts.cs" t="Include" />
           <e p="SqlGuidSetFacts.cs" t="Include" />
@@ -501,6 +551,7 @@
             <e p="SqlServerGuidItemMapQueryableStorageFacts.cs" t="Include" />
             <e p="SqlServerGuidItemPropertyMapFacts.cs" t="Include" />
             <e p="SqlServerGuidItemSetMapFacts.cs" t="Include" />
+            <e p="SqlServerGuidItemSetMapWithDisabledQueryTotalsFacts.cs" t="Include" />
             <e p="SqlServerGuidItemUpdatableMapFacts.cs" t="Include" />
             <e p="SqlServerGuidNumberMapFacts.cs" t="Include" />
             <e p="SqlServerGuidSetFacts.cs" t="Include" />

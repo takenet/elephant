@@ -1,44 +1,200 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="689c1fba-98b7-4753-8c73-d323ac70ba7c" name="Default" comment="" />
+    <list default="true" id="689c1fba-98b7-4753-8c73-d323ac70ba7c" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/indexLayout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/riderModule.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/riderModule.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/QueryResult.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/QueryResult.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/Take.Elephant.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/Take.Elephant.csproj" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-713305917">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.open.time.1" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="cs" value="11" />
+          <entry key="csproj" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="C#" value="11" />
+          <entry key="Csproj" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="cs" value="6" />
+          <entry key="csproj" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="C#" value="6" />
+          <entry key="Csproj" value="2" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="AzureServiceBusQueue.cs" pinned="false" current-in-tab="true">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureServiceBusQueue.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="21" column="44" lean-forward="true" selection-start-line="21" selection-start-column="44" selection-end-line="21" selection-end-column="44" />
+            <state relative-caret-position="448">
+              <caret line="35" column="62" selection-start-line="35" selection-start-column="62" selection-end-line="35" selection-end-column="62" />
               <folding>
-                <marker date="1526138890078" expanded="true" signature="6:198" ph="..." />
-                <marker date="1526138890078" expanded="true" signature="229:3010" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="304:3008" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="744:1454" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="1163:1286" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="1496:1700" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="1748:1972" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="1824:1905" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="2060:2227" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="2271:2350" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="2419:2640" ph="{...}" />
-                <marker date="1526138890078" expanded="true" signature="2715:3002" ph="{...}" />
+                <marker date="1536947026257" expanded="false" signature="6:238" ph="..." />
+                <marker date="1536947026257" expanded="true" signature="269:6888" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="366:6886" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="1302:2145" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="1884:2019" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="2036:2135" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="2248:2434" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="2556:2907" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="2718:2833" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="3014:3504" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="3107:3414" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="3294:3400" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="3592:4515" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="3725:4505" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="3826:4407" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="3978:4077" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="4271:4389" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="4618:4883" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="4966:5234" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="5356:6251" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="5493:6142" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="5691:6128" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="5733:5901" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="5967:6068" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="6162:6241" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="6298:6452" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="6527:6880" ph="{...}" />
+                <marker date="1536947026257" expanded="true" signature="6727:6845" ph="{...}" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AzureEventHubSenderQueue.cs" pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="8" column="50" selection-start-line="8" selection-start-column="50" selection-end-line="8" selection-end-column="50" />
+            <state relative-caret-position="187">
+              <caret line="30" column="40" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
+              <folding>
+                <marker date="1544791457995" expanded="false" signature="6:119" ph="..." />
+                <marker date="1544791457995" expanded="true" signature="150:1662" ph="{...}" />
+                <marker date="1544791457995" expanded="true" signature="227:1660" ph="{...}" />
+                <marker date="1544791457995" expanded="true" signature="473:1127" ph="{...}" />
+                <marker date="1544791457995" expanded="true" signature="938:995" ph="{...}" />
+                <marker date="1544791457995" expanded="true" signature="1224:1508" ph="{...}" />
+                <marker date="1544791457995" expanded="true" signature="1585:1654" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Take.Elephant/IPriorityQueue.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <folding>
+                <marker date="1533906536807" expanded="true" signature="54:1060" ph="{...}" />
+                <marker date="1533906536807" expanded="true" signature="61:186" ph="/// Defines a FIFO storafe container with score ... " />
+                <marker date="1533906536807" expanded="true" signature="278:286" ph="{...}" />
+                <marker date="1533906536807" expanded="true" signature="334:752" ph="{...}" />
+                <marker date="1533906536807" expanded="true" signature="349:498" ph="/// Dequeues an item with the lowest score from the queue, if available. ... " />
+                <marker date="1533906536807" expanded="true" signature="552:702" ph="/// Dequeues an item with the highest score from the queue, if available. ... " />
+                <marker date="1533906536807" expanded="true" signature="798:1058" ph="{...}" />
+                <marker date="1533906536807" expanded="true" signature="813:1003" ph="/// Enqueues an item with score. ... " />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="496">
+              <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
+              <folding>
+                <marker date="1537556920541" expanded="false" signature="6:87" ph="..." />
+                <marker date="1537556920541" expanded="true" signature="112:1981" ph="{...}" />
+                <marker date="1537556920541" expanded="true" signature="119:234" ph="/// Defines a FIFO storage container. ... " />
+                <marker date="1537556920541" expanded="true" signature="302:577" ph="{...}" />
+                <marker date="1537556920541" expanded="true" signature="317:489" ph="/// Gets the number of items in the queue. ... " />
+                <marker date="1537556920541" expanded="true" signature="617:904" ph="{...}" />
+                <marker date="1537556920541" expanded="true" signature="632:812" ph="/// Dequeues an item from the queue, if available. ... " />
+                <marker date="1537556920541" expanded="true" signature="942:1236" ph="{...}" />
+                <marker date="1537556920541" expanded="true" signature="957:1148" ph="/// Enqueues an item. ... " />
+                <marker date="1537556920541" expanded="true" signature="1279:1602" ph="{...}" />
+                <marker date="1537556920541" expanded="true" signature="1294:1495" ph="/// Enqueues a batch of items. ... " />
+                <marker date="1537556920541" expanded="true" signature="1647:1979" ph="{...}" />
+                <marker date="1537556920541" expanded="true" signature="1662:1870" ph="/// Enqueues a batch of items. ... " />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="103">
+              <caret line="88" column="45" selection-start-line="88" selection-start-column="45" selection-end-line="88" selection-end-column="45" />
+              <folding>
+                <marker date="1537535855577" expanded="true" signature="6:214" ph="..." />
+                <marker date="1537535855577" expanded="true" signature="245:5627" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="345:5625" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="847:1448" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="1551:1779" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="1867:2751" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="2049:2741" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="2239:2308" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="2451:2727" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="2608:2709" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="2858:3276" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="3400:3908" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="4011:4292" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="4359:4500" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="4637:4900" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="5022:5619" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="5159:5510" ph="{...}" />
+                <marker date="1537535855577" expanded="true" signature="5530:5609" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureTableList.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-185">
+              <folding>
+                <marker date="1536171002930" expanded="false" signature="6:161" ph="..." />
+                <marker date="1536171002930" expanded="true" signature="192:1563" ph="{...}" />
+                <marker date="1536171002930" expanded="true" signature="199:317" ph="/// TODO: Internal while is not working. ... " />
+                <marker date="1536171002930" expanded="true" signature="365:1561" ph="{...}" />
+                <marker date="1536171002930" expanded="true" signature="547:885" ph="{...}" />
+                <marker date="1536171002930" expanded="true" signature="924:1101" ph="{...}" />
+                <marker date="1536171002930" expanded="true" signature="1208:1277" ph="{...}" />
+                <marker date="1536171002930" expanded="true" signature="1366:1435" ph="{...}" />
+                <marker date="1536171002930" expanded="true" signature="1486:1555" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -56,16 +212,18 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceBusItemBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/01B91645-7427-4B98-AAB1-9E29635B4355/d8/45a7ebb0/QueueClient.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureServiceBusQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBlockingQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/01B91645-7427-4B98-AAB1-9E29635B4355/c7/a97b644d/MessageReceiver.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0C535493-6EE5-4A56-AA88-41D28D6AF3F1/e6/cb44eae3/EventHubClient.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/ICloseable.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/97D2417B-7E19-40DA-A961-DA0CDA683887/ea/6092f35c/ReceivingAmqpLink.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Queue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IPriorityQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ObjectExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureTableList.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IUpdatableMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/QueryResult.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBlockingQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ICloseable.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -73,12 +231,20 @@
         <option value="$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceBusItemBlockingQueueFacts.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant/IQueue.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureServiceBusQueue.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Azure/Take.Elephant.Azure.csproj" />
+        <option value="$PROJECT_DIR$/Take.Elephant/Take.Elephant.csproj" />
+        <option value="$PROJECT_DIR$/Take.Elephant/QueryResult.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" />
       </list>
     </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
@@ -96,35 +262,29 @@
         <subPane>
           <expand>
             <path>
-              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-              <item name="Take.Elephant (9 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Project" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
             </path>
             <path>
-              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-              <item name="Take.Elephant (9 projects)" type="977d5f41:SolutionExplorerNodeRider" />
-              <item name="Take.Elephant" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Project" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
+              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
             </path>
             <path>
-              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-              <item name="Take.Elephant (9 projects)" type="977d5f41:SolutionExplorerNodeRider" />
-              <item name="Take.Elephant.Azure" type="977d5f41:SolutionExplorerNodeRider" />
-            </path>
-            <path>
-              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-              <item name="Take.Elephant (9 projects)" type="977d5f41:SolutionExplorerNodeRider" />
-              <item name="Take.Elephant.Azure" type="977d5f41:SolutionExplorerNodeRider" />
-              <item name="Dependencies" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Project" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
+              <item name="Take.Elephant.Azure" type="24d0babc:SolutionExplorerModelNode" />
             </path>
           </expand>
           <select />
         </subPane>
-        <option name="show-file-system" value="false" />
-        <option name="show-all-items" value="false" />
+        <option name="show-all-files" value="false" />
       </pane>
-      <pane id="Scratches" />
+      <pane id="FileSystemExplorer" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
     <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
     <property name="SearchEverywhereHistoryKey" value="options&#9;null&#9;null" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -150,13 +310,20 @@
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
       <option name="PROJECT_PATH" value="" />
       <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
       <option name="PROJECT_KIND" value="None" />
       <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" enabled="true" />
+      </method>
     </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -166,6 +333,7 @@
       <option name="presentableId" value="Default" />
       <updated>1526130272634</updated>
       <workItem from="1526130274608" duration="6474000" />
+      <workItem from="1544790728525" duration="830000" />
     </task>
     <task id="LOCAL-00001" summary="Using new version of service bus library on Azure with net standard support. Added service bus sender queue.">
       <created>1526139040723</created>
@@ -178,7 +346,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6474000" />
+    <option name="totallyTimeSpent" value="7304000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -192,30 +360,38 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
     <layout>
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Errors In Solution" />
-      <window_info anchor="bottom" id="Messages" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="bottom" id="Unit Tests" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="NuGet" visible="true" weight="0.32897604" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16950959" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Build" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14285715" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info id="Favorites" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info active="true" anchor="bottom" id="NuGet" order="7" visible="true" weight="0.54121476" />
+      <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Unit Tests" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="12" />
+      <window_info anchor="bottom" id="Build" order="13" weight="0.27114967" />
+      <window_info anchor="bottom" id="Messages" order="14" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="right" id="Unit Tests Coverage" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="right" id="Errors In Solution" order="3" />
     </layout>
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
@@ -223,54 +399,29 @@
     <MESSAGE value="Using new version of service bus library on Azure with net standard support. Added service bus sender queue." />
     <option name="LAST_COMMIT_MESSAGE" value="Using new version of service bus library on Azure with net standard support. Added service bus sender queue." />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" suspend="NONE" type="DotNet Exception Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceBusItemBlockingQueueFacts.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret line="2" column="12" lean-forward="true" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-          <folding>
-            <marker date="1526130427010" expanded="false" signature="6:72" ph="..." />
-            <marker date="1526130427010" expanded="true" signature="109:614" ph="{...}" />
-            <marker date="1526130427010" expanded="true" signature="112:612" ph="/* [Trait(&quot;Category&quot;, nameof(Azure))] ... */" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0C535493-6EE5-4A56-AA88-41D28D6AF3F1/e6/cb44eae3/EventHubClient.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0C535493-6EE5-4A56-AA88-41D28D6AF3F1/e6/cb44eae3/EventHubClient.cs" />
     <entry file="file://$PROJECT_DIR$/Take.Elephant/ICloseable.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
           <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
-          <folding>
-            <marker date="1526130114054" expanded="false" signature="6:53" ph="..." />
-            <marker date="1526130114054" expanded="true" signature="78:433" ph="{...}" />
-            <marker date="1526130114054" expanded="true" signature="85:163" ph="/// Defines a service that can be closed. ... " />
-            <marker date="1526130114054" expanded="true" signature="195:431" ph="{...}" />
-            <marker date="1526130114054" expanded="true" signature="210:363" ph="/// Closes the service. ... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
-          <folding>
-            <marker date="1526134995178" expanded="true" signature="54:892" ph="{...}" />
-            <marker date="1526134995178" expanded="true" signature="61:176" ph="/// Defines a FIFO storage container. ... " />
-            <marker date="1526134995178" expanded="true" signature="244:421" ph="{...}" />
-            <marker date="1526134995178" expanded="true" signature="259:378" ph="/// Gets the number of items in the queue. ... " />
-            <marker date="1526134995178" expanded="true" signature="461:650" ph="{...}" />
-            <marker date="1526134995178" expanded="true" signature="476:603" ph="/// Dequeues an item from the queue, if available. ... " />
-            <marker date="1526134995178" expanded="true" signature="688:882" ph="{...}" />
-            <marker date="1526134995178" expanded="true" signature="703:841" ph="/// Enqueues an item. ... " />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -278,249 +429,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="13" column="44" selection-start-line="13" selection-start-column="44" selection-end-line="13" selection-end-column="44" />
-          <folding>
-            <marker date="1526130114052" expanded="false" signature="6:139" ph="..." />
-            <marker date="1526130114052" expanded="true" signature="164:697" ph="{...}" />
-            <marker date="1526130114052" expanded="true" signature="171:319" ph="/// Defines a queue that allows to await for messages when dequeueing. ... " />
-            <marker date="1526130114052" expanded="true" signature="370:695" ph="{...}" />
-            <marker date="1526130114052" expanded="true" signature="385:622" ph="/// Dequeues a value from the queue, awaiting for a new value if the queue is empty. ... " />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant/Memory/Queue.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <marker date="1526130114068" expanded="false" signature="6:104" ph="..." />
-            <marker date="1526130114068" expanded="true" signature="136:3324" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="143:353" ph="/// Implements the &lt;see cref=&quot;IQueue{T}&quot;/&gt; interface using the &lt;see cref=&quot;System.Collections.Concurrent.Concurren ... " />
-            <marker date="1526130114068" expanded="true" signature="411:3322" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="671:865" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="915:1668" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="1351:1499" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="1724:1979" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="2031:2110" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="2192:2890" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="2268:2836" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="2458:2804" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="2900:3002" ph="/// Clones this instance. ... " />
-            <marker date="1526130114068" expanded="true" signature="3034:3233" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="3125:3197" ph="{...}" />
-            <marker date="1526130114068" expanded="true" signature="3268:3316" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/01B91645-7427-4B98-AAB1-9E29635B4355/d8/45a7ebb0/QueueClient.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="266" column="16" selection-start-line="266" selection-start-column="16" selection-end-line="266" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/97D2417B-7E19-40DA-A961-DA0CDA683887/ea/6092f35c/ReceivingAmqpLink.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="107">
-          <caret line="143" column="107" selection-start-line="143" selection-start-column="100" selection-end-line="143" selection-end-column="107" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/01B91645-7427-4B98-AAB1-9E29635B4355/c7/a97b644d/MessageReceiver.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="317">
-          <caret line="849" column="135" selection-start-line="849" selection-start-column="135" selection-end-line="849" selection-end-column="135" />
-          <folding>
-            <marker date="1526137442377" expanded="true" signature="0:383" ph="/* Decompiled with JetBrains decompiler ... */" />
-            <marker date="1526137442377" expanded="false" signature="391:690" ph="..." />
-            <marker date="1526137442377" expanded="true" signature="733:79891" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="738:2068" ph="/// The MessageReceiver can be used to receive messages from Queues and Subscriptions and acknowledge them. ... " />
-            <marker date="1526137442377" expanded="true" signature="2164:79889" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="2749:3881" ph="/// Creates a new MessageReceiver from a &lt;see cref=&quot;T:Microsoft.Azure.ServiceBus.ServiceBusConnectionStringBuilde ... " />
-            <marker date="1526137442377" expanded="true" signature="4218:4230" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="4236:5625" ph="/// Creates a new MessageReceiver from a specified connection string and entity path. ... " />
-            <marker date="1526137442377" expanded="true" signature="6017:6548" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="6926:8432" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="8640:8770" ph="/// Gets the &lt;see cref=&quot;T:Microsoft.Azure.ServiceBus.ReceiveMode&quot; /&gt; of the current receiver. ... " />
-            <marker date="1526137442377" expanded="true" signature="8835:10540" ph="/// Prefetch speeds up the message flow by aiming to have a message readily available for local retrieval when an ... " />
-            <marker date="1526137442377" expanded="true" signature="10569:11098" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="10585:10636" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="10646:11092" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="11104:11266" ph="///Gets the sequence number of the last peeked message. ... " />
-            <marker date="1526137442377" expanded="true" signature="11307:11599" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="11323:11385" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="11404:11593" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="11794:11891" ph="/// Duration after which individual operations will timeout. ... " />
-            <marker date="1526137442377" expanded="true" signature="11937:12120" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="11953:12028" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="12038:12114" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="12126:12275" ph="/// Gets the DateTime that the current receiver is locked until. This is only applicable when Sessions are used. ... " />
-            <marker date="1526137442377" expanded="true" signature="12340:12472" ph="/// Gets the SessionId of the current receiver. This is only applicable when Sessions are used. ... " />
-            <marker date="1526137442377" expanded="true" signature="12939:13412" ph="/// Receive a message from the entity defined by &lt;see cref=&quot;P:Microsoft.Azure.ServiceBus.Core.MessageReceiver.Pat ... " />
-            <marker date="1526137442377" expanded="true" signature="13452:13519" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="13525:14367" ph="/// Receive a message from the entity defined by &lt;see cref=&quot;P:Microsoft.Azure.ServiceBus.Core.MessageReceiver.Pat ... " />
-            <marker date="1526137442377" expanded="true" signature="14438:14647" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="14653:15267" ph="/// Receives a maximum of &lt;paramref name=&quot;maxMessageCount&quot; /&gt; messages from the entity defined by &lt;see cref=&quot;P:Mi ... " />
-            <marker date="1526137442377" expanded="true" signature="15333:15417" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="15423:16521" ph="/// Receives a maximum of &lt;paramref name=&quot;maxMessageCount&quot; /&gt; messages from the entity defined by &lt;see cref=&quot;P:Mi ... " />
-            <marker date="1526137442377" expanded="true" signature="16620:19044" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="17407:18302" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="17629:18250" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="18329:18508" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="19050:19647" ph="/// Receives a specific deferred message identified by &lt;paramref name=&quot;sequenceNumber&quot; /&gt;. ... " />
-            <marker date="1526137442377" expanded="true" signature="19727:20002" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="19846:19878" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="20008:20679" ph="/// Receives a &lt;see cref=&quot;T:System.Collections.Generic.IList`1&quot; /&gt; of deferred messages identified by &lt;paramref n ... " />
-            <marker date="1526137442377" expanded="true" signature="20780:23085" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="21617:22484" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="21839:22416" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="22511:22705" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="23091:23790" ph="/// Completes a &lt;see cref=&quot;T:Microsoft.Azure.ServiceBus.Message&quot; /&gt; using its lock token. This will delete the me ... " />
-            <marker date="1526137442377" expanded="true" signature="23838:23954" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="23919:23946" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="23960:24751" ph="/// Completes a series of &lt;see cref=&quot;T:Microsoft.Azure.ServiceBus.Message&quot; /&gt; using a list of lock tokens. This w ... " />
-            <marker date="1526137442377" expanded="true" signature="24819:26124" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="25554:25775" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="25802:25982" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="26130:27025" ph="/// Abandons a &lt;see cref=&quot;T:Microsoft.Azure.ServiceBus.Message&quot; /&gt; using a lock token. This will make the message ... " />
-            <marker date="1526137442377" expanded="true" signature="27133:28170" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="27607:27823" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="27850:28029" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="28176:29368" ph="///Indicates that the receiver wants to defer the processing for the message. ... " />
-            <marker date="1526137442377" expanded="true" signature="29474:30503" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="29946:30160" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="30187:30364" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="30509:31537" ph="///Moves a message to the deadletter sub-queue. ... " />
-            <marker date="1526137442377" expanded="true" signature="31648:32727" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="32125:32374" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="32401:32583" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="32733:33844" ph="///Moves a message to the deadletter sub-queue. ... " />
-            <marker date="1526137442377" expanded="true" signature="33967:35125" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="34490:34772" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="34799:34981" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="35131:35810" ph="/// Renews the lock on the message specified by the lock token. The lock will be renewed based on the setting spe ... " />
-            <marker date="1526137442377" expanded="true" signature="35864:36167" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="36173:36982" ph="/// Renews the lock on the message. The lock will be renewed based on the setting specified on the queue. ... " />
-            <marker date="1526137442377" expanded="true" signature="37047:38736" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="37498:38356" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="37720:38288" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="38383:38564" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="38742:39654" ph="/// Fetches the next active message without changing the state of the receiver or the message source. ... " />
-            <marker date="1526137442377" expanded="true" signature="39691:39784" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="39790:40716" ph="/// Fetches the next batch of active messages without changing the state of the receiver or the message source. ... " />
-            <marker date="1526137442377" expanded="true" signature="40779:40889" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="40895:41308" ph="/// Asynchronously reads the next message without changing the state of the receiver or the message source. ... " />
-            <marker date="1526137442377" expanded="true" signature="41390:41596" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="41602:41895" ph="///Peeks a batch of messages. ... " />
-            <marker date="1526137442377" expanded="true" signature="42002:43912" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="42480:43345" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="42702:43277" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="43372:43548" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="43918:44418" ph="/// Receive messages continuously from the entity. Registers a message handler and begins a new thread to receive ... " />
-            <marker date="1526137442377" expanded="true" signature="44570:44679" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="44685:45309" ph="/// Receive messages continuously from the entity. Registers a message handler and begins a new thread to receive ... " />
-            <marker date="1526137442377" expanded="true" signature="45441:45542" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="45548:45697" ph="/// Registers a &lt;see cref=&quot;T:Microsoft.Azure.ServiceBus.Core.ServiceBusPlugin&quot; /&gt; to be used with this receiver. ... " />
-            <marker date="1526137442377" expanded="true" signature="45772:46330" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="46336:46617" ph="/// Unregisters a &lt;see cref=&quot;T:Microsoft.Azure.ServiceBus.Core.ServiceBusPlugin&quot; /&gt;. ... " />
-            <marker date="1526137442377" expanded="true" signature="46688:47305" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="47383:48596" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="47897:48037" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="48079:48217" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="48709:50107" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="49249:49737" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="50159:50779" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="50294:50491" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="50890:53812" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="51145:53278" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="51393:51857" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="52618:53230" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="52688:53220" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="53305:53780" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="53921:56207" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="53983:55884" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="54777:55491" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="54953:55310" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="55155:55253" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="55911:56201" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="56311:58346" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="56425:57983" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="57305:57975" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="57511:57605" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="57727:57930" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="58010:58300" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="58422:58938" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="59054:59542" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="59105:59142" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="59656:60140" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="59707:59744" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="60333:61342" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="60832:60869" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="61421:62580" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="61514:62228" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="61765:61806" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="62255:62545" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="62749:63934" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="63339:63393" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="63420:63852" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="63612:63819" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="63996:64040" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="64142:64205" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="64270:65136" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="64483:65099" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="64555:64843" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="64872:65049" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="65220:65650" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="65742:68745" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="66241:68058" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="66334:66798" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="66960:67377" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="67476:68050" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="67666:68040" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="68085:68739" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="68984:71285" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="69046:70962" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="69757:70496" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="69938:70358" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="70989:71279" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="71362:74299" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="71705:71909" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="72354:72444" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="72808:73160" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="74397:75813" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="75887:76418" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="76518:76714" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="76757:77001" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="77044:77128" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="77215:77292" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="77377:77453" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="77565:78388" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="77734:78349" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="77920:78341" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="78537:79885" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="78704:79856" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="78755:78912" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="78797:78902" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="79273:79848" ph="{...}" />
-            <marker date="1526137442377" expanded="true" signature="79411:79838" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="33" selection-start-line="6" selection-start-column="33" selection-end-line="6" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="8" column="50" selection-start-line="8" selection-start-column="50" selection-end-line="8" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/01B91645-7427-4B98-AAB1-9E29635B4355/d8/45a7ebb0/QueueClient.cs" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/97D2417B-7E19-40DA-A961-DA0CDA683887/ea/6092f35c/ReceivingAmqpLink.cs" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/01B91645-7427-4B98-AAB1-9E29635B4355/c7/a97b644d/MessageReceiver.cs" />
     <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/Take.Elephant.Azure.csproj">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -528,23 +442,219 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant/Take.Elephant.csproj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="15" column="20" selection-start-line="15" selection-start-column="20" selection-end-line="15" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant/Memory/Queue.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-816">
+          <caret column="6" selection-start-column="6" selection-end-column="6" />
+          <folding>
+            <marker date="1537546738444" expanded="true" signature="6:138" ph="..." />
+            <marker date="1537546738444" expanded="true" signature="170:4366" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="177:387" ph="/// Implements the &lt;see cref=&quot;IQueue{T}&quot;/&gt; interface using the &lt;see cref=&quot;System.Collections.Concurrent.Concurren ... " />
+            <marker date="1537546738444" expanded="true" signature="491:4364" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="751:933" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="1030:1783" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="1466:1614" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="1905:2156" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="2035:2146" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="2257:2512" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="2609:2688" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="2770:3468" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="2846:3414" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="3036:3382" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="3592:3932" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="3715:3895" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="3942:4044" ph="/// Clones this instance. ... " />
+            <marker date="1537546738444" expanded="true" signature="4076:4275" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="4167:4239" ph="{...}" />
+            <marker date="1537546738444" expanded="true" signature="4310:4358" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant/IUpdatableMap.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <marker date="1533906536931" expanded="true" signature="54:848" ph="{...}" />
+            <marker date="1533906536931" expanded="true" signature="61:302" ph="/// Defines a map that supports value updates under specific conditions. ... " />
+            <marker date="1533906536931" expanded="true" signature="372:846" ph="{...}" />
+            <marker date="1533906536931" expanded="true" signature="387:761" ph="/// Updates the value of the key only if the existing value in the specified key equals to the specified old valu ... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant/ObjectExtensions.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <marker date="1533906537849" expanded="false" signature="6:68" ph="..." />
+            <marker date="1533906537849" expanded="true" signature="93:1201" ph="{...}" />
+            <marker date="1533906537849" expanded="true" signature="100:164" ph="/// Object util extensions. ... " />
+            <marker date="1533906537849" expanded="true" signature="205:1199" ph="{...}" />
+            <marker date="1533906537849" expanded="true" signature="220:426" ph="/// Creates a completed task for the value. ... " />
+            <marker date="1533906537849" expanded="true" signature="489:552" ph="{...}" />
+            <marker date="1533906537849" expanded="true" signature="562:895" ph="/// Determines if the value is a default value of the specified type. ... " />
+            <marker date="1533906537849" expanded="true" signature="999:1193" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant/QueryResult.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-9">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
+          <folding>
+            <marker date="1544791284248" expanded="false" signature="6:127" ph="..." />
+            <marker date="1544791284248" expanded="true" signature="152:1109" ph="{...}" />
+            <marker date="1544791284248" expanded="true" signature="159:267" ph="/// Represents a query result. ... " />
+            <marker date="1544791284248" expanded="true" signature="341:1107" ph="{...}" />
+            <marker date="1544791284248" expanded="true" signature="412:486" ph="{...}" />
+            <marker date="1544791284248" expanded="true" signature="671:755" ph="{...}" />
+            <marker date="1544791284248" expanded="true" signature="802:864" ph="{...}" />
+            <marker date="1544791284248" expanded="true" signature="913:990" ph="{...}" />
+            <marker date="1544791284248" expanded="true" signature="1021:1100" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant/IPriorityQueue.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <marker date="1533906536807" expanded="true" signature="54:1060" ph="{...}" />
+            <marker date="1533906536807" expanded="true" signature="61:186" ph="/// Defines a FIFO storafe container with score ... " />
+            <marker date="1533906536807" expanded="true" signature="278:286" ph="{...}" />
+            <marker date="1533906536807" expanded="true" signature="334:752" ph="{...}" />
+            <marker date="1533906536807" expanded="true" signature="349:498" ph="/// Dequeues an item with the lowest score from the queue, if available. ... " />
+            <marker date="1533906536807" expanded="true" signature="552:702" ph="/// Dequeues an item with the highest score from the queue, if available. ... " />
+            <marker date="1533906536807" expanded="true" signature="798:1058" ph="{...}" />
+            <marker date="1533906536807" expanded="true" signature="813:1003" ph="/// Enqueues an item with score. ... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="496">
+          <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
+          <folding>
+            <marker date="1537556920541" expanded="false" signature="6:87" ph="..." />
+            <marker date="1537556920541" expanded="true" signature="112:1981" ph="{...}" />
+            <marker date="1537556920541" expanded="true" signature="119:234" ph="/// Defines a FIFO storage container. ... " />
+            <marker date="1537556920541" expanded="true" signature="302:577" ph="{...}" />
+            <marker date="1537556920541" expanded="true" signature="317:489" ph="/// Gets the number of items in the queue. ... " />
+            <marker date="1537556920541" expanded="true" signature="617:904" ph="{...}" />
+            <marker date="1537556920541" expanded="true" signature="632:812" ph="/// Dequeues an item from the queue, if available. ... " />
+            <marker date="1537556920541" expanded="true" signature="942:1236" ph="{...}" />
+            <marker date="1537556920541" expanded="true" signature="957:1148" ph="/// Enqueues an item. ... " />
+            <marker date="1537556920541" expanded="true" signature="1279:1602" ph="{...}" />
+            <marker date="1537556920541" expanded="true" signature="1294:1495" ph="/// Enqueues a batch of items. ... " />
+            <marker date="1537556920541" expanded="true" signature="1647:1979" ph="{...}" />
+            <marker date="1537556920541" expanded="true" signature="1662:1870" ph="/// Enqueues a batch of items. ... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="103">
+          <caret line="88" column="45" selection-start-line="88" selection-start-column="45" selection-end-line="88" selection-end-column="45" />
+          <folding>
+            <marker date="1537535855577" expanded="true" signature="6:214" ph="..." />
+            <marker date="1537535855577" expanded="true" signature="245:5627" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="345:5625" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="847:1448" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="1551:1779" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="1867:2751" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="2049:2741" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="2239:2308" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="2451:2727" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="2608:2709" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="2858:3276" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="3400:3908" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="4011:4292" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="4359:4500" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="4637:4900" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="5022:5619" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="5159:5510" ph="{...}" />
+            <marker date="1537535855577" expanded="true" signature="5530:5609" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureTableList.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-185">
+          <folding>
+            <marker date="1536171002930" expanded="false" signature="6:161" ph="..." />
+            <marker date="1536171002930" expanded="true" signature="192:1563" ph="{...}" />
+            <marker date="1536171002930" expanded="true" signature="199:317" ph="/// TODO: Internal while is not working. ... " />
+            <marker date="1536171002930" expanded="true" signature="365:1561" ph="{...}" />
+            <marker date="1536171002930" expanded="true" signature="547:885" ph="{...}" />
+            <marker date="1536171002930" expanded="true" signature="924:1101" ph="{...}" />
+            <marker date="1536171002930" expanded="true" signature="1208:1277" ph="{...}" />
+            <marker date="1536171002930" expanded="true" signature="1366:1435" ph="{...}" />
+            <marker date="1536171002930" expanded="true" signature="1486:1555" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureServiceBusQueue.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="44" lean-forward="true" selection-start-line="21" selection-start-column="44" selection-end-line="21" selection-end-column="44" />
+        <state relative-caret-position="448">
+          <caret line="35" column="62" selection-start-line="35" selection-start-column="62" selection-end-line="35" selection-end-column="62" />
           <folding>
-            <marker date="1526138890078" expanded="true" signature="6:198" ph="..." />
-            <marker date="1526138890078" expanded="true" signature="229:3010" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="304:3008" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="744:1454" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="1163:1286" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="1496:1700" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="1748:1972" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="1824:1905" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="2060:2227" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="2271:2350" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="2419:2640" ph="{...}" />
-            <marker date="1526138890078" expanded="true" signature="2715:3002" ph="{...}" />
+            <marker date="1536947026257" expanded="false" signature="6:238" ph="..." />
+            <marker date="1536947026257" expanded="true" signature="269:6888" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="366:6886" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="1302:2145" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="1884:2019" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="2036:2135" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="2248:2434" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="2556:2907" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="2718:2833" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="3014:3504" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="3107:3414" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="3294:3400" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="3592:4515" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="3725:4505" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="3826:4407" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="3978:4077" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="4271:4389" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="4618:4883" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="4966:5234" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="5356:6251" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="5493:6142" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="5691:6128" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="5733:5901" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="5967:6068" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="6162:6241" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="6298:6452" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="6527:6880" ph="{...}" />
+            <marker date="1536947026257" expanded="true" signature="6727:6845" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="30" column="40" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
+          <folding>
+            <marker date="1544791457995" expanded="false" signature="6:119" ph="..." />
+            <marker date="1544791457995" expanded="true" signature="150:1662" ph="{...}" />
+            <marker date="1544791457995" expanded="true" signature="227:1660" ph="{...}" />
+            <marker date="1544791457995" expanded="true" signature="473:1127" ph="{...}" />
+            <marker date="1544791457995" expanded="true" signature="938:995" ph="{...}" />
+            <marker date="1544791457995" expanded="true" signature="1224:1508" ph="{...}" />
+            <marker date="1544791457995" expanded="true" signature="1585:1654" ph="{...}" />
           </folding>
         </state>
       </provider>

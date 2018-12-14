@@ -20,7 +20,7 @@ namespace Take.Elephant
 
         public IAsyncEnumerable<T> Items { get; }
 
-        public int Total { get; private set; }
+        public int Total { get; }
 
 
         public Task<IAsyncEnumerator<T>> GetEnumeratorAsync(CancellationToken cancellationToken)
