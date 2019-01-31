@@ -40,12 +40,13 @@ namespace Take.Elephant.Sql
                 return keyColumnValues.SequenceEqual(internalSet.MapKeyColumnValues) && overwrite;
             }
 
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cts = CreateCancellationTokenSource())
+            using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, cancellationToken))
             {
-                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
+                using (var connection = await GetConnectionAsync(linkedCts.Token).ConfigureAwait(false))
                 {
                     if (!overwrite &&
-                        await ContainsAsync(keyColumnValues, connection, cancellationTokenSource.Token))
+                        await ContainsAsync(keyColumnValues, connection, linkedCts.Token))
                     {
                         return false;
                     }
@@ -55,12 +56,12 @@ namespace Take.Elephant.Sql
                         if (overwrite)
                         {
                             await
-                                TryRemoveAsync(keyColumnValues, connection, cancellationTokenSource.Token, transaction)
+                                TryRemoveAsync(keyColumnValues, connection, linkedCts.Token, transaction)
                                     .ConfigureAwait(false);
                         }
 
                         var success = true;
-                        var items = await value.AsEnumerableAsync().ConfigureAwait(false);
+                        var items = await value.AsEnumerableAsync(linkedCts.Token).ConfigureAwait(false);
                         await items.ForEachAsync(
                             async item =>
                             {
@@ -73,10 +74,10 @@ namespace Take.Elephant.Sql
                                 {
                                     command.Transaction = transaction;
                                     success =
-                                        await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) > 0;
+                                        await command.ExecuteNonQueryAsync(linkedCts.Token).ConfigureAwait(false) > 0;
                                 }
                             },
-                            cancellationTokenSource.Token);
+                            linkedCts.Token);
 
                         if (success)
                         {
@@ -185,9 +186,14 @@ namespace Take.Elephant.Sql
 
             protected override IDictionary<string, object> GetColumnValues(TItem entity, bool emitNullValues = false, bool includeIdentityTypes = false)
             {
-                return MapKeyColumnValues
-                    .Union(base.GetColumnValues(entity, emitNullValues, includeIdentityTypes))
-                    .ToDictionary(k => k.Key, k => k.Value);
+                var columnValues = base.GetColumnValues(entity, emitNullValues, includeIdentityTypes);
+
+                foreach (var keyColumnValue in MapKeyColumnValues)
+                {
+                    columnValues[keyColumnValue.Key] = keyColumnValue.Value;
+                }
+
+                return columnValues;
             }
 
             public override Task<IAsyncEnumerable<TItem>> AsEnumerableAsync(CancellationToken cancellationToken =
