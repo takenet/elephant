@@ -19,7 +19,6 @@ namespace Take.Elephant.Redis
         public RedisQueue(string queueName, string configuration, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
             : this(queueName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags)
         {
-            
         }
 
         public RedisQueue(string queueName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None)
@@ -31,9 +30,8 @@ namespace Take.Elephant.Redis
             SubscribeChannel();
         }
 
-
         public virtual async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
-        {            
+        {
             if (item == null) throw new ArgumentNullException(nameof(item));
             var database = GetDatabase();
             var shouldCommit = false;
@@ -41,11 +39,11 @@ namespace Take.Elephant.Redis
             ITransaction transaction;
             if (database is ITransaction)
             {
-                transaction = (ITransaction)database;                
+                transaction = (ITransaction)database;
             }
             else if (database is IDatabase)
             {
-                transaction = ((IDatabase) database).CreateTransaction();
+                transaction = ((IDatabase)database).CreateTransaction();
                 shouldCommit = true;
             }
             else
@@ -59,9 +57,9 @@ namespace Take.Elephant.Redis
             if (shouldCommit &&
                 !await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false))
             {
-                throw new Exception("The transaction has failed");                    
+                throw new Exception("The transaction has failed");
             }
-                    
+
             await Task.WhenAll(enqueueTask, publishTask).ConfigureAwait(false);
         }
 
@@ -77,7 +75,7 @@ namespace Take.Elephant.Redis
             var database = GetDatabase();
             return database.ListLengthAsync(Name, ReadFlags);
         }
-    
+
         public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<T>();
@@ -98,6 +96,7 @@ namespace Take.Elephant.Redis
                 {
                     Tuple<TaskCompletionSource<T>, CancellationTokenRegistration> promise = null;
                     await _semaphore.WaitAsync().ConfigureAwait(false);
+                    var didDequeued = false;
                     try
                     {
                         if (_promisesQueue.TryDequeue(out promise) && !promise.Item1.Task.IsCanceled)
@@ -110,7 +109,8 @@ namespace Take.Elephant.Redis
                             }
                             else
                             {
-                                var item = _serializer.Deserialize((string) result);
+                                didDequeued = true;
+                                var item = _serializer.Deserialize((string)result);
                                 if (promise.Item1.TrySetResult(item))
                                 {
                                     promise.Item2.Dispose();
@@ -124,6 +124,10 @@ namespace Take.Elephant.Redis
                     }
                     catch (Exception ex)
                     {
+                        if (!didDequeued && promise != null)
+                        {
+                            _promisesQueue.Enqueue(promise);
+                        }
                         Trace.TraceError(ex.ToString());
                     }
                     finally
