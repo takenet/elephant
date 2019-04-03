@@ -19,7 +19,7 @@ namespace Take.Elephant.Kafka
         public KafkaReceiverQueue(string bootstrapServers, string topic, string groupId)
         : this(new ConsumerConfig() { BootstrapServers = bootstrapServers, GroupId = groupId }, new[] { topic })
         {
-            
+
         }
 
         public KafkaReceiverQueue(
@@ -46,7 +46,7 @@ namespace Take.Elephant.Kafka
                 TaskCreationOptions.LongRunning);
         }    
         
-        public Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
+        public virtual Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             if (_channel.Reader.TryRead(out var item))
             {
@@ -56,12 +56,12 @@ namespace Take.Elephant.Kafka
             return Task.FromResult(default(T));
         }
 
-        public Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public virtual Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             return _channel.Reader.ReadAsync(cancellationToken).AsTask();
         }
         
-        public Task CloseAsync(CancellationToken cancellationToken)
+        public virtual Task CloseAsync(CancellationToken cancellationToken)
         {
             if (!_closed)
             {

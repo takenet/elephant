@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="RIDER_MODULE" version="4">
   <component name="NewModuleRootManager">
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x64/native/librdkafka.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x64/native/librdkafkacpp.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x64/native/libzstd.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x64/native/msvcp120.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x64/native/msvcr120.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x64/native/zlib.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x86/native/librdkafka.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x86/native/librdkafkacpp.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x86/native/libzstd.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x86/native/msvcp120.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x86/native/msvcr120.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/librdkafka.redist/1.0.0/runtimes/win-x86/native/zlib.dll" />
     <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.1/build/_common/xunit.abstractions.dll" />
     <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.1/build/_common/xunit.runner.reporters.net452.dll" />
     <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.1/build/_common/xunit.runner.utility.net452.dll" />
