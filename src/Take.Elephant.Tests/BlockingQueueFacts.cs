@@ -14,7 +14,6 @@ namespace Take.Elephant.Tests
     {
         public abstract override IQueue<T> Create();
 
-
         [Fact(DisplayName = "DequeueExistingItemSucceeds")]
         public virtual async Task DequeueExistingItemSucceeds()
         {

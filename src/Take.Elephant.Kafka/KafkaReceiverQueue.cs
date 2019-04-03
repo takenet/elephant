@@ -10,14 +10,13 @@ namespace Take.Elephant.Kafka
     public class KafkaReceiverQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, ICloseable, IDisposable
     {
         private readonly IConsumer<string, T> _consumer;
-
         private readonly Task _consumerTask;
         private readonly CancellationTokenSource _cts;
         private readonly Channel<T> _channel;
         private bool _closed;
 
         public KafkaReceiverQueue(string bootstrapServers, string topic, string groupId)
-        : this(new ConsumerConfig() { BootstrapServers = bootstrapServers, GroupId = groupId }, new[] { topic })
+            : this(new ConsumerConfig() { BootstrapServers = bootstrapServers, GroupId = groupId }, new[] { topic })
         {
 
         }
@@ -32,7 +31,7 @@ namespace Take.Elephant.Kafka
 
             if (deserializer != null)
             {
-                builder.SetValueDeserializer(deserializer);
+                builder = builder.SetValueDeserializer(deserializer);
             }
 
             _consumer = builder.Build();
