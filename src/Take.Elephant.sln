@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Msmq", "Take.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Azure", "Take.Elephant.Azure\Take.Elephant.Azure.csproj", "{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Take.Elephant.Kafka", "Take.Elephant.Kafka\Take.Elephant.Kafka.csproj", "{F5132A9D-6674-40E3-AB1D-6252C49BD23D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5132A9D-6674-40E3-AB1D-6252C49BD23D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5132A9D-6674-40E3-AB1D-6252C49BD23D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5132A9D-6674-40E3-AB1D-6252C49BD23D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5132A9D-6674-40E3-AB1D-6252C49BD23D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

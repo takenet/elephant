@@ -31,7 +31,7 @@ namespace Take.Elephant.Specialized.Scoping
             bool overwrite = false,
             CancellationToken cancellationToken = default)
         {
-            if (!await Map.TryAddAsync(key, value, overwrite).ConfigureAwait(false)) return false;
+            if (!await Map.TryAddAsync(key, value, overwrite, cancellationToken).ConfigureAwait(false)) return false;
             await Scope.AddKeyAsync(Identifier, KeySerializer.Serialize(key)).ConfigureAwait(false);
             return true;
         }
@@ -41,7 +41,7 @@ namespace Take.Elephant.Specialized.Scoping
 
         public virtual async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            if (!await Map.TryRemoveAsync(key).ConfigureAwait(false)) return false;
+            if (!await Map.TryRemoveAsync(key, cancellationToken).ConfigureAwait(false)) return false;
             await Scope.RemoveKeyAsync(Identifier, KeySerializer.Serialize(key)).ConfigureAwait(false);
             return true;
         }
