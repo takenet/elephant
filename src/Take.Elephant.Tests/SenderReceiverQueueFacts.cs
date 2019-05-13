@@ -1,10 +1,10 @@
+using Ploeh.AutoFixture;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ploeh.AutoFixture;
 using Xunit;
 
 namespace Take.Elephant.Tests
@@ -12,21 +12,21 @@ namespace Take.Elephant.Tests
     public abstract class SenderReceiverQueueFacts<T> : FactsBase, IDisposable
     {
         private readonly CancellationTokenSource _cts;
-        
+
         public SenderReceiverQueueFacts()
         {
-            _cts  = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            _cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
         }
-        
+
         public abstract (ISenderQueue<T>, IBlockingReceiverQueue<T>) Create();
 
         public CancellationToken CancellationToken => _cts.Token;
-        
+
         protected virtual T CreateItem()
         {
             return Fixture.Create<T>();
         }
-        
+
         [Fact(DisplayName = nameof(EnqueueNewItemSucceeds))]
         public virtual async Task EnqueueNewItemSucceeds()
         {
@@ -36,11 +36,11 @@ namespace Take.Elephant.Tests
 
             // Act
             await senderQueue.EnqueueAsync(item, CancellationToken);
-                        
+
             // Assert
             AssertEquals(await receiverQueue.DequeueAsync(CancellationToken), item);
         }
-        
+
         [Fact(DisplayName = nameof(EnqueueExistingItemSucceeds))]
         public virtual async Task EnqueueExistingItemSucceeds()
         {
@@ -70,21 +70,25 @@ namespace Take.Elephant.Tests
                 items.Add(item);
             }
 
-            // Act                           
+            // Act
             var enumerator = items.GetEnumerator();
             var tasks = Enumerable
                 .Range(0, count)
-                .Where(i => enumerator.MoveNext())
-                .Select(i => Task.Run(async () => await senderQueue.EnqueueAsync(enumerator.Current, CancellationToken)));
+                .Where(_ => enumerator.MoveNext())
+                .Select(_ => Task.Run(async () => await senderQueue.EnqueueAsync(enumerator.Current, CancellationToken)));
 
             await Task.WhenAll(tasks);
 
             // Assert
-           
-            while (true)
+
+            foreach (var itemBag in items)
             {
                 var item = await receiverQueue.DequeueAsync(CancellationToken);
-                if (item == null) break;
+                if (item == null)
+                {
+                    break;
+                }
+
                 AssertIsTrue(items.Contains(item));
             }
         }
@@ -97,7 +101,7 @@ namespace Take.Elephant.Tests
 
             // Act
             T actual;
-            
+
             try
             {
                 actual = await receiverQueue.DequeueAsync(CancellationToken);
@@ -105,7 +109,7 @@ namespace Take.Elephant.Tests
             catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested)
             {
                 actual = default;
-            }            
+            }
 
             // Assert
             AssertIsDefault(actual);

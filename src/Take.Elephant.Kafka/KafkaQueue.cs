@@ -1,7 +1,7 @@
+using Confluent.Kafka;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Confluent.Kafka;
 
 namespace Take.Elephant.Kafka
 {
@@ -15,14 +15,12 @@ namespace Take.Elephant.Kafka
             ConsumerConfig consumerConfig,
             string topic,
             Confluent.Kafka.ISerializer<T> serializer = null,
-            Func<T, string> keyFactory = null,
-            IDeserializer<T> deserializer = null, 
-            int bufferCapacity = 1)
+            IDeserializer<T> deserializer = null)
         {
-            _senderQueue = new KafkaSenderQueue<T>(producerConfig, topic, serializer, keyFactory);
-            _receiverQueue = new KafkaReceiverQueue<T>(consumerConfig, topic, deserializer, bufferCapacity);
+            _senderQueue = new KafkaSenderQueue<T>(producerConfig, topic, serializer);
+            _receiverQueue = new KafkaReceiverQueue<T>(consumerConfig, topic, deserializer);
         }
-        
+
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             return _senderQueue.EnqueueAsync(item, cancellationToken);

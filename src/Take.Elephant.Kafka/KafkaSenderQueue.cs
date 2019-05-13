@@ -1,50 +1,45 @@
-﻿using System;
+﻿using Confluent.Kafka;
+using Newtonsoft.Json;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Confluent.Kafka;
-using Newtonsoft.Json;
 
 namespace Take.Elephant.Kafka
 {
     public class KafkaSenderQueue<T> : ISenderQueue<T>, IDisposable
     {
-        private readonly IProducer<string, T> _producer;
+        private readonly IProducer<Null, T> _producer;
         private readonly string _topic;
         private readonly Func<T, string> _keyFactory;
 
         public KafkaSenderQueue(string bootstrapServers, string topic, Confluent.Kafka.ISerializer<T> serializer)
             : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer)
         {
-            
         }
-        
+
         public KafkaSenderQueue(
             ProducerConfig producerConfig,
             string topic,
-            Confluent.Kafka.ISerializer<T> serializer,
-            Func<T, string> keyFactory = null)
+            Confluent.Kafka.ISerializer<T> serializer)
         {
             if (string.IsNullOrWhiteSpace(topic))
             {
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
             }
-            
-            _producer = new ProducerBuilder<string, T>(producerConfig)
-                .SetKeySerializer(Serializers.Utf8)
+
+            _producer = new ProducerBuilder<Null, T>(producerConfig)
                 .SetValueSerializer(serializer)
                 .Build();
-            
+
             _topic = topic;
-            _keyFactory = keyFactory ?? (i => null);
         }
-        
+
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
-        {                
+        {
             return _producer.ProduceAsync(
-                _topic, 
-                new Message<string, T>
+                _topic,
+                new Message<Null, T>
                 {
-                    Key = _keyFactory(item),
                     Value = item
                 });
         }
