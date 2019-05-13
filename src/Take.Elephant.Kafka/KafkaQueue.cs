@@ -20,7 +20,7 @@ namespace Take.Elephant.Kafka
             int bufferCapacity = 1)
         {
             _senderQueue = new KafkaSenderQueue<T>(producerConfig, topic, serializer, keyFactory);
-            _receiverQueue = new KafkaReceiverQueue<T>(consumerConfig, new [] { topic }, deserializer, bufferCapacity);
+            _receiverQueue = new KafkaReceiverQueue<T>(consumerConfig, topic, deserializer, bufferCapacity);
         }
         
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
