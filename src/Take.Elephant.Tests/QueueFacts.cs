@@ -29,8 +29,9 @@ namespace Take.Elephant.Tests
             await queue.EnqueueAsync(item);
 
             // Assert
-            AssertEquals(await queue.GetLengthAsync(), 1);
-            AssertEquals(await queue.DequeueOrDefaultAsync(), item);
+            //AssertEquals(await queue.GetLengthAsync(), 1);
+            var result = await queue.DequeueOrDefaultAsync();
+            AssertEquals(result, item);
             AssertEquals(await queue.GetLengthAsync(), 0);
         }
 

@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Take.Elephant.Azure\Take.Elephant.Azure.csproj" />
+    <ProjectReference Include="..\Take.Elephant.Kafka\Take.Elephant.Kafka.csproj" />
     <ProjectReference Include="..\Take.Elephant.Msmq\Take.Elephant.Msmq.csproj" />
     <ProjectReference Include="..\Take.Elephant.Redis\Take.Elephant.Redis.csproj" />
     <ProjectReference Include="..\Take.Elephant.Specialized\Take.Elephant.Specialized.csproj" />
@@ -43,6 +44,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Kafka\cacert.pem">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
