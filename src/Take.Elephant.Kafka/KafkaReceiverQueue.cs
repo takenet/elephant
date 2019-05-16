@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace Take.Elephant.Kafka
@@ -13,6 +14,8 @@ namespace Take.Elephant.Kafka
         private readonly IConsumer<Ignore, T> _consumer;
         private readonly Task _consumerTask;
         private readonly SemaphoreSlim _consumerSubscriptionSemaphore;
+        private readonly CancellationTokenSource _cts;
+        private readonly Channel<T> _channel;
         private bool _subscribed;
         private bool _closed;
 
@@ -32,6 +35,12 @@ namespace Take.Elephant.Kafka
             _topic = topic;
             _consumerSubscriptionSemaphore = new SemaphoreSlim(1, 1);
             _subscribed = _consumer.Subscription.Any(s => s == _topic);
+            _cts = new CancellationTokenSource();
+            _channel = Channel.CreateBounded<T>(1);
+            _consumerTask = Task.Factory.StartNew(
+                () => ConsumeAsync(_cts.Token),
+                TaskCreationOptions.LongRunning)
+                .Unwrap();
         }
 
         public KafkaReceiverQueue(
@@ -42,6 +51,37 @@ namespace Take.Elephant.Kafka
             _topic = topic;
             _consumerSubscriptionSemaphore = new SemaphoreSlim(1, 1);
             _subscribed = _consumer.Subscription.Any(s => s == _topic);
+            _cts = new CancellationTokenSource();
+            _channel = Channel.CreateBounded<T>(1);
+            _consumerTask = Task.Factory.StartNew(
+                () => ConsumeAsync(_cts.Token),
+                TaskCreationOptions.LongRunning)
+                .Unwrap();
+        }
+
+        private async Task ConsumeAsync(CancellationToken cancellationToken)
+        {
+            await SubscribeIfNotAsync(cancellationToken);
+
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var result = _consumer.Consume(cancellationToken);
+                    await _channel.Writer.WriteAsync(result.Value, cancellationToken);
+                }
+                catch (ConsumeException ex) when (!ex.Error.IsError)
+                {
+                    break;
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+            }
+
+            _consumer.Unsubscribe();
+            _channel.Writer.Complete();
         }
 
         private async Task SubscribeIfNotAsync(CancellationToken cancellationToken)
@@ -60,29 +100,19 @@ namespace Take.Elephant.Kafka
             }
         }
 
-        public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
+        public virtual Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
-            await SubscribeIfNotAsync(cancellationToken);
-
-            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
-            using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, cancellationToken))
+            if (_channel.Reader.TryRead(out var item))
             {
-                try
-                {
-                    var consumeResult = _consumer.Consume(linkedCts.Token);
-                    return consumeResult.Value;
-                }
-                catch (OperationCanceledException) when (cts.IsCancellationRequested)
-                {
-                    return default;
-                }
+                return item.AsCompletedTask();
             }
+
+            return Task.FromResult(default(T));
         }
 
-        public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public virtual Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
-            await SubscribeIfNotAsync(cancellationToken);
-            return _consumer.Consume(cancellationToken).Value;
+            return _channel.Reader.ReadAsync(cancellationToken).AsTask();
         }
 
         public virtual Task CloseAsync(CancellationToken cancellationToken)
