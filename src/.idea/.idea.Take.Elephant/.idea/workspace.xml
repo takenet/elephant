@@ -28,17 +28,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="689c1fba-98b7-4753-8c73-d323ac70ba7c" name="Default" comment="Updated Nuget api key">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/ItemSenderReceiverQueueFacts.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/ItemSenderReceiverQueueFacts.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFacts.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFacts.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/Take.Elephant.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/Take.Elephant.Tests.csproj" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -48,36 +38,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
-              <caret line="49" column="12" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
-              <folding>
-                <marker date="1554397021626" expanded="false" signature="6:195" ph="..." />
-                <marker date="1554397021626" expanded="true" signature="226:5031" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="307:5029" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="419:514" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="719:779" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="908:1266" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="1405:1893" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="2026:2991" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="2237:2339" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="2780:2981" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="3120:3627" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="3281:3387" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="3483:3545" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="3780:4742" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="3985:4160" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="4646:4732" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="4798:4906" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="4835:4896" ph="{...}" />
-                <marker date="1554397021626" expanded="true" signature="4937:5023" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs">
           <provider selected="true" editor-type-id="text-editor">
@@ -108,8 +68,8 @@
             <state relative-caret-position="16">
               <caret line="2" column="65" selection-start-line="2" selection-start-column="65" selection-end-line="2" selection-end-column="65" />
               <folding>
-                <marker date="1554394846885" expanded="true" signature="29:142" ph="{...}" />
-                <marker date="1554394846885" expanded="true" signature="119:140" ph="{...}" />
+                <marker date="1558040699606" expanded="true" signature="29:142" ph="{...}" />
+                <marker date="1558040699606" expanded="true" signature="119:140" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -121,26 +81,30 @@
             <state relative-caret-position="144">
               <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
               <folding>
-                <marker date="1554394867405" expanded="false" signature="6:40" ph="..." />
-                <marker date="1554394867405" expanded="true" signature="78:399" ph="{...}" />
-                <marker date="1554394867405" expanded="true" signature="203:397" ph="{...}" />
-                <marker date="1554394867405" expanded="true" signature="293:391" ph="{...}" />
+                <marker date="1558040699610" expanded="false" signature="6:40" ph="..." />
+                <marker date="1558040699610" expanded="true" signature="78:399" ph="{...}" />
+                <marker date="1558040699610" expanded="true" signature="203:397" ph="{...}" />
+                <marker date="1558040699610" expanded="true" signature="293:391" ph="{...}" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="368">
-              <caret line="27" column="1" lean-forward="true" selection-start-line="27" selection-start-column="1" selection-end-line="27" selection-end-column="1" />
+            <state relative-caret-position="240">
+              <caret line="24" column="17" lean-forward="true" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
               <folding>
-                <marker date="1554486335114" expanded="false" signature="6:104" ph="..." />
-                <marker date="1554486335114" expanded="true" signature="141:1001" ph="{...}" />
-                <marker date="1554486335114" expanded="true" signature="264:999" ph="{...}" />
-                <marker date="1554486335114" expanded="true" signature="354:993" ph="{...}" />
-                <marker date="1554486335114" expanded="true" signature="560:628" ph="{...}" />
+                <marker date="1558040699607" expanded="true" signature="6:93" ph="..." />
+                <marker date="1558040699607" expanded="true" signature="130:2005" ph="{...}" />
+                <marker date="1558040699607" expanded="true" signature="253:2003" ph="{...}" />
+                <marker date="1558040699607" expanded="true" signature="343:1997" ph="{...}" />
+                <marker date="1558040699607" expanded="true" signature="517:745" ph="{...}" />
+                <marker date="1558040699607" expanded="true" signature="654:730" ph="{...}" />
+                <marker date="1558040699607" expanded="true" signature="792:1403" ph="{...}" />
+                <marker date="1558040699607" expanded="true" signature="1045:1388" ph="{...}" />
+                <marker date="1558040699607" expanded="true" signature="1768:1937" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -149,21 +113,21 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
+            <state relative-caret-position="256">
+              <caret line="20" column="33" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
               <folding>
-                <marker date="1554396468552" expanded="false" signature="6:90" ph="..." />
-                <marker date="1554396468552" expanded="true" signature="121:2267" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="199:2265" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="663:891" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="996:1087" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="1169:1256" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="1357:1453" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="1530:1615" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="1712:1927" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="1983:2142" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="2020:2132" ph="{...}" />
-                <marker date="1554396468552" expanded="true" signature="2173:2259" ph="{...}" />
+                <marker date="1558040699603" expanded="false" signature="6:90" ph="..." />
+                <marker date="1558040699603" expanded="true" signature="121:2147" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="199:2145" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="579:779" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="876:967" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="1049:1136" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="1237:1333" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="1410:1495" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="1592:1807" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="1863:2022" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="1900:2012" ph="{...}" />
+                <marker date="1558040699603" expanded="true" signature="2053:2139" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -172,22 +136,22 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="656">
-              <caret line="49" column="8" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+            <state relative-caret-position="576">
+              <caret line="44" column="8" selection-start-line="44" selection-start-column="8" selection-end-line="44" selection-end-column="8" />
               <folding>
-                <marker date="1554389665645" expanded="false" signature="6:113" ph="..." />
-                <marker date="1554389665645" expanded="true" signature="144:2300" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="214:1989" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="586:619" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="832:1333" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="892:1019" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="1438:1697" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="1588:1685" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="1753:1866" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="1790:1856" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="1897:1983" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="2058:2298" ph="{...}" />
-                <marker date="1554389665645" expanded="true" signature="2134:2292" ph="{...}" />
+                <marker date="1558040699604" expanded="false" signature="6:113" ph="..." />
+                <marker date="1558040699604" expanded="true" signature="144:2027" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="214:1716" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="584:604" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="762:1132" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="822:949" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1229:1424" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1360:1412" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1480:1593" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1517:1583" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1624:1710" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1785:2025" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1861:2019" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -211,34 +175,44 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1136">
-              <caret line="84" column="20" selection-start-line="84" selection-start-column="20" selection-end-line="84" selection-end-column="20" />
+            <state relative-caret-position="112">
+              <caret line="70" column="17" lean-forward="true" selection-start-line="70" selection-start-column="17" selection-end-line="70" selection-end-column="17" />
               <folding>
-                <marker date="1554486136676" expanded="false" signature="6:180" ph="..." />
-                <marker date="1554486136676" expanded="true" signature="211:4174" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="324:3849" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="845:866" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="1051:1718" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="1831:2030" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="1896:1971" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="2112:2219" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="2304:2511" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="2340:2466" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="2589:3353" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="2716:3253" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="2750:2944" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="3013:3076" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="3176:3239" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="3409:3726" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="3446:3716" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="3589:3664" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="3757:3843" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="3906:4172" ph="{...}" />
-                <marker date="1554486136676" expanded="true" signature="4009:4166" ph="{...}" />
+                <marker date="1558040699604" expanded="false" signature="6:132" ph="..." />
+                <marker date="1558040699604" expanded="true" signature="163:4083" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="276:3758" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="801:821" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="969:1308" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1413:1637" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1722:2130" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="1864:2014" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="2034:2120" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="2237:2879" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="2516:2869" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="2537:2697" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="2783:2855" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="2967:3108" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="3185:3361" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="3221:3316" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="3417:3635" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="3454:3625" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="3498:3573" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="3666:3752" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="3815:4081" ph="{...}" />
+                <marker date="1558040699604" expanded="true" signature="3918:4075" ph="{...}" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../appveyor.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="487">
+              <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
             </state>
           </provider>
         </entry>
@@ -264,67 +238,67 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/QueryResult.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/2a/6424948d/ConsumerConfig.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBus.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureServiceBusQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBlockingQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemTransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageQueueBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/NumberMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueueMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Bus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisBus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Queue.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ListMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IPriorityBlockingQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/MapScope.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/StorageBase.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/ScopedMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemBatchReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/SortedSetMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemOrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlSetMap.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant/IPositionList.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceItemTransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Specialized/OnDemandCacheSetFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/SortedSetMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Bus.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Queue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/C3E4200C-CDA7-4037-B5FC-8C34C9135930/e5/0a93a7b8/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/NumberMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/51/5d5b77cb/Message`2.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/TypeMapper.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/FactsBase.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/BatchReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/ValueMapper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/OrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/b0/e628ffef/ClientConfig.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/1b/f3f450b8/ProducerConfig.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/BlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisBus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/StorageBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/FactsBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/ScopedMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IPriorityBlockingQueue.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/92EF2399-6D5C-4164-A37A-F225599868CE/7f/c26f7321/ConsumerConfig.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemOrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemOrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/61/1dedacd4/Enumerable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureServiceBusQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBlockingQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/QueryResult.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Specialized/OnDemandCacheSetFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ICloseable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/MapScope.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IUpdatableMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/BatchReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/SetMapExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ITransactionalStorage.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant/IPriorityQueue.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant/ObjectExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/KeyValueMapQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/SetMapExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageQueueBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/61/1dedacd4/Enumerable.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/ITransactionalStorage.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceBusItemBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/ICloseable.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueueMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IUpdatableMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemTransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemBatchReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceItemTransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceBusItemBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/b0/e628ffef/ClientConfig.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/BlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/C3E4200C-CDA7-4037-B5FC-8C34C9135930/e5/0a93a7b8/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/1b/f3f450b8/ProducerConfig.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/51/5d5b77cb/Message`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemOrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/2a/6424948d/ConsumerConfig.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/ValueMapper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/TypeMapper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/KeyValueMapQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -351,7 +325,6 @@
         <option value="$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemTransactionalBlockingQueueFacts.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageQueueBlockingQueueFacts.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" />
-        <option value="$PROJECT_DIR$/../appveyor.yml" />
         <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Sql/SqlSetMap.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Redis/Take.Elephant.Redis.csproj" />
@@ -367,8 +340,9 @@
         <option value="$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFacts.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" />
+        <option value="$PROJECT_DIR$/../appveyor.yml" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" />
       </list>
     </option>
   </component>
@@ -386,16 +360,36 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="FileSystemExplorer" />
       <pane id="SolutionExplorer">
+        <subPane>
+          <expand>
+            <path>
+              <item name="" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
+            </path>
+            <path>
+              <item name="" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
+              <item name="Solution Items" type="24d0babc:SolutionExplorerModelNode" />
+            </path>
+            <path>
+              <item name="" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
+              <item name="Take.Elephant.Kafka" type="24d0babc:SolutionExplorerModelNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
         <option name="show-all-files" value="false" />
       </pane>
       <pane id="AssemblyExplorer" />
-      <pane id="FileSystemExplorer" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
     <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SearchEverywhereHistoryKey" value="IQueue&#9;null&#9;null&#10;options&#9;null&#9;null" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../blip-sdk-csharp/src/Take.Blip.Client.sln" />
@@ -414,7 +408,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected=".NET Project.Default">
+  <component name="RunManager">
     <configuration name="Default" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -535,11 +529,18 @@
       <option name="project" value="LOCAL" />
       <updated>1554317244360</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Updated Nuget api key">
+      <created>1558040737969</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1558040737969</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="68098000" />
+    <option name="totallyTimeSpent" value="68449000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -554,7 +555,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25479743" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20522387" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="Image Layers" order="3" />
@@ -568,7 +569,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="NuGet" order="7" weight="0.53846157" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" x="-1920" y="23" width="1536" height="801" id="Unit Tests" order="9" type="WINDOWED" visible="true" weight="0.24918744" />
+      <window_info anchor="bottom" x="-1920" y="23" width="1536" height="801" id="Unit Tests" order="9" type="WINDOWED" visible="true" weight="0.24918744" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="12" weight="0.3286119" />
@@ -597,13 +598,14 @@
     <MESSAGE value="Fixed storage unit tests" />
     <MESSAGE value="Added basic tests" />
     <MESSAGE value="Added tests for transactional queue" />
-    <MESSAGE value="Updated Nuget api key" />
     <MESSAGE value="Handing duplicate columns names between key and value on SqlSetMap" />
     <MESSAGE value="Updated StackExchange.Redis to 2.0" />
     <MESSAGE value="Added initial Kafka queue implementation" />
     <MESSAGE value="Kafka receiver implementation" />
     <MESSAGE value="Added initial tests to Kafka" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added initial tests to Kafka" />
+    <MESSAGE value="Updated nuget key" />
+    <MESSAGE value="Updated Nuget api key" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated Nuget api key" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -913,8 +915,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../appveyor.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="36" column="55" selection-start-line="36" selection-start-column="55" selection-end-line="36" selection-end-column="55" />
+        <state relative-caret-position="487">
+          <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
         </state>
       </provider>
     </entry>
@@ -1365,27 +1367,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="560">
           <caret line="49" column="12" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
-          <folding>
-            <marker date="1554397021626" expanded="false" signature="6:195" ph="..." />
-            <marker date="1554397021626" expanded="true" signature="226:5031" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="307:5029" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="419:514" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="719:779" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="908:1266" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="1405:1893" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="2026:2991" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="2237:2339" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="2780:2981" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="3120:3627" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="3281:3387" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="3483:3545" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="3780:4742" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="3985:4160" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="4646:4732" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="4798:4906" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="4835:4896" ph="{...}" />
-            <marker date="1554397021626" expanded="true" signature="4937:5023" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1416,8 +1397,8 @@
         <state relative-caret-position="16">
           <caret line="2" column="65" selection-start-line="2" selection-start-column="65" selection-end-line="2" selection-end-column="65" />
           <folding>
-            <marker date="1554394846885" expanded="true" signature="29:142" ph="{...}" />
-            <marker date="1554394846885" expanded="true" signature="119:140" ph="{...}" />
+            <marker date="1558040699606" expanded="true" signature="29:142" ph="{...}" />
+            <marker date="1558040699606" expanded="true" signature="119:140" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -1427,53 +1408,32 @@
         <state relative-caret-position="144">
           <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
           <folding>
-            <marker date="1554394867405" expanded="false" signature="6:40" ph="..." />
-            <marker date="1554394867405" expanded="true" signature="78:399" ph="{...}" />
-            <marker date="1554394867405" expanded="true" signature="203:397" ph="{...}" />
-            <marker date="1554394867405" expanded="true" signature="293:391" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
-          <folding>
-            <marker date="1554396468552" expanded="false" signature="6:90" ph="..." />
-            <marker date="1554396468552" expanded="true" signature="121:2267" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="199:2265" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="663:891" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="996:1087" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="1169:1256" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="1357:1453" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="1530:1615" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="1712:1927" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="1983:2142" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="2020:2132" ph="{...}" />
-            <marker date="1554396468552" expanded="true" signature="2173:2259" ph="{...}" />
+            <marker date="1558040699610" expanded="false" signature="6:40" ph="..." />
+            <marker date="1558040699610" expanded="true" signature="78:399" ph="{...}" />
+            <marker date="1558040699610" expanded="true" signature="203:397" ph="{...}" />
+            <marker date="1558040699610" expanded="true" signature="293:391" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="656">
-          <caret line="49" column="8" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+        <state relative-caret-position="576">
+          <caret line="44" column="8" selection-start-line="44" selection-start-column="8" selection-end-line="44" selection-end-column="8" />
           <folding>
-            <marker date="1554389665645" expanded="false" signature="6:113" ph="..." />
-            <marker date="1554389665645" expanded="true" signature="144:2300" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="214:1989" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="586:619" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="832:1333" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="892:1019" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="1438:1697" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="1588:1685" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="1753:1866" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="1790:1856" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="1897:1983" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="2058:2298" ph="{...}" />
-            <marker date="1554389665645" expanded="true" signature="2134:2292" ph="{...}" />
+            <marker date="1558040699604" expanded="false" signature="6:113" ph="..." />
+            <marker date="1558040699604" expanded="true" signature="144:2027" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="214:1716" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="584:604" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="762:1132" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="822:949" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1229:1424" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1360:1412" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1480:1593" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1517:1583" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1624:1710" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1785:2025" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1861:2019" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -1492,46 +1452,72 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs">
+    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1136">
-          <caret line="84" column="20" selection-start-line="84" selection-start-column="20" selection-end-line="84" selection-end-column="20" />
+        <state relative-caret-position="240">
+          <caret line="24" column="17" lean-forward="true" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
           <folding>
-            <marker date="1554486136676" expanded="false" signature="6:180" ph="..." />
-            <marker date="1554486136676" expanded="true" signature="211:4174" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="324:3849" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="845:866" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="1051:1718" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="1831:2030" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="1896:1971" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="2112:2219" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="2304:2511" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="2340:2466" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="2589:3353" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="2716:3253" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="2750:2944" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="3013:3076" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="3176:3239" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="3409:3726" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="3446:3716" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="3589:3664" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="3757:3843" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="3906:4172" ph="{...}" />
-            <marker date="1554486136676" expanded="true" signature="4009:4166" ph="{...}" />
+            <marker date="1558040699607" expanded="true" signature="6:93" ph="..." />
+            <marker date="1558040699607" expanded="true" signature="130:2005" ph="{...}" />
+            <marker date="1558040699607" expanded="true" signature="253:2003" ph="{...}" />
+            <marker date="1558040699607" expanded="true" signature="343:1997" ph="{...}" />
+            <marker date="1558040699607" expanded="true" signature="517:745" ph="{...}" />
+            <marker date="1558040699607" expanded="true" signature="654:730" ph="{...}" />
+            <marker date="1558040699607" expanded="true" signature="792:1403" ph="{...}" />
+            <marker date="1558040699607" expanded="true" signature="1045:1388" ph="{...}" />
+            <marker date="1558040699607" expanded="true" signature="1768:1937" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs">
+    <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="368">
-          <caret line="27" column="1" lean-forward="true" selection-start-line="27" selection-start-column="1" selection-end-line="27" selection-end-column="1" />
+        <state relative-caret-position="256">
+          <caret line="20" column="33" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
           <folding>
-            <marker date="1554486335114" expanded="false" signature="6:104" ph="..." />
-            <marker date="1554486335114" expanded="true" signature="141:1001" ph="{...}" />
-            <marker date="1554486335114" expanded="true" signature="264:999" ph="{...}" />
-            <marker date="1554486335114" expanded="true" signature="354:993" ph="{...}" />
-            <marker date="1554486335114" expanded="true" signature="560:628" ph="{...}" />
+            <marker date="1558040699603" expanded="false" signature="6:90" ph="..." />
+            <marker date="1558040699603" expanded="true" signature="121:2147" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="199:2145" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="579:779" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="876:967" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="1049:1136" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="1237:1333" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="1410:1495" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="1592:1807" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="1863:2022" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="1900:2012" ph="{...}" />
+            <marker date="1558040699603" expanded="true" signature="2053:2139" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="70" column="17" lean-forward="true" selection-start-line="70" selection-start-column="17" selection-end-line="70" selection-end-column="17" />
+          <folding>
+            <marker date="1558040699604" expanded="false" signature="6:132" ph="..." />
+            <marker date="1558040699604" expanded="true" signature="163:4083" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="276:3758" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="801:821" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="969:1308" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1413:1637" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1722:2130" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="1864:2014" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="2034:2120" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="2237:2879" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="2516:2869" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="2537:2697" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="2783:2855" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="2967:3108" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="3185:3361" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="3221:3316" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="3417:3635" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="3454:3625" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="3498:3573" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="3666:3752" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="3815:4081" ph="{...}" />
+            <marker date="1558040699604" expanded="true" signature="3918:4075" ph="{...}" />
           </folding>
         </state>
       </provider>
