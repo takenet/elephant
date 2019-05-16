@@ -13,6 +13,7 @@ namespace Take.Elephant.Kafka
         private readonly IConsumer<Ignore, T> _consumer;
         private readonly Task _consumerTask;
         private readonly SemaphoreSlim _consumerSubscriptionSemaphore;
+        private bool _subscribed;
         private bool _closed;
 
         public KafkaReceiverQueue(string bootstrapServers, string topic, string groupId, IDeserializer<T> deserializer)
@@ -28,27 +29,30 @@ namespace Take.Elephant.Kafka
             _consumer = new ConsumerBuilder<Ignore, T>(consumerConfig)
                 .SetValueDeserializer(deserializer)
                 .Build();
-
             _topic = topic;
             _consumerSubscriptionSemaphore = new SemaphoreSlim(1, 1);
+            _subscribed = _consumer.Subscription.Any(s => s == _topic);
+        }
+
+        public KafkaReceiverQueue(
+            IConsumer<Ignore, T> consumer,
+            string topic)
+        {
+            _consumer = consumer;
+            _topic = topic;
+            _consumerSubscriptionSemaphore = new SemaphoreSlim(1, 1);
+            _subscribed = _consumer.Subscription.Any(s => s == _topic);
         }
 
         private async Task SubscribeIfNotAsync(CancellationToken cancellationToken)
         {
-            if (_consumer.Subscription.Any(s => s == _topic))
-            {
-                return;
-            }
-
+            if (_subscribed) return;
             await _consumerSubscriptionSemaphore.WaitAsync(cancellationToken);
             try
             {
-                if (_consumer.Subscription.Any(s => s == _topic))
-                {
-                    return;
-                }
-
+                if (_subscribed) return;
                 _consumer.Subscribe(_topic);
+                _subscribed = true;
             }
             finally
             {
