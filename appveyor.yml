@@ -20,6 +20,7 @@ after_build:
 - dotnet pack src/Take.Elephant.Sql.PostgreSql/Take.Elephant.Sql.PostgreSql.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet pack src/Take.Elephant.Specialized/Take.Elephant.Specialized.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet pack src/Take.Elephant.Azure/Take.Elephant.Azure.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
+- dotnet pack src/Take.Elephant.Kafka/Take.Elephant.Kafka.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 services:
   - msmq
 test: off

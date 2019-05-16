@@ -43,7 +43,7 @@ QueueMap | Map that contains a queue of items.      | Memory, Redis
 
 Name             | Parent | Description													| Implementations
 -----------------|--------|-------------------------------------------------------------|----------------
-BlockingQueue    | Queue  | A queue that allows awaiting for the next item asynchronously. | Memory, Redis, RabbitMQ, MSMQ
+BlockingQueue    | Queue  | A queue that allows awaiting for the next item asynchronously. | Memory, Redis, RabbitMQ, MSMQ, Kafka, Azure Storage, Azure Event Hub
 ExpirableKeyMap  | Map    | Map that supports key expiration.							| Memory, Redis
 ItemSetMap       | SetMap | SetMap that allows to get an specific item in the set.		| Memory, Redis, SQL Server, PostgreSQL
 KeyQueryableMap  | Map    | Map that supports queries for its keys.						| Memory, SQL Server, PostgreSQL
@@ -66,10 +66,11 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 * PostgreSQL
 * RabbitMQ
 * Microsoft Message Queueing
+* Kafka
 
 ## Requirements (to build from source)
-* C# 6 (Visual Studio 2015 or newer)
-* .NET Framework 4.6.1
+* C# 7.3 (Visual Studio 2015 or newer)
+* .NET Framework 4.6.1;.NET Standard 2.0
 
 ### NuGet
 
