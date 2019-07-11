@@ -23,7 +23,6 @@ namespace Take.Elephant.Tests.Sql
             return new SqlExpressionTranslator(DatabaseDriver);
         }
 
-
         [Fact]
         public void SingleEqualsConstantClauseShouldCreateSql()
         {
@@ -35,7 +34,68 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "([StringProperty] = 'abcd')");
+            AssertEquals(actual.Where, "([StringProperty] = @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], "abcd");
+        }
+        
+        [Fact]
+        public void SingleContainsConstantClauseShouldCreateSql()
+        {
+            // Arrange            
+            Expression<Func<Item, bool>> expression = i => i.StringProperty.Contains("abcd");
+            var target = GetTarget();
+
+            // Act
+            var actual = target.GetStatement(expression);
+
+            // Assert
+            AssertEquals(actual.Where, "([StringProperty] LIKE @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], "%abcd%");
+        }
+        
+        [Fact]
+        public void SingleStartsWithConstantClauseShouldCreateSql()
+        {
+            // Arrange            
+            Expression<Func<Item, bool>> expression = i => i.StringProperty.StartsWith("abcd");
+            var target = GetTarget();
+
+            // Act
+            var actual = target.GetStatement(expression);
+
+            // Assert
+            AssertEquals(actual.Where, "([StringProperty] LIKE @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], "abcd%");
+        }
+        
+        [Fact]
+        public void SingleEndsWithConstantClauseShouldCreateSql()
+        {
+            // Arrange            
+            Expression<Func<Item, bool>> expression = i => i.StringProperty.EndsWith("abcd");
+            var target = GetTarget();
+
+            // Act
+            var actual = target.GetStatement(expression);
+
+            // Assert
+            AssertEquals(actual.Where, "([StringProperty] LIKE @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], "%abcd");
+        }
+
+        [Fact]
+        public void SingleEqualsWithSqlInjectionShouldBeHandled()
+        {
+            // Arrange            
+            Expression<Func<Item, bool>> expression = i => i.StringProperty == "abcd'); DROP TABLE MyTable; --";
+            var target = GetTarget();
+
+            // Act
+            var actual = target.GetStatement(expression);
+
+            // Assert
+            AssertEquals(actual.Where, "([StringProperty] = @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], "abcd'); DROP TABLE MyTable; --");
         }
 
         [Fact]
@@ -49,7 +109,9 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
             
             // Assert
-            AssertEquals(actual, "(([BooleanProperty] = 0) OR ([BooleanProperty] = 1))");
+            AssertEquals(actual.Where, "(([BooleanProperty] = @Param0) OR ([BooleanProperty] = @Param1))");
+            AssertEquals(actual.FilterValues["Param0"], false);
+            AssertEquals(actual.FilterValues["Param1"], true);
         }
 
         [Fact(Skip = "Not supported yet")]
@@ -63,7 +125,8 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "([BooleanProperty] = 1)");
+            AssertEquals(actual.Where, "([BooleanProperty] = @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], true);
         }
 
         [Fact]
@@ -77,7 +140,8 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "([StringProperty] <> 'abcd')");
+            AssertEquals(actual.Where, "([StringProperty] <> @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], "abcd");
         }
 
         [Fact]
@@ -91,7 +155,8 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "([StringProperty] IS NULL)");
+            AssertEquals(actual.Where, "([StringProperty] = @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], null);
         }
 
         [Fact]
@@ -105,7 +170,8 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "([StringProperty] IS NOT NULL)");
+            AssertEquals(actual.Where, "([StringProperty] <> @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], null);
         }
 
         [Fact]
@@ -124,7 +190,8 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "([StringProperty] = 'abcd')");
+            AssertEquals(actual.Where, "([StringProperty] = @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], "abcd");
         }
 
         [Fact]
@@ -144,7 +211,8 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "([StringProperty] = 'abcd')");
+            AssertEquals(actual.Where, "([StringProperty] = @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], "abcd");
         }
 
         [Fact(Skip ="Not supported yet")]
@@ -163,7 +231,8 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "([StringProperty] IS NULL)");
+            AssertEquals(actual.Where, "([StringProperty] = @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], null);
         }
 
         [Fact]
@@ -177,9 +246,11 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "((([StringProperty] = 'abcd') AND ([IntegerProperty] = 2)) AND ([RandomProperty] = 'random value'))");
+            AssertEquals(actual.Where, "((([StringProperty] = @Param0) AND ([IntegerProperty] = @Param1)) AND ([RandomProperty] = @Param2))");
+            AssertEquals(actual.FilterValues["Param0"], "abcd");
+            AssertEquals(actual.FilterValues["Param1"], 2);
+            AssertEquals(actual.FilterValues["Param2"], "random value");
         }
-
 
         [Fact]
         public void MultipleConstantsOrClausesShouldCreateSql()
@@ -192,21 +263,27 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "((([StringProperty] = 'abcd') OR ([IntegerProperty] = 2)) OR ([RandomProperty] = 'random value'))");
+            AssertEquals(actual.Where, "((([StringProperty] = @Param0) OR ([IntegerProperty] = @Param1)) OR ([RandomProperty] = @Param2))");
+            AssertEquals(actual.FilterValues["Param0"], "abcd");
+            AssertEquals(actual.FilterValues["Param1"], 2);
+            AssertEquals(actual.FilterValues["Param2"], "random value");
         }
 
         [Fact]
         public void MultipleConstantsAndOrClausesShouldCreateSql()
         {
             // Arrange            
-            Expression<Func<Item, bool>> expression = i => i.StringProperty == "abcd" && i.IntegerProperty == 2 || i.RandomProperty == "random value";
+            Expression<Func<Item, bool>> expression = i => i.StringProperty == "abcd" && i.IntegerProperty == 2 || i.RandomProperty.Contains("random value");
             var target = GetTarget();
 
             // Act
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "((([StringProperty] = 'abcd') AND ([IntegerProperty] = 2)) OR ([RandomProperty] = 'random value'))");
+            AssertEquals(actual.Where, "((([StringProperty] = @Param0) AND ([IntegerProperty] = @Param1)) OR ([RandomProperty] LIKE @Param2))");
+            AssertEquals(actual.FilterValues["Param0"], "abcd");
+            AssertEquals(actual.FilterValues["Param1"], 2);
+            AssertEquals(actual.FilterValues["Param2"], "%random value%");
         }
 
         [Fact]
@@ -225,7 +302,10 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual, "((([StringProperty] = 'abcd') AND ([IntegerProperty] = 2)) AND ([RandomProperty] = 'random value'))");
+            AssertEquals(actual.Where, "((([StringProperty] = @Param0) AND ([IntegerProperty] = @Param1)) AND ([RandomProperty] = @Param2))");
+            AssertEquals(actual.FilterValues["Param0"], "abcd");
+            AssertEquals(actual.FilterValues["Param1"], 2);
+            AssertEquals(actual.FilterValues["Param2"], "random value");            
         }
 
 

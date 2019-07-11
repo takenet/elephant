@@ -124,9 +124,16 @@ namespace Take.Elephant.Sql
             return filter.ToString();
         }
 
-        public static string TranslateToSqlWhereClause<TEntity>(IDatabaseDriver databaseDriver, Expression<Func<TEntity, bool>> where, IDictionary<string, string> parameterReplacementDictionary = null)
-        {            
-            if (where == null) return databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
+        public static SqlWhereStatement TranslateToSqlWhereClause<TEntity>(
+            IDatabaseDriver databaseDriver, 
+            Expression<Func<TEntity, bool>> where, 
+            IDictionary<string, string> parameterReplacementDictionary = null)
+        {
+            if (where == null)
+            {
+                return new SqlWhereStatement(databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne), new Dictionary<string, object>());
+            }
+            
             var translator = new SqlExpressionTranslator(databaseDriver, parameterReplacementDictionary);
             return translator.GetStatement(where);
         }

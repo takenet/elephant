@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -11,22 +12,30 @@ namespace Take.Elephant.Sql
 {
     public class SqlExpressionTranslator : ExpressionVisitor
     {
-        private readonly StringBuilder _filter = new StringBuilder();
+        private readonly StringBuilder _filter;
+        private readonly IDictionary<string, object> _filterValues;
         private readonly IDatabaseDriver _databaseDriver;
         private readonly IDictionary<string, string> _parameterReplacementDictionary;
+        private readonly string _parameterPrefix;
+
         private string _valuePrefix;
         private string _valueSuffix;
+        private int _parameterCount;
 
-        public SqlExpressionTranslator(IDatabaseDriver databaseDriver, IDictionary<string, string> parameterReplacementDictionary = null)
+        public SqlExpressionTranslator(IDatabaseDriver databaseDriver, IDictionary<string, string> parameterReplacementDictionary = null, string parameterPrefix = "Param")
         {
             _databaseDriver = databaseDriver;
             _parameterReplacementDictionary = parameterReplacementDictionary;
+            _parameterPrefix = parameterPrefix ?? throw new ArgumentNullException(nameof(parameterPrefix));
+
+            _filter = new StringBuilder();
+            _filterValues = new Dictionary<string, object>();
         }
 
-        public string GetStatement(Expression expression)
+        public SqlWhereStatement GetStatement(Expression expression)
         {
             Visit(expression);
-            return _filter.ToString();
+            return new SqlWhereStatement(_filter.ToString(), _filterValues);
         }
 
         public override Expression Visit(Expression node)
@@ -54,26 +63,11 @@ namespace Take.Elephant.Sql
             switch (node.NodeType)
             {
                 case ExpressionType.Equal:
-                    if (IsNullConstantExpression(node.Right))
-                    {
-                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Is);
-                    }
-                    else
-                    {
-                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Equal);
-                    }
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Equal);
                     break;
 
                 case ExpressionType.NotEqual:
-                    if (IsNullConstantExpression(node.Right))
-                    {
-                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.IsNot);
-                    }
-                    else
-                    {
-
-                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.NotEqual);
-                    }
+                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.NotEqual);
                     break;
 
                 case ExpressionType.GreaterThan:
@@ -150,7 +144,7 @@ namespace Take.Elephant.Sql
                                 var fieldInfoValue =
                                     ((FieldInfo)memberExpression.Member).GetValue(deepConstantExpression.Value);
                                 value = ((PropertyInfo)node.Member).GetValue(fieldInfoValue, null);
-                                _filter.Append(ConvertSqlLiteral(value, node.Type));
+                                _filter.Append(AddFilterValue(value, node.Type));
                                 return node;
                             }
 
@@ -160,7 +154,7 @@ namespace Take.Elephant.Sql
                                 var getterLambda = Expression.Lambda<Func<object>>(objectMember);
                                 var getter = getterLambda.Compile();
                                 value = getter();
-                                _filter.Append(ConvertSqlLiteral(value, node.Type));
+                                _filter.Append(AddFilterValue(value, node.Type));
                                 return node;
                             }
                         }
@@ -186,7 +180,7 @@ namespace Take.Elephant.Sql
                         value = ((PropertyInfo)member).GetValue(constantExpression.Value, null);
                     }
 
-                    _filter.Append(ConvertSqlLiteral(value, node.Type));
+                    _filter.Append(AddFilterValue(value, node.Type));
                     return node;
             }
 
@@ -195,7 +189,7 @@ namespace Take.Elephant.Sql
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
-            _filter.Append(ConvertSqlLiteral(node.Value, node.Type));
+            _filter.Append(AddFilterValue(node.Value, node.Type));
             return node;
         }
 
@@ -247,7 +241,7 @@ namespace Take.Elephant.Sql
 
             if (node.Method.Name.Equals(nameof(string.StartsWith)))
             {
-                _valuePrefix = "";
+                _valuePrefix = null;
                 _valueSuffix = "%";
 
                 return GenerateSqlLike(node);
@@ -256,7 +250,7 @@ namespace Take.Elephant.Sql
             if (node.Method.Name.Equals(nameof(string.EndsWith)))
             {
                 _valuePrefix = "%";
-                _valueSuffix = "";
+                _valueSuffix = null;
                 return GenerateSqlLike(node);
             }
 
@@ -274,35 +268,52 @@ namespace Take.Elephant.Sql
             _filter.Append($" {_databaseDriver.GetSqlStatementTemplate(SqlStatement.Like)} ");
             Visit(argument);
             _filter.Append(")");
-            _valuePrefix = _valueSuffix = "";
+            _valuePrefix = _valueSuffix = null;
             return node;
         }
 
-        private string ConvertSqlLiteral(object value, Type type)
+        private string AddFilterValue(object value, Type type)
         {
-            if (value == null)
-            {
-                return _databaseDriver.GetSqlStatementTemplate(SqlStatement.Null);
-            }
-
-            if (value is bool b) return b ? "1" : "0";
-
+            var name = $"{_parameterPrefix}{_parameterCount++}";
+            var parameterName = _databaseDriver.ParseParameterName(name);
+            
             var dbType = DbTypeMapper.GetDbType(type);
-            var valueString = value.ToStringInvariant();
-
-            if (dbType == DbType.String
-                || dbType == DbType.StringFixedLength
-                || dbType == DbType.Guid
-                || dbType == DbType.Date
-                || dbType == DbType.DateTime
-                || dbType == DbType.DateTime2
-                || dbType == DbType.DateTimeOffset)
+            if ((dbType == DbType.String || dbType == DbType.StringFixedLength) &&
+                (_valuePrefix != null || _valueSuffix != null) &&
+                value is string valueString)
             {
-                return $"'{_valuePrefix}{valueString}{_valueSuffix}'";
+                var valueWithPrefixBuilder = new StringBuilder();
+                if (_valuePrefix != null)
+                {
+                    valueWithPrefixBuilder.Append(_valuePrefix);
+                }
+
+                valueWithPrefixBuilder.Append(valueString);
+                if (_valueSuffix != null)
+                {
+                    valueWithPrefixBuilder.Append(_valueSuffix);
+                }
+                _filterValues.Add(name, valueWithPrefixBuilder.ToString());
+            }
+            else
+            {
+                _filterValues.Add(name, value);
             }
 
-            return valueString;
+            return parameterName;
+        }
+    }
+
+    public sealed class SqlWhereStatement
+    {
+        public SqlWhereStatement(string @where, IDictionary<string, object> filterValues)
+        {
+            Where = @where;
+            FilterValues = filterValues;
         }
 
+        public string Where { get; }
+
+        public IDictionary<string, object> FilterValues { get; }
     }
 }
