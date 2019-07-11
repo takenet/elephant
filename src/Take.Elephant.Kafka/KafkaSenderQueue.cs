@@ -34,6 +34,19 @@ namespace Take.Elephant.Kafka
             _topic = topic;
         }
 
+        public KafkaSenderQueue(
+            IProducer<Null, T> producer,
+            string topic)
+        {
+            if (string.IsNullOrWhiteSpace(topic))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
+            }
+
+            _producer = producer;
+            _topic = topic;
+        }
+
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             return _producer.ProduceAsync(
