@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x64\native\librdkafka.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x64\native\librdkafkacpp.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x64\native\libzstd.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x64\native\msvcp120.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x64\native\msvcr120.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x64\native\zlib.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x86\native\librdkafka.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x86\native\librdkafkacpp.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x86\native\libzstd.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x86\native\msvcp120.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x86\native\msvcr120.dll" t="Include" />
-    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.0\runtimes\win-x86\native\zlib.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x64\native\librdkafka.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x64\native\librdkafkacpp.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x64\native\libzstd.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x64\native\msvcp120.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x64\native\msvcr120.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x64\native\zlib.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x86\native\librdkafka.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x86\native\librdkafkacpp.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x86\native\libzstd.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x86\native\msvcp120.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x86\native\msvcr120.dll" t="Include" />
+    <e p="C:\Users\andreb\.nuget\packages\librdkafka.redist\1.0.1\runtimes\win-x86\native\zlib.dll" t="Include" />
     <e p="C:\Users\andreb\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\_common\xunit.abstractions.dll" t="Include" />
     <e p="C:\Users\andreb\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\_common\xunit.runner.reporters.net452.dll" t="Include" />
     <e p="C:\Users\andreb\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\_common\xunit.runner.utility.net452.dll" t="Include" />
     <e p="C:\Users\andreb\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\_common\xunit.runner.visualstudio.testadapter.dll" t="Include" />
-    <e p="C:\Users\andreb\.Rider2018.3\config\scratches" t="IncludeRecursive" />
-    <e p="C:\Users\andreb\.Rider2018.3\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\andreb\.Rider2018.3\system\resharper-host\local\Transient\ReSharperHost\v183\SolutionCaches\_Take.Elephant.-921594467.00" t="ExcludeRecursive" />
+    <e p="C:\Users\andreb\.Rider2019.1\config\scratches" t="IncludeRecursive" />
+    <e p="C:\Users\andreb\.Rider2019.1\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\andreb\.Rider2019.1\system\resharper-host\local\Transient\ReSharperHost\v191\SolutionCaches\_Take.Elephant.-921594467.00" t="ExcludeRecursive" />
     <e p="D:\Repositories\elephant\appveyor.yml" t="Include" />
     <e p="D:\Repositories\elephant\LICENSE" t="Include" />
     <e p="D:\Repositories\elephant\README.md" t="Include" />
@@ -403,6 +403,7 @@
         <e p="ItemTransactionalBatchQueueFacts.cs" t="Include" />
         <e p="ItemTransactionalBlockingQueueFacts.cs" t="Include" />
         <e p="Kafka" t="Include">
+          <e p="cacert.pem" t="Include" />
           <e p="KafkaItemSenderReceiverQueueFacts.cs" t="Include" />
         </e>
         <e p="KeyQueryableMapFacts.cs" t="Include" />

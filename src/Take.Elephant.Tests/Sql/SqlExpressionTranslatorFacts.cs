@@ -20,7 +20,7 @@ namespace Take.Elephant.Tests.Sql
 
         public SqlExpressionTranslator GetTarget()
         {
-            return new SqlExpressionTranslator(DatabaseDriver);
+            return new SqlExpressionTranslator(DatabaseDriver, DbTypeMapper.Default);
         }
 
         [Fact]
@@ -156,7 +156,7 @@ namespace Take.Elephant.Tests.Sql
 
             // Assert
             AssertEquals(actual.Where, "([StringProperty] = @Param0)");
-            AssertEquals(actual.FilterValues["Param0"], null);
+            AssertEquals(actual.FilterValues["Param0"], DBNull.Value);
         }
 
         [Fact]
@@ -171,7 +171,7 @@ namespace Take.Elephant.Tests.Sql
 
             // Assert
             AssertEquals(actual.Where, "([StringProperty] <> @Param0)");
-            AssertEquals(actual.FilterValues["Param0"], null);
+            AssertEquals(actual.FilterValues["Param0"], DBNull.Value);
         }
 
         [Fact]

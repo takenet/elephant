@@ -47,7 +47,7 @@ namespace Take.Elephant.Sql
                 expressionParameterReplacementDictionary.Add("Value", ((ValueMapper<TValue>) Mapper).ColumnName);
             }
 
-            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, expressionParameterReplacementDictionary);
+            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, Mapper.DbTypeMapper, expressionParameterReplacementDictionary);
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
                 int totalCount = 0;
@@ -88,7 +88,7 @@ namespace Take.Elephant.Sql
                 }
 
                 var selectColumns = Table.KeyColumnsNames;
-                var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
+                var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, Mapper.DbTypeMapper);
                 int totalCount = 0;
                 if (FetchQueryResultTotal)
                 {

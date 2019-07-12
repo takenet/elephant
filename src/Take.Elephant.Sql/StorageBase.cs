@@ -74,7 +74,7 @@ namespace Take.Elephant.Sql
             }
 
             var selectColumns = Table.Columns.Keys.ToArray();
-            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
+            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, Mapper.DbTypeMapper);
             var orderByColumns = Table.KeyColumnsNames;
 
             return await QueryAsync<TResult>(
@@ -103,7 +103,7 @@ namespace Take.Elephant.Sql
             }
 
             var selectColumns = Table.Columns.Keys.ToArray();
-            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
+            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, Mapper.DbTypeMapper);
             var orderByColumns = Table.KeyColumnsNames;
             if (orderBy != null)
             {

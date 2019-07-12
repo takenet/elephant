@@ -15,6 +15,7 @@ namespace Take.Elephant.Sql
         private readonly StringBuilder _filter;
         private readonly IDictionary<string, object> _filterValues;
         private readonly IDatabaseDriver _databaseDriver;
+        private readonly IDbTypeMapper _dbTypeMapper;
         private readonly IDictionary<string, string> _parameterReplacementDictionary;
         private readonly string _parameterPrefix;
 
@@ -22,9 +23,14 @@ namespace Take.Elephant.Sql
         private string _valueSuffix;
         private int _parameterCount;
 
-        public SqlExpressionTranslator(IDatabaseDriver databaseDriver, IDictionary<string, string> parameterReplacementDictionary = null, string parameterPrefix = "Param")
+        public SqlExpressionTranslator(
+            IDatabaseDriver databaseDriver,
+            IDbTypeMapper dbTypeMapper,
+            IDictionary<string, string> parameterReplacementDictionary = null, 
+            string parameterPrefix = "Param")
         {
             _databaseDriver = databaseDriver;
+            _dbTypeMapper = dbTypeMapper;
             _parameterReplacementDictionary = parameterReplacementDictionary;
             _parameterPrefix = parameterPrefix ?? throw new ArgumentNullException(nameof(parameterPrefix));
 
@@ -276,7 +282,6 @@ namespace Take.Elephant.Sql
         {
             var name = $"{_parameterPrefix}{_parameterCount++}";
             var parameterName = _databaseDriver.ParseParameterName(name);
-            
             var dbType = DbTypeMapper.GetDbType(type);
             if ((dbType == DbType.String || dbType == DbType.StringFixedLength) &&
                 (_valuePrefix != null || _valueSuffix != null) &&
@@ -293,13 +298,12 @@ namespace Take.Elephant.Sql
                 {
                     valueWithPrefixBuilder.Append(_valueSuffix);
                 }
-                _filterValues.Add(name, valueWithPrefixBuilder.ToString());
-            }
-            else
-            {
-                _filterValues.Add(name, value);
+
+                value = valueWithPrefixBuilder.ToString();
             }
 
+            var dbValue = _dbTypeMapper.ToDbType(value, dbType);
+            _filterValues.Add(name, dbValue);
             return parameterName;
         }
     }

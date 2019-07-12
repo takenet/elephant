@@ -127,6 +127,7 @@ namespace Take.Elephant.Sql
         public static SqlWhereStatement TranslateToSqlWhereClause<TEntity>(
             IDatabaseDriver databaseDriver, 
             Expression<Func<TEntity, bool>> where, 
+            IDbTypeMapper dbTypeMapper,
             IDictionary<string, string> parameterReplacementDictionary = null)
         {
             if (where == null)
@@ -134,7 +135,7 @@ namespace Take.Elephant.Sql
                 return new SqlWhereStatement(databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne), new Dictionary<string, object>());
             }
             
-            var translator = new SqlExpressionTranslator(databaseDriver, parameterReplacementDictionary);
+            var translator = new SqlExpressionTranslator(databaseDriver, dbTypeMapper, parameterReplacementDictionary);
             return translator.GetStatement(where);
         }
     }
