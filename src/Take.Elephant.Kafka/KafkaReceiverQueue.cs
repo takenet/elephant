@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
@@ -28,19 +29,12 @@ namespace Take.Elephant.Kafka
             ConsumerConfig consumerConfig,
             string topic,
             IDeserializer<T> deserializer)
+            : this(
+                  new ConsumerBuilder<Ignore, T>(consumerConfig)
+                      .SetValueDeserializer(deserializer)
+                      .Build(),
+                  topic)
         {
-            _consumer = new ConsumerBuilder<Ignore, T>(consumerConfig)
-                .SetValueDeserializer(deserializer)
-                .Build();
-            _topic = topic;
-            _consumerSubscriptionSemaphore = new SemaphoreSlim(1, 1);
-            _subscribed = _consumer.Subscription.Any(s => s == _topic);
-            _cts = new CancellationTokenSource();
-            _channel = Channel.CreateBounded<T>(1);
-            _consumerTask = Task.Factory.StartNew(
-                () => ConsumeAsync(_cts.Token),
-                TaskCreationOptions.LongRunning)
-                .Unwrap();
         }
 
         public KafkaReceiverQueue(
@@ -70,13 +64,13 @@ namespace Take.Elephant.Kafka
                     var result = _consumer.Consume(cancellationToken);
                     await _channel.Writer.WriteAsync(result.Value, cancellationToken);
                 }
-                catch (ConsumeException ex) when (!ex.Error.IsError)
-                {
-                    break;
-                }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
                     break;
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceError(ex.ToString());
                 }
             }
 
