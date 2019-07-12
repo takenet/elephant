@@ -51,10 +51,20 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<TEntity>> QueryAsync<TResult>(
+            Expression<Func<TEntity, bool>> where,
+            Expression<Func<TEntity, TResult>> select,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
             => QueryAsync<TResult>(@where, @select, false, skip, take, cancellationToken);
 
-        public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(Expression<Func<TEntity, bool>> @where, Expression<Func<TEntity, TResult>> @select, bool distinct, int skip, int take,
+        public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(
+            Expression<Func<TEntity, bool>> @where,
+            Expression<Func<TEntity, TResult>> @select,
+            bool distinct,
+            int skip,
+            int take,
             CancellationToken cancellationToken)
         {
             if (select != null &&
@@ -64,13 +74,27 @@ namespace Take.Elephant.Sql
             }
 
             var selectColumns = Table.Columns.Keys.ToArray();
-            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
+            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, Mapper.DbTypeMapper);
             var orderByColumns = Table.KeyColumnsNames;
 
-            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, distinct: distinct);
+            return await QueryAsync<TResult>(
+                filter,
+                selectColumns,
+                skip,
+                take,
+                cancellationToken,
+                orderByColumns,
+                distinct: distinct);
         }
 
-        public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult, TOrderBy>(Expression<Func<TEntity, bool>> @where, Expression<Func<TEntity, TResult>> @select, Expression<Func<TEntity, TOrderBy>> orderBy, bool orderByAscending, int skip, int take, CancellationToken cancellationToken)
+        public virtual async Task<QueryResult<TEntity>> QueryAsync<TResult, TOrderBy>(
+            Expression<Func<TEntity, bool>> @where,
+            Expression<Func<TEntity, TResult>> @select,
+            Expression<Func<TEntity, TOrderBy>> orderBy,
+            bool orderByAscending,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
         {
             if (select != null &&
                 select.ReturnType != typeof(TEntity))
@@ -79,7 +103,7 @@ namespace Take.Elephant.Sql
             }
 
             var selectColumns = Table.Columns.Keys.ToArray();
-            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
+            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, Mapper.DbTypeMapper);
             var orderByColumns = Table.KeyColumnsNames;
             if (orderBy != null)
             {
@@ -92,24 +116,51 @@ namespace Take.Elephant.Sql
                 orderByColumns = new[] { memberExpression.Member.Name };
             }
 
-            return await QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, orderByAscending);
+            return await QueryAsync<TResult>(
+                filter,
+                selectColumns,
+                skip,
+                take,
+                cancellationToken,
+                orderByColumns,
+                orderByAscending);
         }
 
-        protected virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(string filter, string[] selectColumns, int skip, int take,
-            CancellationToken cancellationToken, string[] orderByColumns, bool orderByAscending = true, IDictionary<string, object> filterValues = null, bool distinct = false)
+        protected virtual async Task<QueryResult<TEntity>> QueryAsync<TResult>(
+            SqlWhereStatement whereStatement,
+            string[] selectColumns,
+            int skip,
+            int take,
+            CancellationToken cancellationToken,
+            string[] orderByColumns,
+            bool orderByAscending = true,
+            IDictionary<string, object> additionalFilterValues = null,
+            bool distinct = false)
         {
+            var filter = whereStatement.Where;
+            var filterValues = whereStatement.FilterValues;
+            
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
-                if (filterValues != null)
+                if (additionalFilterValues != null)
                 {
-                    var filterValuesSql = SqlHelper.GetAndEqualsStatement(DatabaseDriver, filterValues);
+                    var filterValuesSql = SqlHelper.GetAndEqualsStatement(DatabaseDriver, additionalFilterValues);
                     filter = $"{filter} {DatabaseDriver.GetSqlStatementTemplate(SqlStatement.And)} ({filterValuesSql})";
+                    filterValues = filterValues
+                        .Union(additionalFilterValues)
+                        .ToDictionary(k => k.Key, v => v.Value);
                 }
 
                 int totalCount = 0;
                 if (FetchQueryResultTotal)
                 {
-                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter, filterValues, distinct: distinct))
+                    using (var countCommand = connection.CreateSelectCountCommand(
+                        DatabaseDriver,
+                        Table.Schema,
+                        Table.Name,
+                        filter,
+                        filterValues,
+                        distinct))
                     {
                         totalCount = Convert.ToInt32(
                             await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
@@ -120,8 +171,18 @@ namespace Take.Elephant.Sql
                     new DbDataReaderAsyncEnumerable<TEntity>(
                         GetConnectionAsync,
                         c =>
-                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter, skip, take,
-                                orderByColumns, orderByAscending, filterValues, distinct),
+                            c.CreateSelectSkipTakeCommand(
+                                DatabaseDriver,
+                                Table.Schema,
+                                Table.Name,
+                                selectColumns,
+                                filter,
+                                skip,
+                                take,
+                                orderByColumns,
+                                orderByAscending,
+                                filterValues,
+                                distinct),
                         Mapper,
                         selectColumns),
                     totalCount);

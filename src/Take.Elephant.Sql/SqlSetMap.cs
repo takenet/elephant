@@ -225,28 +225,28 @@ namespace Take.Elephant.Sql
             }
 
             protected override Task<QueryResult<TItem>> QueryAsync<TResult>(
-                string filter, 
+                SqlWhereStatement filter, 
                 string[] selectColumns, 
                 int skip, 
                 int take, 
                 CancellationToken cancellationToken,
                 string[] orderByColumns,
                 bool orderByAscending = true,
-                IDictionary<string, object> filterValues = null,
+                IDictionary<string, object> additionalFilterValues = null,
                 bool distinct = false)
             {
-                if (filterValues == null)
+                if (additionalFilterValues == null)
                 {
-                    filterValues = MapKeyColumnValues;
+                    additionalFilterValues = MapKeyColumnValues;
                 }
                 else
                 {
-                    filterValues = filterValues
+                    additionalFilterValues = additionalFilterValues
                         .Union(MapKeyColumnValues)
                         .ToDictionary(k => k.Key, v => v.Value);
                 }
 
-                return base.QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, orderByAscending, filterValues, distinct);
+                return base.QueryAsync<TResult>(filter, selectColumns, skip, take, cancellationToken, orderByColumns, orderByAscending, additionalFilterValues, distinct);
             }
         }
     }

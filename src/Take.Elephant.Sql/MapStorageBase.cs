@@ -47,13 +47,13 @@ namespace Take.Elephant.Sql
                 expressionParameterReplacementDictionary.Add("Value", ((ValueMapper<TValue>) Mapper).ColumnName);
             }
 
-            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, expressionParameterReplacementDictionary);
+            var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, Mapper.DbTypeMapper, expressionParameterReplacementDictionary);
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
                 int totalCount = 0;
                 if (FetchQueryResultTotal)
                 {
-                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter))
+                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter.Where, filter.FilterValues))
                     {
                         totalCount = Convert.ToInt32(
                             await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
@@ -64,7 +64,7 @@ namespace Take.Elephant.Sql
                     new DbDataReaderAsyncEnumerable<KeyValuePair<TKey, TValue>>(
                         GetConnectionAsync,
                         c =>
-                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter, skip, take, orderByColumns),
+                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter.Where, skip, take, orderByColumns, filterValues: filter.FilterValues),
                         new KeyValuePairMapper<TKey, TValue>(KeyMapper, Mapper),
                         selectColumns),
                     totalCount);
@@ -88,11 +88,11 @@ namespace Take.Elephant.Sql
                 }
 
                 var selectColumns = Table.KeyColumnsNames;
-                var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where);
+                var filter = SqlHelper.TranslateToSqlWhereClause(DatabaseDriver, where, Mapper.DbTypeMapper);
                 int totalCount = 0;
                 if (FetchQueryResultTotal)
                 {
-                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter))
+                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter.Where, filter.FilterValues))
                     {
                         totalCount = Convert.ToInt32(
                             await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
@@ -102,7 +102,16 @@ namespace Take.Elephant.Sql
                 return new QueryResult<TKey>(
                     new DbDataReaderAsyncEnumerable<TKey>(
                         GetConnectionAsync, 
-                        c => c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter, skip, take, selectColumns),
+                        c => c.CreateSelectSkipTakeCommand(
+                            DatabaseDriver,
+                            Table.Schema,
+                            Table.Name,
+                            selectColumns,
+                            filter.Where,
+                            skip,
+                            take,
+                            selectColumns,
+                            filterValues: filter.FilterValues),
                         KeyMapper, 
                         selectColumns),
                     totalCount);
