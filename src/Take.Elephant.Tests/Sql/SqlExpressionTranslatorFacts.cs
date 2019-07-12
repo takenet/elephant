@@ -39,6 +39,21 @@ namespace Take.Elephant.Tests.Sql
         }
         
         [Fact]
+        public void SingleEqualsConstantWithComplexTypeClauseShouldCreateSql()
+        {
+            // Arrange            
+            Expression<Func<TestItem, bool>> expression = i => i.Value3.ToString() == "XYZ";
+            var target = GetTarget();
+
+            // Act
+            var actual = target.GetStatement(expression);
+
+            // Assert
+            AssertEquals(actual.Where, "([Value3] = @Param0)");
+            AssertEquals(actual.FilterValues["Param0"], "XYZ");
+        }
+        
+        [Fact]
         public void SingleContainsConstantClauseShouldCreateSql()
         {
             // Arrange            
@@ -315,6 +330,9 @@ namespace Take.Elephant.Tests.Sql
 
             public int Value2 { get; set; }
 
+            public TestItem Value3 { get; set; }
+            
+            public override string ToString() => $"{Value1}:{Value2}:{Value3}";
         }
     }
 
