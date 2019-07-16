@@ -44,11 +44,6 @@ namespace Take.Elephant.Sql
             return new SqlWhereStatement(_filter.ToString(), _filterValues);
         }
 
-        public override Expression Visit(Expression node)
-        {
-            return base.Visit(node);
-        }
-
         protected override Expression VisitUnary(UnaryExpression node)
         {
             if (node.NodeType == ExpressionType.Not)
@@ -69,11 +64,26 @@ namespace Take.Elephant.Sql
             switch (node.NodeType)
             {
                 case ExpressionType.Equal:
-                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Equal);
+                    if (IsNullConstantExpression(node.Right))
+                    {
+                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Is);
+                    }
+                    else
+                    {
+                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.Equal);
+                    }
                     break;
 
                 case ExpressionType.NotEqual:
-                    @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.NotEqual);
+                    if (IsNullConstantExpression(node.Right))
+                    {
+                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.IsNot);
+                    }
+                    else
+                    {
+
+                        @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.NotEqual);
+                    }
                     break;
 
                 case ExpressionType.GreaterThan:
@@ -280,6 +290,11 @@ namespace Take.Elephant.Sql
 
         private string AddFilterValue(object value, Type type)
         {
+            if (value == null)
+            {
+                return _databaseDriver.GetSqlStatementTemplate(SqlStatement.Null);
+            }            
+            
             var name = $"{_parameterPrefix}{_parameterCount++}";
             var parameterName = _databaseDriver.ParseParameterName(name);
             var dbType = DbTypeMapper.GetDbType(type);
