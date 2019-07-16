@@ -170,8 +170,8 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual.Where, "([StringProperty] = @Param0)");
-            AssertEquals(actual.FilterValues["Param0"], DBNull.Value);
+            AssertEquals(actual.Where, "([StringProperty] IS NULL)");
+            AssertEquals(actual.FilterValues.Count, 0);
         }
 
         [Fact]
@@ -185,8 +185,8 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual.Where, "([StringProperty] <> @Param0)");
-            AssertEquals(actual.FilterValues["Param0"], DBNull.Value);
+            AssertEquals(actual.Where, "([StringProperty] IS NOT NULL)");
+            AssertEquals(actual.FilterValues.Count, 0);
         }
 
         [Fact]
