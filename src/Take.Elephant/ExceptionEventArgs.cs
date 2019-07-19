@@ -1,6 +1,6 @@
 using System;
 
-namespace Take.Elephant.Specialized
+namespace Take.Elephant
 {
     public class ExceptionEventArgs : EventArgs
     {

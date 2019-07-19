@@ -33,6 +33,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="DictionaryConverter.cs" t="Include" />
         <e p="EnumerableExtensions.cs" t="Include" />
+        <e p="ExceptionEventArgs.cs" t="Include" />
         <e p="Group.cs" t="Include" />
         <e p="IAsyncEnumerable.cs" t="Include" />
         <e p="IAsyncEnumerator.cs" t="Include" />
@@ -53,6 +54,7 @@
         <e p="IListMap.cs" t="Include" />
         <e p="IMap.cs" t="Include" />
         <e p="INumberMap.cs" t="Include" />
+        <e p="IOpenable.cs" t="Include" />
         <e p="IOrderedQueryableStorage.cs" t="Include" />
         <e p="IPositionList.cs" t="Include" />
         <e p="IPriorityBlockingQueue.cs" t="Include" />
@@ -243,7 +245,6 @@
         <e p="CopyMapSynchronizer.cs" t="Include" />
         <e p="CopyQueueSynchronizer.cs" t="Include" />
         <e p="DifferentialMapSynchronizer.cs" t="Include" />
-        <e p="ExceptionEventArgs.cs" t="Include" />
         <e p="FallbackBlockingQueue.cs" t="Include" />
         <e p="FallbackQueue.cs" t="Include" />
         <e p="IntersectionMapSynchronizer.cs" t="Include" />

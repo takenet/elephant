@@ -6,18 +6,18 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Serialization;
 
 namespace Take.Elephant.Kafka
 {
-    public class KafkaReceiverQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, ICloseable, IDisposable
+    public class KafkaReceiverQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, IOpenable, ICloseable, IDisposable
     {
         private readonly string _topic;
         private readonly IConsumer<Ignore, T> _consumer;
-        private readonly Task _consumerTask;
-        private readonly SemaphoreSlim _consumerSubscriptionSemaphore;
+        private readonly SemaphoreSlim _consumerStartSemaphore;
         private readonly CancellationTokenSource _cts;
         private readonly Channel<T> _channel;
-        private bool _subscribed;
+        private Task _consumerTask;
         private bool _closed;
 
         public KafkaReceiverQueue(string bootstrapServers, string topic, string groupId, IDeserializer<T> deserializer)
@@ -37,76 +37,36 @@ namespace Take.Elephant.Kafka
         {
         }
 
-        public KafkaReceiverQueue(
-            IConsumer<Ignore, T> consumer,
-            string topic)
+        public KafkaReceiverQueue(IConsumer<Ignore, T> consumer, string topic)
         {
-            _consumer = consumer;
+            if (string.IsNullOrWhiteSpace(topic)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
+            _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
             _topic = topic;
-            _consumerSubscriptionSemaphore = new SemaphoreSlim(1, 1);
-            _subscribed = _consumer.Subscription.Any(s => s == _topic);
+            _consumerStartSemaphore = new SemaphoreSlim(1, 1);
             _cts = new CancellationTokenSource();
             _channel = Channel.CreateBounded<T>(1);
-            _consumerTask = Task.Factory.StartNew(
-                () => ConsumeAsync(_cts.Token),
-                TaskCreationOptions.LongRunning)
-                .Unwrap();
         }
 
-        private async Task ConsumeAsync(CancellationToken cancellationToken)
+        public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
-            await SubscribeIfNotAsync(cancellationToken);
-
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                try
-                {
-                    var result = _consumer.Consume(cancellationToken);
-                    await _channel.Writer.WriteAsync(result.Value, cancellationToken);
-                }
-                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-                {
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    Trace.TraceError(ex.ToString());
-                }
-            }
-
-            _consumer.Unsubscribe();
-            _channel.Writer.Complete();
-        }
-
-        private async Task SubscribeIfNotAsync(CancellationToken cancellationToken)
-        {
-            if (_subscribed) return;
-            await _consumerSubscriptionSemaphore.WaitAsync(cancellationToken);
-            try
-            {
-                if (_subscribed) return;
-                _consumer.Subscribe(_topic);
-                _subscribed = true;
-            }
-            finally
-            {
-                _consumerSubscriptionSemaphore.Release();
-            }
-        }
-
-        public virtual Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
-        {
+            await StartConsumerTaskIfNotAsync(cancellationToken);
             if (_channel.Reader.TryRead(out var item))
             {
-                return item.AsCompletedTask();
+                return item;
             }
 
-            return Task.FromResult(default(T));
+            return default;
         }
 
-        public virtual Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
-            return _channel.Reader.ReadAsync(cancellationToken).AsTask();
+            await StartConsumerTaskIfNotAsync(cancellationToken);
+            return await _channel.Reader.ReadAsync(cancellationToken);
+        }
+        
+        public Task OpenAsync(CancellationToken cancellationToken)
+        {
+            return StartConsumerTaskIfNotAsync(cancellationToken);
         }
 
         public virtual Task CloseAsync(CancellationToken cancellationToken)
@@ -120,6 +80,8 @@ namespace Take.Elephant.Kafka
             return _consumerTask;
         }
 
+        public event EventHandler<ExceptionEventArgs> ConsumerFailed;
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -130,7 +92,67 @@ namespace Take.Elephant.Kafka
                 }
 
                 _consumer.Dispose();
+                _cts.Dispose();
             }
+        }
+
+        private async Task StartConsumerTaskIfNotAsync(CancellationToken cancellationToken)
+        {
+            if (_consumerTask != null) return;
+
+            await _consumerStartSemaphore.WaitAsync(cancellationToken);
+            try
+            {
+                if (_consumerTask == null)
+                {
+                    _consumerTask = Task
+                        .Factory
+                        .StartNew(
+                            () => ConsumeAsync(_cts.Token), 
+                            TaskCreationOptions.LongRunning)
+                        .Unwrap();
+                }
+            }
+            finally
+            {
+                _consumerStartSemaphore.Release();
+            }
+        }
+        
+        private async Task ConsumeAsync(CancellationToken cancellationToken)
+        {
+            if (_consumer.Subscription.All(s => s != _topic))
+            {
+                _consumer.Subscribe(_topic);
+            }
+            
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var result = _consumer.Consume(cancellationToken);
+                    await _channel.Writer.WriteAsync(result.Value, cancellationToken);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    var handler = ConsumerFailed;
+                    if (handler != null)
+                    {
+                        handler.Invoke(this, new ExceptionEventArgs(ex));
+                    }
+                    else
+                    {
+                        Trace.TraceError("An unhandled exception occurred on KafkaReceiverQueue: {0}", ex);
+                    }
+                }
+            }
+
+            _consumer.Unsubscribe();
+            _channel.Writer.Complete();
         }
 
         public void Dispose()
@@ -138,6 +160,8 @@ namespace Take.Elephant.Kafka
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        
     }
 
     public class JsonDeserializer<T> : IDeserializer<T>
