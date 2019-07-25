@@ -8,34 +8,32 @@ namespace Take.Elephant.Kafka
 {
     public class KafkaSenderQueue<T> : ISenderQueue<T>, IDisposable
     {
-        private readonly IProducer<Null, T> _producer;
+        private readonly IProducer<Null, string> _producer;
         private readonly string _topic;
-        private readonly Func<T, string> _keyFactory;
+        private readonly ISerializer<T> _serializer;
 
-        public KafkaSenderQueue(string bootstrapServers, string topic, Confluent.Kafka.ISerializer<T> serializer)
-            : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer)
+        public KafkaSenderQueue(string bootstrapServers, string topic, ISerializer<T> serializer, Confluent.Kafka.ISerializer<string> kafkaSerializer = null)
+            : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer, kafkaSerializer)
         {
         }
 
         public KafkaSenderQueue(
             ProducerConfig producerConfig,
             string topic,
-            Confluent.Kafka.ISerializer<T> serializer)
+            ISerializer<T> serializer,
+            Confluent.Kafka.ISerializer<string> kafkaSerializer = null)
+            : this(
+                  new ProducerBuilder<Null, string>(producerConfig)
+                        .SetValueSerializer(kafkaSerializer ?? new StringSerializer())
+                        .Build(),
+                  serializer,
+                  topic)
         {
-            if (string.IsNullOrWhiteSpace(topic))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
-            }
-
-            _producer = new ProducerBuilder<Null, T>(producerConfig)
-                .SetValueSerializer(serializer)
-                .Build();
-
-            _topic = topic;
         }
 
         public KafkaSenderQueue(
-            IProducer<Null, T> producer,
+            IProducer<Null, string> producer,
+            ISerializer<T> serializer,
             string topic)
         {
             if (string.IsNullOrWhiteSpace(topic))
@@ -44,16 +42,18 @@ namespace Take.Elephant.Kafka
             }
 
             _producer = producer;
+            _serializer = serializer;
             _topic = topic;
         }
 
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
+            var stringItem = _serializer.Serialize(item);
             return _producer.ProduceAsync(
                 _topic,
-                new Message<Null, T>
+                new Message<Null, string>
                 {
-                    Value = item
+                    Value = stringItem
                 });
         }
 
@@ -79,6 +79,14 @@ namespace Take.Elephant.Kafka
             var json = JsonConvert.SerializeObject(data, Formatting.None);
 
             return Serializers.Utf8.Serialize(json, context);
+        }
+    }
+
+    public class StringSerializer : Confluent.Kafka.ISerializer<string>
+    {
+        public byte[] Serialize(string data, SerializationContext context)
+        {
+            return Serializers.Utf8.Serialize(data, context);
         }
     }
 }
