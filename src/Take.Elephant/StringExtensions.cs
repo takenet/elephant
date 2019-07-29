@@ -1,5 +1,8 @@
 using System;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
 using SmartFormat;
 
 namespace Take.Elephant
@@ -39,6 +42,45 @@ namespace Take.Elephant
         /// <param name="source"></param>
         /// <returns></returns>
         public static string Format(this string format, object source) => Smart.Format(format, source);
+
+        /// <summary>
+        /// Check if the strings are equals ignoring the casing.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool EqualsOrdinalIgnoreCase(this string a, string b)
+        {
+            return string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns the DataMember name of the property that matches the provided propertyname
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public static string GetPropertyDataMemberName<T>(this string propertyName)
+        {
+            var property = typeof(T).GetProperties().SingleOrDefault(x =>
+                x.Name.EqualsOrdinalIgnoreCase(propertyName));
+
+            if (property == null)
+            {
+                return String.Empty;
+            }
+
+            var dataMemberAttribute = (DataMemberAttribute)property
+                .GetCustomAttributes(typeof(DataMemberAttribute), true)
+                .FirstOrDefault();
+
+            if (dataMemberAttribute == null)
+            {
+                return String.Empty;
+            }
+
+            return dataMemberAttribute.Name;
+        }
     }
 }
 
