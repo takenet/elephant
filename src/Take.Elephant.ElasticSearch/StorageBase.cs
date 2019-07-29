@@ -1,25 +1,28 @@
 ﻿using Nest;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Take.Elephant.ElasticSearch.Mapping;
+using Take.Elephant.Elasticsearch.Mapping;
 
-namespace Take.Elephant.ElasticSearch
+namespace Take.Elephant.Elasticsearch
 {
     public class StorageBase<T> : IQueryableStorage<T> where T : class
     {
         protected readonly IElasticClient ElasticClient;
-        private readonly IElasticSearchConfiguration _configuration;
+        private readonly IElasticsearchConfiguration _configuration;
+        private readonly ConcurrentDictionary<string, Func<T, object>> _propertiesDictionary;
 
         protected IMapping Mapping { get; }
 
         private string _index => Mapping.Index ?? _configuration.DefaultIndex;
 
-        public StorageBase(IElasticSearchConfiguration configuration, IMapping mapping)
+        public StorageBase(IElasticsearchConfiguration configuration, IMapping mapping)
         {
             _configuration = configuration;
 
@@ -29,12 +32,14 @@ namespace Take.Elephant.ElasticSearch
 
             Mapping = mapping;
             ElasticClient = new ElasticClient(settings);
+            _propertiesDictionary = new ConcurrentDictionary<string, Func<T, object>>();
         }
 
         public StorageBase(IElasticClient elasticClient, IMapping mapping)
         {
             Mapping = mapping;
             ElasticClient = elasticClient;
+            _propertiesDictionary = new ConcurrentDictionary<string, Func<T, object>>();
         }
 
         public async Task<QueryResult<T>> QueryAsync<TResult>(
@@ -122,10 +127,13 @@ namespace Take.Elephant.ElasticSearch
                 throw new ArgumentNullException(property);
             }
 
-            return entity.GetType().GetProperties()
-               .Single(p => p.Name == property)
-               .GetValue(entity, null)
-               .ToString();
+            var propertyAcessor = _propertiesDictionary
+                .GetOrAdd(property, e => 
+                    TypeUtil.BuildGetAccessor(
+                        typeof(T).GetProperties()
+                        .Single(p => p.Name == property)));
+
+            return propertyAcessor(entity)?.ToString();
         }
     }
 }

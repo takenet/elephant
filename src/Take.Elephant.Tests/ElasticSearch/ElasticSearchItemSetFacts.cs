@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Take.Elephant.ElasticSearch;
-using Take.Elephant.ElasticSearch.Mapping;
+using Take.Elephant.Elasticsearch;
+using Take.Elephant.Elasticsearch.Mapping;
 using Xunit;
 
-namespace Take.Elephant.Tests.ElasticSearch
+namespace Take.Elephant.Tests.Elasticsearch
 {
-    [Trait("Category", nameof(ElasticSearch))]
-    public class ElasticSearchItemSetFacts : ItemSetFacts
+    [Trait("Category", nameof(Elasticsearch))]
+    public class ElasticsearchItemSetFacts : ItemSetFacts
     {
         public override ISet<Item> Create()
         {
@@ -25,8 +25,8 @@ namespace Take.Elephant.Tests.ElasticSearch
                 .DefaultIndex("tests");
 
             return new DelayedSetDecorator<Item>(
-                    new ElasticSearchSet<Item>(
-                    new ElasticClient(settings), mapping), 1000);
+                    new ElasticsearchSet<Item>(
+                        new ElasticClient(settings), mapping), 1000);
         }
 
         [Fact(Skip = "Elasticsearch doesn't implement a lazy IEnumerable, so the AsEnumerableAsync method will return a snapshot of the index.")]

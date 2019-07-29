@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Take.Elephant.Azure\Take.Elephant.Azure.csproj" />
-    <ProjectReference Include="..\Take.Elephant.ElasticSearch\Take.Elephant.ElasticSearch.csproj" />
+    <ProjectReference Include="..\Take.Elephant.ElasticSearch\Take.Elephant.Elasticsearch.csproj" />
     <ProjectReference Include="..\Take.Elephant.Msmq\Take.Elephant.Msmq.csproj" />
     <ProjectReference Include="..\Take.Elephant.Kafka\Take.Elephant.Kafka.csproj" />
     <ProjectReference Include="..\Take.Elephant.Redis\Take.Elephant.Redis.csproj" />

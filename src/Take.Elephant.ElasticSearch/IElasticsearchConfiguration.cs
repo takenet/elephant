@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Take.Elephant.ElasticSearch
+namespace Take.Elephant.Elasticsearch
 {
     //string host, string username, string password, string defaultIndex
-    public interface IElasticSearchConfiguration
+    public interface IElasticsearchConfiguration
     {
         string Hostname { get; }
-        string Username { get; }
-        string Password { get; }
-        string DefaultIndex { get; }
 
+        string Username { get; }
+
+        string Password { get; }
+
+        string DefaultIndex { get; }
     }
 }

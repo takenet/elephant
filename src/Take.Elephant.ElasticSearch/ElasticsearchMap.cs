@@ -5,40 +5,40 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using Nest;
-using Take.Elephant.ElasticSearch.Mapping;
+using Take.Elephant.Elasticsearch.Mapping;
 
-namespace Take.Elephant.ElasticSearch
+namespace Take.Elephant.Elasticsearch
 {
-    public class ElasticSearchMap<TKey, T> : StorageBase<T>, IMap<TKey, T> where T : class
+    public class ElasticsearchMap<TKey, T> : StorageBase<T>, IMap<TKey, T> where T : class
     {
-        public ElasticSearchMap(IElasticSearchConfiguration configuration, IMapping mapping)
+        public ElasticsearchMap(IElasticsearchConfiguration configuration, IMapping mapping)
             : base(configuration, mapping)
         {
         }
 
-        public ElasticSearchMap(IElasticClient client, IMapping mapping)
+        public ElasticsearchMap(IElasticClient client, IMapping mapping)
             : base(client, mapping)
         {
         }
 
-        public async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await ContainsKeyAsync(key.ToString(), cancellationToken);
+            return ContainsKeyAsync(key.ToString(), cancellationToken);
         }
 
-        public async Task<T> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<T> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await GetValueOrDefaultAsync(key.ToString(), cancellationToken);
+            return GetValueOrDefaultAsync(key.ToString(), cancellationToken);
         }
 
-        public async Task<bool> TryAddAsync(TKey key, T value, bool overwrite = false, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> TryAddAsync(TKey key, T value, bool overwrite = false, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await TryAddAsync(key.ToString(), value, overwrite, cancellationToken);
+            return TryAddAsync(key.ToString(), value, overwrite, cancellationToken);
         }
 
-        public async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await DeleteAsync(key.ToString(), cancellationToken);
+            return DeleteAsync(key.ToString(), cancellationToken);
         }
     }
 }

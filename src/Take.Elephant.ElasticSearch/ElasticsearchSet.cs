@@ -5,25 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Take.Elephant.ElasticSearch.Mapping;
+using Take.Elephant.Elasticsearch.Mapping;
 
-namespace Take.Elephant.ElasticSearch
+namespace Take.Elephant.Elasticsearch
 {
-    public class ElasticSearchSet<T> : StorageBase<T>, ISet<T> where T : class
+    public class ElasticsearchSet<T> : StorageBase<T>, ISet<T> where T : class
     {
         protected string KeyProperty;
 
-        public ElasticSearchSet(string keyProperty, IElasticSearchConfiguration configuration, IMapping mapping)
+        public ElasticsearchSet(string keyProperty, IElasticsearchConfiguration configuration, IMapping mapping)
             : base(configuration, mapping)
         {
         }
 
-        public ElasticSearchSet(IElasticClient client, IMapping mapping)
+        public ElasticsearchSet(IElasticClient client, IMapping mapping)
             : base(client, mapping)
         {
         }
 
-        public async Task AddAsync(T value, CancellationToken cancellationToken = default(CancellationToken))
+        public Task AddAsync(T value, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (value == null)
             {
@@ -31,7 +31,7 @@ namespace Take.Elephant.ElasticSearch
             }
 
             var documentId = GetKeyValue(value);
-            await TryAddAsync(documentId, value, true, cancellationToken);
+            return TryAddAsync(documentId, value, true, cancellationToken);
         }
 
         public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -43,7 +43,7 @@ namespace Take.Elephant.ElasticSearch
             return new AsyncEnumerableWrapper<T>(results.Documents);
         }
 
-        public async Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (value == null)
             {
@@ -51,7 +51,7 @@ namespace Take.Elephant.ElasticSearch
             }
 
             var documentId = GetKeyValue(value);
-            return await ContainsKeyAsync(documentId, cancellationToken);
+            return ContainsKeyAsync(documentId, cancellationToken);
         }
 
         public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -63,7 +63,7 @@ namespace Take.Elephant.ElasticSearch
             return result.Count;
         }
 
-        public async Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (value == null)
             {
@@ -71,7 +71,7 @@ namespace Take.Elephant.ElasticSearch
             }
 
             var documentId = GetKeyValue(value);
-            return await DeleteAsync(documentId, cancellationToken);
+            return DeleteAsync(documentId, cancellationToken);
         }
 
         private string GetKeyValue(T entity) => GetPropertyValue(entity, Mapping.KeyField);

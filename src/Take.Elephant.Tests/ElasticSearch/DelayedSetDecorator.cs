@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Take.Elephant.Tests.ElasticSearch
+namespace Take.Elephant.Tests.Elasticsearch
 {
     internal class DelayedSetDecorator<T> : ISet<T>
     {
@@ -17,34 +17,34 @@ namespace Take.Elephant.Tests.ElasticSearch
             _set = set;
             _delay = delay;
         }
-        public Task AddAsync(T value, CancellationToken cancellationToken = default)
+        public async Task AddAsync(T value, CancellationToken cancellationToken = default)
         {
-            Thread.Sleep(_delay);
-            return _set.AddAsync(value, cancellationToken);
+            await Task.Delay(_delay, cancellationToken);
+            await _set.AddAsync(value, cancellationToken);
         }
 
-        public Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
+        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
         {
-            Thread.Sleep(_delay);
-            return _set.AsEnumerableAsync(cancellationToken);
+            await Task.Delay(_delay, cancellationToken);
+            return await _set.AsEnumerableAsync(cancellationToken);
         }
 
-        public Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
+        public async Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
         {
-            Thread.Sleep(_delay);
-            return _set.ContainsAsync(value, cancellationToken);
+            await Task.Delay(_delay, cancellationToken);
+            return await _set.ContainsAsync(value, cancellationToken);
         }
 
-        public Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
+        public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
-            Thread.Sleep(_delay);
-            return _set.GetLengthAsync(cancellationToken);
+            await Task.Delay(_delay, cancellationToken);
+            return await _set.GetLengthAsync(cancellationToken);
         }
 
-        public Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default)
+        public async Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default)
         {
-            Thread.Sleep(_delay);
-            return _set.TryRemoveAsync(value, cancellationToken);
+            await Task.Delay(_delay, cancellationToken);
+            return await _set.TryRemoveAsync(value, cancellationToken);
         }
     }
 }

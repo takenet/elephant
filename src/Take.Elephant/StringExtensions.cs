@@ -67,7 +67,7 @@ namespace Take.Elephant
 
             if (property == null)
             {
-                return String.Empty;
+                return string.Empty;
             }
 
             var dataMemberAttribute = (DataMemberAttribute)property
@@ -76,7 +76,7 @@ namespace Take.Elephant
 
             if (dataMemberAttribute == null)
             {
-                return String.Empty;
+                return string.Empty;
             }
 
             return dataMemberAttribute.Name;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Take.Elephant.Tests.ElasticSearch
+namespace Take.Elephant.Tests.Elasticsearch
 {
     internal class DelayedMapDecorator<TKey, T> : IMap<TKey, T>
     {
@@ -18,28 +18,28 @@ namespace Take.Elephant.Tests.ElasticSearch
             _delay = delay;
         }
 
-        public Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
+        public async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            Thread.Sleep(_delay);
-            return _map.ContainsKeyAsync(key, cancellationToken);
+            await Task.Delay(_delay, cancellationToken);
+            return await _map.ContainsKeyAsync(key, cancellationToken);
         }
 
-        public Task<T> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
+        public async Task<T> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            Thread.Sleep(_delay);
-            return _map.GetValueOrDefaultAsync(key, cancellationToken);
+            await Task.Delay(_delay, cancellationToken);
+            return await _map.GetValueOrDefaultAsync(key, cancellationToken);
         }
 
-        public Task<bool> TryAddAsync(TKey key, T value, bool overwrite = false, CancellationToken cancellationToken = default)
+        public async Task<bool> TryAddAsync(TKey key, T value, bool overwrite = false, CancellationToken cancellationToken = default)
         {
-            Thread.Sleep(_delay);
-            return _map.TryAddAsync(key, value, overwrite, cancellationToken);
+            await Task.Delay(_delay, cancellationToken);
+            return await _map.TryAddAsync(key, value, overwrite, cancellationToken);
         }
 
-        public Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
+        public async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            Thread.Sleep(_delay);
-            return _map.TryRemoveAsync(key, cancellationToken);
+            await Task.Delay(_delay, cancellationToken);
+            return await _map.TryRemoveAsync(key, cancellationToken);
         }
     }
 }

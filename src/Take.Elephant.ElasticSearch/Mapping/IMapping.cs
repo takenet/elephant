@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Take.Elephant.ElasticSearch.Mapping
+namespace Take.Elephant.Elasticsearch.Mapping
 {
     public interface IMapping
     {
