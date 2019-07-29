@@ -26,7 +26,7 @@ namespace Take.Elephant.Tests.ElasticSearch
 
             return new DelayedSetDecorator<Item>(
                     new ElasticSearchSet<Item>(
-                    new ElasticClient(settings), mapping));
+                    new ElasticClient(settings), mapping), 1000);
         }
     }
 }
