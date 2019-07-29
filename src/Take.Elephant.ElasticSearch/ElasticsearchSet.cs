@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.ElasticSearch;
+using Take.Elephant.ElasticSearch.Mapping;
 
 namespace Take.Elephant.Elasticsearch
 {
@@ -20,9 +21,8 @@ namespace Take.Elephant.Elasticsearch
         /// <param name="username">Elasticsearch username</param>
         /// <param name="password">Elasticsearch password</param>
         /// <param name="defaultIndex"></param>
-        public ElasticSearchSet(string keyProperty, IElasticsearchConfiguration configuration) : base(configuration)
+        public ElasticSearchSet(string keyProperty, IElasticsearchConfiguration configuration, IMapping mapping) : base(configuration, mapping)
         {
-            KeyProperty = keyProperty;
         }
 
         public async Task AddAsync(T value, CancellationToken cancellationToken = default(CancellationToken))
@@ -33,7 +33,10 @@ namespace Take.Elephant.Elasticsearch
 
         public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var results = await ElasticClient.SearchAsync<T>(c => c.Query(q => q.MatchAll()));
+            var results = await ElasticClient.SearchAsync<T>(c => c
+            .Index(Mapping.Index)
+            .Query(q => q.MatchAll()));
+
             return new AsyncEnumerableWrapper<T>(results.Documents);
         }
 
@@ -45,7 +48,10 @@ namespace Take.Elephant.Elasticsearch
 
         public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = await ElasticClient.CountAsync<T>(c => c.Query(q => q.MatchAll()));
+            var result = await ElasticClient.CountAsync<T>(c => c
+                .Index(Mapping.Index)
+                .Query(q => q.MatchAll()));
+
             return result.Count;
         }
 
@@ -55,7 +61,6 @@ namespace Take.Elephant.Elasticsearch
             return await DeleteAsync(documentId, cancellationToken);
         }
 
-        private string GetKeyValue(T entity) => GetPropertyValue(entity, KeyProperty);
-
+        private string GetKeyValue(T entity) => GetPropertyValue(entity, Mapping.KeyField);
     }
 }

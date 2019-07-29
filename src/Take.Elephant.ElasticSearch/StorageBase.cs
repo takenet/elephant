@@ -13,7 +13,7 @@ namespace Take.Elephant.Elasticsearch
 {
     public class StorageBase<T> : IQueryableStorage<T> where T : class
     {
-        protected readonly ElasticClient ElasticClient;
+        protected readonly IElasticClient ElasticClient;
         private readonly IElasticsearchConfiguration _configuration;
 
         protected IMapping Mapping { get; }
@@ -32,8 +32,9 @@ namespace Take.Elephant.Elasticsearch
             ElasticClient = new ElasticClient(settings);
         }
 
-        public StorageBase(ElasticClient elasticClient)
+        public StorageBase(IElasticClient elasticClient, IMapping mapping)
         {
+            Mapping = mapping;
             ElasticClient = elasticClient;
         }
 
