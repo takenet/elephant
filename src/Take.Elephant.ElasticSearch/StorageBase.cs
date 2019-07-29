@@ -6,21 +6,20 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Take.Elephant.ElasticSearch;
 using Take.Elephant.ElasticSearch.Mapping;
 
-namespace Take.Elephant.Elasticsearch
+namespace Take.Elephant.ElasticSearch
 {
     public class StorageBase<T> : IQueryableStorage<T> where T : class
     {
         protected readonly IElasticClient ElasticClient;
-        private readonly IElasticsearchConfiguration _configuration;
+        private readonly IElasticSearchConfiguration _configuration;
 
         protected IMapping Mapping { get; }
 
         private string _index => Mapping.Index ?? _configuration.DefaultIndex;
 
-        public StorageBase(IElasticsearchConfiguration configuration, IMapping mapping)
+        public StorageBase(IElasticSearchConfiguration configuration, IMapping mapping)
         {
             _configuration = configuration;
 
@@ -39,8 +38,8 @@ namespace Take.Elephant.Elasticsearch
         }
 
         public async Task<QueryResult<T>> QueryAsync<TResult>(
-            Expression<Func<T, bool>> where, 
-            Expression<Func<T, TResult>> select, int skip, int take, 
+            Expression<Func<T, bool>> where,
+            Expression<Func<T, TResult>> select, int skip, int take,
             CancellationToken cancellationToken = default)
         {
             var queryDescriptor = where.ParseToQueryContainer<T>();
@@ -55,6 +54,11 @@ namespace Take.Elephant.Elasticsearch
 
         public async Task<bool> ContainsKeyAsync(string key, CancellationToken cancellationToken = default)
         {
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
             var response = await ElasticClient.DocumentExistsAsync<T>(key, d => d
                 .Index(_index), cancellationToken);
 
@@ -63,6 +67,11 @@ namespace Take.Elephant.Elasticsearch
 
         public async Task<T> GetValueOrDefaultAsync(string key, CancellationToken cancellationToken = default)
         {
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
             var result = await ElasticClient.SearchAsync<T>(s => s
                 .Index(_index)
                 .Query(q => q.Ids(a => a.Values(key.ToString()))), cancellationToken);
@@ -72,6 +81,16 @@ namespace Take.Elephant.Elasticsearch
 
         public async Task<bool> TryAddAsync(string key, T value, bool overwrite = false, CancellationToken cancellationToken = default)
         {
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             if (overwrite || !await ContainsKeyAsync(key, cancellationToken))
             {
                 var result = await ElasticClient.IndexAsync(new IndexRequest<T>(value, _index,
@@ -85,7 +104,12 @@ namespace Take.Elephant.Elasticsearch
 
         public async Task<bool> DeleteAsync(string key, CancellationToken cancellationToken = default)
         {
-            var result = await ElasticClient.DeleteAsync<T>(key, 
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            var result = await ElasticClient.DeleteAsync<T>(key,
                 d => d.Index(_index), cancellationToken);
 
             return result.IsValid;
@@ -93,6 +117,11 @@ namespace Take.Elephant.Elasticsearch
 
         protected string GetPropertyValue(T entity, string property)
         {
+            if (property == null)
+            {
+                throw new ArgumentNullException(property);
+            }
+
             return entity.GetType().GetProperties()
                .Single(p => p.Name == property)
                .GetValue(entity, null)

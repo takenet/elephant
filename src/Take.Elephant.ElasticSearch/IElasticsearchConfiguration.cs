@@ -5,7 +5,7 @@ using System.Text;
 namespace Take.Elephant.ElasticSearch
 {
     //string host, string username, string password, string defaultIndex
-    public interface IElasticsearchConfiguration
+    public interface IElasticSearchConfiguration
     {
         string Hostname { get; }
         string Username { get; }

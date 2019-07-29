@@ -5,15 +5,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using Nest;
-using Take.Elephant.ElasticSearch;
 using Take.Elephant.ElasticSearch.Mapping;
 
-namespace Take.Elephant.Elasticsearch
+namespace Take.Elephant.ElasticSearch
 {
     public class ElasticSearchMap<TKey, T> : StorageBase<T>, IMap<TKey, T> where T : class
     {
-        public ElasticSearchMap(IElasticsearchConfiguration configuration, IMapping mapping)
+        public ElasticSearchMap(IElasticSearchConfiguration configuration, IMapping mapping)
             : base(configuration, mapping)
+        {
+        }
+
+        public ElasticSearchMap(IElasticClient client, IMapping mapping)
+            : base(client, mapping)
         {
         }
 

@@ -21,7 +21,7 @@ namespace Take.Elephant.ElasticSearch.Mapping
             Index = index;
         }
 
-        public MappingBuilder WithIndex(string index)
+        public static MappingBuilder WithIndex(string index)
         {
             return new MappingBuilder(index);
         }

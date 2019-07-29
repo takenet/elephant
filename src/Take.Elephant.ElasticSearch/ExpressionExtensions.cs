@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Take.Elephant.Elasticsearch
+namespace Take.Elephant.ElasticSearch
 {
     /// <summary>
     /// Expression extension methods
