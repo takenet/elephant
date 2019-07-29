@@ -28,5 +28,11 @@ namespace Take.Elephant.Tests.ElasticSearch
                     new ElasticSearchSet<Item>(
                     new ElasticClient(settings), mapping), 1000);
         }
+
+        [Fact(Skip = "Elasticsearch doesn't implement a lazy IEnumerable, so the AsEnumerableAsync method will return a snapshot of the index.")]
+        public override Task EnumerateAfterRemovingItemsSucceeds()
+        {
+            return base.EnumerateAfterRemovingItemsSucceeds();
+        }
     }
 }
