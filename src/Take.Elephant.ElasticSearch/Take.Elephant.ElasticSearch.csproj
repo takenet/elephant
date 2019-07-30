@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <Version>0.5.0</Version>
+    <Authors>takenet</Authors>
+    <Company>Take</Company>
+    <Product>Elephant Elasticsearch</Product>
+    <Description>Elephant storage library</Description>
+    <Copyright>Copyright © 2015 Curupira S/A</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
+    <PackageTags>elephant</PackageTags>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NEST" Version="7.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Take.Elephant\Take.Elephant.csproj" />
+  </ItemGroup>
+
+</Project>
