@@ -12,34 +12,36 @@ using Take.Elephant.Elasticsearch.Mapping;
 
 namespace Take.Elephant.Elasticsearch
 {
-    public class StorageBase<T> : IQueryableStorage<T> where T : class
+    public abstract class StorageBase<T> : IQueryableStorage<T> where T : class
     {
-        protected readonly IElasticClient ElasticClient;
-        private readonly IElasticsearchConfiguration _configuration;
+        private readonly ConnectionSettings _connectionSettings;
         private readonly ConcurrentDictionary<string, Func<T, object>> _propertiesDictionary;
-
+        protected readonly IElasticClient ElasticClient;
         protected IMapping Mapping { get; }
 
-        private string _index => Mapping.Index ?? _configuration.DefaultIndex;
-
-        public StorageBase(IElasticsearchConfiguration configuration, IMapping mapping)
+        public StorageBase(string hostname, string username, string password, string defaultIndex, IMapping mapping)
         {
-            _configuration = configuration;
-
-            var settings = new ConnectionSettings(new Uri(_configuration.Hostname))
-                .BasicAuthentication(_configuration.Username, _configuration.Password)
-                .DefaultIndex(_configuration.DefaultIndex);
-
-            Mapping = mapping;
-            ElasticClient = new ElasticClient(settings);
             _propertiesDictionary = new ConcurrentDictionary<string, Func<T, object>>();
+            _connectionSettings = new ConnectionSettings(new Uri(hostname))
+                .BasicAuthentication(username, password)
+                .DefaultIndex(defaultIndex);
+            Mapping = mapping;
+            ElasticClient = new ElasticClient(_connectionSettings);
+        }
+
+        public StorageBase(ConnectionSettings connectionSettings, IMapping mapping)
+        {
+            _propertiesDictionary = new ConcurrentDictionary<string, Func<T, object>>();
+            _connectionSettings = connectionSettings;
+            Mapping = mapping;
+            ElasticClient = new ElasticClient(_connectionSettings);
         }
 
         public StorageBase(IElasticClient elasticClient, IMapping mapping)
         {
+            _propertiesDictionary = new ConcurrentDictionary<string, Func<T, object>>();
             Mapping = mapping;
             ElasticClient = elasticClient;
-            _propertiesDictionary = new ConcurrentDictionary<string, Func<T, object>>();
         }
 
         public async Task<QueryResult<T>> QueryAsync<TResult>(
@@ -50,7 +52,7 @@ namespace Take.Elephant.Elasticsearch
             var queryDescriptor = where.ParseToQueryContainer<T>();
 
             var result = await ElasticClient.SearchAsync<T>(s => s
-                .Index(_index)
+                .Index(Mapping.Index)
                 .Query(_ => queryDescriptor)
                 .From(skip).Size(take), cancellationToken);
 
@@ -65,7 +67,7 @@ namespace Take.Elephant.Elasticsearch
             }
 
             var response = await ElasticClient.DocumentExistsAsync<T>(key, d => d
-                .Index(_index), cancellationToken);
+                .Index(Mapping.Index), cancellationToken);
 
             return response.Exists;
         }
@@ -77,11 +79,11 @@ namespace Take.Elephant.Elasticsearch
                 throw new ArgumentNullException(nameof(key));
             }
 
-            var result = await ElasticClient.SearchAsync<T>(s => s
-                .Index(_index)
-                .Query(q => q.Ids(a => a.Values(key.ToString()))), cancellationToken);
+            var result = await ElasticClient.GetAsync<T>(key,
+                d => d.Index(Mapping.Index),
+                cancellationToken);
 
-            return result.Documents.FirstOrDefault();
+            return result?.Source;
         }
 
         public async Task<bool> TryAddAsync(string key, T value, bool overwrite = false, CancellationToken cancellationToken = default)
@@ -98,7 +100,7 @@ namespace Take.Elephant.Elasticsearch
 
             if (overwrite || !await ContainsKeyAsync(key, cancellationToken))
             {
-                var result = await ElasticClient.IndexAsync(new IndexRequest<T>(value, _index,
+                var result = await ElasticClient.IndexAsync(new IndexRequest<T>(value, Mapping.Index,
                     key.ToString()), cancellationToken);
 
                 return result.IsValid;
@@ -115,7 +117,7 @@ namespace Take.Elephant.Elasticsearch
             }
 
             var result = await ElasticClient.DeleteAsync<T>(key,
-                d => d.Index(_index), cancellationToken);
+                d => d.Index(Mapping.Index), cancellationToken);
 
             return result.IsValid;
         }

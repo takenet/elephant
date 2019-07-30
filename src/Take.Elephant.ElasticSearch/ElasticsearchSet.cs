@@ -13,8 +13,13 @@ namespace Take.Elephant.Elasticsearch
     {
         protected string KeyProperty;
 
-        public ElasticsearchSet(string keyProperty, IElasticsearchConfiguration configuration, IMapping mapping)
-            : base(configuration, mapping)
+        public ElasticsearchSet(string hostname, string username, string password, string defaultIndex, IMapping mapping)
+            : base(hostname, username, password, defaultIndex, mapping)
+        {
+        }
+
+        public ElasticsearchSet(ConnectionSettings connectionSettings, IMapping mapping)
+            : base(connectionSettings, mapping)
         {
         }
 

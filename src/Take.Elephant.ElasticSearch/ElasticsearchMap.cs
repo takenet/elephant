@@ -11,8 +11,13 @@ namespace Take.Elephant.Elasticsearch
 {
     public class ElasticsearchMap<TKey, T> : StorageBase<T>, IMap<TKey, T> where T : class
     {
-        public ElasticsearchMap(IElasticsearchConfiguration configuration, IMapping mapping)
-            : base(configuration, mapping)
+        public ElasticsearchMap(string hostname, string username, string password, string defaultIndex, IMapping mapping)
+            : base(hostname, username, password, defaultIndex, mapping)
+        {
+        }
+
+        public ElasticsearchMap(ConnectionSettings connectionSettings, IMapping mapping)
+            : base(connectionSettings, mapping)
         {
         }
 
