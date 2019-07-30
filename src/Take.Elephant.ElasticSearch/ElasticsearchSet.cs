@@ -11,8 +11,6 @@ namespace Take.Elephant.Elasticsearch
 {
     public class ElasticsearchSet<T> : StorageBase<T>, ISet<T> where T : class
     {
-        protected string KeyProperty;
-
         public ElasticsearchSet(string hostname, string username, string password, string defaultIndex, IMapping mapping)
             : base(hostname, username, password, defaultIndex, mapping)
         {
