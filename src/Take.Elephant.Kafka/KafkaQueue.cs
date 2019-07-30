@@ -14,11 +14,12 @@ namespace Take.Elephant.Kafka
             ProducerConfig producerConfig,
             ConsumerConfig consumerConfig,
             string topic,
-            Confluent.Kafka.ISerializer<T> serializer = null,
-            IDeserializer<T> deserializer = null)
+            Take.Elephant.ISerializer<T> serializer,
+            Confluent.Kafka.ISerializer<string> kafkaSerializer = null,
+            IDeserializer<string> kafkaDeserializer = null)
         {
-            _senderQueue = new KafkaSenderQueue<T>(producerConfig, topic, serializer);
-            _receiverQueue = new KafkaReceiverQueue<T>(consumerConfig, topic, deserializer);
+            _senderQueue = new KafkaSenderQueue<T>(producerConfig, topic, serializer, kafkaSerializer);
+            _receiverQueue = new KafkaReceiverQueue<T>(consumerConfig, topic, serializer, kafkaDeserializer);
         }
 
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)

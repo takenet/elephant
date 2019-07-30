@@ -5,6 +5,7 @@ using System.Linq;
 using Confluent.Kafka.Admin;
 using Take.Elephant.Kafka;
 using Xunit;
+using Take.Elephant.Tests.Azure;
 
 namespace Take.Elephant.Tests.Kafka
 {
@@ -16,7 +17,7 @@ namespace Take.Elephant.Tests.Kafka
             ClientConfig clientConfig;
             var topic = "items";
 
-            var localKafka = true;
+            var localKafka = false;
 
             // Local Kafka
             if (localKafka)
@@ -31,8 +32,8 @@ namespace Take.Elephant.Tests.Kafka
             //Azure Event Hub
             else
             {
-                var fqdn = "";
-                var connectionString = "";
+                var fqdn = "hmg-msging.servicebus.windows.net:9093";
+                var connectionString = "Endpoint=sb://hmg-msging.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=3AGYtV1+SMDSEKpiXOKTJFVP2h05Cvy+iaAf1uQwREQ=";
                 var caCertPath = Path.Combine(Environment.CurrentDirectory, "Kafka", "cacert.pem");
                 clientConfig = new ClientConfig
                 {
@@ -68,8 +69,8 @@ namespace Take.Elephant.Tests.Kafka
                 consumer.Close();
             }
             
-            var senderQueue = new KafkaSenderQueue<Item>(new ProducerConfig(clientConfig), topic, new JsonSerializer<Item>());
-            var receiverQueue = new KafkaReceiverQueue<Item>(consumerConfig, topic, new JsonDeserializer<Item>());
+            var senderQueue = new KafkaSenderQueue<Item>(new ProducerConfig(clientConfig), topic, new JsonItemSerializer());
+            var receiverQueue = new KafkaReceiverQueue<Item>(consumerConfig, topic, new JsonItemSerializer());
             receiverQueue.OpenAsync(CancellationToken).Wait();
             return (senderQueue, receiverQueue);
         }

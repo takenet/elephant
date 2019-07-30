@@ -47,9 +47,9 @@ namespace Take.Elephant.Tests
             // Arrange
             var (senderQueue, receiverQueue) = Create();
             var item = CreateItem();
-            await senderQueue.EnqueueAsync(item, CancellationToken);
 
             // Act
+            await senderQueue.EnqueueAsync(item, CancellationToken);
             await senderQueue.EnqueueAsync(item, CancellationToken);
 
             // Assert
