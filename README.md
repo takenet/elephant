@@ -27,8 +27,8 @@ The idea behind this library is expose a common layer that can be used with mult
 
 Name             | Description												| Implementations
 -----------------|----------------------------------------------------------|----------------
-Map              | Mapper that provides fast access to a value using a key. | Memory, Redis, SQL Server, PostgreSQL
-Set              | Set of unique items.										| Memory, Redis, SQL Server, PostgreSQL
+Map              | Mapper that provides fast access to a value using a key. | Memory, Redis, SQL Server, PostgreSQL, Elasticsearch
+Set              | Set of unique items.										| Memory, Redis, SQL Server, PostgreSQL, Elasticsearch
 Queue            | FIFO storage container.									| Memory, Redis, RabbitMQ, MSMQ
 QueryableStorage | Storage that supports queries.							| Memory, SQL Server, PostgreSQL
 
@@ -67,6 +67,7 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 * RabbitMQ
 * Microsoft Message Queueing
 * Kafka
+* Elasticsearch
 
 ## Requirements (to build from source)
 * C# 7.3 (Visual Studio 2015 or newer)

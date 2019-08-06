@@ -1,7 +1,7 @@
-﻿using Microsoft.WindowsAzure.Storage;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.WindowsAzure.Storage.Queue;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Queue;
 using Take.Elephant.Azure;
 using Xunit;
 
