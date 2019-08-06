@@ -41,6 +41,7 @@ namespace Take.Elephant.Elasticsearch
         {
             var results = await ElasticClient.SearchAsync<T>(c => c
             .Index(Mapping.Index)
+            .Type(Mapping.Type)
             .Query(q => q.MatchAll()));
 
             return new AsyncEnumerableWrapper<T>(results.Documents);
@@ -61,6 +62,7 @@ namespace Take.Elephant.Elasticsearch
         {
             var result = await ElasticClient.CountAsync<T>(c => c
                 .Index(Mapping.Index)
+                .Type(Mapping.Type)
                 .Query(q => q.MatchAll()));
 
             return result.Count;

@@ -15,6 +15,11 @@ namespace Take.Elephant.Elasticsearch.Mapping
         string Index { get; }
 
         /// <summary>
+        /// Elasticsearch document type
+        /// </summary>
+        string Type { get; }
+
+        /// <summary>
         /// Elasticsearch document key field
         /// </summary>
         string KeyField { get; }
