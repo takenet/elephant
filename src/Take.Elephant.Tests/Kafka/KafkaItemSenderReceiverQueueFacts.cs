@@ -17,7 +17,7 @@ namespace Take.Elephant.Tests.Kafka
             ClientConfig clientConfig;
             var topic = "items";
 
-            var localKafka = false;
+            var localKafka = true;
 
             // Local Kafka
             if (localKafka)
@@ -32,8 +32,8 @@ namespace Take.Elephant.Tests.Kafka
             //Azure Event Hub
             else
             {
-                var fqdn = "hmg-msging.servicebus.windows.net:9093";
-                var connectionString = "Endpoint=sb://hmg-msging.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=3AGYtV1+SMDSEKpiXOKTJFVP2h05Cvy+iaAf1uQwREQ=";
+                var fqdn = "";
+                var connectionString = "";
                 var caCertPath = Path.Combine(Environment.CurrentDirectory, "Kafka", "cacert.pem");
                 clientConfig = new ClientConfig
                 {
