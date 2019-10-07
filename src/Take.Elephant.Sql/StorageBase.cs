@@ -47,7 +47,8 @@ namespace Take.Elephant.Sql
         {
             using (var command = connection.CreateContainsCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues))
             {
-                return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                var queryResult = await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                return queryResult is bool result && result;
             }
         }
 
