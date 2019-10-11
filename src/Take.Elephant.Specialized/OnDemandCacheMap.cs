@@ -7,17 +7,22 @@ namespace Take.Elephant.Specialized
     public class OnDemandCacheMap<TKey, TValue> : OnDemandCacheStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
     {
         protected readonly TimeSpan CacheExpiration;
+        protected readonly TimeSpan CacheFaultTolerance;
 
-        public OnDemandCacheMap(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, TimeSpan cacheExpiration = default(TimeSpan))
+        public OnDemandCacheMap(
+            IMap<TKey, TValue> source,
+            IMap<TKey, TValue> cache,
+            TimeSpan cacheExpiration = default,
+            TimeSpan cacheFaultTolerance = default)
             : base(source, cache)
         {
-            if (cacheExpiration != default(TimeSpan)
-                && !(cache is IExpirableKeyMap<TKey, TValue>))
+            if (cacheExpiration != default && !(cache is IExpirableKeyMap<TKey, TValue>))
             {
                 throw new ArgumentException("To enable cache expiration, the cache map should implement IExpirableKeyMap");
             }
 
             CacheExpiration = cacheExpiration;
+            CacheFaultTolerance = cacheFaultTolerance;
         }
 
         public virtual Task<bool> TryAddAsync(TKey key,
@@ -83,7 +88,7 @@ namespace Take.Elephant.Specialized
 
             if (ttl < CacheExpiration)
             {
-                await expirableCache.SetRelativeKeyExpirationAsync(key, ttl);
+                await expirableCache.SetRelativeKeyExpirationAsync(key, ttl.Add(CacheFaultTolerance));
             }
         }
 
@@ -103,7 +108,7 @@ namespace Take.Elephant.Specialized
 
             if (expiration - DateTimeOffset.UtcNow < CacheExpiration)
             {
-                await expirableCache.SetAbsoluteKeyExpirationAsync(key, expiration);
+                await expirableCache.SetAbsoluteKeyExpirationAsync(key, expiration.Add(CacheFaultTolerance));
             }
         }
     }
