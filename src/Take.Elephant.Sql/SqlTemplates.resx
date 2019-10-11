@@ -220,9 +220,17 @@ AND TABLE_NAME = '{tableName}'</value>
     <value>INSERT INTO {schemaName}.{tableName} ({columns}) OUTPUT inserted.{outputColumns} VALUES ({values})</value>
   </data>
   <data name="InsertWhereNotExists" xml:space="preserve">
-    <value>INSERT INTO {schemaName}.{tableName} ({columns}) 
-SELECT {values}
-WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} )</value>
+    <value>
+      BEGIN TRY
+        INSERT INTO {schemaName}.{tableName} ({columns}) 
+        SELECT {values}
+        WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} )
+      END TRY
+      BEGIN CATCH
+        IF ERROR_NUMBER() &lt;&gt; 2627
+        THROW
+      END CATCH
+    </value>
   </data>
   <data name="Int16IdentityColumnDefinition" xml:space="preserve">
     <value>{columnName} SMALLINT NOT NULL IDENTITY(1,1)</value>

@@ -189,7 +189,9 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(tableName),
                     columns = columnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     values = columnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate(),
-                    filter = filterValues == null || !filterValues.Any() ? databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsZero) : SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
+                    filter = filterValues == null || filterValues.Count == 0 
+                        ? databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsZero) 
+                        : SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
                 },
                 columnValues.Select(c => c.ToDbParameter(databaseDriver)));
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Ploeh.AutoFixture;
 using Xunit;
 
@@ -71,8 +72,8 @@ namespace Take.Elephant.Tests
             AssertEquals(storedValue, newValue);
         }
 
-        [Fact(DisplayName = "AddExistingKeyFails")]
-        public virtual async Task AddExistingKeyFails()
+        [Fact(DisplayName = nameof(AddExistingKeyReturnsFalse))]
+        public virtual async Task AddExistingKeyReturnsFalse()
         {
             // Arrange
             var map = Create();
@@ -89,6 +90,31 @@ namespace Take.Elephant.Tests
             var storedValue = await map.GetValueOrDefaultAsync(key);
             AssertEquals(storedValue, value);
         }
+        
+        [Fact(DisplayName = nameof(AddExistingKeyConcurrentlyReturnsFalse))]
+        public virtual async Task AddExistingKeyConcurrentlyReturnsFalse()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var value = CreateValue(key);
+            var count = 100;
+
+            // Act
+            var actuals = await
+                Task.WhenAll(
+                    Enumerable
+                        .Range(0, 100)
+                        .Select(i => Task.Run(
+                            () => map.TryAddAsync(key, value, false))));
+            
+            // Assert
+            AssertEquals(actuals.Count(c => c == true), 1);
+            AssertEquals(actuals.Count(c => c == false), count - 1);
+            
+            var storedValue = await map.GetValueOrDefaultAsync(key);
+            AssertEquals(storedValue, value);
+        }        
 
         [Fact(DisplayName = "AddExistingKeyAndValueFails")]
         public virtual async Task AddExistingKeyAndValueFails()

@@ -10,7 +10,6 @@
 
 namespace Take.Elephant.Sql {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace Take.Elephant.Sql {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class SqlTemplates {
@@ -40,7 +39,7 @@ namespace Take.Elephant.Sql {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Take.Elephant.Sql.SqlTemplates", typeof(SqlTemplates).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Take.Elephant.Sql.SqlTemplates", typeof(SqlTemplates).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -356,9 +355,17 @@ namespace Take.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO {schemaName}.{tableName} ({columns}) 
-        ///SELECT {values}
-        ///WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} ).
+        ///   Looks up a localized string similar to 
+        ///      BEGIN TRY
+        ///        INSERT INTO {schemaName}.{tableName} ({columns}) 
+        ///        SELECT {values}
+        ///        WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} )
+        ///      END TRY
+        ///      BEGIN CATCH
+        ///        IF ERROR_NUMBER() &lt;&gt; 2627
+        ///        THROW
+        ///      END CATCH
+        ///    .
         /// </summary>
         public static string InsertWhereNotExists {
             get {
