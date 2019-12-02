@@ -9,6 +9,10 @@ using Microsoft.Azure.EventHubs;
 
 namespace Take.Elephant.Azure
 {
+    /// <summary>
+    /// TODO: Incomplete implementation, should remain internal. 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     internal class AzureEventHubReceiverQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, IBatchReceiverQueue<T>, IOpenable, ICloseable
     {
         private readonly string _consumerGroupName;
@@ -67,9 +71,7 @@ namespace Take.Elephant.Azure
             while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
                 var eventDatas = await _receiver.ReceiveAsync(1, interval.Interval);
-                
             }
             
             throw new NotImplementedException();
@@ -78,7 +80,7 @@ namespace Take.Elephant.Azure
         public async Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken)
         {
             await OpenIfRequiredAsync(cancellationToken);
-            //_receiver.ReceiveAsync(maxBatchSize, )
+
             return null;
         }
         
