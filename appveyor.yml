@@ -1,5 +1,5 @@
-version: 0.6.{build}
-image: Visual Studio 2017
+version: 0.7.{build}
+image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
 cache: src/packages
@@ -14,7 +14,6 @@ build:
   verbosity: minimal
 after_build:
 - dotnet pack src/Take.Elephant/Take.Elephant.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
-- dotnet pack src/Take.Elephant.Msmq/Take.Elephant.Msmq.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet pack src/Take.Elephant.Redis/Take.Elephant.Redis.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet pack src/Take.Elephant.Sql/Take.Elephant.Sql.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet pack src/Take.Elephant.Sql.PostgreSql/Take.Elephant.Sql.PostgreSql.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%

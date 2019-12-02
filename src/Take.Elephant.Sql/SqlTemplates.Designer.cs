@@ -355,17 +355,10 @@ namespace Take.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///      BEGIN TRY
-        ///        INSERT INTO {schemaName}.{tableName} ({columns}) 
-        ///        SELECT {values}
-        ///        WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} )
-        ///      END TRY
-        ///      BEGIN CATCH
-        ///        IF ERROR_NUMBER() &lt;&gt; 2627
-        ///        THROW
-        ///      END CATCH
-        ///    .
+        ///   Looks up a localized string similar to set transaction isolation level serializable;
+        ///INSERT INTO {schemaName}.{tableName} ({columns}) 
+        ///SELECT {values}
+        ///WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} ).
         /// </summary>
         public static string InsertWhereNotExists {
             get {

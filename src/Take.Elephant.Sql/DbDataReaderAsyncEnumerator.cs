@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,30 +25,18 @@ namespace Take.Elephant.Sql
             _selectColumns = selectColumns;
         }
 
-        public virtual bool MoveNext()
-        {
-            return _sqlDataReader.Read();
-        }
-
-        public virtual void Reset()
-        {
-            throw new NotSupportedException();
-        }
-
-        object IEnumerator.Current => Current;
-
         public T Current => _mapper.Create(_sqlDataReader, _selectColumns);
 
-        public virtual Task<bool> MoveNextAsync(CancellationToken cancellationToken)
+        public ValueTask<bool> MoveNextAsync()
         {
-            return _sqlDataReader.ReadAsync(cancellationToken);
+            return new ValueTask<bool>(_sqlDataReader.ReadAsync(CancellationToken.None));
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            _sqlDataReader.Dispose();
-            _dbCommand.Dispose();
-            _connection.Dispose();
+            await _sqlDataReader.DisposeAsync().ConfigureAwait(false);
+            await _dbCommand.DisposeAsync().ConfigureAwait(false);
+            await _connection.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

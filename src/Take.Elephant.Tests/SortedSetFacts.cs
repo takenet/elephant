@@ -116,9 +116,9 @@ namespace Take.Elephant.Tests
             var rangedItens = await sortedSet.GetRangeByScoreAsync(0.02, 0.03);
 
             // Assert
-            AssertEquals(rangedItens.Count(), 2);
-            AssertEquals(rangedItens.FirstOrDefault(), secondItem);
-            AssertEquals(rangedItens.LastOrDefault(), thirdItem);
+            AssertEquals(rangedItens.CountAsync().Result, 2);
+            AssertEquals(rangedItens.FirstOrDefaultAsync().Result, secondItem);
+            AssertEquals(rangedItens.ToListAsync().Result.Last(), thirdItem);
         }
 
         [Fact(DisplayName = "RangeByScoreOneItemAsyncSucceeds")]
@@ -140,8 +140,8 @@ namespace Take.Elephant.Tests
             var rangedItens = await sortedSet.GetRangeByScoreAsync(0.02, 0.02);
 
             // Assert
-            AssertEquals(rangedItens.Count(), 1);
-            AssertEquals(rangedItens.FirstOrDefault(), secondItem);
+            AssertEquals(rangedItens.CountAsync().Result, 1);
+            AssertEquals(rangedItens.ToListAsync().Result.FirstOrDefault(), secondItem);
         }
 
         [Fact(DisplayName = "RangeByScoreWithMultipleItensSameScoreSucceeds")]
@@ -163,7 +163,7 @@ namespace Take.Elephant.Tests
             var rangedItens = await sortedSet.GetRangeByScoreAsync(0.02, 0.02);
 
             // Assert
-            AssertEquals(rangedItens.Count(), 2);
+            AssertEquals(rangedItens.CountAsync().Result, 2);
         }
 
         [Fact(DisplayName = "RangeByScoreOutOfRangeSucceeds")]
@@ -185,7 +185,7 @@ namespace Take.Elephant.Tests
             var rangedItens = await sortedSet.GetRangeByScoreAsync(1, 2);
 
             // Assert
-            AssertEquals(rangedItens.Count(), 0);
+            AssertEquals(rangedItens.CountAsync().Result, 0);
         }
 
         [Fact(DisplayName = "RangeByRankTwoItensAsyncItensSucceeds")]
@@ -207,9 +207,9 @@ namespace Take.Elephant.Tests
             var rangedItens = await sortedSet.GetRangeByRankAsync(2, 3);
 
             // Assert
-            AssertEquals(rangedItens.Count(), 2);
-            AssertEquals(rangedItens.FirstOrDefault(), thirdItem);
-            AssertEquals(rangedItens.LastOrDefault(), fourthItem);
+            AssertEquals(rangedItens.CountAsync().Result, 2);
+            AssertEquals(rangedItens.ToListAsync().Result.FirstOrDefault(), thirdItem);
+            AssertEquals(rangedItens.ToListAsync().Result.LastOrDefault(), fourthItem);
         }
 
         [Fact(DisplayName = "RangeByRankMoreIndexesOnlyOneItensSucceeds")]
@@ -231,8 +231,8 @@ namespace Take.Elephant.Tests
             var rangedItens = await sortedSet.GetRangeByRankAsync(3, 6);
 
             // Assert
-            AssertEquals(rangedItens.Count(), 1);
-            AssertEquals(rangedItens.FirstOrDefault(), fourthItem);
+            AssertEquals(rangedItens.CountAsync().Result, 1);
+            AssertEquals(rangedItens.ToListAsync().Result.FirstOrDefault(), fourthItem);
         }
 
         [Fact(DisplayName = "GetListEnumerableSucceeds")]
@@ -254,9 +254,9 @@ namespace Take.Elephant.Tests
             var rangedItens = await sortedSet.AsEnumerableAsync();
 
             // Assert
-            AssertEquals(rangedItens.Count(), 4);
-            AssertEquals(rangedItens.FirstOrDefault(), firstItem);
-            AssertEquals(rangedItens.LastOrDefault(), fourthItem);
+            AssertEquals(rangedItens.CountAsync().Result, 4);
+            AssertEquals(rangedItens.ToListAsync().Result.FirstOrDefault(), firstItem);
+            AssertEquals(rangedItens.ToListAsync().Result.LastOrDefault(), fourthItem);
         }
 
         [Fact(DisplayName = "GetListEnumerableWithScoreSucceeds")]
@@ -278,9 +278,9 @@ namespace Take.Elephant.Tests
             var rangedItens = await sortedSet.AsEnumerableWithScoreAsync();
 
             // Assert
-            AssertEquals(rangedItens.Count(), 4);
-            AssertEquals(rangedItens.FirstOrDefault(), new KeyValuePair<double, T>(0.01, firstItem));
-            AssertEquals(rangedItens.LastOrDefault(), new KeyValuePair<double, T>(0.04, fourthItem));
+            AssertEquals(rangedItens.CountAsync().Result, 4);
+            AssertEquals(rangedItens.ToListAsync().Result.FirstOrDefault(), new KeyValuePair<double, T>(0.01, firstItem));
+            AssertEquals(rangedItens.ToListAsync().Result.LastOrDefault(), new KeyValuePair<double, T>(0.04, fourthItem));
         }
 
         [Fact(DisplayName = "DequeueEmptyReturnsDefault")]

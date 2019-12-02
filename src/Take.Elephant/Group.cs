@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Take.Elephant
@@ -12,11 +13,9 @@ namespace Take.Elephant
     {
         public Group(string key, int total, IAsyncEnumerable<T> items)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (items == null) throw new ArgumentNullException(nameof(items));
-            Key = key;
+            Key = key ?? throw new ArgumentNullException(nameof(key));
             Total = total;
-            Items = items;
+            Items = items ?? throw new ArgumentNullException(nameof(items));
         }
 
         /// <summary>

@@ -64,7 +64,7 @@ namespace Take.Elephant.Redis
             internalSet = CreateList(key, transaction);
 
             var enumerable = await value.AsEnumerableWithScoreAsync().ConfigureAwait(false);
-            foreach (var item in enumerable)
+            await foreach (var item in enumerable)
             {
                 commandTasks.Add(internalSet.AddAsync(item.Value, item.Key));
             }

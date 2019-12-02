@@ -9,69 +9,38 @@ namespace Take.Elephant
     public static class AsyncEnumerableExtensions
     {
         // <summary>
-        // Asynchronously executes the provided action on each element of the <see cref="IDbAsyncEnumerable" />.
-        // </summary>
-        // <param name="action"> The action to be executed. </param>
-        // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
-        // <returns> A Task representing the asynchronous operation. </returns>
-        public static async Task ForEachAsync(
-            this IAsyncEnumerable source, Action<object> action, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (source == null) throw new ArgumentNullException("source");
-            if (action == null) throw new ArgumentNullException("action");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var enumerator = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    Task<bool> moveNextTask;
-                    do
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        var current = enumerator.Current;
-                        moveNextTask = enumerator.MoveNextAsync(cancellationToken);
-                        action(current);
-                    }
-                    while (await moveNextTask.ConfigureAwait(continueOnCapturedContext: false));
-                }
-            }
-        }
-
-        // <summary>
         // Asynchronously executes the provided action on each element of the <see cref="IAsyncEnumerable{T}" />.
         // </summary>
         // <param name="action"> The action to be executed. </param>
         // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
         // <returns> A Task representing the asynchronous operation. </returns>
-        public static async Task ForEachAsync<T>(
-            this IAsyncEnumerable<T> source, Action<T> action, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task ForEachAsync<T>(
+            this IAsyncEnumerable<T> source, Action<T> action, CancellationToken cancellationToken = default)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (action == null) throw new ArgumentNullException("action");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
-            await ForEachAsync(await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false), action, cancellationToken);
+            return ForEachAsync(source.GetAsyncEnumerator(cancellationToken), action, cancellationToken);
         }
 
         private static async Task ForEachAsync<T>(
-            IAsyncEnumerator<T> enumerator, Action<T> action, CancellationToken cancellationToken = default(CancellationToken))
+            IAsyncEnumerator<T> enumerator, Action<T> action, CancellationToken cancellationToken = default)
         {
-            using (enumerator)
+            await using (enumerator)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await enumerator.MoveNextAsync().ConfigureAwait(false))
                 {
-                    Task<bool> moveNextTask;
+                    ValueTask<bool> moveNextTask;
                     do
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var current = enumerator.Current;
-                        moveNextTask = enumerator.MoveNextAsync(cancellationToken);
+                        moveNextTask = enumerator.MoveNextAsync();
                         action(current);
                     }
-                    while (await moveNextTask.ConfigureAwait(continueOnCapturedContext: false));
+                    while (await moveNextTask.ConfigureAwait(false));
                 }
             }
         }
@@ -82,66 +51,35 @@ namespace Take.Elephant
         // <param name="func"> The action to be executed. </param>
         // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
         // <returns> A Task representing the asynchronous operation. </returns>
-        public static async Task ForEachAsync<T>(
-            this IAsyncEnumerable<T> source, Func<T, Task> func, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task ForEachAsync<T>(
+            this IAsyncEnumerable<T> source, Func<T, Task> func, CancellationToken cancellationToken = default)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (func == null) throw new ArgumentNullException("func");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
-            await ForEachAsync(await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false), func, cancellationToken);
+            return ForEachAsync(source.GetAsyncEnumerator(cancellationToken), func, cancellationToken);
         }
 
         private static async Task ForEachAsync<T>(
-            IAsyncEnumerator<T> enumerator, Func<T, Task> func, CancellationToken cancellationToken = default(CancellationToken))
+            IAsyncEnumerator<T> enumerator, Func<T, Task> func, CancellationToken cancellationToken = default)
         {
-            using (enumerator)
+            await using (enumerator)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await enumerator.MoveNextAsync().ConfigureAwait(false))
                 {
-                    Task<bool> moveNextTask;
+                    ValueTask<bool> moveNextTask;
                     do
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var current = enumerator.Current;
-                        moveNextTask = enumerator.MoveNextAsync(cancellationToken);
+                        moveNextTask = enumerator.MoveNextAsync();
                         await func(current).ConfigureAwait(false);
                     }
-                    while (await moveNextTask.ConfigureAwait(continueOnCapturedContext: false));
+                    while (await moveNextTask.ConfigureAwait(false));
                 }
             }
-        }
-
-        // <summary>
-        // Asynchronously creates a <see cref="List{T}" /> from the <see cref="IDbAsyncEnumerable" />.
-        // </summary>
-        // <typeparam name="T"> The type that the elements will be cast to. </typeparam>
-        // <returns>
-        // A <see cref="Task" /> containing a <see cref="List{T}" /> that contains elements from the input sequence.
-        // </returns>
-        public static Task<List<T>> ToListAsync<T>(this IAsyncEnumerable source)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            return source.ToListAsync<T>(CancellationToken.None);
-        }
-
-        // <summary>
-        // Asynchronously creates a <see cref="List{T}" /> from the <see cref="IDbAsyncEnumerable" />.
-        // </summary>
-        // <typeparam name="T"> The type that the elements will be cast to. </typeparam>
-        // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
-        // <returns>
-        // A <see cref="Task" /> containing a <see cref="List{T}" /> that contains elements from the input sequence.
-        // </returns>
-        public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            var list = new List<T>();
-            await source.ForEachAsync(e => list.Add((T)e), cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
-            return list;
         }
 
         // <summary>
@@ -153,7 +91,7 @@ namespace Take.Elephant
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.ToListAsync(CancellationToken.None);
         }
@@ -168,7 +106,7 @@ namespace Take.Elephant
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             var tcs = new TaskCompletionSource<List<T>>();
             var list = new List<T>();
@@ -204,7 +142,7 @@ namespace Take.Elephant
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static Task<T[]> ToArrayAsync<T>(this IAsyncEnumerable<T> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.ToArrayAsync(CancellationToken.None);
         }
@@ -222,9 +160,9 @@ namespace Take.Elephant
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static async Task<T[]> ToArrayAsync<T>(this IAsyncEnumerable<T> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            var list = await source.ToListAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+            var list = await source.ToListAsync(cancellationToken).ConfigureAwait(false);
             return list.ToArray();
         }
 
@@ -246,8 +184,8 @@ namespace Take.Elephant
         public static Task<Dictionary<TKey, TSource>> ToDictionaryAsync<TSource, TKey>(
             this IAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             return ToDictionaryAsync(source, keySelector, IdentityFunction<TSource>.Instance, null, CancellationToken.None);
         }
@@ -271,8 +209,8 @@ namespace Take.Elephant
         public static Task<Dictionary<TKey, TSource>> ToDictionaryAsync<TSource, TKey>(
             this IAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             return ToDictionaryAsync(source, keySelector, IdentityFunction<TSource>.Instance, null, cancellationToken);
         }
@@ -298,8 +236,8 @@ namespace Take.Elephant
         public static Task<Dictionary<TKey, TSource>> ToDictionaryAsync<TSource, TKey>(
             this IAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             return ToDictionaryAsync(source, keySelector, IdentityFunction<TSource>.Instance, comparer, CancellationToken.None);
         }
@@ -327,8 +265,8 @@ namespace Take.Elephant
             this IAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer,
             CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             return ToDictionaryAsync(source, keySelector, IdentityFunction<TSource>.Instance, comparer, cancellationToken);
         }
@@ -358,9 +296,9 @@ namespace Take.Elephant
         public static Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TSource, TKey, TElement>(
             this IAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
-            if (keySelector == null) throw new ArgumentNullException("elementSelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+            if (keySelector == null) throw new ArgumentNullException(nameof(elementSelector));
 
             return ToDictionaryAsync(source, keySelector, elementSelector, null, CancellationToken.None);
         }
@@ -392,9 +330,9 @@ namespace Take.Elephant
             this IAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector,
             CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
-            if (keySelector == null) throw new ArgumentNullException("elementSelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+            if (keySelector == null) throw new ArgumentNullException(nameof(elementSelector));
 
             return ToDictionaryAsync(source, keySelector, elementSelector, null, cancellationToken);
         }
@@ -428,9 +366,9 @@ namespace Take.Elephant
             this IAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector,
             IEqualityComparer<TKey> comparer)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
-            if (keySelector == null) throw new ArgumentNullException("elementSelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+            if (keySelector == null) throw new ArgumentNullException(nameof(elementSelector));
 
             return ToDictionaryAsync(source, keySelector, elementSelector, comparer, CancellationToken.None);
         }
@@ -465,29 +403,27 @@ namespace Take.Elephant
             this IAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector,
             IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
-            if (keySelector == null) throw new ArgumentNullException("elementSelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+            if (keySelector == null) throw new ArgumentNullException(nameof(elementSelector));
 
             var d = new Dictionary<TKey, TElement>(comparer);
-            await
-                source.ForEachAsync(element => d.Add(keySelector(element), elementSelector(element)), cancellationToken).ConfigureAwait(
-                    continueOnCapturedContext: false);
+            await source.ForEachAsync(element => d.Add(keySelector(element), elementSelector(element)), cancellationToken).ConfigureAwait(false);
             return d;
         }
 
 
         public static Task<TSource> FirstAsync<TSource>(this IAsyncEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.FirstAsync(CancellationToken.None);
         }
 
         public static Task<TSource> FirstAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.FirstAsync(predicate, CancellationToken.None);
         }
@@ -495,13 +431,13 @@ namespace Take.Elephant
         public static async Task<TSource> FirstAsync<TSource>(
             this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     return e.Current;
                 }
@@ -509,42 +445,17 @@ namespace Take.Elephant
 
             throw new InvalidOperationException("The sequence is empty");
         }
-
-        public static Task<object> FirstAsync(
-            this IAsyncEnumerable source)
-        {
-            return FirstAsync(source, CancellationToken.None);
-        }
-
-        public static async Task<object> FirstAsync(
-            this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return e.Current;
-                }
-            }
-
-            throw new InvalidOperationException("The sequence is empty");
-        }
-
         public static async Task<TSource> FirstAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     if (predicate(e.Current))
                     {
@@ -556,38 +467,16 @@ namespace Take.Elephant
             throw new InvalidOperationException("No match was found");
         }
 
-        public static Task<object> FirstOrDefaultAsync(this IAsyncEnumerable source)
-        {
-            return FirstOrDefaultAsync(source, CancellationToken.None);
-        }
-
-        public async static Task<object> FirstOrDefaultAsync(this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return e.Current;
-                }
-            }
-
-            return null;
-        }
-
         public static Task<TSource> FirstOrDefaultAsync<TSource>(this IAsyncEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.FirstOrDefaultAsync(CancellationToken.None);
         }
 
         public static Task<TSource> FirstOrDefaultAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.FirstOrDefaultAsync(predicate, CancellationToken.None);
         }
@@ -595,31 +484,31 @@ namespace Take.Elephant
         public static async Task<TSource> FirstOrDefaultAsync<TSource>(
             this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     return e.Current;
                 }
             }
 
-            return default(TSource);
+            return default;
         }
 
         public static async Task<TSource> FirstOrDefaultAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     if (predicate(e.Current))
                     {
@@ -628,59 +517,26 @@ namespace Take.Elephant
                 }
             }
 
-            return default(TSource);
+            return default;
         }
 
         public static Task<TSource> SingleAsync<TSource>(this IAsyncEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SingleAsync(CancellationToken.None);
         }
-
-        public static Task<object> SingleAsync(
-            this IAsyncEnumerable source)
-        {
-            return source.SingleAsync(CancellationToken.None);
-        }
-
-        public static async Task<object> SingleAsync(
-            this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    throw new InvalidOperationException("The sequence is empty");
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var result = e.Current;
-
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return result;
-                }
-            }
-
-            throw new InvalidOperationException("There's more than one element on the sequence");
-        }
-
+        
         public static async Task<TSource> SingleAsync<TSource>(
             this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (!await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     throw new InvalidOperationException("The sequence is empty");
                 }
@@ -689,7 +545,7 @@ namespace Take.Elephant
 
                 var result = e.Current;
 
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (!await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     return result;
                 }
@@ -702,8 +558,8 @@ namespace Take.Elephant
             this IAsyncEnumerable<TSource> source,
             Func<TSource, bool> predicate)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.SingleAsync(predicate, CancellationToken.None);
         }
@@ -711,16 +567,16 @@ namespace Take.Elephant
         public static async Task<TSource> SingleAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var result = default(TSource);
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -748,63 +604,30 @@ namespace Take.Elephant
 
         public static Task<TSource> SingleOrDefaultAsync<TSource>(this IAsyncEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SingleOrDefaultAsync(CancellationToken.None);
-        }
-
-        public static Task<object> SingleOrDefaultAsync(
-            this IAsyncEnumerable source)
-        {
-            return SingleOrDefaultAsync(source, CancellationToken.None);
-        }
-
-        public static async Task<object> SingleOrDefaultAsync(
-            this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return null;
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var result = e.Current;
-
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return result;
-                }
-            }
-
-            throw new InvalidOperationException("More than one element was found");
         }
 
         public static async Task<TSource> SingleOrDefaultAsync<TSource>(
             this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (!await e.MoveNextAsync().ConfigureAwait(false))
                 {
-                    return default(TSource);
+                    return default;
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var result = e.Current;
 
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (!await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     return result;
                 }
@@ -817,8 +640,8 @@ namespace Take.Elephant
             this IAsyncEnumerable<TSource> source,
             Func<TSource, bool> predicate)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.SingleOrDefaultAsync(predicate, CancellationToken.None);
         }
@@ -826,16 +649,16 @@ namespace Take.Elephant
         public static async Task<TSource> SingleOrDefaultAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var result = default(TSource);
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -860,7 +683,7 @@ namespace Take.Elephant
 
         public static Task<bool> ContainsAsync<TSource>(this IAsyncEnumerable<TSource> source, TSource value)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.ContainsAsync(value, CancellationToken.None);
         }
@@ -868,13 +691,13 @@ namespace Take.Elephant
         public static async Task<bool> ContainsAsync<TSource>(
             this IAsyncEnumerable<TSource> source, TSource value, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     if (EqualityComparer<TSource>.Default.Equals(e.Current, value))
                     {
@@ -890,20 +713,20 @@ namespace Take.Elephant
 
         public static Task<bool> AnyAsync<TSource>(this IAsyncEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AnyAsync(CancellationToken.None);
         }
 
         public static async Task<bool> AnyAsync<TSource>(this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     return true;
                 }
@@ -915,8 +738,8 @@ namespace Take.Elephant
         public static Task<bool> AnyAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.AnyAsync(predicate, CancellationToken.None);
         }
@@ -924,14 +747,14 @@ namespace Take.Elephant
         public static async Task<bool> AnyAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     if (predicate(e.Current))
                     {
@@ -948,8 +771,8 @@ namespace Take.Elephant
         public static Task<bool> AllAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.AllAsync(predicate, CancellationToken.None);
         }
@@ -957,14 +780,14 @@ namespace Take.Elephant
         public static async Task<bool> AllAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     if (!predicate(e.Current))
                     {
@@ -980,24 +803,24 @@ namespace Take.Elephant
 
         public static Task<int> CountAsync<TSource>(this IAsyncEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.CountAsync(CancellationToken.None);
         }
 
         public static async Task<int> CountAsync<TSource>(this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var count = 0;
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
                 checked
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1012,8 +835,8 @@ namespace Take.Elephant
         public static Task<int> CountAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.CountAsync(predicate, CancellationToken.None);
         }
@@ -1021,18 +844,18 @@ namespace Take.Elephant
         public static async Task<int> CountAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var count = 0;
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
                 checked
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1049,7 +872,7 @@ namespace Take.Elephant
 
         public static Task<long> LongCountAsync<TSource>(this IAsyncEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.LongCountAsync(CancellationToken.None);
         }
@@ -1057,17 +880,17 @@ namespace Take.Elephant
         public static async Task<long> LongCountAsync<TSource>(
             this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long count = 0;
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
                 checked
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1082,8 +905,8 @@ namespace Take.Elephant
         public static Task<long> LongCountAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.LongCountAsync(predicate, CancellationToken.None);
         }
@@ -1091,18 +914,18 @@ namespace Take.Elephant
         public static async Task<long> LongCountAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long count = 0;
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
                 checked
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1119,14 +942,14 @@ namespace Take.Elephant
 
         public static Task<TSource> MinAsync<TSource>(this IAsyncEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.MinAsync(CancellationToken.None);
         }
 
         public static async Task<TSource> MinAsync<TSource>(this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -1134,9 +957,9 @@ namespace Take.Elephant
             var value = default(TSource);
             if (value == null)
             {
-                using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+                await using (var e = source.GetAsyncEnumerator(cancellationToken))
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1154,9 +977,9 @@ namespace Take.Elephant
             {
                 var hasValue = false;
 
-                using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+                await using (var e = source.GetAsyncEnumerator(cancellationToken))
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1185,14 +1008,14 @@ namespace Take.Elephant
 
         public static Task<TSource> MaxAsync<TSource>(this IAsyncEnumerable<TSource> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.MaxAsync(CancellationToken.None);
         }
 
         public static async Task<TSource> MaxAsync<TSource>(this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -1200,9 +1023,9 @@ namespace Take.Elephant
             var value = default(TSource);
             if (value == null)
             {
-                using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+                await using (var e = source.GetAsyncEnumerator(cancellationToken))
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1220,9 +1043,9 @@ namespace Take.Elephant
             {
                 var hasValue = false;
 
-                using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+                await using (var e = source.GetAsyncEnumerator(cancellationToken))
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1251,21 +1074,21 @@ namespace Take.Elephant
 
         public static Task<int> SumAsync(this IAsyncEnumerable<int> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<int> SumAsync(this IAsyncEnumerable<int> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1281,21 +1104,21 @@ namespace Take.Elephant
 
         public static Task<int?> SumAsync(this IAsyncEnumerable<int?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<int?> SumAsync(this IAsyncEnumerable<int?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1314,21 +1137,21 @@ namespace Take.Elephant
 
         public static Task<long> SumAsync(this IAsyncEnumerable<long> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<long> SumAsync(this IAsyncEnumerable<long> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1344,21 +1167,21 @@ namespace Take.Elephant
 
         public static Task<long?> SumAsync(this IAsyncEnumerable<long?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<long?> SumAsync(this IAsyncEnumerable<long?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1377,21 +1200,21 @@ namespace Take.Elephant
 
         public static Task<float> SumAsync(this IAsyncEnumerable<float> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<float> SumAsync(this IAsyncEnumerable<float> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1407,21 +1230,21 @@ namespace Take.Elephant
 
         public static Task<float?> SumAsync(this IAsyncEnumerable<float?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<float?> SumAsync(this IAsyncEnumerable<float?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1440,21 +1263,21 @@ namespace Take.Elephant
 
         public static Task<double> SumAsync(this IAsyncEnumerable<double> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<double> SumAsync(this IAsyncEnumerable<double> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1470,21 +1293,21 @@ namespace Take.Elephant
 
         public static Task<double?> SumAsync(this IAsyncEnumerable<double?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<double?> SumAsync(this IAsyncEnumerable<double?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1503,21 +1326,21 @@ namespace Take.Elephant
 
         public static Task<decimal> SumAsync(this IAsyncEnumerable<decimal> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<decimal> SumAsync(this IAsyncEnumerable<decimal> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             decimal sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1533,21 +1356,21 @@ namespace Take.Elephant
 
         public static Task<decimal?> SumAsync(this IAsyncEnumerable<decimal?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.SumAsync(CancellationToken.None);
         }
 
         public static async Task<decimal?> SumAsync(this IAsyncEnumerable<decimal?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             decimal sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1566,22 +1389,22 @@ namespace Take.Elephant
 
         public static Task<double> AverageAsync(this IAsyncEnumerable<int> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<double> AverageAsync(this IAsyncEnumerable<int> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1602,22 +1425,22 @@ namespace Take.Elephant
 
         public static Task<double?> AverageAsync(this IAsyncEnumerable<int?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<double?> AverageAsync(this IAsyncEnumerable<int?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1641,22 +1464,22 @@ namespace Take.Elephant
 
         public static Task<double> AverageAsync(this IAsyncEnumerable<long> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<double> AverageAsync(this IAsyncEnumerable<long> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1677,22 +1500,22 @@ namespace Take.Elephant
 
         public static Task<double?> AverageAsync(this IAsyncEnumerable<long?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<double?> AverageAsync(this IAsyncEnumerable<long?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1716,22 +1539,22 @@ namespace Take.Elephant
 
         public static Task<float> AverageAsync(this IAsyncEnumerable<float> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<float> AverageAsync(this IAsyncEnumerable<float> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1752,22 +1575,22 @@ namespace Take.Elephant
 
         public static Task<float?> AverageAsync(this IAsyncEnumerable<float?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<float?> AverageAsync(this IAsyncEnumerable<float?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1791,22 +1614,22 @@ namespace Take.Elephant
 
         public static Task<double> AverageAsync(this IAsyncEnumerable<double> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<double> AverageAsync(this IAsyncEnumerable<double> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1827,22 +1650,22 @@ namespace Take.Elephant
 
         public static Task<double?> AverageAsync(this IAsyncEnumerable<double?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<double?> AverageAsync(this IAsyncEnumerable<double?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1866,22 +1689,22 @@ namespace Take.Elephant
 
         public static Task<decimal> AverageAsync(this IAsyncEnumerable<decimal> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<decimal> AverageAsync(this IAsyncEnumerable<decimal> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             decimal sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1902,22 +1725,22 @@ namespace Take.Elephant
 
         public static Task<decimal?> AverageAsync(this IAsyncEnumerable<decimal?> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.AverageAsync(CancellationToken.None);
         }
 
         public static async Task<decimal?> AverageAsync(this IAsyncEnumerable<decimal?> source, CancellationToken cancellationToken)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             decimal sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 

@@ -104,7 +104,7 @@ namespace Take.Elephant.Tests
             var actuals = await
                 Task.WhenAll(
                     Enumerable
-                        .Range(0, 100)
+                        .Range(0, count)
                         .Select(i => Task.Run(
                             () => map.TryAddAsync(key, value, false))));
             

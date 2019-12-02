@@ -23,20 +23,19 @@ namespace Take.Elephant
         {
             _enumerator.Reset();
         }
+        
 
         public T Current => _enumerator.Current;
-
-        object IEnumerator.Current => ((IEnumerator)_enumerator).Current;
-
-        public void Dispose()
+        
+        public async ValueTask<bool> MoveNextAsync()
         {
-            _enumerator.Dispose();
+            return MoveNext();
         }
 
-        public Task<bool> MoveNextAsync(CancellationToken cancellationToken)
+        public ValueTask DisposeAsync()
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            return Task.FromResult(MoveNext());
+            _enumerator.Dispose();
+            return default;
         }
     }
 }

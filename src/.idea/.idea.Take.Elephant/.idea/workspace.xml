@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/../appveyor.yml" line="25" />
-    <bookmark url="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" line="24" />
-  </component>
   <component name="BuildServerSettings">
     <option name="LOGIN" value="" />
     <option name="SERVER_URL" value="http://buildserver" />
@@ -27,13 +23,54 @@
     <option name="FILTER_BY_CURRENT_PROJECT" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="689c1fba-98b7-4753-8c73-d323ac70ba7c" name="Default" comment="Fixed translator null unit tests">
-      <change afterPath="$PROJECT_DIR$/Take.Elephant/IOpenable.cs" afterDir="false" />
+    <list default="true" id="689c1fba-98b7-4753-8c73-d323ac70ba7c" name="Default" comment="Updated Azure pacakges">
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/projectSettingsUpdater.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubReceiverQueue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Specialized/ExceptionEventArgs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/ExceptionEventArgs.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/riderModule.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Take.Elephant/riderModule.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Azure/Take.Elephant.Azure.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Azure/Take.Elephant.Azure.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.ElasticSearch/Take.Elephant.ElasticSearch.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.ElasticSearch/Take.Elephant.ElasticSearch.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Kafka/Take.Elephant.Kafka.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Kafka/Take.Elephant.Kafka.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Msmq/Take.Elephant.Msmq.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Msmq/Take.Elephant.Msmq.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Redis/MapBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Redis/MapBase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Redis/RedisList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Redis/RedisList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Redis/RedisSortedSetMap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Redis/RedisSortedSetMap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Redis/Take.Elephant.Redis.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Redis/Take.Elephant.Redis.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Samples/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Samples/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Samples/Take.Elephant.Samples.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Samples/Take.Elephant.Samples.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheSetMap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheSetMap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Specialized/OverwriteMapSynchronizer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Specialized/OverwriteMapSynchronizer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Specialized/OverwriteSetSynchronizer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Specialized/OverwriteSetSynchronizer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Specialized/Take.Elephant.Specialized.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Specialized/Take.Elephant.Specialized.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Sql.PostgreSql/Take.Elephant.Sql.PostgreSql.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Sql.PostgreSql/Take.Elephant.Sql.PostgreSql.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Sql/DbDataReaderAsyncEnumerable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Sql/DbDataReaderAsyncEnumerable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Sql/DbDataReaderAsyncEnumerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Sql/DbDataReaderAsyncEnumerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Sql/SqlCollectionBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Sql/SqlCollectionBase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Sql/SqlTemplates.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Sql/SqlTemplates.Designer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Sql/Take.Elephant.Sql.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Sql/Take.Elephant.Sql.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/MapFacts.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/MapFacts.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/Msmq/MsmqGuidItemQueueMapFacts.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/Msmq/MsmqItemBlockingQueueFacts.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/PositionListFacts.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/PositionListFacts.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/SortedSetFacts.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/SortedSetFacts.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.Tests/Take.Elephant.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.Tests/Take.Elephant.Tests.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/AsyncEnumerableExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/AsyncEnumerableExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/AsyncEnumerableWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/AsyncEnumerableWrapper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/AsyncEnumeratorWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/AsyncEnumeratorWrapper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/Group.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/Group.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/IAsyncEnumerable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/IAsyncEnumerator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/IKeysMap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/IKeysMap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/Memory/Collection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/Memory/Collection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/Memory/SetMap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/Memory/SetMap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/QueryResult.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/QueryResult.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/SetExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/SetExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Take.Elephant/Take.Elephant.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Take.Elephant/Take.Elephant.csproj" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -41,415 +78,237 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="30" column="42" lean-forward="true" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="42" />
-              <folding>
-                <marker date="1563560327073" expanded="false" signature="6:228" ph="..." />
-                <marker date="1563560327073" expanded="true" signature="259:5670" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="383:5345" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="959:979" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="1327:1347" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="1427:1860" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="1967:2194" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="2098:2155" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="2282:2439" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="2515:2602" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="2679:2855" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="2715:2810" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="2982:3232" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="3019:3222" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="3063:3138" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="3325:3953" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="3471:3844" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="3528:3830" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="3864:3943" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="4039:5212" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="4111:4184" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="4260:5124" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="4294:4488" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="4588:4651" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="4688:5110" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="4797:4915" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="4940:5092" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="5243:5329" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="5402:5668" ph="{...}" />
-                <marker date="1563560327073" expanded="true" signature="5505:5662" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5">
-              <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
-              <folding>
-                <marker date="1558040699611" expanded="false" signature="6:195" ph="..." />
-                <marker date="1558040699611" expanded="true" signature="226:4979" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="307:4977" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="411:505" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="694:754" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="875:1209" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="1340:1828" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="1961:2963" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="2172:2274" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="2695:2953" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="2823:2886" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="3092:3575" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="3241:3347" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="3443:3505" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="3728:4690" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="3933:4108" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="4594:4680" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="4746:4854" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="4783:4844" ph="{...}" />
-                <marker date="1558040699611" expanded="true" signature="4885:4971" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="63" column="91" lean-forward="true" selection-start-line="63" selection-start-column="91" selection-end-line="63" selection-end-column="91" />
-              <folding>
-                <marker date="1563560374946" expanded="false" signature="6:141" ph="..." />
-                <marker date="1563560374946" expanded="true" signature="178:2942" ph="{...}" />
-                <marker date="1563560374946" expanded="true" signature="301:2940" ph="{...}" />
-                <marker date="1563560374946" expanded="true" signature="391:2934" ph="{...}" />
-                <marker date="1563560374946" expanded="true" signature="565:792" ph="{...}" />
-                <marker date="1563560374946" expanded="true" signature="702:777" ph="{...}" />
-                <marker date="1563560374946" expanded="true" signature="839:1450" ph="{...}" />
-                <marker date="1563560374946" expanded="true" signature="1092:1435" ph="{...}" />
-                <marker date="1563560374946" expanded="true" signature="1529:1580" ph="{...}" />
-                <marker date="1563560374946" expanded="true" signature="1874:2557" ph="{...}" />
-                <marker date="1563560374946" expanded="true" signature="2140:2509" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
-              <caret line="57" column="8" selection-start-line="57" selection-start-column="8" selection-end-line="57" selection-end-column="8" />
-              <folding>
-                <marker date="1562865402568" expanded="false" signature="6:113" ph="..." />
-                <marker date="1562865402568" expanded="true" signature="144:2388" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="214:2077" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="584:604" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="762:1132" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="822:949" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="1233:1493" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="1293:1420" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="1590:1785" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="1721:1773" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="1841:1954" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="1878:1944" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="1985:2071" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="2146:2386" ph="{...}" />
-                <marker date="1562865402568" expanded="true" signature="2222:2380" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Take.Elephant.Specialized/CacheStrategy.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="50" column="34" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
-              <folding>
-                <marker date="1533906863227" expanded="false" signature="6:67" ph="..." />
-                <marker date="1533906863227" expanded="true" signature="104:6078" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="111:483" ph="/// Defines a cache mechanism where the write actions are executed against two actors - the source and the cache  ... " />
-                <marker date="1533906863227" expanded="true" signature="531:6076" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="886:1393" ph="/// Initialize the instance. ... " />
-                <marker date="1533906863227" expanded="true" signature="1521:2016" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="2042:2090" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="2100:2219" ph="/// Occurs when the cache actor throws an exception during a write method. ... " />
-                <marker date="1533906863227" expanded="true" signature="2339:2457" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="2376:2447" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="2488:2574" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="2614:3042" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="2640:2947" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="2691:2902" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="2963:3032" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="3052:3227" ph="/// Executes a write method where both calls must succeed. ... " />
-                <marker date="1533906863227" expanded="true" signature="3301:3704" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="3436:3521" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="3554:3693" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="3714:3889" ph="/// Executes a write method where both calls must succeed. ... " />
-                <marker date="1533906863227" expanded="true" signature="3967:4498" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="4121:4291" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="4197:4277" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="4324:4463" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="4508:4737" ph="/// Executes a query method where queries only in the cache.  ... " />
-                <marker date="1533906863227" expanded="true" signature="4838:4972" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="4982:5178" ph="/// Occurs when the cache actor throws an exception during a write method. ... " />
-                <marker date="1533906863227" expanded="true" signature="5249:5312" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="5383:5548" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="5590:6069" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="5663:5968" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="5714:5954" ph="{...}" />
-                <marker date="1533906863227" expanded="true" signature="5988:6059" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/f6/557abf59/ConsumerBuilder`2.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="725">
-              <caret line="281" column="45" selection-start-line="281" selection-start-column="45" selection-end-line="281" selection-end-column="45" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/55/d819aafd/Consumer`2.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="541" column="13" selection-start-line="541" selection-start-column="13" selection-end-line="541" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/a5/a66aa330/SafeKafkaHandle.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="341">
-              <caret line="316" column="35" selection-start-line="316" selection-start-column="35" selection-end-line="316" selection-end-column="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>Time</find>
-      <find>ReceiveAsync</find>
-      <find>IBus</find>
-      <find>CalculateAvgResponseTimeAsync</find>
-      <find>cts</find>
-      <find>Boot</find>
-      <find>DequeueOrDefaultAsync()</find>
-      <find>DequeueAsync(CancellationToken)()</find>
-      <find>Like</find>
-      <find>ToString()</find>
-      <find>ToString</find>
-      <find>AssertEquals(actual</find>
-      <find>Null</find>
-      <find>Query</find>
-      <find>FirstOrDefaultA</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>DequeueAsync(CancellationToken)</replace>
-      <replace>AssertEquals(actual.Where</replace>
-    </replaceStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageQueueBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/NumberMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/DistinctQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IOpenable.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueueMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Bus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/726FF8EE-C354-4DCD-BBD6-BD5B316256F0/2d/b7c12a32/IConsumer`2.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisBus.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Queue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlHelper.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ListMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/SortedSetMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemOrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Item.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlStatement.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/IDatabaseDriver.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/DbTypeMapper.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/GuidItemKeyQueryableMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryGuidItemKeyValueSetMapQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/ae/92ab2da7/Librdkafka.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/ExceptionEventArgs.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/MapStorageBase.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlExpressionTranslator.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/GuidItemMapQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlSetMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/a5/a66aa330/SafeKafkaHandle.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/DbConnectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IPositionList.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlDatabaseDriver.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/CacheStrategy.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/OrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/StorageBase.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/FactsBase.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/ScopedMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/55/d819aafd/Consumer`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant/IPriorityBlockingQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/92EF2399-6D5C-4164-A37A-F225599868CE/7f/c26f7321/ConsumerConfig.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/61/1dedacd4/Enumerable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IMap.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/f6/557abf59/ConsumerBuilder`2.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureServiceBusQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBlockingQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/AsyncEnumerableExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant/QueryResult.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Specialized/OnDemandCacheSetFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBus.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Sql/SqlExpressionTranslatorFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/ICloseable.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/MapScope.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IUpdatableMap.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/BatchReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Sql/SqlGuidItemKeyQueryableMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ISetMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/INumberMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureServiceBusQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueueMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IPropertyMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ListMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant/SetMapExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/ITransactionalStorage.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/IPriorityQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant/ObjectExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemTransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$USER_HOME$/.Rider2018.3/config/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/61/1dedacd4/Enumerable.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemBatchReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceItemTransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceBusItemBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/fb/5932a48f/ConstantExpression.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql.PostgreSql/PostgreSqlDatabaseDriver.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/b0/e628ffef/ClientConfig.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/PositionListFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IKeysMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IPositionList.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/MapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/PriorityItem.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/BlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/C3E4200C-CDA7-4037-B5FC-8C34C9135930/e5/0a93a7b8/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/1b/f3f450b8/ProducerConfig.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/51/5d5b77cb/Message`2.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/SetExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IExpirableKeyMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IOpenable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/FactsBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/AsyncEnumeratorWrapper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/AsyncEnumerableWrapper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Group.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemOrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ObjectExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/IntegerStringMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IItemSetMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/SortedSetFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IPriorityQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Msmq/MsmqQueue.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/BatchReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ICloseable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IBlockingQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/Table.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/2a/6424948d/ConsumerConfig.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/ValueMapper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Samples/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/AsyncEnumerableExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/61/1dedacd4/Enumerable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/ITable.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/TypeMapper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/C3E4200C-CDA7-4037-B5FC-8C34C9135930/e5/0a93a7b8/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/92EF2399-6D5C-4164-A37A-F225599868CE/7f/c26f7321/ConsumerConfig.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/TableBuilder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/ValueMapper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/51/5d5b77cb/Message`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/2a/6424948d/ConsumerConfig.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/1b/f3f450b8/ProducerConfig.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/B314DD51-4036-4513-A808-12B4EB4B0ED5/b0/e628ffef/ClientConfig.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Specialized/OnDemandCacheSetFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/726FF8EE-C354-4DCD-BBD6-BD5B316256F0/2d/b7c12a32/IConsumer`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Specialized/ReplicationMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlExpressionTranslator.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/GuidItemMapQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/5A41D6B7-1898-42EC-A409-FD0B1C3E3DCF/1b/cb8e7a5c/IAsyncEnumerable`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Specialized/CacheSetMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Specialized/FallbackQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/DistinctQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemOrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryGuidItemKeyValueSetMapQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql.PostgreSql/PostgreSqlDatabaseDriver.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql.PostgreSql/PostgreSqlTemplates.resx" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Redis/RedisGuidItemExpirableKeyMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Redis/RedisGuidItemListFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/StorageBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisSortedSetMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisListMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Redis/RedisHashGuidItemMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisBus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisStringMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/MapBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Redis/RedisGuidItemListMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisHashMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisSetMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisList.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/C3E4200C-CDA7-4037-B5FC-8C34C9135930/67/a482c577/ArraySegment`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/ScopedMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemTransactionalBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceItemTransactionalBatchQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E0088EC-D1B9-4728-AD0C-4EF156BDF98B/7a/3d684519/EventData.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Redis/RedisQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageQueueBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemBatchReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/15C1498C-557B-4A60-8095-360648172686/b3/0d3141b7/EventHubsConnectionStringBuilder.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceBusItemBlockingQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/DbDataReaderAsyncEnumerator.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/ExpirableKeySqlMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlSetMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Sql/PostgreSql/PostgreSqlGuidItemExpirableKeyMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubReceiverQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/MapScope.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlDatabaseDriver.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlTemplates.resx" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/DbDataReaderAsyncEnumerable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/a5/a66aa330/SafeKafkaHandle.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlTemplates.Designer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/f6/557abf59/ConsumerBuilder`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlStatement.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/55/d819aafd/Consumer`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/DbTypeMapper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/ae/92ab2da7/Librdkafka.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/IDatabaseDriver.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/MapStorageBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlCollectionBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlHelper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/.Rider2018.3/config/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/61/1dedacd4/Enumerable.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/DbConnectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Bus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Sql/StorageBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/fb/5932a48f/ConstantExpression.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/5A41D6B7-1898-42EC-A409-FD0B1C3E3DCF/92/a6013838/IAsyncEnumerator`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Collection.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Map.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/NumberMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/Queue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/SortedSetMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/Memory/SetMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Sql/SqlServer/SqlServerFixture.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Sql/SqlExpressionTranslatorFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/GuidItemExpirableKeyMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/IntersectionMapSynchronizer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Sql/SqlGuidItemExpirableKeyMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheSet.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ListFacts.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/KeyValueMapQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/CacheStrategy.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Sql/SqlGuidItemKeyQueryableMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/DifferentialMapSynchronizer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/OrderedQueryableStorageFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheStrategy.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/CopyQueueSynchronizer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/IntegerStringQueueMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/OverwriteMapSynchronizer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/OverwriteSetSynchronizer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/FallbackQueue.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheSetMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/GuidItemKeyQueryableMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ExceptionEventArgs.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Specialized/CopyMapSynchronizer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/Item.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IUpdatableMap.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IList.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ICollection.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/ExpirableKeyMapFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant.Tests/GuidItemListFacts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ISet.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/ITransactionalStorage.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceBusItemBlockingQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant/IQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureServiceBusQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Azure/Take.Elephant.Azure.csproj" />
-        <option value="$PROJECT_DIR$/Take.Elephant/QueryResult.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant/ITransactionalReceiverQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant/ITransactionalQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant/ITransactionalStorage.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant/Take.Elephant.csproj" />
-        <option value="$PROJECT_DIR$/Take.Elephant/Memory/Queue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemTransactionalQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/TransactionalQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBlockingQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/ItemTransactionalBatchQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/TransactionalBatchQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureServiceItemTransactionalBatchQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemBatchReceiverQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageItemTransactionalBlockingQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Azure/AzureStorageQueueBlockingQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Redis/Take.Elephant.Redis.csproj" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/ScopedMap.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Kafka/Class1.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Kafka/Take.Elephant.Kafka.csproj" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/BlockingQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/SenderQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFact.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Take.Elephant.Tests.csproj" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/ItemSenderReceiverQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs" />
         <option value="$PROJECT_DIR$/../appveyor.yml" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Sql/SqlSetMap.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Sql/SqlHelper.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Sql/MapStorageBase.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheStrategy.cs" />
         <option value="$PROJECT_DIR$/Take.Elephant.Sql/StorageBase.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Sql/SqlDatabaseDriver.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Sql/SqlExpressionTranslator.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/FactsBase.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/GuidItemMapQueryableStorageFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Sql/SqlExpressionTranslatorFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant/ExceptionEventArgs.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant/ICloseable.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs" />
-        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureStorageQueue.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubSenderQueue.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Azure/AzureEventHubReceiverQueue.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Sql/DbConnectionExtensions.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant/IExpirableKeyMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Sql/SqlTemplates.resx" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Azure/Take.Elephant.Azure.csproj" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Samples/Take.Elephant.Samples.csproj" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/Take.Elephant.Specialized.csproj" />
+        <option value="$PROJECT_DIR$/Take.Elephant/AsyncEnumerableWrapper.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant/AsyncEnumeratorWrapper.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant/Group.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant/Memory/Collection.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Redis/RedisSortedSetMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Redis/Take.Elephant.Redis.csproj" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheSetMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Sql/DbDataReaderAsyncEnumerable.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Sql/DbDataReaderAsyncEnumerator.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Sql/SqlCollectionBase.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant/Take.Elephant.csproj" />
+        <option value="$PROJECT_DIR$/Take.Elephant/AsyncEnumerableExtensions.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/OverwriteMapSynchronizer.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant/Memory/SetMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant/QueryResult.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant/SetExtensions.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Redis/RedisListMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Redis/RedisSetMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Samples/Program.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/Scoping/MapScope.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/CopyMapSynchronizer.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/DifferentialMapSynchronizer.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/IntersectionMapSynchronizer.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/OnDemandCacheSet.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Specialized/OverwriteSetSynchronizer.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Sql/SqlMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Sql/SqlSetMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Specialized/CacheSetMapFacts.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Specialized/OnDemandCacheSetFacts.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Tests/PositionListFacts.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Tests/SortedSetFacts.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant/IKeysMap.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Redis/RedisList.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Redis/MapBase.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Specialized/ReplicationMapFacts.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Tests/Take.Elephant.Tests.csproj" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Tests/MapFacts.cs" />
+        <option value="$PROJECT_DIR$/Take.Elephant.Redis/RedisStringMap.cs" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-13" />
-    <option name="y" value="-13" />
-    <option name="width" value="2423" />
-    <option name="height" value="1323" />
-  </component>
+  <component name="ProjectId" id="1Rhq1WBsuqVtOgrS0tjdtHcYnMP" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
-  </component>
-  <component name="ProjectView">
-    <navigator currentView="SolutionExplorer" proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="SolutionExplorer">
-        <subPane>
-          <expand>
-            <path>
-              <item name="" type="784c90a0:SolutionExplorerRootNode" />
-              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
-            </path>
-            <path>
-              <item name="" type="784c90a0:SolutionExplorerRootNode" />
-              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
-              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
-            </path>
-            <path>
-              <item name="" type="784c90a0:SolutionExplorerRootNode" />
-              <item name="Take.Elephant" type="24d0babc:SolutionExplorerModelNode" />
-              <item name="Take.Elephant.Specialized" type="24d0babc:SolutionExplorerModelNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-        <option name="show-all-files" value="false" />
-      </pane>
-      <pane id="AssemblyExplorer" />
-      <pane id="FileSystemExplorer" />
-    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
@@ -519,7 +378,14 @@
       <workItem from="1562794145206" duration="15414000" />
       <workItem from="1562941391253" duration="3565000" />
       <workItem from="1563219575590" duration="4777000" />
-      <workItem from="1563464674909" duration="8145000" />
+      <workItem from="1563464674909" duration="15696000" />
+      <workItem from="1563903769593" duration="1974000" />
+      <workItem from="1564518206605" duration="719000" />
+      <workItem from="1570129464407" duration="6771000" />
+      <workItem from="1570800810707" duration="4780000" />
+      <workItem from="1570810843127" duration="13000" />
+      <workItem from="1570812518173" duration="5981000" />
+      <workItem from="1575290935236" duration="4388000" />
     </task>
     <task id="LOCAL-00001" summary="Using new version of service bus library on Azure with net standard support. Added service bus sender queue.">
       <created>1526139040723</created>
@@ -647,56 +513,36 @@
       <option name="project" value="LOCAL" />
       <updated>1563291141773</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Kafka receiver now has lazy initialization. Adjusted unit tests.">
+      <created>1563560701486</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1563560701486</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Updated Azure pacakges">
+      <created>1563811310844</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1563811310844</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Added Elasticsearch to the appveyor.yml">
+      <created>1564518292828</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1564518292828</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Fixed SQL server support for concurrent add if not exists on Map implementation">
+      <created>1570810058176</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1570810058176</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
-  </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="102117000" />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-  </component>
-  <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16995205" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info id="Image Layers" order="3" />
-      <window_info id="Capture Tool" order="4" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.29242262" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="NuGet" order="7" weight="0.53788686" />
-      <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" x="-1920" y="23" width="1536" height="801" id="Unit Tests" maximized="true" order="9" type="WINDOWED" visible="true" weight="0.24918744" />
-      <window_info anchor="bottom" id="Terminal" order="10" />
-      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="12" weight="0.6221985" />
-      <window_info anchor="bottom" id="Build" order="13" weight="0.3810032" />
-      <window_info anchor="bottom" id="Messages" order="14" />
-      <window_info anchor="bottom" id="Database Changes" order="15" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Performance Profiler" order="16" />
-      <window_info anchor="bottom" id="TeamCity" order="17" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Errors In Solution" order="3" />
-      <window_info anchor="right" id="Database" order="4" />
-      <window_info anchor="right" id="Unit Tests Coverage" order="5" />
-      <window_info anchor="right" id="Capture Analysis" order="6" />
-    </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -711,6 +557,19 @@
         <option value="3" />
         <option value="1" />
       </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
     </option>
   </component>
   <component name="VcsManagerConfiguration">
@@ -733,7 +592,11 @@
     <MESSAGE value="Added test for complex type on SqlQueryTranslator" />
     <MESSAGE value="Handling null parameters values with IS NULL instead of passing DbNull.Value argument that is not working" />
     <MESSAGE value="Fixed translator null unit tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed translator null unit tests" />
+    <MESSAGE value="Kafka receiver now has lazy initialization. Adjusted unit tests." />
+    <MESSAGE value="Updated Azure pacakges" />
+    <MESSAGE value="Added Elasticsearch to the appveyor.yml" />
+    <MESSAGE value="Fixed SQL server support for concurrent add if not exists on Map implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed SQL server support for concurrent add if not exists on Map implementation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -796,7 +659,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs</url>
-          <line>15</line>
+          <line>16</line>
           <properties documentPath="$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs" initialLine="14">
             <startOffsets>
               <option value="414" />
@@ -809,33 +672,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs</url>
-          <line>51</line>
-          <properties documentPath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" initialLine="51">
-            <startOffsets>
-              <option value="1990" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2043" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs</url>
-          <line>62</line>
-          <properties documentPath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" initialLine="62">
-            <startOffsets>
-              <option value="2305" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2358" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs</url>
-          <line>125</line>
+          <line>128</line>
           <properties documentPath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" initialLine="120">
             <startOffsets>
               <option value="4142" />
@@ -848,7 +685,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs</url>
-          <line>128</line>
+          <line>131</line>
           <properties documentPath="$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs" initialLine="123">
             <startOffsets>
               <option value="4210" />
@@ -861,1013 +698,5 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemOrderedQueryableStorageFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="15" column="9" lean-forward="true" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
-          <folding>
-            <marker date="1527083952194" expanded="false" signature="6:187" ph="..." />
-            <marker date="1527083952194" expanded="true" signature="225:607" ph="{...}" />
-            <marker date="1527083952194" expanded="true" signature="358:605" ph="{...}" />
-            <marker date="1527083952194" expanded="true" signature="459:598" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/C3E4200C-CDA7-4037-B5FC-8C34C9135930/e5/0a93a7b8/CancellationToken.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="18" column="16" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant/IQueue.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
-          <folding>
-            <marker date="1537556920541" expanded="false" signature="6:87" ph="..." />
-            <marker date="1537556920541" expanded="true" signature="112:1981" ph="{...}" />
-            <marker date="1537556920541" expanded="true" signature="119:234" ph="/// Defines a FIFO storage container. ... " />
-            <marker date="1537556920541" expanded="true" signature="302:577" ph="{...}" />
-            <marker date="1537556920541" expanded="true" signature="317:489" ph="/// Gets the number of items in the queue. ... " />
-            <marker date="1537556920541" expanded="true" signature="617:904" ph="{...}" />
-            <marker date="1537556920541" expanded="true" signature="632:812" ph="/// Dequeues an item from the queue, if available. ... " />
-            <marker date="1537556920541" expanded="true" signature="942:1236" ph="{...}" />
-            <marker date="1537556920541" expanded="true" signature="957:1148" ph="/// Enqueues an item. ... " />
-            <marker date="1537556920541" expanded="true" signature="1279:1602" ph="{...}" />
-            <marker date="1537556920541" expanded="true" signature="1294:1495" ph="/// Enqueues a batch of items. ... " />
-            <marker date="1537556920541" expanded="true" signature="1647:1979" ph="{...}" />
-            <marker date="1537556920541" expanded="true" signature="1662:1870" ph="/// Enqueues a batch of items. ... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/ItemSenderReceiverQueueFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="2" column="65" selection-start-line="2" selection-start-column="65" selection-end-line="2" selection-end-column="65" />
-          <folding>
-            <marker date="1558040699606" expanded="true" signature="29:142" ph="{...}" />
-            <marker date="1558040699606" expanded="true" signature="119:140" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryItemSenderReceiverQueueFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
-          <folding>
-            <marker date="1558040699610" expanded="false" signature="6:40" ph="..." />
-            <marker date="1558040699610" expanded="true" signature="78:399" ph="{...}" />
-            <marker date="1558040699610" expanded="true" signature="203:397" ph="{...}" />
-            <marker date="1558040699610" expanded="true" signature="293:391" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../appveyor.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="295">
-          <caret line="27" column="13" lean-forward="true" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/61/1dedacd4/Enumerable.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="551">
-          <caret line="961" column="6" selection-start-line="961" selection-start-column="6" selection-end-line="961" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/92EF2399-6D5C-4164-A37A-F225599868CE/7f/c26f7321/ConsumerConfig.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="551">
-          <caret line="92" column="8" selection-start-line="92" selection-start-column="8" selection-end-line="92" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/726FF8EE-C354-4DCD-BBD6-BD5B316256F0/2d/b7c12a32/IConsumer`2.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="577">
-          <caret line="44" column="32" selection-start-line="44" selection-start-column="32" selection-end-line="44" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql.PostgreSql/PostgreSqlDatabaseDriver.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="46" column="22" selection-start-line="46" selection-start-column="22" selection-end-line="46" selection-end-column="22" />
-          <folding>
-            <marker date="1527083952164" expanded="false" signature="6:158" ph="..." />
-            <marker date="1527083952164" expanded="true" signature="198:2025" ph="{...}" />
-            <marker date="1527083952164" expanded="true" signature="205:440" ph="/// Implementation of the PostgreSQL database driver. ... " />
-            <marker date="1527083952164" expanded="true" signature="500:2023" ph="{...}" />
-            <marker date="1527083952164" expanded="true" signature="607:864" ph="{...}" />
-            <marker date="1527083952164" expanded="true" signature="1048:1127" ph="{...}" />
-            <marker date="1527083952164" expanded="true" signature="1207:1374" ph="{...}" />
-            <marker date="1527083952164" expanded="true" signature="1271:1363" ph="{...}" />
-            <marker date="1527083952164" expanded="true" signature="1520:1674" ph="{...}" />
-            <marker date="1527083952164" expanded="true" signature="1748:1859" ph="{...}" />
-            <marker date="1527083952164" expanded="true" signature="1912:2017" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/IDatabaseDriver.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="15" column="15" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="15" />
-          <folding>
-            <marker date="1533906905701" expanded="false" signature="6:91" ph="..." />
-            <marker date="1533906905701" expanded="true" signature="120:610" ph="{...}" />
-            <marker date="1533906905701" expanded="true" signature="159:608" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/OrderedQueryableStorageFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-147">
-          <caret line="24" column="34" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
-          <folding>
-            <marker date="1527083952198" expanded="false" signature="6:151" ph="..." />
-            <marker date="1527083952198" expanded="true" signature="182:2786" ph="{...}" />
-            <marker date="1527083952198" expanded="true" signature="264:2784" ph="{...}" />
-            <marker date="1527083952198" expanded="true" signature="555:615" ph="{...}" />
-            <marker date="1527083952198" expanded="true" signature="748:1707" ph="{...}" />
-            <marker date="1527083952198" expanded="true" signature="1842:2778" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlSetMap.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5">
-          <caret line="227" column="23" selection-start-line="227" selection-start-column="23" selection-end-line="227" selection-end-column="23" />
-          <folding>
-            <marker date="1562864204053" expanded="false" signature="6:203" ph="..." />
-            <marker date="1562864204053" expanded="true" signature="232:11579" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="359:11577" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="701:773" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="1072:1144" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="1333:4204" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="1673:1800" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="1990:4194" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="2113:4180" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="2243:2325" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="2441:4162" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="2481:2733" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="3005:3779" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="3478:3749" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="3864:3966" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="3995:4099" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="4344:5194" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="4524:5184" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="4661:5170" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="4842:4923" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="5053:5151" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="5314:5728" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="5591:5673" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="5841:6223" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="5946:6213" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="6083:6199" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="6338:6722" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="6443:6712" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="6580:6698" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="6808:7489" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="7057:7479" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="7557:7968" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="8019:11571" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="8351:8436" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="8590:8940" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="8775:8888" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="9080:9595" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="9703:10497" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="9820:10483" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="9965:10465" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="10140:10443" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="10967:11561" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="11033:11134" ph="{...}" />
-            <marker date="1562864204053" expanded="true" signature="11155:11375" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Redis/Take.Elephant.Redis.csproj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="28" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/DistinctQueryableStorageFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="62" column="12" selection-start-line="62" selection-start-column="12" selection-end-line="62" selection-end-column="12" />
-          <folding>
-            <marker date="1527083952179" expanded="false" signature="6:151" ph="..." />
-            <marker date="1527083952179" expanded="true" signature="255:4654" ph="{...}" />
-            <marker date="1527083952179" expanded="true" signature="466:526" ph="{...}" />
-            <marker date="1527083952179" expanded="true" signature="657:1564" ph="{...}" />
-            <marker date="1527083952179" expanded="true" signature="1711:2580" ph="{...}" />
-            <marker date="1527083952179" expanded="true" signature="2718:3626" ph="{...}" />
-            <marker date="1527083952179" expanded="true" signature="3779:4648" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/TypeMapper.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="55" column="51" selection-start-line="55" selection-start-column="51" selection-end-line="55" selection-end-column="51" />
-          <folding>
-            <marker date="1533906905625" expanded="false" signature="6:110" ph="..." />
-            <marker date="1533906905625" expanded="true" signature="147:3962" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="234:3960" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="675:696" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="989:1010" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="1109:2281" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="1737:2271" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="1815:1971" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="2505:3164" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="3263:3954" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="3376:3916" ph="{...}" />
-            <marker date="1533906905625" expanded="true" signature="3543:3902" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/Mapping/ValueMapper.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="334">
-          <caret line="27" column="51" selection-start-line="27" selection-start-column="51" selection-end-line="27" selection-end-column="51" />
-          <folding>
-            <marker date="1533906906446" expanded="false" signature="6:66" ph="..." />
-            <marker date="1533906906446" expanded="true" signature="103:1730" ph="{...}" />
-            <marker date="1533906906446" expanded="true" signature="150:1728" ph="{...}" />
-            <marker date="1533906906446" expanded="true" signature="364:397" ph="{...}" />
-            <marker date="1533906906446" expanded="true" signature="472:671" ph="{...}" />
-            <marker date="1533906906446" expanded="true" signature="934:1105" ph="{...}" />
-            <marker date="1533906906446" expanded="true" signature="1009:1094" ph="{...}" />
-            <marker date="1533906906446" expanded="true" signature="1198:1722" ph="{...}" />
-            <marker date="1533906906446" expanded="true" signature="1290:1499" ph="{...}" />
-            <marker date="1533906906446" expanded="true" signature="1391:1485" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlMap.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-45">
-          <caret line="39" column="46" selection-start-line="39" selection-start-column="46" selection-end-line="39" selection-end-column="46" />
-          <folding>
-            <marker date="1533906907360" expanded="false" signature="6:178" ph="..." />
-            <marker date="1533906907360" expanded="true" signature="207:10726" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="214:546" ph="/// Implements the &lt;see cref=&quot;IMap{TKey,TValue}&quot;/&gt; interface with a SQL database.  ... " />
-            <marker date="1533906907360" expanded="true" signature="696:10724" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="910:931" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="1163:1184" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="1368:2298" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="1473:2288" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="1610:2274" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="2109:2256" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="2433:3391" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="2538:3381" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="2675:3367" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="3504:3886" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="3609:3876" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="3746:3862" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="4001:4385" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="4106:4375" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="4243:4361" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="4453:4781" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="4905:6248" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="5377:6238" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="5514:6224" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="5927:6206" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="6050:6184" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="6318:7457" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="6578:7447" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="6715:7433" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="6898:7415" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="7094:7393" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="7221:7367" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="7576:8919" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="7887:8869" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="8024:8855" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="8281:8837" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="8476:8815" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="9019:10718" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="9124:10708" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="9261:10694" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="9878:10389" ph="{...}" />
-            <marker date="1533906907360" expanded="true" signature="10528:10676" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/MapStorageBase.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="177">
-          <caret line="94" column="101" selection-start-line="94" selection-start-column="101" selection-end-line="94" selection-end-column="101" />
-          <folding>
-            <marker date="1562942304036" expanded="false" signature="6:239" ph="..." />
-            <marker date="1562942304036" expanded="true" signature="268:6569" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="434:6567" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="671:726" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="736:3285" ph="IQueryableStorage&lt;KeyValuePair&lt;TKey, TValue&gt;&gt; Members" />
-            <marker date="1562942304036" expanded="true" signature="1109:3265" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="1226:1352" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="1614:1755" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="1803:1945" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="2188:3255" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="2268:2671" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="2467:2653" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="3295:5344" ph="IKeyQueryableMap&lt;TKey, TValue&gt; Members" />
-            <marker date="1562942304036" expanded="true" signature="3583:5324" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="3709:5314" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="3804:3942" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="4191:4594" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="4390:4576" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="5528:5743" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="5918:6179" ph="{...}" />
-            <marker date="1562942304036" expanded="true" signature="6318:6561" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Item.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-          <folding>
-            <marker date="1532017498335" expanded="false" signature="6:41" ph="..." />
-            <marker date="1532017498335" expanded="true" signature="72:2866" ph="{...}" />
-            <marker date="1532017498335" expanded="true" signature="96:2773" ph="{...}" />
-            <marker date="1532017498335" expanded="true" signature="569:894" ph="{...}" />
-            <marker date="1532017498335" expanded="true" signature="637:884" ph="{...}" />
-            <marker date="1532017498335" expanded="true" signature="1089:1403" ph="{...}" />
-            <marker date="1532017498335" expanded="true" signature="1447:2326" ph="{...}" />
-            <marker date="1532017498335" expanded="true" signature="1609:2315" ph="{...}" />
-            <marker date="1532017498335" expanded="true" signature="2375:2612" ph="{...}" />
-            <marker date="1532017498335" expanded="true" signature="2802:2864" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant/SetMapExtensions.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="19" column="33" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="33" />
-          <folding>
-            <marker date="1533908877240" expanded="false" signature="6:53" ph="..." />
-            <marker date="1533908877240" expanded="true" signature="78:2924" ph="{...}" />
-            <marker date="1533908877240" expanded="true" signature="121:2922" ph="{...}" />
-            <marker date="1533908877240" expanded="true" signature="136:701" ph="/// Adds an item to the set. ... " />
-            <marker date="1533908877240" expanded="true" signature="899:1101" ph="{...}" />
-            <marker date="1533908877240" expanded="true" signature="1111:1579" ph="/// Tries to remove an existing item from the set. ... " />
-            <marker date="1533908877240" expanded="true" signature="1789:2004" ph="{...}" />
-            <marker date="1533908877240" expanded="true" signature="2014:2493" ph="/// Checks if the key exists and the value exists in the set. ... " />
-            <marker date="1533908877240" expanded="true" signature="2702:2916" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Sql/SqlGuidItemKeyQueryableMapFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="10" column="68" lean-forward="true" selection-start-line="10" selection-start-column="68" selection-end-line="10" selection-end-column="68" />
-          <folding>
-            <marker date="1527083952225" expanded="false" signature="6:179" ph="..." />
-            <marker date="1527083952225" expanded="true" signature="214:1416" ph="{...}" />
-            <marker date="1527083952225" expanded="true" signature="305:1414" ph="{...}" />
-            <marker date="1527083952225" expanded="true" signature="442:506" ph="{...}" />
-            <marker date="1527083952225" expanded="true" signature="626:1408" ph="{...}" />
-            <marker date="1527083952225" expanded="true" signature="1282:1373" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/GuidItemKeyQueryableMapFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="5" column="71" selection-start-line="5" selection-start-column="71" selection-end-line="5" selection-end-column="71" />
-          <folding>
-            <marker date="1527083952180" expanded="false" signature="6:44" ph="..." />
-            <marker date="1527083952180" expanded="true" signature="75:672" ph="{...}" />
-            <marker date="1527083952180" expanded="true" signature="167:670" ph="{...}" />
-            <marker date="1527083952180" expanded="true" signature="251:664" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Memory/MemoryGuidItemKeyValueSetMapQueryableStorageFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="26" column="73" selection-start-line="26" selection-start-column="73" selection-end-line="26" selection-end-column="73" />
-          <folding>
-            <marker date="1527083952189" expanded="false" signature="6:187" ph="..." />
-            <marker date="1527083952189" expanded="true" signature="225:1399" ph="{...}" />
-            <marker date="1527083952189" expanded="true" signature="384:1397" ph="{...}" />
-            <marker date="1527083952189" expanded="true" signature="524:782" ph="{...}" />
-            <marker date="1527083952189" expanded="true" signature="635:744" ph="{...}" />
-            <marker date="1527083952189" expanded="true" signature="901:1391" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/QueryableStorageFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="59" column="60" selection-start-line="59" selection-start-column="60" selection-end-line="59" selection-end-column="60" />
-          <folding>
-            <marker date="1527083952199" expanded="false" signature="6:151" ph="..." />
-            <marker date="1527083952199" expanded="true" signature="182:4986" ph="{...}" />
-            <marker date="1527083952199" expanded="true" signature="247:4984" ph="{...}" />
-            <marker date="1527083952199" expanded="true" signature="450:510" ph="{...}" />
-            <marker date="1527083952199" expanded="true" signature="625:1502" ph="{...}" />
-            <marker date="1527083952199" expanded="true" signature="1625:2362" ph="{...}" />
-            <marker date="1527083952199" expanded="true" signature="2497:3161" ph="{...}" />
-            <marker date="1527083952199" expanded="true" signature="3310:4064" ph="{...}" />
-            <marker date="1527083952199" expanded="true" signature="4227:4978" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlStatement.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="16" selection-start-line="2" selection-start-column="16" selection-end-line="2" selection-end-column="16" />
-          <folding>
-            <marker date="1533906905868" expanded="true" signature="27:1243" ph="{...}" />
-            <marker date="1533906905868" expanded="true" signature="58:1241" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/fb/5932a48f/ConstantExpression.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="424">
-          <caret line="70" column="6" selection-start-line="70" selection-start-column="6" selection-end-line="70" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/FactsBase.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="21" column="9" selection-start-line="21" selection-start-column="9" selection-end-line="21" selection-end-column="9" />
-          <folding>
-            <marker date="1563287406370" expanded="false" signature="6:128" ph="..." />
-            <marker date="1563287406370" expanded="true" signature="159:1342" ph="{...}" />
-            <marker date="1563287406370" expanded="true" signature="188:1340" ph="{...}" />
-            <marker date="1563287406370" expanded="true" signature="221:278" ph="{...}" />
-            <marker date="1563287406370" expanded="true" signature="390:462" ph="{...}" />
-            <marker date="1563287406370" expanded="true" signature="517:578" ph="{...}" />
-            <marker date="1563287406370" expanded="true" signature="634:696" ph="{...}" />
-            <marker date="1563287406370" expanded="true" signature="754:825" ph="{...}" />
-            <marker date="1563287406370" expanded="true" signature="896:957" ph="{...}" />
-            <marker date="1563287406370" expanded="true" signature="1031:1095" ph="{...}" />
-            <marker date="1563287406370" expanded="true" signature="1200:1334" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlDatabaseDriver.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="21" selection-start-line="21" selection-end-line="21" />
-          <folding>
-            <marker date="1563286843194" expanded="true" signature="156:239" ph="/// SQL Server database driver implementation. ... " />
-            <marker date="1563286843194" expanded="true" signature="299:1187" ph="{...}" />
-            <marker date="1563286843194" expanded="true" signature="485:561" ph="{...}" />
-            <marker date="1563286843194" expanded="true" signature="635:739" ph="{...}" />
-            <marker date="1563286843194" expanded="true" signature="792:890" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/StorageBase.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2355">
-          <caret line="164" column="24" selection-start-line="164" selection-start-column="24" selection-end-line="164" selection-end-column="24" />
-          <folding>
-            <marker date="1562942314501" expanded="true" signature="388:9962" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="520:690" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="700:931" ph="/// Enable/disable fetching of total record count on Queries. ... " />
-            <marker date="1562942314501" expanded="true" signature="1391:1746" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="1535:1736" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="1900:2175" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="2046:2165" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="2843:3550" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="2941:3065" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="3931:5031" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="4029:4153" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="4411:4773" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="4544:4685" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="5472:7675" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="5696:7665" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="5749:6189" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="6269:6814" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="6610:6796" ph="{...}" />
-            <marker date="1562942314501" expanded="true" signature="7775:8110" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/DbConnectionExtensions.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3450">
-          <caret line="236" column="42" selection-start-line="236" selection-start-column="42" selection-end-line="236" selection-end-column="42" />
-          <folding>
-            <marker date="1533906906578" expanded="true" signature="204:19231" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="253:19229" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="485:977" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="569:967" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="780:880" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="1221:1751" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="1305:1741" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="1517:1617" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="1967:2422" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="2201:2383" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="2275:2369" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="2677:3324" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="2943:3237" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="3633:4523" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="3992:4416" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="4780:5335" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="4953:5247" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="5598:6274" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="5771:6187" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="6575:7369" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="6754:7282" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="7692:8648" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="7923:8561" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="8974:9767" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="9283:9679" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="10103:10762" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="10435:10674" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="11022:11582" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="11200:11494" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="12073:13167" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="12284:12412" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="12633:13079" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="13462:14123" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="13639:14035" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="14494:17469" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="15300:16026" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="16043:16391" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="16554:17429" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="17823:19223" ph="{...}" />
-            <marker date="1533906906578" expanded="true" signature="18146:19130" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.Rider2018.3/config/resharper-host/DecompilerCache/decompiler/548CE49A-FA67-4B90-A074-9067AEBB2C19/61/1dedacd4/Enumerable.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="48285">
-          <caret line="3221" column="16" selection-start-line="3221" selection-start-column="16" selection-end-line="3221" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlExtensions.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="24" column="8" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="8" />
-          <folding>
-            <marker date="1533906906393" expanded="false" signature="6:159" ph="..." />
-            <marker date="1533906906393" expanded="true" signature="188:871" ph="{...}" />
-            <marker date="1533906906393" expanded="true" signature="228:869" ph="{...}" />
-            <marker date="1533906906393" expanded="true" signature="243:420" ph="/// Transform to a flat string with comma separate values. ... " />
-            <marker date="1533906906393" expanded="true" signature="498:590" ph="{...}" />
-            <marker date="1533906906393" expanded="true" signature="719:863" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/DbTypeMapper.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="71" column="12" selection-start-line="71" selection-start-column="12" selection-end-line="71" selection-end-column="12" />
-          <folding>
-            <marker date="1533906906676" expanded="true" signature="120:4573" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="127:211" ph="/// Provides CLR to SQL type mapping utilities. ... " />
-            <marker date="1533906906676" expanded="true" signature="257:4571" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="361:2191" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="436:2180" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="2250:2451" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="2345:2413" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="2605:3063" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="2706:3026" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="2760:2842" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="2911:3012" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="3145:4564" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="3294:3395" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="3447:3507" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="3558:3703" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="3748:3876" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="3955:4042" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="4121:4211" ph="{...}" />
-            <marker date="1533906906676" expanded="true" signature="4246:4452" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlExpressionTranslator.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="43" column="12" selection-start-line="43" selection-start-column="12" selection-end-line="43" selection-end-column="12" />
-          <folding>
-            <marker date="1563286936364" expanded="true" signature="241:13214" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="304:12874" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="1037:1437" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="1507:1635" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="1707:1957" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="1770:1904" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="2031:4546" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="2171:4391" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="2290:2428" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="2453:2594" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="2730:2871" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="2896:3041" ph="{...}" />
-            <marker date="1563286936364" expanded="false" signature="4620:8421" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="4830:8257" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="4970:5111" ph="/* Used for the KeyValuePair expressions, to replace the Key / Value in cases ... */" />
-            <marker date="1563286936364" expanded="true" signature="5262:5394" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="5769:5901" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="5963:7443" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="6131:7277" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="6227:6680" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="6754:7251" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="7306:7421" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="7818:7950" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="7998:8139" ph="{...}" />
-            <marker date="1563286936364" expanded="false" signature="8499:8611" ph="{...}" />
-            <marker date="1563286936364" expanded="false" signature="8693:10981" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="8767:8897" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="8964:9081" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="9148:10377" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="9265:10244" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="9699:9793" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="9818:10151" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="9894:10066" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="10446:10594" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="10661:10808" ph="{...}" />
-            <marker date="1563286936364" expanded="false" signature="11221:11582" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="11646:12868" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="11687:11798" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="12211:12712" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="12333:12434" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="12537:12638" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="12917:13212" ph="{...}" />
-            <marker date="1563286936364" expanded="true" signature="13013:13102" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Sql/SqlHelper.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2010">
-          <caret line="139" column="8" selection-start-line="139" selection-start-column="8" selection-end-line="139" selection-end-column="8" />
-          <folding>
-            <marker date="1562942199873" expanded="true" signature="171:6030" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="207:6028" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="346:565" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="667:763" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="886:1171" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="1275:1373" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="1498:1607" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="1753:1889" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="2003:2315" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="2142:2303" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="2426:2522" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="2646:2757" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="2902:3045" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="3166:3480" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="3307:3468" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="3641:4284" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="4002:4270" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="4488:5319" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="4535:4650" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="4691:4812" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="4913:5270" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="5159:5256" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="5612:6022" ph="{...}" />
-            <marker date="1562942199873" expanded="true" signature="5653:5828" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Sql/SqlExpressionTranslatorFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="189" column="9" selection-start-line="189" selection-start-column="9" selection-end-line="189" selection-end-column="9" />
-          <folding>
-            <marker date="1563291118566" expanded="false" signature="6:127" ph="..." />
-            <marker date="1563291118566" expanded="true" signature="162:13133" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="262:11824" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="314:389" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="498:604" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="684:1102" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="1205:1620" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="1710:2140" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="2232:2663" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="2753:3182" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="3264:3734" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="3829:4386" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="4501:4909" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="4992:5411" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="5489:5894" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="5975:6384" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="6462:6995" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="6552:6607" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="7081:7630" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="7175:7250" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="7739:8268" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="7829:7882" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="8349:9035" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="9115:9799" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="9882:10579" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="10674:11538" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="10760:10852" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="11563:11818" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="11881:13131" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="11986:12064" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="12273:12340" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="12420:12517" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="12591:12688" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="12741:12823" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="12881:12968" ph="{...}" />
-            <marker date="1563291118566" expanded="true" signature="13032:13125" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/GuidItemMapQueryableStorageFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="67" column="87" selection-start-line="67" selection-start-column="87" selection-end-line="67" selection-end-column="87" />
-          <folding>
-            <marker date="1563287430992" expanded="true" signature="242:10877" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="326:1188" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="1347:2204" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="2375:3318" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="3487:4322" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="4496:5568" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="5733:6808" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="6959:7806" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="7953:8798" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="8945:9790" ph="{...}" />
-            <marker date="1563287430992" expanded="true" signature="9979:10871" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaQueue.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="20" column="38" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="38" />
-          <folding>
-            <marker date="1558040699603" expanded="false" signature="6:90" ph="..." />
-            <marker date="1558040699603" expanded="true" signature="121:2147" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="199:2145" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="579:779" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="876:967" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="1049:1136" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="1237:1333" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="1410:1495" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="1592:1807" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="1863:2022" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="1900:2012" ph="{...}" />
-            <marker date="1558040699603" expanded="true" signature="2053:2139" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/ae/92ab2da7/Librdkafka.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="632" column="36" lean-forward="true" selection-start-line="632" selection-start-column="36" selection-end-line="632" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/a5/a66aa330/SafeKafkaHandle.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="316" column="35" selection-start-line="316" selection-start-column="35" selection-end-line="316" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/55/d819aafd/Consumer`2.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="541" column="13" selection-start-line="541" selection-start-column="13" selection-end-line="541" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8537A9D0-3CDC-4DD3-AE8C-FD933D463310/f6/557abf59/ConsumerBuilder`2.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="725">
-          <caret line="281" column="45" selection-start-line="281" selection-start-column="45" selection-end-line="281" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant/ExceptionEventArgs.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="7" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
-          <folding>
-            <marker date="1563544485131" expanded="true" signature="38:344" ph="{...}" />
-            <marker date="1563544485131" expanded="true" signature="88:342" ph="{...}" />
-            <marker date="1563544485131" expanded="true" signature="149:291" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Specialized/CacheStrategy.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="50" column="34" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
-          <folding>
-            <marker date="1533906863227" expanded="false" signature="6:67" ph="..." />
-            <marker date="1533906863227" expanded="true" signature="104:6078" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="111:483" ph="/// Defines a cache mechanism where the write actions are executed against two actors - the source and the cache  ... " />
-            <marker date="1533906863227" expanded="true" signature="531:6076" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="886:1393" ph="/// Initialize the instance. ... " />
-            <marker date="1533906863227" expanded="true" signature="1521:2016" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="2042:2090" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="2100:2219" ph="/// Occurs when the cache actor throws an exception during a write method. ... " />
-            <marker date="1533906863227" expanded="true" signature="2339:2457" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="2376:2447" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="2488:2574" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="2614:3042" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="2640:2947" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="2691:2902" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="2963:3032" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="3052:3227" ph="/// Executes a write method where both calls must succeed. ... " />
-            <marker date="1533906863227" expanded="true" signature="3301:3704" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="3436:3521" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="3554:3693" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="3714:3889" ph="/// Executes a write method where both calls must succeed. ... " />
-            <marker date="1533906863227" expanded="true" signature="3967:4498" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="4121:4291" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="4197:4277" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="4324:4463" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="4508:4737" ph="/// Executes a query method where queries only in the cache.  ... " />
-            <marker date="1533906863227" expanded="true" signature="4838:4972" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="4982:5178" ph="/// Occurs when the cache actor throws an exception during a write method. ... " />
-            <marker date="1533906863227" expanded="true" signature="5249:5312" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="5383:5548" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="5590:6069" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="5663:5968" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="5714:5954" ph="{...}" />
-            <marker date="1533906863227" expanded="true" signature="5988:6059" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaSenderQueue.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="57" column="8" selection-start-line="57" selection-start-column="8" selection-end-line="57" selection-end-column="8" />
-          <folding>
-            <marker date="1562865402568" expanded="false" signature="6:113" ph="..." />
-            <marker date="1562865402568" expanded="true" signature="144:2388" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="214:2077" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="584:604" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="762:1132" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="822:949" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="1233:1493" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="1293:1420" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="1590:1785" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="1721:1773" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="1841:1954" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="1878:1944" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="1985:2071" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="2146:2386" ph="{...}" />
-            <marker date="1562865402568" expanded="true" signature="2222:2380" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant/IOpenable.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <marker date="1563560264971" expanded="false" signature="6:53" ph="..." />
-            <marker date="1563560264971" expanded="true" signature="78:429" ph="{...}" />
-            <marker date="1563560264971" expanded="true" signature="85:163" ph="/// Defines a service that can be opened. ... " />
-            <marker date="1563560264971" expanded="true" signature="194:427" ph="{...}" />
-            <marker date="1563560264971" expanded="true" signature="209:360" ph="/// Opens the service ... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant/ICloseable.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-          <folding>
-            <marker date="1563560264944" expanded="false" signature="6:53" ph="..." />
-            <marker date="1563560264944" expanded="true" signature="78:433" ph="{...}" />
-            <marker date="1563560264944" expanded="true" signature="85:163" ph="/// Defines a service that can be closed. ... " />
-            <marker date="1563560264944" expanded="true" signature="195:431" ph="{...}" />
-            <marker date="1563560264944" expanded="true" signature="210:363" ph="/// Closes the service. ... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/SenderReceiverQueueFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5">
-          <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
-          <folding>
-            <marker date="1558040699611" expanded="false" signature="6:195" ph="..." />
-            <marker date="1558040699611" expanded="true" signature="226:4979" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="307:4977" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="411:505" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="694:754" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="875:1209" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="1340:1828" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="1961:2963" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="2172:2274" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="2695:2953" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="2823:2886" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="3092:3575" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="3241:3347" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="3443:3505" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="3728:4690" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="3933:4108" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="4594:4680" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="4746:4854" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="4783:4844" ph="{...}" />
-            <marker date="1558040699611" expanded="true" signature="4885:4971" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Tests/Kafka/KafkaItemSenderReceiverQueueFacts.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="63" column="91" lean-forward="true" selection-start-line="63" selection-start-column="91" selection-end-line="63" selection-end-column="91" />
-          <folding>
-            <marker date="1563560374946" expanded="false" signature="6:141" ph="..." />
-            <marker date="1563560374946" expanded="true" signature="178:2942" ph="{...}" />
-            <marker date="1563560374946" expanded="true" signature="301:2940" ph="{...}" />
-            <marker date="1563560374946" expanded="true" signature="391:2934" ph="{...}" />
-            <marker date="1563560374946" expanded="true" signature="565:792" ph="{...}" />
-            <marker date="1563560374946" expanded="true" signature="702:777" ph="{...}" />
-            <marker date="1563560374946" expanded="true" signature="839:1450" ph="{...}" />
-            <marker date="1563560374946" expanded="true" signature="1092:1435" ph="{...}" />
-            <marker date="1563560374946" expanded="true" signature="1529:1580" ph="{...}" />
-            <marker date="1563560374946" expanded="true" signature="1874:2557" ph="{...}" />
-            <marker date="1563560374946" expanded="true" signature="2140:2509" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Take.Elephant.Kafka/KafkaReceiverQueue.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="30" column="42" lean-forward="true" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="42" />
-          <folding>
-            <marker date="1563560327073" expanded="false" signature="6:228" ph="..." />
-            <marker date="1563560327073" expanded="true" signature="259:5670" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="383:5345" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="959:979" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="1327:1347" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="1427:1860" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="1967:2194" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="2098:2155" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="2282:2439" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="2515:2602" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="2679:2855" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="2715:2810" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="2982:3232" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="3019:3222" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="3063:3138" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="3325:3953" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="3471:3844" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="3528:3830" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="3864:3943" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="4039:5212" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="4111:4184" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="4260:5124" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="4294:4488" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="4588:4651" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="4688:5110" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="4797:4915" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="4940:5092" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="5243:5329" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="5402:5668" ph="{...}" />
-            <marker date="1563560327073" expanded="true" signature="5505:5662" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
   </component>
 </project>

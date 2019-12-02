@@ -48,7 +48,7 @@ namespace Take.Elephant.Tests
             // Assert
             AssertEquals(await list.GetLengthAsync(), 2);
             var listEnumerable = await list.AsEnumerableAsync();
-            AssertEquals(listEnumerable.Last(), item2);
+            AssertEquals(listEnumerable.ToListAsync().Result.Last(), item2);
         }
 
         [Fact(DisplayName = nameof(AddNewItemToMiddleSucceds))]
@@ -68,7 +68,7 @@ namespace Take.Elephant.Tests
             // Assert
             AssertEquals(await list.GetLengthAsync(), 3);
             var listEnumerable = await list.AsEnumerableAsync();
-            AssertEquals(listEnumerable.ElementAt(1), item2);
+            AssertEquals(listEnumerable.ToListAsync().Result[1], item2);
         }
 
         [Fact(DisplayName = nameof(AddNewItemToInexistingIndexFails))]

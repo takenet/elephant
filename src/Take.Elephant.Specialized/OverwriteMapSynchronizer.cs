@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,8 +23,7 @@ namespace Take.Elephant.Specialized
 
             var targetKeysMap = target as IKeysMap<TKey, TValue>;
             if (targetKeysMap == null) throw new ArgumentException("The target map must implement IKeysMap to allow synchronization");
-
-
+            
             using (var cts = new CancellationTokenSource(_synchronizationTimeout))
             {
                 var targetKeysEnumerable = await targetKeysMap.GetKeysAsync().ConfigureAwait(false);

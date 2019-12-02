@@ -66,7 +66,7 @@ namespace Take.Elephant.Memory
             }
             var totalValues = InternalDictionary
                 .Values
-                .Select(v => v.AsEnumerableAsync().Result)
+                .Select(v => v.ToListAsync().Result)
                 .SelectMany(v => v)
                 .Where(where.Compile());
 
@@ -97,7 +97,7 @@ namespace Take.Elephant.Memory
             var totalValues = InternalDictionary
                 .SelectMany(v => v
                     .Value
-                    .AsEnumerableAsync().Result
+                    .ToListAsync().Result
                     .Select(i => new KeyValuePair<TKey, TItem>(v.Key, i)))
                 .Where(pair => where.Compile().Invoke(pair));
             var resultValues = totalValues
@@ -127,7 +127,7 @@ namespace Take.Elephant.Memory
             var predicate = where.Compile();
             var totalValues = this.InternalDictionary
                 .Where(pair =>
-                    pair.Value.AsEnumerableAsync().Result.Any(m =>
+                    pair.Value.ToListAsync().Result.Any(m =>
                         predicate.Invoke(m)));
 
             var resultValues = totalValues
