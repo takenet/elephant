@@ -29,16 +29,15 @@ namespace Take.Elephant.Sql
 
         public async ValueTask<bool> MoveNextAsync()
         {
-            await _sqlDataReader.ReadAsync(CancellationToken.None);
-            return default;
+            var result = await _sqlDataReader.ReadAsync(CancellationToken.None);
+            return result;
         }
 
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            _sqlDataReader.Dispose();
-            _dbCommand.Dispose();
-            _connection.Dispose();
-            return default;
+            await _sqlDataReader.DisposeAsync().ConfigureAwait(false);
+            await _dbCommand.DisposeAsync().ConfigureAwait(false);
+            await _connection.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Take.Elephant.Sql
 
         public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
         {
-            return GetEnumeratorAsync(CancellationToken.None).Result;
+            return GetEnumeratorAsync(cancellationToken).Result;
         }
     }
 }
