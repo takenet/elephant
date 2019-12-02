@@ -27,10 +27,9 @@ namespace Take.Elephant.Sql
 
         public T Current => _mapper.Create(_sqlDataReader, _selectColumns);
 
-        public async ValueTask<bool> MoveNextAsync()
+        public ValueTask<bool> MoveNextAsync()
         {
-            var result = await _sqlDataReader.ReadAsync(CancellationToken.None);
-            return result;
+            return new ValueTask<bool>(_sqlDataReader.ReadAsync(CancellationToken.None));
         }
 
         public async ValueTask DisposeAsync()
