@@ -43,7 +43,7 @@ QueueMap | Map that contains a queue of items.      | Memory, Redis
 
 Name             | Parent | Description													| Implementations
 -----------------|--------|-------------------------------------------------------------|----------------
-BlockingQueue    | Queue  | A queue that allows awaiting for the next item asynchronously. | Memory, Redis, RabbitMQ, MSMQ, Kafka, Azure Storage, Azure Event Hub
+BlockingQueue    | Queue  | A queue that allows awaiting for the next item asynchronously. | Memory, Redis, RabbitMQ, Kafka, Azure Storage, Azure Event Hub
 ExpirableKeyMap  | Map    | Map that supports key expiration.							| Memory, Redis
 ItemSetMap       | SetMap | SetMap that allows to get an specific item in the set.		| Memory, Redis, SQL Server, PostgreSQL
 KeyQueryableMap  | Map    | Map that supports queries for its keys.						| Memory, SQL Server, PostgreSQL
@@ -80,7 +80,6 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 * [Take.Elephant.Sql](https://nuget.org/packages/Take.Elephant.Sql/)
 * [Take.Elephant.Sql.PostgreSql](https://nuget.org/packages/Take.Elephant.Sql.PostgreSql/)
 * [Take.Elephant.RabbitMQ](https://nuget.org/packages/Take.Elephant.RabbitMQ/)
-* [Take.Elephant.Msmq](https://nuget.org/packages/Take.Elephant.Msmq/)
 
 ### Samples
 
