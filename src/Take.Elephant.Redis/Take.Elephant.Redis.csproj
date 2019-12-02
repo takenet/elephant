@@ -14,6 +14,7 @@
     <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup> 
 

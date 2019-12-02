@@ -14,6 +14,7 @@
     <Copyright>Copyright © 2015 Curupira S/A</Copyright>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 

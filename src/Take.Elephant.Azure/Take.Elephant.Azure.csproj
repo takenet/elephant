@@ -11,6 +11,7 @@
     <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
     <PackageTags>elephant</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
