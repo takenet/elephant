@@ -14,17 +14,17 @@ namespace Take.Elephant
         // <param name="action"> The action to be executed. </param>
         // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
         // <returns> A Task representing the asynchronous operation. </returns>
-        public static async Task ForEachAsync<T>(
-            this IAsyncEnumerable<T> source, Action<T> action, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task ForEachAsync<T>(
+            this IAsyncEnumerable<T> source, Action<T> action, CancellationToken cancellationToken = default)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (action == null) throw new ArgumentNullException(nameof(action));
 
-            await ForEachAsync(source.GetAsyncEnumerator(cancellationToken), action, cancellationToken);
+            return ForEachAsync(source.GetAsyncEnumerator(cancellationToken), action, cancellationToken);
         }
 
         private static async Task ForEachAsync<T>(
-            IAsyncEnumerator<T> enumerator, Action<T> action, CancellationToken cancellationToken = default(CancellationToken))
+            IAsyncEnumerator<T> enumerator, Action<T> action, CancellationToken cancellationToken = default)
         {
             await using (enumerator)
             {
@@ -51,17 +51,17 @@ namespace Take.Elephant
         // <param name="func"> The action to be executed. </param>
         // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
         // <returns> A Task representing the asynchronous operation. </returns>
-        public static async Task ForEachAsync<T>(
-            this IAsyncEnumerable<T> source, Func<T, Task> func, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task ForEachAsync<T>(
+            this IAsyncEnumerable<T> source, Func<T, Task> func, CancellationToken cancellationToken = default)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (func == null) throw new ArgumentNullException(nameof(func));
 
-            await ForEachAsync(source.GetAsyncEnumerator(cancellationToken), func, cancellationToken);
+            return ForEachAsync(source.GetAsyncEnumerator(cancellationToken), func, cancellationToken);
         }
 
         private static async Task ForEachAsync<T>(
-            IAsyncEnumerator<T> enumerator, Func<T, Task> func, CancellationToken cancellationToken = default(CancellationToken))
+            IAsyncEnumerator<T> enumerator, Func<T, Task> func, CancellationToken cancellationToken = default)
         {
             await using (enumerator)
             {
@@ -408,9 +408,7 @@ namespace Take.Elephant
             if (keySelector == null) throw new ArgumentNullException(nameof(elementSelector));
 
             var d = new Dictionary<TKey, TElement>(comparer);
-            await
-                source.ForEachAsync(element => d.Add(keySelector(element), elementSelector(element)), cancellationToken).ConfigureAwait(
-                    continueOnCapturedContext: false);
+            await source.ForEachAsync(element => d.Add(keySelector(element), elementSelector(element)), cancellationToken).ConfigureAwait(false);
             return d;
         }
 
@@ -498,7 +496,7 @@ namespace Take.Elephant
                 }
             }
 
-            return default(TSource);
+            return default;
         }
 
         public static async Task<TSource> FirstOrDefaultAsync<TSource>(
@@ -519,7 +517,7 @@ namespace Take.Elephant
                 }
             }
 
-            return default(TSource);
+            return default;
         }
 
         public static Task<TSource> SingleAsync<TSource>(this IAsyncEnumerable<TSource> source)
@@ -622,7 +620,7 @@ namespace Take.Elephant
             {
                 if (!await e.MoveNextAsync().ConfigureAwait(false))
                 {
-                    return default(TSource);
+                    return default;
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
