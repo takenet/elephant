@@ -21,9 +21,15 @@ after_build:
 - dotnet pack src/Take.Elephant.Azure/Take.Elephant.Azure.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet pack src/Take.Elephant.Kafka/Take.Elephant.Kafka.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet pack src/Take.Elephant.Elasticsearch/Take.Elephant.Elasticsearch.csproj --configuration Release /p:Version=%APPVEYOR_BUILD_VERSION%
-services:
-  - msmq
-test: off
+#services:
+#  - mssql2017
+#  - postgresql
+test:
+  assemblies:
+    only:
+      - '**\*.Tests.dll'      
+  categories: 
+    - Memory
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
