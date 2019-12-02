@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1</TargetFrameworks>
     <AssemblyName>Take.Elephant.Specialized</AssemblyName>
     <RootNamespace>Take.Elephant.Specialized</RootNamespace>
     <Description>Elephant storage library</Description>

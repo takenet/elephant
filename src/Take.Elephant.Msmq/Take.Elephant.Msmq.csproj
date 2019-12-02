@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>Take.Elephant.Msmq</AssemblyName>
     <RootNamespace>Take.Elephant.Msmq</RootNamespace>
     <Version>0.5.0</Version>

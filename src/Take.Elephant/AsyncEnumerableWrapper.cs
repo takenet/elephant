@@ -14,19 +14,14 @@ namespace Take.Elephant
             _enumerable = enumerable;
         }
 
-        public Task<IAsyncEnumerator<T>> GetEnumeratorAsync(CancellationToken cancellationToken)
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
         {
-            return Task.FromResult<IAsyncEnumerator<T>>(new AsyncEnumeratorWrapper<T>(GetEnumerator()));
+            return new AsyncEnumeratorWrapper<T>(GetEnumerator());
         }
 
         public IEnumerator<T> GetEnumerator()
         {
             return _enumerable.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_enumerable).GetEnumerator();
         }
     }
 }

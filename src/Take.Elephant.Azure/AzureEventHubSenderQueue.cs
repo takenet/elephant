@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Dawn;
 using Microsoft.Azure.EventHubs;
 
 namespace Take.Elephant.Azure
@@ -13,15 +14,15 @@ namespace Take.Elephant.Azure
         
         public AzureEventHubSenderQueue(string eventHubName, string eventHubConnectionString, ISerializer<T> serializer)
         {
-            if (string.IsNullOrEmpty(eventHubName)) throw new ArgumentException("Value cannot be null or empty.", nameof(eventHubName));
-            if (string.IsNullOrEmpty(eventHubConnectionString)) throw new ArgumentException("Value cannot be null or empty.", nameof(eventHubConnectionString));
-            _serializer = serializer;
+            Guard.Argument(eventHubName).NotNull().NotEmpty();
+            Guard.Argument(eventHubConnectionString).NotNull().NotEmpty();
+            _serializer = Guard.Argument(serializer).NotNull().Value;
 
-            var connectionStringBuilder = new EventHubsConnectionStringBuilder(eventHubConnectionString)
-            {
-                EntityPath = eventHubName
-            };
-            _eventHubClient = EventHubClient.CreateFromConnectionString(connectionStringBuilder.ToString());
+            _eventHubClient = EventHubClient.CreateFromConnectionString(
+                new EventHubsConnectionStringBuilder(eventHubConnectionString)
+                {
+                    EntityPath = eventHubName
+                }.ToString());
         }
 
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Take.Elephant.Memory;
 using Take.Elephant.Samples.Map;
 using Take.Elephant.Samples.Set;
 using Take.Elephant.Samples.SetMap;

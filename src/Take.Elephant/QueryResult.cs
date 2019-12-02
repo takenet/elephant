@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Take.Elephant
 {
@@ -21,27 +19,15 @@ namespace Take.Elephant
         public IAsyncEnumerable<T> Items { get; }
 
         public int Total { get; }
-
-
-        public Task<IAsyncEnumerator<T>> GetEnumeratorAsync(CancellationToken cancellationToken)
+        
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
         {
-            return Items.GetEnumeratorAsync(cancellationToken);
+            return Items.GetAsyncEnumerator(cancellationToken);
         }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return Items.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)Items).GetEnumerator();
-        }
-
+        
         public void Dispose()
         {            
             (Items as IDisposable)?.Dispose();
         }
-
     }
 }

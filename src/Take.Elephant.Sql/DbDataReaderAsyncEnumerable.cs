@@ -37,14 +37,9 @@ namespace Take.Elephant.Sql
             return new DbDataReaderAsyncEnumerator<T>(dbConnection, dbCommand, dbReader, _mapper, _selectColumns);
         }
 
-        public virtual IEnumerator<T> GetEnumerator()
+        public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
         {
             return GetEnumeratorAsync(CancellationToken.None).Result;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

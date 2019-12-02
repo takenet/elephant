@@ -9,37 +9,6 @@ namespace Take.Elephant
     public static class AsyncEnumerableExtensions
     {
         // <summary>
-        // Asynchronously executes the provided action on each element of the <see cref="IDbAsyncEnumerable" />.
-        // </summary>
-        // <param name="action"> The action to be executed. </param>
-        // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
-        // <returns> A Task representing the asynchronous operation. </returns>
-        public static async Task ForEachAsync(
-            this IAsyncEnumerable source, Action<object> action, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (source == null) throw new ArgumentNullException("source");
-            if (action == null) throw new ArgumentNullException("action");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var enumerator = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    Task<bool> moveNextTask;
-                    do
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        var current = enumerator.Current;
-                        moveNextTask = enumerator.MoveNextAsync(cancellationToken);
-                        action(current);
-                    }
-                    while (await moveNextTask.ConfigureAwait(continueOnCapturedContext: false));
-                }
-            }
-        }
-
-        // <summary>
         // Asynchronously executes the provided action on each element of the <see cref="IAsyncEnumerable{T}" />.
         // </summary>
         // <param name="action"> The action to be executed. </param>
@@ -51,24 +20,24 @@ namespace Take.Elephant
             if (source == null) throw new ArgumentNullException("source");
             if (action == null) throw new ArgumentNullException("action");
 
-            await ForEachAsync(await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false), action, cancellationToken);
+            await ForEachAsync(source.GetAsyncEnumerator(cancellationToken), action, cancellationToken);
         }
 
         private static async Task ForEachAsync<T>(
             IAsyncEnumerator<T> enumerator, Action<T> action, CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (enumerator)
+            await using (enumerator)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await enumerator.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
-                    Task<bool> moveNextTask;
+                    ValueTask<bool> moveNextTask;
                     do
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var current = enumerator.Current;
-                        moveNextTask = enumerator.MoveNextAsync(cancellationToken);
+                        moveNextTask = enumerator.MoveNextAsync();
                         action(current);
                     }
                     while (await moveNextTask.ConfigureAwait(continueOnCapturedContext: false));
@@ -88,60 +57,29 @@ namespace Take.Elephant
             if (source == null) throw new ArgumentNullException("source");
             if (func == null) throw new ArgumentNullException("func");
 
-            await ForEachAsync(await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false), func, cancellationToken);
+            await ForEachAsync(source.GetAsyncEnumerator(cancellationToken), func, cancellationToken);
         }
 
         private static async Task ForEachAsync<T>(
             IAsyncEnumerator<T> enumerator, Func<T, Task> func, CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (enumerator)
+            await using (enumerator)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await enumerator.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
-                    Task<bool> moveNextTask;
+                    ValueTask<bool> moveNextTask;
                     do
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var current = enumerator.Current;
-                        moveNextTask = enumerator.MoveNextAsync(cancellationToken);
+                        moveNextTask = enumerator.MoveNextAsync();
                         await func(current).ConfigureAwait(false);
                     }
                     while (await moveNextTask.ConfigureAwait(continueOnCapturedContext: false));
                 }
             }
-        }
-
-        // <summary>
-        // Asynchronously creates a <see cref="List{T}" /> from the <see cref="IDbAsyncEnumerable" />.
-        // </summary>
-        // <typeparam name="T"> The type that the elements will be cast to. </typeparam>
-        // <returns>
-        // A <see cref="Task" /> containing a <see cref="List{T}" /> that contains elements from the input sequence.
-        // </returns>
-        public static Task<List<T>> ToListAsync<T>(this IAsyncEnumerable source)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            return source.ToListAsync<T>(CancellationToken.None);
-        }
-
-        // <summary>
-        // Asynchronously creates a <see cref="List{T}" /> from the <see cref="IDbAsyncEnumerable" />.
-        // </summary>
-        // <typeparam name="T"> The type that the elements will be cast to. </typeparam>
-        // <param name="cancellationToken"> The token to monitor for cancellation requests. </param>
-        // <returns>
-        // A <see cref="Task" /> containing a <see cref="List{T}" /> that contains elements from the input sequence.
-        // </returns>
-        public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            var list = new List<T>();
-            await source.ForEachAsync(e => list.Add((T)e), cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
-            return list;
         }
 
         // <summary>
@@ -499,9 +437,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     return e.Current;
                 }
@@ -509,31 +447,6 @@ namespace Take.Elephant
 
             throw new InvalidOperationException("The sequence is empty");
         }
-
-        public static Task<object> FirstAsync(
-            this IAsyncEnumerable source)
-        {
-            return FirstAsync(source, CancellationToken.None);
-        }
-
-        public static async Task<object> FirstAsync(
-            this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return e.Current;
-                }
-            }
-
-            throw new InvalidOperationException("The sequence is empty");
-        }
-
         public static async Task<TSource> FirstAsync<TSource>(
             this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
         {
@@ -542,9 +455,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     if (predicate(e.Current))
                     {
@@ -554,28 +467,6 @@ namespace Take.Elephant
             }
 
             throw new InvalidOperationException("No match was found");
-        }
-
-        public static Task<object> FirstOrDefaultAsync(this IAsyncEnumerable source)
-        {
-            return FirstOrDefaultAsync(source, CancellationToken.None);
-        }
-
-        public async static Task<object> FirstOrDefaultAsync(this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return e.Current;
-                }
-            }
-
-            return null;
         }
 
         public static Task<TSource> FirstOrDefaultAsync<TSource>(this IAsyncEnumerable<TSource> source)
@@ -599,9 +490,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     return e.Current;
                 }
@@ -617,9 +508,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     if (predicate(e.Current))
                     {
@@ -637,40 +528,7 @@ namespace Take.Elephant
 
             return source.SingleAsync(CancellationToken.None);
         }
-
-        public static Task<object> SingleAsync(
-            this IAsyncEnumerable source)
-        {
-            return source.SingleAsync(CancellationToken.None);
-        }
-
-        public static async Task<object> SingleAsync(
-            this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    throw new InvalidOperationException("The sequence is empty");
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var result = e.Current;
-
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return result;
-                }
-            }
-
-            throw new InvalidOperationException("There's more than one element on the sequence");
-        }
-
+        
         public static async Task<TSource> SingleAsync<TSource>(
             this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
@@ -678,9 +536,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (!await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     throw new InvalidOperationException("The sequence is empty");
                 }
@@ -689,7 +547,7 @@ namespace Take.Elephant
 
                 var result = e.Current;
 
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (!await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     return result;
                 }
@@ -718,9 +576,9 @@ namespace Take.Elephant
 
             var result = default(TSource);
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -753,39 +611,6 @@ namespace Take.Elephant
             return source.SingleOrDefaultAsync(CancellationToken.None);
         }
 
-        public static Task<object> SingleOrDefaultAsync(
-            this IAsyncEnumerable source)
-        {
-            return SingleOrDefaultAsync(source, CancellationToken.None);
-        }
-
-        public static async Task<object> SingleOrDefaultAsync(
-            this IAsyncEnumerable source, CancellationToken cancellationToken)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return null;
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var result = e.Current;
-
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
-                {
-                    return result;
-                }
-            }
-
-            throw new InvalidOperationException("More than one element was found");
-        }
-
         public static async Task<TSource> SingleOrDefaultAsync<TSource>(
             this IAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
@@ -793,9 +618,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (!await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     return default(TSource);
                 }
@@ -804,7 +629,7 @@ namespace Take.Elephant
 
                 var result = e.Current;
 
-                if (!await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (!await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     return result;
                 }
@@ -833,9 +658,9 @@ namespace Take.Elephant
 
             var result = default(TSource);
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -872,9 +697,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     if (EqualityComparer<TSource>.Default.Equals(e.Current, value))
                     {
@@ -901,9 +726,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                if (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                if (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     return true;
                 }
@@ -929,9 +754,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     if (predicate(e.Current))
                     {
@@ -962,9 +787,9 @@ namespace Take.Elephant
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     if (!predicate(e.Current))
                     {
@@ -993,11 +818,11 @@ namespace Take.Elephant
 
             var count = 0;
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
                 checked
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1028,11 +853,11 @@ namespace Take.Elephant
 
             var count = 0;
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
                 checked
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1063,11 +888,11 @@ namespace Take.Elephant
 
             long count = 0;
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
                 checked
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1098,11 +923,11 @@ namespace Take.Elephant
 
             long count = 0;
 
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
                 checked
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1134,9 +959,9 @@ namespace Take.Elephant
             var value = default(TSource);
             if (value == null)
             {
-                using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+                await using (var e = source.GetAsyncEnumerator(cancellationToken))
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1154,9 +979,9 @@ namespace Take.Elephant
             {
                 var hasValue = false;
 
-                using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+                await using (var e = source.GetAsyncEnumerator(cancellationToken))
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1200,9 +1025,9 @@ namespace Take.Elephant
             var value = default(TSource);
             if (value == null)
             {
-                using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+                await using (var e = source.GetAsyncEnumerator(cancellationToken))
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1220,9 +1045,9 @@ namespace Take.Elephant
             {
                 var hasValue = false;
 
-                using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+                await using (var e = source.GetAsyncEnumerator(cancellationToken))
                 {
-                    while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                    while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1263,9 +1088,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1293,9 +1118,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1326,9 +1151,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1356,9 +1181,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             long sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1389,9 +1214,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1419,9 +1244,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1452,9 +1277,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1482,9 +1307,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             double sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1515,9 +1340,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             decimal sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1545,9 +1370,9 @@ namespace Take.Elephant
             cancellationToken.ThrowIfCancellationRequested();
 
             decimal sum = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1579,9 +1404,9 @@ namespace Take.Elephant
 
             long sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1615,9 +1440,9 @@ namespace Take.Elephant
 
             long sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1654,9 +1479,9 @@ namespace Take.Elephant
 
             long sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1690,9 +1515,9 @@ namespace Take.Elephant
 
             long sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1729,9 +1554,9 @@ namespace Take.Elephant
 
             double sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1765,9 +1590,9 @@ namespace Take.Elephant
 
             double sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1804,9 +1629,9 @@ namespace Take.Elephant
 
             double sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1840,9 +1665,9 @@ namespace Take.Elephant
 
             double sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1879,9 +1704,9 @@ namespace Take.Elephant
 
             decimal sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -1915,9 +1740,9 @@ namespace Take.Elephant
 
             decimal sum = 0;
             long count = 0;
-            using (var e = await source.GetEnumeratorAsync(cancellationToken).ConfigureAwait(false))
+            await using (var e = source.GetAsyncEnumerator(cancellationToken))
             {
-                while (await e.MoveNextAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false))
+                while (await e.MoveNextAsync().ConfigureAwait(continueOnCapturedContext: false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 

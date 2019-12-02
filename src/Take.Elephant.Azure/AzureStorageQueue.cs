@@ -47,7 +47,9 @@ namespace Take.Elephant.Azure
                 .Positive();
             Guard.Argument(maxDequeueRetryDelay)
                 .Min(minDequeueRetryDelay);
-
+            Guard.Argument(minDequeueRetryDelay)
+                .Max(maxDequeueRetryDelay);
+            
             _serializer = serializer;
             _minDequeueRetryDelay = minDequeueRetryDelay;
             _maxDequeueRetryDelay = maxDequeueRetryDelay;

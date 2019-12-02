@@ -24,8 +24,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Sql", "Take.E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Sql.PostgreSql", "Take.Elephant.Sql.PostgreSql\Take.Elephant.Sql.PostgreSql.csproj", "{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Msmq", "Take.Elephant.Msmq\Take.Elephant.Msmq.csproj", "{AA377435-8103-498F-8A3E-203B4FF8BE92}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Azure", "Take.Elephant.Azure\Take.Elephant.Azure.csproj", "{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Kafka", "Take.Elephant.Kafka\Take.Elephant.Kafka.csproj", "{F5132A9D-6674-40E3-AB1D-6252C49BD23D}"
@@ -66,10 +64,6 @@ Global
 		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F4E1DF4-BC73-4F94-B8A5-9BF01504D955}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA377435-8103-498F-8A3E-203B4FF8BE92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B2A7A7A-D1C8-49D1-8C15-362CC80925E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
