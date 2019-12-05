@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
 {
@@ -77,7 +78,8 @@ namespace Take.Elephant.Sql
             IDatabaseDriver databaseDriver,
             string schemaName,
             string tableName,
-            IDictionary<string, object> filterValues)
+            IDictionary<string, object> filterValues,
+            IDictionary<string, SqlType> columnTypes)
         {
             if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
             return connection.CreateTextCommand(
@@ -88,7 +90,7 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(tableName),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues.Select(k => k.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateUpdateCommand(
@@ -97,7 +99,8 @@ namespace Take.Elephant.Sql
             string schemaName,
             string tableName,
             IDictionary<string, object> filterValues,
-            IDictionary<string, object> columnValues)
+            IDictionary<string, object> columnValues,
+            IDictionary<string, SqlType> columnTypes)
         {
             if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
             if (columnValues == null) throw new ArgumentNullException(nameof(columnValues));
@@ -110,7 +113,7 @@ namespace Take.Elephant.Sql
                     columnValues = SqlHelper.GetCommaEqualsStatement(databaseDriver, columnValues.Keys.ToArray()),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
                 },
-                filterValues.Union(columnValues).Select(c => c.ToDbParameter(databaseDriver)));
+                filterValues.Union(columnValues).Select(c => c.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateContainsCommand(
@@ -118,7 +121,8 @@ namespace Take.Elephant.Sql
             IDatabaseDriver databaseDriver,
             string schemaName,
             string tableName,
-            IDictionary<string, object> filterValues)
+            IDictionary<string, object> filterValues,
+            IDictionary<string, SqlType> columnTypes)
         {
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Exists),
@@ -128,7 +132,7 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(tableName),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver, columnTypes)));
         }        
 
         public static DbCommand CreateInsertCommand(
@@ -136,7 +140,8 @@ namespace Take.Elephant.Sql
             IDatabaseDriver databaseDriver,
             string schemaName,
             string tableName,
-            IDictionary<string, object> columnValues)
+            IDictionary<string, object> columnValues,
+            IDictionary<string, SqlType> columnTypes)
         {
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Insert),
@@ -147,7 +152,7 @@ namespace Take.Elephant.Sql
                     columns = columnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     values = columnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate()
                 },
-                columnValues.Select(c => c.ToDbParameter(databaseDriver)));
+                columnValues.Select(c => c.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateInsertOutputCommand(
@@ -156,6 +161,7 @@ namespace Take.Elephant.Sql
             string schemaName,
             string tableName,
             IDictionary<string, object> columnValues,
+            IDictionary<string, SqlType> columnTypes,
             string[] outputColumnNames)
         {
             return connection.CreateTextCommand(
@@ -168,7 +174,7 @@ namespace Take.Elephant.Sql
                     values = columnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate(),
                     outputColumns = outputColumnNames.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                 },
-                columnValues.Select(c => c.ToDbParameter(databaseDriver)));
+                columnValues.Select(c =>  c.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateInsertWhereNotExistsCommand(
@@ -177,7 +183,8 @@ namespace Take.Elephant.Sql
             string schemaName,
             string tableName,
             IDictionary<string, object> filterValues,
-            IDictionary<string, object> columnValues)
+            IDictionary<string, object> columnValues,
+            IDictionary<string, SqlType> columnTypes)
         {
             var sqlTemplate = databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertWhereNotExists);
 
@@ -193,7 +200,7 @@ namespace Take.Elephant.Sql
                         ? databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsZero) 
                         : SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
                 },
-                columnValues.Select(c => c.ToDbParameter(databaseDriver)));
+                columnValues.Select(c =>  c.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateSelectCommand(
@@ -202,6 +209,7 @@ namespace Take.Elephant.Sql
             string schemaName,
             string tableName,
             IDictionary<string, object> filterValues,
+            IDictionary<string, SqlType> columnTypes,
             string[] selectColumns,
             bool distinct = false)
         {
@@ -215,7 +223,7 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(tableName),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateSelectCountCommand(
@@ -223,6 +231,7 @@ namespace Take.Elephant.Sql
             IDatabaseDriver databaseDriver,
             string schemaName,
             string tableName,
+            IDictionary<string, SqlType> columnTypes,
             string filter = null,
             IDictionary<string, object> filterValues = null,
             bool distinct = false)
@@ -236,7 +245,7 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(tableName),
                     filter = filter
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateSelectCountCommand(
@@ -244,7 +253,8 @@ namespace Take.Elephant.Sql
             IDatabaseDriver databaseDriver,
             string schemaName,
             string tableName,
-            IDictionary<string, object> filterValues)
+            IDictionary<string, object> filterValues,
+            IDictionary<string, SqlType> columnTypes)
         {
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectCount),
@@ -254,7 +264,7 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(tableName),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateSelectSkipTakeCommand(
@@ -267,6 +277,7 @@ namespace Take.Elephant.Sql
             int skip,
             int take,
             string[] orderByColumns,
+            IDictionary<string, SqlType> columnTypes,
             bool orderByAscending = true,
             IDictionary<string, object> filterValues = null,
             bool distinct = false)
@@ -292,7 +303,7 @@ namespace Take.Elephant.Sql
                     take = take,
                     orderBy = orderBy
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateSelectTop1Command(
@@ -301,7 +312,8 @@ namespace Take.Elephant.Sql
             string schemaName,
             string tableName,
             string[] selectColumns,
-            IDictionary<string, object> filterValues)
+            IDictionary<string, object> filterValues,
+            IDictionary<string, SqlType> columnTypes)
         {
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectTop1),
@@ -312,7 +324,7 @@ namespace Take.Elephant.Sql
                     columns = selectColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.Select(k => k.ToDbParameter(databaseDriver, columnTypes)));
         }
 
         public static DbCommand CreateMergeCommand(
@@ -322,6 +334,7 @@ namespace Take.Elephant.Sql
             string tableName,
             IDictionary<string, object> keyValues,
             IDictionary<string, object> columnValues,
+            IDictionary<string, SqlType> columnTypes,
             IDictionary<string, object> identityKeyValues = null)
         {
             var keyAndColumnValues = keyValues
@@ -341,7 +354,7 @@ namespace Take.Elephant.Sql
             {
                 keyValues = keyValues.Union(identityKeyValues).ToDictionary(c => c.Key, c => c.Value);
                 var allKeyColumnValues = keyAndColumnValues.Union(identityKeyValues).ToDictionary(c => c.Key, c => c.Value);
-                parameters = allKeyColumnValues.Select(k => k.ToDbParameter(databaseDriver));
+                parameters = allKeyColumnValues.Select(k => k.ToDbParameter(databaseDriver, columnTypes));
                 columnNamesAndValues =
                     SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, allKeyColumnValues.Keys.ToArray());
                 allColumns = allKeyColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate();
@@ -349,7 +362,7 @@ namespace Take.Elephant.Sql
             }
             else
             {
-                parameters = keyAndColumnValues.Select(k => k.ToDbParameter(databaseDriver));
+                parameters = keyAndColumnValues.Select(k => k.ToDbParameter(databaseDriver, columnTypes));
                 columnNamesAndValues =
                     SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, keyAndColumnValues.Keys.ToArray());
                 allColumns = columns;

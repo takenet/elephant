@@ -53,7 +53,7 @@ namespace Take.Elephant.Sql
                 int totalCount = 0;
                 if (FetchQueryResultTotal)
                 {
-                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter.Where, filter.FilterValues))
+                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, Table.Columns, filter.Where, filter.FilterValues))
                     {
                         totalCount = Convert.ToInt32(
                             await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
@@ -64,7 +64,7 @@ namespace Take.Elephant.Sql
                     new DbDataReaderAsyncEnumerable<KeyValuePair<TKey, TValue>>(
                         GetConnectionAsync,
                         c =>
-                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter.Where, skip, take, orderByColumns, filterValues: filter.FilterValues),
+                            c.CreateSelectSkipTakeCommand(DatabaseDriver, Table.Schema, Table.Name, selectColumns, filter.Where, skip, take, orderByColumns, Table.Columns, filterValues: filter.FilterValues),
                         new KeyValuePairMapper<TKey, TValue>(KeyMapper, Mapper),
                         selectColumns),
                     totalCount);
@@ -92,7 +92,7 @@ namespace Take.Elephant.Sql
                 int totalCount = 0;
                 if (FetchQueryResultTotal)
                 {
-                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, filter.Where, filter.FilterValues))
+                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, Table.Columns, filter.Where, filter.FilterValues))
                     {
                         totalCount = Convert.ToInt32(
                             await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
@@ -111,6 +111,7 @@ namespace Take.Elephant.Sql
                             skip,
                             take,
                             selectColumns,
+                            Table.Columns,
                             filterValues: filter.FilterValues),
                         KeyMapper, 
                         selectColumns),
