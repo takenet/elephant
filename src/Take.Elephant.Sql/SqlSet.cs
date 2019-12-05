@@ -42,7 +42,7 @@ namespace Take.Elephant.Sql
                         (identityKeyColumnValues.Count > 0 && identityKeyColumnValues.Any(c => c.Value != null && c.Value.ToString() != "0"))) // Using string cast to avoid reflection for checking default values of short, int, long,.
                     {
                         command = connection.CreateMergeCommand(DatabaseDriver, Table.Schema, Table.Name,
-                            nonIdentityKeyColumnValues, columnValues, identityKeyColumnValues);
+                            nonIdentityKeyColumnValues, columnValues, Table.Columns, identityKeyColumnValues);
                     }
                     else if (Table.Columns.Any(c => c.Value.IsIdentity))
                     {
@@ -50,13 +50,18 @@ namespace Take.Elephant.Sql
                         outputColumnNames =
                             Table.Columns.Where(c => c.Value.IsIdentity).Select(c => c.Key).ToArray();
 
-                        command = connection.CreateInsertOutputCommand(DatabaseDriver, Table.Schema, Table.Name,
-                            columnValues, outputColumnNames);
+                        command = connection.CreateInsertOutputCommand(
+                            DatabaseDriver, 
+                            Table.Schema,
+                            Table.Name, 
+                            columnValues,
+                            Table.Columns,
+                            outputColumnNames);
                     }
                     else
                     {
                         command = connection.CreateInsertCommand(DatabaseDriver, Table.Schema, Table.Name,
-                            columnValues);
+                            columnValues, Table.Columns);
                     }
                     
                     using (command)

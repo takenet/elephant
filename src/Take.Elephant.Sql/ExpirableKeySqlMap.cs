@@ -108,6 +108,8 @@ namespace Take.Elephant.Sql
             public string GetSqlTypeName(DbType dbType) => _underlyingDatabaseDriver.GetSqlTypeName(dbType);
 
             public DbParameter CreateParameter(string parameterName, object value) => _underlyingDatabaseDriver.CreateParameter(parameterName, value);
+            
+            public DbParameter CreateParameter(string parameterName, object value, SqlType sqlType) => _underlyingDatabaseDriver.CreateParameter(parameterName, value, sqlType);
 
             public string ParseParameterName(string parameterName) => _underlyingDatabaseDriver.ParseParameterName(parameterName);
 

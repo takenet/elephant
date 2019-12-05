@@ -36,7 +36,7 @@ namespace Take.Elephant.Sql
 
         protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken, DbTransaction sqlTransaction = null)
         {
-            using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues))
+            using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues, Table.Columns))
             {
                 if (sqlTransaction != null) command.Transaction = sqlTransaction;
                 return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
@@ -45,7 +45,7 @@ namespace Take.Elephant.Sql
 
         protected async Task<bool> ContainsAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken)
         {
-            using (var command = connection.CreateContainsCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues))
+            using (var command = connection.CreateContainsCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues, Table.Columns))
             {
                 return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
             }
@@ -158,6 +158,7 @@ namespace Take.Elephant.Sql
                         DatabaseDriver,
                         Table.Schema,
                         Table.Name,
+                        Table.Columns,
                         filter,
                         filterValues,
                         distinct))
@@ -180,6 +181,7 @@ namespace Take.Elephant.Sql
                                 skip,
                                 take,
                                 orderByColumns,
+                                Table.Columns,
                                 orderByAscending,
                                 filterValues,
                                 distinct),

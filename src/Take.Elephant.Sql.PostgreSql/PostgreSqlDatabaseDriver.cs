@@ -44,6 +44,21 @@ namespace Take.Elephant.Sql.PostgreSql
             };
         }
 
+        public DbParameter CreateParameter(string parameterName, object value, SqlType sqlType)
+        {
+            if (sqlType.Length == null)
+            {
+                return CreateParameter(parameterName, value);
+            }
+            
+            return new NpgsqlParameter()
+            {
+                ParameterName = parameterName,
+                Value = value,
+                Size = sqlType.Length.Value
+            };
+        }
+
         public string ParseParameterName(string parameterName) => $"@{parameterName}";
 
         public string ParseIdentifier(string identifier)
