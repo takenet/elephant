@@ -38,5 +38,13 @@ namespace Take.Elephant.Sql
                 ? keyValuePair.ToDbParameter(databaseDriver, sqlType)
                 : keyValuePair.ToDbParameter(databaseDriver);
         }
+
+        public static IEnumerable<DbParameter> ToDbParameters(
+            this IDictionary<string, object> parameters,
+            IDatabaseDriver databaseDriver, 
+            ITable table)
+        {
+            return parameters.Select(p => p.ToDbParameter(databaseDriver, table.Columns));
+        }
     }
 }

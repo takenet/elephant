@@ -21,7 +21,7 @@ namespace Take.Elephant.Sql
             return Task.FromResult<IAsyncEnumerable<T>>(
                 new DbDataReaderAsyncEnumerable<T>(
                     GetConnectionAsync,
-                    c => c.CreateSelectCommand(DatabaseDriver, Table.Schema, Table.Name, null, Table.Columns, selectColumns),
+                    c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns),
                     Mapper,
                     selectColumns));
         }
@@ -32,7 +32,7 @@ namespace Take.Elephant.Sql
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table.Schema, Table.Name, Table.Columns, filter: null))
+                    using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table, filter: null))
                     {
                         return Convert.ToInt64(
                             await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false));
