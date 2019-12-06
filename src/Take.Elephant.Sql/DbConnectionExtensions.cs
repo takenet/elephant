@@ -126,7 +126,7 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(table.Name),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues.ToDbParameters(databaseDriver, table));
+                filterValues?.ToDbParameters(databaseDriver, table));
         }        
 
         public static DbCommand CreateInsertCommand(
