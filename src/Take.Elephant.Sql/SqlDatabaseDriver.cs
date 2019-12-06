@@ -32,8 +32,39 @@ namespace Take.Elephant.Sql
 
         public DbParameter CreateParameter(string parameterName, object value) => new SqlParameter(parameterName, value);
 
+        public DbParameter CreateParameter(string parameterName, object value, SqlType sqlType)
+        {
+            if (!TryGetSqlDbType(sqlType.Type, out var sqlDbType) || sqlType.Length == null)
+            {
+                return CreateParameter(parameterName, value);
+            }
+            
+            return new SqlParameter(parameterName, sqlDbType.Value, sqlType.Length.Value)
+            {
+                Value = value
+            };
+        }
+
         public string ParseParameterName(string parameterName) => $"@{parameterName}";
 
         public string ParseIdentifier(string identifier) => $"[{identifier}]";
+
+        private static bool TryGetSqlDbType(DbType dbType, out SqlDbType? type)
+        {
+            // Use SqlParameter class to convert a DbType to SqlDbType
+            SqlParameter sqlParameter = new SqlParameter();
+            try
+            {
+                sqlParameter.DbType = dbType;
+            }
+            catch (Exception)
+            {
+                type = null;
+                return false;
+            }
+
+            type = sqlParameter.SqlDbType;
+            return true;
+        }
     }
 }

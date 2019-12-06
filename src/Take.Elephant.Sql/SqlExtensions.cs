@@ -23,5 +23,28 @@ namespace Take.Elephant.Sql
         {
             return databaseDriver.CreateParameter(databaseDriver.ParseParameterName(keyValuePair.Key), keyValuePair.Value);
         }
+        
+        public static DbParameter ToDbParameter(this KeyValuePair<string, object> keyValuePair, IDatabaseDriver databaseDriver, SqlType sqlType)
+        {
+            return databaseDriver.CreateParameter(databaseDriver.ParseParameterName(keyValuePair.Key), keyValuePair.Value, sqlType);
+        }
+
+        public static DbParameter ToDbParameter(
+            this KeyValuePair<string, object> keyValuePair,
+            IDatabaseDriver databaseDriver, 
+            IDictionary<string, SqlType> columnTypes)
+        {
+            return columnTypes.TryGetValue(keyValuePair.Key, out var sqlType)
+                ? keyValuePair.ToDbParameter(databaseDriver, sqlType)
+                : keyValuePair.ToDbParameter(databaseDriver);
+        }
+
+        public static IEnumerable<DbParameter> ToDbParameters(
+            this IDictionary<string, object> parameters,
+            IDatabaseDriver databaseDriver, 
+            ITable table)
+        {
+            return parameters.Select(p => p.ToDbParameter(databaseDriver, table.Columns));
+        }
     }
 }

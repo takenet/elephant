@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
 {
@@ -75,8 +76,7 @@ namespace Take.Elephant.Sql
         public static DbCommand CreateDeleteCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             IDictionary<string, object> filterValues)
         {
             if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
@@ -84,18 +84,17 @@ namespace Take.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Delete),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateUpdateCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             IDictionary<string, object> filterValues,
             IDictionary<string, object> columnValues)
         {
@@ -105,56 +104,53 @@ namespace Take.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(databaseDriver, columnValues.Keys.ToArray()),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
                 },
-                filterValues.Union(columnValues).Select(c => c.ToDbParameter(databaseDriver)));
+                filterValues.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateContainsCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             IDictionary<string, object> filterValues)
         {
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Exists),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.ToDbParameters(databaseDriver, table));
         }        
 
         public static DbCommand CreateInsertCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             IDictionary<string, object> columnValues)
         {
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Insert),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     columns = columnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     values = columnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate()
                 },
-                columnValues.Select(c => c.ToDbParameter(databaseDriver)));
+                columnValues.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateInsertOutputCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             IDictionary<string, object> columnValues,
             string[] outputColumnNames)
         {
@@ -162,20 +158,19 @@ namespace Take.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertOutput),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     columns = columnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     values = columnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate(),
                     outputColumns = outputColumnNames.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                 },
-                columnValues.Select(c => c.ToDbParameter(databaseDriver)));
+                columnValues.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateInsertWhereNotExistsCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             IDictionary<string, object> filterValues,
             IDictionary<string, object> columnValues)
         {
@@ -185,22 +180,21 @@ namespace Take.Elephant.Sql
                 sqlTemplate,
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     columns = columnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     values = columnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate(),
-                    filter = filterValues == null || filterValues.Count == 0 
-                        ? databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsZero) 
+                    filter = filterValues == null || filterValues.Count == 0
+                        ? databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsZero)
                         : SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues.Keys.ToArray())
                 },
-                columnValues.Select(c => c.ToDbParameter(databaseDriver)));
+                columnValues.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateSelectCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             IDictionary<string, object> filterValues,
             string[] selectColumns,
             bool distinct = false)
@@ -210,19 +204,18 @@ namespace Take.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinct : SqlStatement.Select),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
                     columns = selectColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateSelectCountCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             string filter = null,
             IDictionary<string, object> filterValues = null,
             bool distinct = false)
@@ -232,36 +225,34 @@ namespace Take.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectCountDistinct : SqlStatement.SelectCount),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     filter = filter
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateSelectCountCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             IDictionary<string, object> filterValues)
         {
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectCount),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateSelectSkipTakeCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             string[] selectColumns,
             string filter,
             int skip,
@@ -281,25 +272,26 @@ namespace Take.Elephant.Sql
             }
 
             return connection.CreateTextCommand(
-                databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinctSkipTake : SqlStatement.SelectSkipTake),
+                databaseDriver.GetSqlStatementTemplate(distinct
+                    ? SqlStatement.SelectDistinctSkipTake
+                    : SqlStatement.SelectSkipTake),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     columns = selectColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     filter = filter,
                     skip = skip,
                     take = take,
                     orderBy = orderBy
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateSelectTop1Command(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             string[] selectColumns,
             IDictionary<string, object> filterValues)
         {
@@ -307,19 +299,18 @@ namespace Take.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectTop1),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     columns = selectColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
-                filterValues?.Select(k => k.ToDbParameter(databaseDriver)));
+                filterValues?.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateMergeCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             IDictionary<string, object> keyValues,
             IDictionary<string, object> columnValues,
             IDictionary<string, object> identityKeyValues = null)
@@ -341,7 +332,7 @@ namespace Take.Elephant.Sql
             {
                 keyValues = keyValues.Union(identityKeyValues).ToDictionary(c => c.Key, c => c.Value);
                 var allKeyColumnValues = keyAndColumnValues.Union(identityKeyValues).ToDictionary(c => c.Key, c => c.Value);
-                parameters = allKeyColumnValues.Select(k => k.ToDbParameter(databaseDriver));
+                parameters = allKeyColumnValues.ToDbParameters(databaseDriver, table);
                 columnNamesAndValues =
                     SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, allKeyColumnValues.Keys.ToArray());
                 allColumns = allKeyColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate();
@@ -349,7 +340,7 @@ namespace Take.Elephant.Sql
             }
             else
             {
-                parameters = keyAndColumnValues.Select(k => k.ToDbParameter(databaseDriver));
+                parameters = keyAndColumnValues.ToDbParameters(databaseDriver, table);
                 columnNamesAndValues =
                     SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, keyAndColumnValues.Keys.ToArray());
                 allColumns = columns;
@@ -360,8 +351,8 @@ namespace Take.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Merge),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
                     columnNamesAndValues = columnNamesAndValues,
                     on = SqlHelper.GetLiteralJoinConditionStatement(databaseDriver, keyValues.Keys.ToArray(), "source", "target"),
                     columnValues = columnValues.Any() ? SqlHelper.GetCommaEqualsStatement(databaseDriver, columnValues.Keys.ToArray()) : databaseDriver.GetSqlStatementTemplate(SqlStatement.DummyEqualsZero),
@@ -377,8 +368,7 @@ namespace Take.Elephant.Sql
         public static DbCommand CreateMergeIncrementCommand(
             this DbConnection connection,
             IDatabaseDriver databaseDriver,
-            string schemaName,
-            string tableName,
+            ITable table,
             string incrementColumnName,
             IDictionary<string, object> keyValues,
             IDictionary<string, object> columnValues)
@@ -391,17 +381,19 @@ namespace Take.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.MergeIncrement),
                 new
                 {
-                    schemaName = databaseDriver.ParseIdentifier(schemaName ?? databaseDriver.DefaultSchema),
-                    tableName = databaseDriver.ParseIdentifier(tableName),
-                    columnNamesAndValues = SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, keyAndColumnValues.Keys.ToArray()),
-                    on = SqlHelper.GetLiteralJoinConditionStatement(databaseDriver, keyValues.Keys.ToArray(), "source", "target"),
+                    schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                    tableName = databaseDriver.ParseIdentifier(table.Name),
+                    columnNamesAndValues =
+                        SqlHelper.GetCommaValueAsColumnStatement(databaseDriver, keyAndColumnValues.Keys.ToArray()),
+                    on = SqlHelper.GetLiteralJoinConditionStatement(databaseDriver, keyValues.Keys.ToArray(), "source",
+                        "target"),
                     incrementColumnName = databaseDriver.ParseIdentifier(incrementColumnName),
                     increment = databaseDriver.ParseParameterName(incrementColumnName),
                     columns = keyAndColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     values = keyAndColumnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate(),
                     keyColumns = keyValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                 },
-                keyAndColumnValues.Select(k => k.ToDbParameter(databaseDriver)));
+                keyAndColumnValues.ToDbParameters(databaseDriver, table));
         }
     }
 }

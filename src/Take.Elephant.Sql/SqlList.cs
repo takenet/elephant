@@ -37,7 +37,7 @@ namespace Take.Elephant.Sql
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    using (var command = connection.CreateInsertCommand(DatabaseDriver, Table.Schema, Table.Name, columnValues))
+                    using (var command = connection.CreateInsertCommand(DatabaseDriver, Table, columnValues))
                     {
                         if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
                         {
@@ -57,7 +57,7 @@ namespace Take.Elephant.Sql
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
-                    using (var deleteCommand = connection.CreateDeleteCommand(DatabaseDriver, Table.Schema, Table.Name, keyColumnValues))
+                    using (var deleteCommand = connection.CreateDeleteCommand(DatabaseDriver, Table, keyColumnValues))
                     {
                         return await deleteCommand.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                     }

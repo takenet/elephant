@@ -19,6 +19,8 @@ namespace Take.Elephant.Sql
 
         DbParameter CreateParameter(string parameterName, object value);
 
+        DbParameter CreateParameter(string parameterName, object value, SqlType sqlType);
+
         string ParseParameterName(string parameterName);
 
         string ParseIdentifier(string identifier);

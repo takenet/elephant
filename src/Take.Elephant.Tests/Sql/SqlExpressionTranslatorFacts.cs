@@ -4,6 +4,7 @@ using Take.Elephant.Sql;
 using Xunit;
 using System.Data;
 using System.Data.Common;
+using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Tests.Sql
 {
@@ -357,6 +358,11 @@ namespace Take.Elephant.Tests.Sql
         public DbParameter CreateParameter(string parameterName, object value)
         {
             return _sqlDatabaseDriver.CreateParameter(parameterName, value);
+        }
+
+        public DbParameter CreateParameter(string parameterName, object value, SqlType sqlType)
+        {
+            return _sqlDatabaseDriver.CreateParameter(parameterName, value, sqlType);
         }
 
         public string GetSqlStatementTemplate(SqlStatement sqlStatement)
