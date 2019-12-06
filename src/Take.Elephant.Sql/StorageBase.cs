@@ -36,7 +36,7 @@ namespace Take.Elephant.Sql
 
         protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken, DbTransaction sqlTransaction = null)
         {
-            using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues, Table.Columns))
+            using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table, filterValues))
             {
                 if (sqlTransaction != null) command.Transaction = sqlTransaction;
                 return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
@@ -45,7 +45,7 @@ namespace Take.Elephant.Sql
 
         protected async Task<bool> ContainsAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken)
         {
-            using (var command = connection.CreateContainsCommand(DatabaseDriver, Table.Schema, Table.Name, filterValues, Table.Columns))
+            using (var command = connection.CreateContainsCommand(DatabaseDriver, Table, filterValues))
             {
                 return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
             }
@@ -156,9 +156,7 @@ namespace Take.Elephant.Sql
                 {
                     using (var countCommand = connection.CreateSelectCountCommand(
                         DatabaseDriver,
-                        Table.Schema,
-                        Table.Name,
-                        Table.Columns,
+                        Table,
                         filter,
                         filterValues,
                         distinct))
@@ -174,14 +172,12 @@ namespace Take.Elephant.Sql
                         c =>
                             c.CreateSelectSkipTakeCommand(
                                 DatabaseDriver,
-                                Table.Schema,
-                                Table.Name,
+                                Table,
                                 selectColumns,
                                 filter,
                                 skip,
                                 take,
                                 orderByColumns,
-                                Table.Columns,
                                 orderByAscending,
                                 filterValues,
                                 distinct),
