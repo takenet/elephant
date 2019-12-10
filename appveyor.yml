@@ -1,4 +1,4 @@
-version: 0.6.{build}
+version: 0.6.258.1
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
@@ -6,6 +6,7 @@ cache: src/packages
 branches:
   only:
     - master
+    - hotfix/0.6.258-parameterized-sql-queries
 before_build:
 - dotnet restore src/Take.Elephant.sln
 build:
