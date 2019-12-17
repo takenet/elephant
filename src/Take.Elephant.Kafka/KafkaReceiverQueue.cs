@@ -161,6 +161,8 @@ namespace Take.Elephant.Kafka
 
         public void Dispose()
         {
+            _consumer.Close();
+            _consumer.Dispose();
             Dispose(true);
             GC.SuppressFinalize(this);
         }
