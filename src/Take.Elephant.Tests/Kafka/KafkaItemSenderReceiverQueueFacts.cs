@@ -34,7 +34,6 @@ namespace Take.Elephant.Tests.Kafka
             {
                 var fqdn = "";
                 var connectionString = "";
-                var caCertPath = Path.Combine(Environment.CurrentDirectory, "Kafka", "cacert.pem");
                 clientConfig = new ClientConfig
                 {
                     BootstrapServers = fqdn,
@@ -42,7 +41,6 @@ namespace Take.Elephant.Tests.Kafka
                     SaslMechanism = SaslMechanism.Plain,
                     SaslUsername = "$ConnectionString",
                     SaslPassword = connectionString,
-                    SslCaLocation = caCertPath,
                 };
             }
             var consumerConfig = new ConsumerConfig(clientConfig)
