@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Take.Elephant.Tests.Specialized
 {
-    public abstract class FallbackQueueFacts<T> : QueueFacts<T>
+    public abstract class ReplicationQueueFacts<T> : QueueFacts<T>
     {
         public override IQueue<T> Create()
         {
@@ -20,7 +20,7 @@ namespace Take.Elephant.Tests.Specialized
 
         public IQueue<T> Create(IQueue<T> master, IQueue<T> slave)
         {
-            return new FallbackQueue<T>(master, slave);
+            return new ReplicationQueue<T>(master, slave);
         }
 
         [Fact(DisplayName = "EnqueueWhenMasterIsDownShouldSucceed")]
