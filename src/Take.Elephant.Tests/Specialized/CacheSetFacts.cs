@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Take.Elephant.Specialized;
+using Take.Elephant.Specialized.Cache;
 using Xunit;
 
 namespace Take.Elephant.Tests.Specialized

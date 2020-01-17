@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NFluent;
 using Ploeh.AutoFixture;
 using Take.Elephant.Specialized;
+using Take.Elephant.Specialized.Cache;
 using Xunit;
 
 namespace Take.Elephant.Tests.Specialized

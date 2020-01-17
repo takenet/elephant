@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Take.Elephant.Specialized
+namespace Take.Elephant.Specialized.Synchronization
 {
     public class OverwriteSetSynchronizer<T> : ISynchronizer<ISet<T>>
     {

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Take.Elephant.Specialized
+namespace Take.Elephant.Specialized.Synchronization
 {
     public interface ISynchronizer<in T>
     {

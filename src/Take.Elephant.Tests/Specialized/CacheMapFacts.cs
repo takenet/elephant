@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Take.Elephant.Specialized;
+using Take.Elephant.Specialized.Cache;
 using Take.Elephant.Specialized.Scoping;
 using Xunit;
 

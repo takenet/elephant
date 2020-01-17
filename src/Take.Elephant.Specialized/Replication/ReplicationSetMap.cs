@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Take.Elephant.Specialized.Synchronization;
 
-namespace Take.Elephant.Specialized
+namespace Take.Elephant.Specialized.Replication
 {
     /// <summary>
     /// Implements a replication mechanism with a master and slave maps. 

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Take.Elephant.Specialized.Synchronization;
 
-namespace Take.Elephant.Specialized
+namespace Take.Elephant.Specialized.Cache
 {
     /// <summary>
     /// Defines a cache mechanism where the write actions are executed against two actors - the source and the cache - but the reading ones only against the cache.

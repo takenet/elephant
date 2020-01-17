@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Take.Elephant.Specialized
+namespace Take.Elephant.Specialized.Cache
 {
     public class OnDemandCacheSet<T> : OnDemandCacheStrategy<ISet<T>>, ISet<T>
     {

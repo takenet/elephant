@@ -7,6 +7,7 @@ using Moq;
 using Ploeh.AutoFixture;
 using Take.Elephant.Memory;
 using Take.Elephant.Specialized;
+using Take.Elephant.Specialized.Replication;
 using Xunit;
 
 namespace Take.Elephant.Tests.Specialized

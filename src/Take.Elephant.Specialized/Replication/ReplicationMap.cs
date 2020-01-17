@@ -1,28 +1,29 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Take.Elephant.Specialized.Synchronization;
 
-namespace Take.Elephant.Specialized
+namespace Take.Elephant.Specialized.Replication
 {
     /// <summary>
-    /// Implements a replication mechanism with a primary and slave maps. 
+    /// Implements a replication mechanism with a master and slave maps. 
     /// For write actions, the operation must succeed in both;
     /// For queries, if the action fails in the first, it falls back to the second.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class ReplicationPropertyMap<TKey, TValue> : ReplicationStrategy<IPropertyMap<TKey, TValue>>, IPropertyMap<TKey, TValue>
+    public class ReplicationMap<TKey, TValue> : ReplicationStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
     {
-        public ReplicationPropertyMap(IPropertyMap<TKey, TValue> master, IPropertyMap<TKey, TValue> slave, TimeSpan synchronizationTimeout)
+        public ReplicationMap(IMap<TKey, TValue> master, IMap<TKey, TValue> slave, TimeSpan synchronizationTimeout)
             : this(master, slave, new DifferentialMapSynchronizer<TKey, TValue>(synchronizationTimeout))
         {
-
+            if (!(slave is IKeysMap<TKey, TValue>)) throw new ArgumentException("The slave map must implement IKeysMap to allow synchronization");            
         }
 
-        public ReplicationPropertyMap(IPropertyMap<TKey, TValue> master, IPropertyMap<TKey, TValue> slave, ISynchronizer<IPropertyMap<TKey, TValue>> synchronizer) 
+        public ReplicationMap(IMap<TKey, TValue> master, IMap<TKey, TValue> slave, ISynchronizer<IMap<TKey, TValue>> synchronizer)
             : base(master, slave, synchronizer)
         {
-            
+
         }
 
         public virtual Task<bool> TryAddAsync(TKey key,
@@ -46,21 +47,6 @@ namespace Take.Elephant.Specialized
         public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             return ExecuteWithFallbackAsync(m => m.ContainsKeyAsync(key));
-        }
-
-        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
-        {
-            return ExecuteWithReplicationAsync(m => m.SetPropertyValueAsync(key, propertyName, propertyValue));
-        }
-
-        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
-        {
-            return ExecuteWithFallbackAsync(m => m.GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName));
-        }
-
-        public virtual Task MergeAsync(TKey key, TValue value)
-        {
-            return ExecuteWithReplicationAsync(m => m.MergeAsync(key, value));
         }
     }
 }

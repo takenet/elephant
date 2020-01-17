@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Take.Elephant.Memory;
 
-namespace Take.Elephant.Specialized
+namespace Take.Elephant.Specialized.Cache
 {
     public class OnDemandCacheSetMap<TKey, TValue> : OnDemandCacheMap<TKey, ISet<TValue>>, ISetMap<TKey, TValue>
     {

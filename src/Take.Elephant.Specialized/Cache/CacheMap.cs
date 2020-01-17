@@ -1,31 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Take.Elephant.Specialized.Synchronization;
 
-namespace Take.Elephant.Specialized
+namespace Take.Elephant.Specialized.Cache
 {
-    /// <summary>
-    /// Defines a fall back mechanism with a primary and backup maps. 
-    /// For write actions, the operation must succeed in both;
-    /// For queries, if the action fails in the first, it falls back to the second.
-    /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TValue"></typeparam>
-    public class BackupMap<TKey, TValue> : BackupStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
+    public class CacheMap<TKey, TValue> : CacheStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>
     {
-        public BackupMap(IMap<TKey, TValue> primary, IMap<TKey, TValue> backup, TimeSpan synchronizationTimeout)
-            : this(primary, backup, new IntersectionMapSynchronizer<TKey, TValue>(synchronizationTimeout))
+        public CacheMap(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, TimeSpan synchronizationTimeout, TimeSpan cacheExpiration = default(TimeSpan))
+            : base(source, cache, new OverwriteMapSynchronizer<TKey, TValue>(synchronizationTimeout), cacheExpiration)
         {
-
         }
 
-        public BackupMap(IMap<TKey, TValue> primary, IMap<TKey, TValue> backup, ISynchronizer<IMap<TKey, TValue>> synchronizer)
-            : base(primary, backup, synchronizer)
+        protected CacheMap(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, ISynchronizer<IMap<TKey, TValue>> synchronizer, TimeSpan cacheExpiration = default(TimeSpan)) 
+            : base(source, cache, synchronizer, cacheExpiration)
         {
-
         }
 
         public virtual Task<bool> TryAddAsync(TKey key,
