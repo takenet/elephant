@@ -10,7 +10,6 @@ namespace Take.Elephant.Adapters
     /// Adapts a <see cref="IQueue{T}"/> to a <see cref="IBlockingQueue{T}"/> using a bus to publish when new items are enqueued,
     /// reducing the polling overhead.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public sealed class BusQueueBlockingQueueAdapter<T> : IBlockingQueue<T>, IDisposable
     {
         private readonly IQueue<T> _queue;
@@ -26,12 +25,12 @@ namespace Take.Elephant.Adapters
         public BusQueueBlockingQueueAdapter(
             IQueue<T> queue,
             IBus<string, string> bus,
-            string busChannelName,
+            string busChannelName = null,
             string publishMessage = "new-item")
         {
             _queue = queue ?? throw new ArgumentNullException(nameof(queue));
             _bus = bus ?? throw new ArgumentNullException(nameof(bus));
-            _busChannelName = busChannelName ?? throw new ArgumentNullException(nameof(busChannelName));
+            _busChannelName = busChannelName ?? typeof(T).Name.ToLowerInvariant();
             _publishMessage = publishMessage;
             _channel = Channel.CreateUnbounded<T>();
             
