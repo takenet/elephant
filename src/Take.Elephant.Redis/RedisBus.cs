@@ -1,6 +1,7 @@
 ﻿using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,16 +15,18 @@ namespace Take.Elephant.Redis
     /// <typeparam name="TValue"></typeparam>
     public class RedisBus<TKey, TValue> : StorageBase<TKey>, IBus<TKey, TValue>
     {
-        protected readonly ISerializer<TValue> _serializer;
+        private readonly ISerializer<TValue> _serializer;
+        private readonly TimeSpan _handlerTimeout;
 
         public RedisBus(
             string mapName,
             string configuration,
             ISerializer<TValue> serializer,
+            TimeSpan handlerTimeout = default,
             int db = 0,
             CommandFlags readFlags = CommandFlags.None,
             CommandFlags writeFlags = CommandFlags.None)
-            : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags)
+            : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, handlerTimeout, db, readFlags, writeFlags)
         {
 
         }
@@ -32,12 +35,16 @@ namespace Take.Elephant.Redis
             string mapName,
             IConnectionMultiplexer connectionMultiplexer,
             ISerializer<TValue> serializer,
+            TimeSpan handlerTimeout = default,
             int db = 0,
             CommandFlags readFlags = CommandFlags.None,
             CommandFlags writeFlags = CommandFlags.None)
             : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _handlerTimeout = handlerTimeout == default 
+                ? TimeSpan.FromSeconds(60) :
+                handlerTimeout;
         }
 
         public virtual Task SubscribeAsync(TKey channel, Func<TKey, TValue, CancellationToken, Task> handler, CancellationToken cancellationToken)
@@ -50,7 +57,19 @@ namespace Take.Elephant.Redis
                 {
                     var parsedChannel = GetChannelFromString(c);
                     var message = _serializer.Deserialize(v);
-                    Task.Run(() => handler(parsedChannel, message, CancellationToken.None));
+                    Task.Run(async () =>
+                    {
+                        using var cts = new CancellationTokenSource(_handlerTimeout);
+                        try
+                        {
+                            await handler(parsedChannel, message, cts.Token).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Avoid having unobserved failed tasks
+                            Trace.TraceError(ex.ToString());
+                        }
+                    });
                 });
         }
 
