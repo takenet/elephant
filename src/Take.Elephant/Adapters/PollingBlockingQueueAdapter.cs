@@ -7,15 +7,15 @@ namespace Take.Elephant.Adapters
     /// <summary>
     /// Adapts a <see cref="IQueue{T}"/> to a <see cref="IBlockingQueue{T}"/> using polling with an exponential interval.
     /// </summary>
-    public sealed class PollingQueueBlockingQueueAdapter<T> : IBlockingQueue<T>, IDisposable
+    public sealed class PollingBlockingQueueAdapter<T> : IBlockingQueue<T>, IDisposable
     {
         private readonly IQueue<T> _queue;
-
         private readonly int _minDequeueRetryDelay;
         private readonly int _maxDequeueRetryDelay;
+        
         private readonly SemaphoreSlim _dequeueSemaphore;
         
-        public PollingQueueBlockingQueueAdapter(
+        public PollingBlockingQueueAdapter(
             IQueue<T> queue,
             int minDequeueRetryDelay = 250,
             int maxDequeueRetryDelay = 30000,
@@ -32,26 +32,19 @@ namespace Take.Elephant.Adapters
             {
                 throw new ArgumentException("maxParallelDequeueTasks should be equal or greater than 1", nameof(maxParallelDequeueTasks));
             }
-            
             _minDequeueRetryDelay = minDequeueRetryDelay;
             _maxDequeueRetryDelay = maxDequeueRetryDelay;
             _dequeueSemaphore = new SemaphoreSlim(1, maxParallelDequeueTasks);
         }
 
-        public Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
-        {
-            return _queue.DequeueOrDefaultAsync(cancellationToken);
-        }
+        public Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default) 
+            => _queue.DequeueOrDefaultAsync(cancellationToken);
 
-        public Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
-        {
-            return _queue.EnqueueAsync(item, cancellationToken);
-        }
+        public Task EnqueueAsync(T item, CancellationToken cancellationToken = default) 
+            => _queue.EnqueueAsync(item, cancellationToken);
 
-        public Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
-        {
-            return _queue.GetLengthAsync(cancellationToken);
-        }
+        public Task<long> GetLengthAsync(CancellationToken cancellationToken = default) 
+            => _queue.GetLengthAsync(cancellationToken);
 
         public async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
@@ -92,9 +85,6 @@ namespace Take.Elephant.Adapters
             }
         }
 
-        public void Dispose()
-        {
-            _dequeueSemaphore.Dispose();
-        }
+        public void Dispose() => _dequeueSemaphore.Dispose();
     }
 }
