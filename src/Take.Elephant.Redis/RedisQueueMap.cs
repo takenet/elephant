@@ -6,7 +6,7 @@ using StackExchange.Redis;
 
 namespace Take.Elephant.Redis
 {
-    public class RedisQueueMap<TKey, TItem> : MapBase<TKey, IBlockingQueue<TItem>>, IBlockingQueueMap<TKey, TItem>, IQueueMap<TKey, TItem>, IMap<TKey, IBlockingQueue<TItem>>
+    public class RedisQueueMap<TKey, TItem> : MapBase<TKey, IQueue<TItem>>, IQueueMap<TKey, TItem>
     {
         private readonly ISerializer<TItem> _serializer;
 
@@ -22,14 +22,7 @@ namespace Take.Elephant.Redis
             _serializer = serializer;
         }
 
-        #region IMap<TKey,IBlockingQueue<TItem>> Members
-
-        public override Task<bool> TryAddAsync(TKey key,
-            IBlockingQueue<TItem> value,
-            bool overwrite = false,
-            CancellationToken cancellationToken = default) => TryAddAsync(key, (IQueue<TItem>) value, overwrite);
-
-        public virtual async Task<bool> TryAddAsync(TKey key,
+        public override async Task<bool> TryAddAsync(TKey key,
             IQueue<TItem> value,
             bool overwrite = false,
             CancellationToken cancellationToken = default)
@@ -37,8 +30,10 @@ namespace Take.Elephant.Redis
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
 
-            var internalQueue = value as InternalQueue;
-            if (internalQueue != null) return internalQueue.Key.Equals(key) && overwrite;
+            if (value is InternalQueue internalQueue)
+            {
+                return internalQueue.Key.Equals(key) && overwrite;
+            }
 
             var database = GetDatabase() as IDatabase;
             if (database == null) throw new NotSupportedException("The database instance type is not supported");
@@ -64,10 +59,7 @@ namespace Take.Elephant.Redis
             return success;
         }
 
-        async Task<IQueue<TItem>> IMap<TKey, IQueue<TItem>>.GetValueOrDefaultAsync(TKey key,
-            CancellationToken cancellationToken = default) => await GetValueOrDefaultAsync(key).ConfigureAwait(false);
-
-        public override async Task<IBlockingQueue<TItem>> GetValueOrDefaultAsync(TKey key,
+        public override async Task<IQueue<TItem>> GetValueOrDefaultAsync(TKey key,
             CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
@@ -93,8 +85,6 @@ namespace Take.Elephant.Redis
             var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
         }
-
-        #endregion
 
         protected virtual InternalQueue CreateQueue(TKey key, ITransaction transaction = null)
         {

@@ -19,27 +19,27 @@ namespace Take.Elephant.Redis
         private readonly TimeSpan _handlerTimeout;
 
         public RedisBus(
-            string mapName,
+            string channelName,
             string configuration,
             ISerializer<TValue> serializer,
             TimeSpan handlerTimeout = default,
             int db = 0,
             CommandFlags readFlags = CommandFlags.None,
             CommandFlags writeFlags = CommandFlags.None)
-            : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, handlerTimeout, db, readFlags, writeFlags)
+            : this(channelName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, handlerTimeout, db, readFlags, writeFlags)
         {
 
         }
 
         public RedisBus(
-            string mapName,
+            string channelName,
             IConnectionMultiplexer connectionMultiplexer,
             ISerializer<TValue> serializer,
             TimeSpan handlerTimeout = default,
             int db = 0,
             CommandFlags readFlags = CommandFlags.None,
             CommandFlags writeFlags = CommandFlags.None)
-            : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
+            : base(channelName, connectionMultiplexer, db, readFlags, writeFlags)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _handlerTimeout = handlerTimeout == default 

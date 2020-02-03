@@ -18,7 +18,7 @@ namespace Take.Elephant.Tests.Redis
         {
             _redisFixture.Server.FlushDatabase();
             const string setName = "items";            
-            return new RedisQueue<Item>(setName, _redisFixture.Connection.Configuration, new ItemSerializer());
+            return new RedisBlockingQueue<Item>(setName, _redisFixture.Connection.Configuration, new ItemSerializer());
         }
     }
 }
