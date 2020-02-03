@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Queue;
+using Take.Elephant.Adapters;
 
 namespace Take.Elephant.Azure
 {
@@ -21,9 +22,7 @@ namespace Take.Elephant.Azure
         private readonly CloudQueue _queue;
         private readonly ISerializer<T> _serializer;
         private readonly SemaphoreSlim _queueCreationSemaphore;
-        private readonly SemaphoreSlim _dequeueSemaphore;
-        private readonly int _minDequeueRetryDelay;
-        private readonly int _maxDequeueRetryDelay;
+        private readonly PollingBlockingQueueAdapter<T> _pollingBlockingQueueAdapter;
 
         private bool _queueExists;
 
@@ -51,97 +50,60 @@ namespace Take.Elephant.Azure
                 .Max(maxDequeueRetryDelay);
             
             _serializer = serializer;
-            _minDequeueRetryDelay = minDequeueRetryDelay;
-            _maxDequeueRetryDelay = maxDequeueRetryDelay;
             var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
             var client = storageAccount.CreateCloudQueueClient();
             _queue = client.GetQueueReference(queueName);
             _queue.EncodeMessage = encodeMessage;
             _queueCreationSemaphore = new SemaphoreSlim(1, 1);
-            _dequeueSemaphore = new SemaphoreSlim(1, 1);
+            _pollingBlockingQueueAdapter = new PollingBlockingQueueAdapter<T>(this, minDequeueRetryDelay, maxDequeueRetryDelay, 1);
         }
 
         public virtual async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
-            await CreateQueueIfNotExistsAsync(cancellationToken);
+            await CreateQueueIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
 
             var message = CreateMessage(item);
-            await _queue.AddMessageAsync(message, null, null, null, null, cancellationToken);
+            await _queue.AddMessageAsync(message, null, null, null, null, cancellationToken).ConfigureAwait(false);
         }
 
         public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
-            await CreateQueueIfNotExistsAsync(cancellationToken);
-
-            // Synchronize the dequeue loop in a semaphore to reduce
-            // overhead in concurrent scenarios
-            await _dequeueSemaphore.WaitAsync(cancellationToken);
-
-            var tryCount = 0;
-            var delay = _minDequeueRetryDelay;            
+            await CreateQueueIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
             
-            try
-            {
-                while (true)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    var item = await DequeueOrDefaultAsync(cancellationToken);
-                    if (item != null)
-                    {
-                        return item;
-                    }
-
-                    await Task.Delay(delay, cancellationToken);
-                    tryCount++;
-
-                    if (delay < _maxDequeueRetryDelay)
-                    {
-                        delay = _minDequeueRetryDelay * (int) Math.Pow(2, tryCount);
-                        if (delay > _maxDequeueRetryDelay)
-                        {
-                            delay = _maxDequeueRetryDelay;
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                _dequeueSemaphore.Release();
-            }
+            return await _pollingBlockingQueueAdapter.DequeueAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
-            await CreateQueueIfNotExistsAsync(cancellationToken);
-            var message = await _queue.GetMessageAsync(cancellationToken);
-            if (message == null) return default(T);
+            await CreateQueueIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
+            var message = await _queue.GetMessageAsync(cancellationToken).ConfigureAwait(false);
+            if (message == null) return default;
 
-            return await CreateItemAndDeleteMessageAsync(message, cancellationToken);
+            return await CreateItemAndDeleteMessageAsync(message, cancellationToken).ConfigureAwait(false);
         }
 
         public virtual async Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize,
             CancellationToken cancellationToken)
         {
-            await CreateQueueIfNotExistsAsync(cancellationToken);
-            var messages = await _queue.GetMessagesAsync(maxBatchSize, cancellationToken);
+            await CreateQueueIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
+            var messages = await _queue.GetMessagesAsync(maxBatchSize, cancellationToken).ConfigureAwait(false);
             if (messages == null) return Enumerable.Empty<T>();
 
             return await Task.WhenAll(
-                messages.Select(m => CreateItemAndDeleteMessageAsync(m, cancellationToken)));
+                messages.Select(m => CreateItemAndDeleteMessageAsync(m, cancellationToken))).ConfigureAwait(false);
         }
 
         public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
-            await CreateQueueIfNotExistsAsync(cancellationToken);
-            await _queue.FetchAttributesAsync(cancellationToken);
+            await CreateQueueIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
+            await _queue.FetchAttributesAsync(cancellationToken).ConfigureAwait(false);
             return _queue.ApproximateMessageCount ?? 0;
         }
 
         async Task<StorageTransaction<T>> IBlockingReceiverQueue<StorageTransaction<T>>.DequeueAsync(
             CancellationToken cancellationToken)
         {
-            var message = await _queue.GetMessageAsync(cancellationToken);
+            var message = await _queue.GetMessageAsync(cancellationToken).ConfigureAwait(false);
             if (message == null) return null;
 
             return CreateStorageTransaction(message);
@@ -151,7 +113,7 @@ namespace Take.Elephant.Azure
             int maxBatchSize,
             CancellationToken cancellationToken)
         {
-            var messages = await _queue.GetMessagesAsync(maxBatchSize, cancellationToken);
+            var messages = await _queue.GetMessagesAsync(maxBatchSize, cancellationToken).ConfigureAwait(false);
             if (messages == null) return Enumerable.Empty<StorageTransaction<T>>();
 
             return messages.Select(CreateStorageTransaction);
@@ -181,7 +143,7 @@ namespace Take.Elephant.Azure
             CancellationToken cancellationToken)
         {
             var item = CreateItem(message);
-            await _queue.DeleteMessageAsync(message, cancellationToken);
+            await _queue.DeleteMessageAsync(message, cancellationToken).ConfigureAwait(false);
             return item;
         }
 
@@ -195,12 +157,12 @@ namespace Take.Elephant.Azure
         {
             if (_queueExists) return;
 
-            await _queueCreationSemaphore.WaitAsync(cancellationToken);
+            await _queueCreationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 if (_queueExists) return;
 
-                await _queue.CreateIfNotExistsAsync(cancellationToken);
+                await _queue.CreateIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
 
                 _queueExists = true;
             }
@@ -232,7 +194,7 @@ namespace Take.Elephant.Azure
             if (disposing)
             {
                 _queueCreationSemaphore?.Dispose();
-                _dequeueSemaphore?.Dispose();
+                _pollingBlockingQueueAdapter.Dispose();
             }
         }
 

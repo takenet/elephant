@@ -12,7 +12,6 @@ namespace Take.Elephant.Adapters
         private readonly IQueue<T> _queue;
         private readonly int _minDequeueRetryDelay;
         private readonly int _maxDequeueRetryDelay;
-        
         private readonly SemaphoreSlim _dequeueSemaphore;
         
         public PollingBlockingQueueAdapter(
