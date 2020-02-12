@@ -46,7 +46,7 @@ namespace Take.Elephant.Sql.Mapping
         /// <summary>
         /// Indicates if the table schema is synchronized.
         /// </summary>
-        public bool SchemaSynchronized { get; private set; }
+        public SchemaSynchronizationStrategy SynchronizationStrategy { get; private set; }
 
         private TableBuilder(string schema, string name)
         {
@@ -239,13 +239,27 @@ namespace Take.Elephant.Sql.Mapping
         }
 
         /// <summary>
+        /// The synchronization strategy to be used with the table.
+        /// </summary>
+        /// <param name="synchronizationStrategy"></param>
+        /// <returns></returns>
+        public TableBuilder WithSynchronizationStrategy(SchemaSynchronizationStrategy synchronizationStrategy)
+        {
+            SynchronizationStrategy = synchronizationStrategy;
+            return this;
+        }
+
+        /// <summary>
         /// Indicates if the table schema is synchronized and should not be checked.
         /// </summary>
         /// <param name="schemaSynchronized"></param>
         /// <returns></returns>
+        [Obsolete("Use WithSynchronizationStrategy")]
         public TableBuilder WithSchemaSynchronized(bool schemaSynchronized)
         {
-            SchemaSynchronized = schemaSynchronized;
+            SynchronizationStrategy = schemaSynchronized
+                ? SchemaSynchronizationStrategy.Ignore
+                : SchemaSynchronizationStrategy.UntilSuccess;
             return this;
         }
 
@@ -255,7 +269,7 @@ namespace Take.Elephant.Sql.Mapping
         /// <returns></returns>
         public ITable Build()
         {
-            return new Table(Name, KeyColumns.ToArray(), Columns, Schema, SchemaSynchronized);
+            return new Table(Name, KeyColumns.ToArray(), Columns, Schema, SynchronizationStrategy);
         }
     }
 }

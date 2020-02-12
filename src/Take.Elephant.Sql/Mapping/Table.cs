@@ -10,19 +10,19 @@ namespace Take.Elephant.Sql.Mapping
     /// <inheritdoc />        
     public class Table : ITable
     {
+        private readonly SchemaSynchronizationStrategy _synchronizationStrategy;
         private readonly SemaphoreSlim _schemaSynchronizedSemaphore;
-
-        /// <summary>
-        /// Creates a new <see cref="Table"/> instance.
-        /// </summary>
-        /// <param name="name">The table anem</param>
-        /// <param name="keyColumnsNames"></param>
-        /// <param name="columns"></param>
-        /// <param name="schema"></param>
-        /// <param name="schemaSynchronized">Indicates if the table schema is synchronized.</param>
-        public Table(string name, string[] keyColumnsNames, IDictionary<string, SqlType> columns, string schema = null, bool schemaSynchronized = false)
+        private int _synchronizationsTries;
+        
+        public Table(
+            string name,
+            string[] keyColumnsNames,
+            IDictionary<string, SqlType> columns,
+            string schema = null,
+            SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.UntilSuccess)
         {
             if (keyColumnsNames == null) throw new ArgumentNullException(nameof(keyColumnsNames));
+            _synchronizationStrategy = synchronizationStrategy;
             var repeatedKeyColumn = keyColumnsNames.GroupBy(k => k).FirstOrDefault(c => c.Count() > 1);
             if (repeatedKeyColumn != null) throw new ArgumentException($"The key column named '{repeatedKeyColumn.Key}' appears more than once", nameof(columns));
             if (columns == null) throw new ArgumentNullException(nameof(columns));
@@ -33,7 +33,6 @@ namespace Take.Elephant.Sql.Mapping
             KeyColumnsNames = keyColumnsNames;
             Columns = columns;
             Schema = schema;
-            SchemaSynchronized = schemaSynchronized;
             _schemaSynchronizedSemaphore = new SemaphoreSlim(1);
         }
 
@@ -62,17 +61,21 @@ namespace Take.Elephant.Sql.Mapping
         /// <inheritdoc />        
         public virtual async Task SynchronizeSchemaAsync(string connectionString, IDatabaseDriver databaseDriver, CancellationToken cancellationToken)
         {
-            if (!SchemaSynchronized)
+            if (_synchronizationStrategy == SchemaSynchronizationStrategy.Ignore) return;
+            
+            if (ShouldSynchronizeSchema)
             {
                 await _schemaSynchronizedSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 try
                 {
-                    if (!SchemaSynchronized)
+                    if (ShouldSynchronizeSchema)
                     {
                         if (connectionString == null) throw new ArgumentNullException(nameof(connectionString));
                         if (databaseDriver == null) throw new ArgumentNullException(nameof(databaseDriver));
 
+                        _synchronizationsTries++;
+                        
                         using (var connection = databaseDriver.CreateConnection(connectionString))
                         {
                             await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -105,5 +108,29 @@ namespace Take.Elephant.Sql.Mapping
                 }
             }
         }
+
+        private bool ShouldSynchronizeSchema =>
+            !SchemaSynchronized &&
+            _synchronizationStrategy != SchemaSynchronizationStrategy.Ignore &&
+            (_synchronizationStrategy == SchemaSynchronizationStrategy.UntilSuccess ||
+             (_synchronizationStrategy == SchemaSynchronizationStrategy.TryOnce && _synchronizationsTries == 0));
+    }
+
+    public enum SchemaSynchronizationStrategy
+    {
+        /// <summary>
+        /// Try to execute the schema synchronization until it succeeds.
+        /// </summary>
+        UntilSuccess,
+        
+        /// <summary>
+        /// Try to execute the schema synchronization only one time. 
+        /// </summary>
+        TryOnce,
+        
+        /// <summary>
+        /// Do not try to synchronize the table schema.
+        /// </summary>
+        Ignore
     }
 }
