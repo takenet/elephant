@@ -38,7 +38,7 @@ namespace Take.Elephant.Tests
             var cts = new CancellationTokenSource(timeout);
             
             // Act
-            var actualItems = await receiverQueue.DequeueBatchAsync(batchSize, cts.Token);
+            var actualItems = await receiverQueue.DequeueBatchAsync(batchSize, cts.Token).ToListAsync();
             await Task.WhenAll(
                 actualItems.Select(i => transactionStorage.CommitAsync(i, cts.Token)));
 
@@ -69,7 +69,7 @@ namespace Take.Elephant.Tests
             var cts = new CancellationTokenSource(timeout);
             
             // Act
-            var actualItems = await receiverQueue.DequeueBatchAsync(batchSize, cts.Token);
+            var actualItems = await receiverQueue.DequeueBatchAsync(batchSize, cts.Token).ToListAsync();
             await Task.WhenAll(
                 actualItems.Select(i => transactionStorage.RollbackAsync(i, cts.Token)));
 

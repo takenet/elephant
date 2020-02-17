@@ -93,17 +93,14 @@ namespace Take.Elephant.Memory
             return item.AsCompletedTask();
         }
 
-        public virtual async Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken)
+        public virtual async IAsyncEnumerable<T> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken)
         {
-            var items = new System.Collections.Generic.List<T>();
-            while (items.Count < maxBatchSize)
+            for (int i = 0; i < maxBatchSize; i++)
             {
                 var item = await DequeueOrDefaultAsync(cancellationToken);
                 if (EqualityComparer<T>.Default.Equals(item, default)) break;
-                items.Add(item);
+                yield return item;
             }
-
-            return items;
         }
 
         /// <summary>
