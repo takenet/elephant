@@ -28,7 +28,7 @@ namespace Take.Elephant.Tests
             var cts = new CancellationTokenSource(timeout);
 
             // Act
-            var actualItems = await batchReceiverQueue.DequeueBatchAsync(batchSize, cts.Token).ToListAsync();
+            var actualItems = await batchReceiverQueue.DequeueBatchAsync(batchSize, cts.Token);
 
             // Assert
             AssertEquals(actualItems.Count(), batchSize);
@@ -47,7 +47,7 @@ namespace Take.Elephant.Tests
             var cts = new CancellationTokenSource(timeout);
 
             // Act
-            var actualItems = await batchReceiverQueue.DequeueBatchAsync(dequeueBatchSize, cts.Token).ToListAsync();
+            var actualItems = await batchReceiverQueue.DequeueBatchAsync(dequeueBatchSize, cts.Token);
 
             // Assert
             AssertEquals(actualItems.Count(), dequeueBatchSize);
@@ -66,7 +66,7 @@ namespace Take.Elephant.Tests
             var cts = new CancellationTokenSource(timeout);
 
             // Act
-            var actualItems = await batchReceiverQueue.DequeueBatchAsync(dequeueBatchSize, cts.Token).ToListAsync();
+            var actualItems = await batchReceiverQueue.DequeueBatchAsync(dequeueBatchSize, cts.Token);
 
             // Assert
             AssertEquals(actualItems.Count(), batchSize);
@@ -83,7 +83,7 @@ namespace Take.Elephant.Tests
             var cts = new CancellationTokenSource(timeout);
 
             // Act
-            var actualItems = await batchReceiverQueue.DequeueBatchAsync(batchSize, cts.Token).ToListAsync();
+            var actualItems = await batchReceiverQueue.DequeueBatchAsync(batchSize, cts.Token);
 
             // Assert            
             Check.That(actualItems).IsEmpty();

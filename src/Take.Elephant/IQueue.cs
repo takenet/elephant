@@ -53,11 +53,11 @@ namespace Take.Elephant
     public interface IBatchReceiverQueue<T>
     {
         /// <summary>
-        /// Dequeues a batch of items.
+        /// Enqueues a batch of items.
         /// </summary>
         /// <param name="maxBatchSize"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        IAsyncEnumerable<T> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken);
+        Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken);
     }
 }

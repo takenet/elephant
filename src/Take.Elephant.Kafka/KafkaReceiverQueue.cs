@@ -159,9 +159,8 @@ namespace Take.Elephant.Kafka
             _channel.Writer.Complete();
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
-            _consumerStartSemaphore.Dispose();
             _consumer.Close();
             _consumer.Dispose();
             Dispose(true);

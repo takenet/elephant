@@ -1,38 +1,40 @@
-﻿using Azure.Messaging.EventHubs;
-using Azure.Messaging.EventHubs.Producer;
-using System.Collections.Generic;
+﻿using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Dawn;
+using Microsoft.Azure.EventHubs;
 
 namespace Take.Elephant.Azure
 {
-    public class AzureEventHubSenderQueue<T> : ISenderQueue<T>, IBatchSenderQueue<T>
+    public class AzureEventHubSenderQueue<T> : ISenderQueue<T>, ICloseable
     {
         private readonly ISerializer<T> _serializer;
-        private readonly EventHubProducerClient _producer;
-
-        public AzureEventHubSenderQueue(string topic, string connectionString, ISerializer<T> serializer)
+        private readonly EventHubClient _eventHubClient;
+        
+        public AzureEventHubSenderQueue(string eventHubName, string eventHubConnectionString, ISerializer<T> serializer)
         {
-            _serializer = serializer;
-            _producer = new EventHubProducerClient(connectionString, topic);
+            Guard.Argument(eventHubName).NotNull().NotEmpty();
+            Guard.Argument(eventHubConnectionString).NotNull().NotEmpty();
+            _serializer = Guard.Argument(serializer).NotNull().Value;
+
+            _eventHubClient = EventHubClient.CreateFromConnectionString(
+                new EventHubsConnectionStringBuilder(eventHubConnectionString)
+                {
+                    EntityPath = eventHubName
+                }.ToString());
         }
 
-        public async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
+        public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
-            using var eventBatch = await _producer.CreateBatchAsync();
-            eventBatch.TryAdd(new EventData(Encoding.UTF8.GetBytes(_serializer.Serialize(item))));
-            await _producer.SendAsync(eventBatch);
+            if (item == null) throw new ArgumentNullException(nameof(item));
+            var serializedItem = _serializer.Serialize(item);
+            return _eventHubClient.SendAsync(new EventData(Encoding.UTF8.GetBytes(serializedItem)));                        
         }
 
-        public async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
+        public virtual Task CloseAsync(CancellationToken cancellationToken)
         {
-            using var eventBatch = await _producer.CreateBatchAsync();
-            foreach (var item in items)
-            {
-                eventBatch.TryAdd(new EventData(Encoding.UTF8.GetBytes(_serializer.Serialize(item))));
-            }
-            await _producer.SendAsync(eventBatch);
+            return _eventHubClient.CloseAsync();
         }
     }
 }
