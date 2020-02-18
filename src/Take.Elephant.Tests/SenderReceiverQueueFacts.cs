@@ -93,26 +93,18 @@ namespace Take.Elephant.Tests
             }
         }
 
-        [Fact(DisplayName = nameof(DequeueEmptyReturnsDefault))]
-        public virtual async Task DequeueEmptyReturnsDefault()
+        [Fact(DisplayName = nameof(DequeueEmptyShouldThrowOperationCanceledExceptionWhenCancelled))]
+        public virtual async Task DequeueEmptyShouldThrowOperationCanceledExceptionWhenCancelled()
         {
             // Arrange
             var (senderQueue, receiverQueue) = Create();
 
             // Act
-            T actual;
-
-            try
-            {
-                actual = await receiverQueue.DequeueAsync(CancellationToken);
-            }
-            catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested)
-            {
-                actual = default;
-            }
+            var result = receiverQueue.DequeueAsync(CancellationToken);
 
             // Assert
-            AssertIsDefault(actual);
+            await Assert.ThrowsAsync<OperationCanceledException>(async () 
+                => await result);
         }
 
         [Fact(DisplayName = nameof(DequeueMultipleItemsInParallelSucceeds))]

@@ -53,7 +53,7 @@ namespace Take.Elephant
     public interface IBatchReceiverQueue<T>
     {
         /// <summary>
-        /// Enqueues a batch of items.
+        /// Dequeues a batch of items.
         /// </summary>
         /// <param name="maxBatchSize"></param>
         /// <param name="cancellationToken"></param>
