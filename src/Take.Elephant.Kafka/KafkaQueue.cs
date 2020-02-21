@@ -16,10 +16,17 @@ namespace Take.Elephant.Kafka
             string topic,
             Take.Elephant.ISerializer<T> serializer,
             Confluent.Kafka.ISerializer<string> kafkaSerializer = null,
-            IDeserializer<string> kafkaDeserializer = null)
+            IDeserializer<string> kafkaDeserializer = null) 
+            : this(
+                  new KafkaSenderQueue<T>(producerConfig, topic, serializer, kafkaSerializer),
+                  new KafkaReceiverQueue<T>(consumerConfig, topic, serializer, kafkaDeserializer))
         {
-            _senderQueue = new KafkaSenderQueue<T>(producerConfig, topic, serializer, kafkaSerializer);
-            _receiverQueue = new KafkaReceiverQueue<T>(consumerConfig, topic, serializer, kafkaDeserializer);
+        }
+
+        public KafkaQueue(KafkaSenderQueue<T> senderQueue, KafkaReceiverQueue<T> receiverQueue)
+        {
+            _senderQueue = senderQueue;
+            _receiverQueue = receiverQueue;
         }
 
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
