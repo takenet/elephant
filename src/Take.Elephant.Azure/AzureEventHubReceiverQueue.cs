@@ -1,6 +1,7 @@
 using Azure.Messaging.EventHubs.Consumer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
@@ -17,7 +18,7 @@ namespace Take.Elephant.Azure
         private readonly ISerializer<T> _serializer;
         private readonly EventHubConsumerClient _consumer;
         private readonly SemaphoreSlim _consumerStartSemaphore;
-        private readonly Channel<T> _channel;
+        private readonly Channel<string> _channel;
         private readonly CancellationTokenSource _cts;
         private Task _consumerTask;
 
@@ -31,36 +32,36 @@ namespace Take.Elephant.Azure
             _consumer = consumer;
             _serializer = serializer;
             _consumerStartSemaphore = new SemaphoreSlim(1, 1);
-            _channel = Channel.CreateBounded<T>(1);
+            _channel = Channel.CreateBounded<string>(1);
             _cts = new CancellationTokenSource();
         }
 
         public async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
-            await StartConsumerTaskIfNotAsync(cancellationToken);
-            var value = await _channel.Reader.ReadAsync(cancellationToken);
-            return value;
+            await StartConsumerTaskIfNotAsync(cancellationToken).ConfigureAwait(false);
+            var value = await _channel.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
+            return _serializer.Deserialize(value);
         }
 
         public async Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken)
         {
-            await StartConsumerTaskIfNotAsync(cancellationToken);
+            await StartConsumerTaskIfNotAsync(cancellationToken).ConfigureAwait(false);
             var list = new List<T>();
             for (int i = 0; i < maxBatchSize; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var value = await _channel.Reader.ReadAsync(cancellationToken);
-                list.Add(value);
+                var value = await _channel.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
+                list.Add(_serializer.Deserialize(value));
             }
             return list;
         }
 
         public async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
-            await StartConsumerTaskIfNotAsync(cancellationToken);
+            await StartConsumerTaskIfNotAsync(cancellationToken).ConfigureAwait(false);
             if (_channel.Reader.TryRead(out var item))
             {
-                return item;
+                return _serializer.Deserialize(item);
             }
 
             return default;
@@ -68,7 +69,7 @@ namespace Take.Elephant.Azure
 
         public async Task CloseAsync(CancellationToken cancellationToken)
         {
-            await _consumer.CloseAsync();
+            await _consumer.CloseAsync().ConfigureAwait(false);
         }
 
         public Task OpenAsync(CancellationToken cancellationToken)
@@ -76,11 +77,20 @@ namespace Take.Elephant.Azure
             return StartConsumerTaskIfNotAsync(cancellationToken);
         }
 
+        public virtual async ValueTask DisposeAsync()
+        {
+            _cts.Dispose();
+            _consumerStartSemaphore.Dispose();
+            await _consumer.DisposeAsync();
+        }
+
+        public event EventHandler<ExceptionEventArgs> ConsumerFailed;
+
         private async Task StartConsumerTaskIfNotAsync(CancellationToken cancellationToken)
         {
             if (_consumerTask != null) return;
 
-            await _consumerStartSemaphore.WaitAsync(cancellationToken);
+            await _consumerStartSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 if (_consumerTask == null)
@@ -101,12 +111,15 @@ namespace Take.Elephant.Azure
 
         private async Task ConsumeAsync(CancellationToken cancellationToken)
         {
-            await foreach (var value in _consumer.ReadEventsAsync(cancellationToken))
+            while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
-                    var resultValue = _serializer.Deserialize(Encoding.UTF8.GetString(value.Data.Body.Span));
-                    await _channel.Writer.WriteAsync(resultValue, cancellationToken);
+                    await foreach (var value in _consumer.ReadEventsAsync(cancellationToken).ConfigureAwait(false))
+                    {
+                        var resultValue = Encoding.UTF8.GetString(value.Data.Body.Span);
+                        await _channel.Writer.WriteAsync(resultValue, cancellationToken).ConfigureAwait(false);
+                    }
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
@@ -114,15 +127,18 @@ namespace Take.Elephant.Azure
                 }
                 catch (Exception ex)
                 {
-                    //todo: event handler
+                    var handler = ConsumerFailed;
+                    if (handler != null)
+                    {
+                        handler.Invoke(this, new ExceptionEventArgs(ex));
+                    }
+                    else
+                    {
+                        Trace.TraceError("An unhandled exception occurred on KafkaReceiverQueue: {0}", ex);
+                    }
                 }
             }
             _channel.Writer.Complete();
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            await _consumer.DisposeAsync();
         }
     }
 }

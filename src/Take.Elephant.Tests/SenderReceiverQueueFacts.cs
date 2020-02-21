@@ -15,10 +15,10 @@ namespace Take.Elephant.Tests
 
         public SenderReceiverQueueFacts()
         {
-            _cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            _cts = new CancellationTokenSource(TimeSpan.FromSeconds(50));
         }
 
-        public abstract (ISenderQueue<T>, IBlockingReceiverQueue<T>) Create();
+        public abstract ValueTask<(ISenderQueue<T>, IBlockingReceiverQueue<T>)> CreateAsync(CancellationToken cancellationToken);
 
         public CancellationToken CancellationToken => _cts.Token;
 
@@ -31,7 +31,7 @@ namespace Take.Elephant.Tests
         public virtual async Task EnqueueNewItemSucceeds()
         {
             // Arrange
-            var (senderQueue, receiverQueue) = Create();
+            var (senderQueue, receiverQueue) = await CreateAsync(CancellationToken);
             var item = CreateItem();
 
             // Act
@@ -45,7 +45,7 @@ namespace Take.Elephant.Tests
         public virtual async Task EnqueueExistingItemSucceeds()
         {
             // Arrange
-            var (senderQueue, receiverQueue) = Create();
+            var (senderQueue, receiverQueue) = await CreateAsync(CancellationToken);
             var item = CreateItem();
 
             // Act
@@ -53,15 +53,17 @@ namespace Take.Elephant.Tests
             await senderQueue.EnqueueAsync(item, CancellationToken);
 
             // Assert
-            AssertEquals(await receiverQueue.DequeueAsync(CancellationToken), item);
-            AssertEquals(await receiverQueue.DequeueAsync(CancellationToken), item);
+            var item1 = await receiverQueue.DequeueAsync(CancellationToken);
+            AssertEquals(item1, item);
+            var item2 = await receiverQueue.DequeueAsync(CancellationToken);
+            AssertEquals(item2, item);
         }
 
         [Fact(DisplayName = nameof(EnqueueMultipleItemsSucceeds))]
         public virtual async Task EnqueueMultipleItemsSucceeds()
         {
             // Arrange
-            var (senderQueue, receiverQueue) = Create();
+            var (senderQueue, receiverQueue) = await CreateAsync(CancellationToken);
             var items = new ConcurrentBag<T>();
             var count = 100;
             for (int i = 0; i < count; i++)
@@ -97,7 +99,7 @@ namespace Take.Elephant.Tests
         public virtual async Task DequeueEmptyShouldThrowOperationCanceledExceptionWhenCancelled()
         {
             // Arrange
-            var (senderQueue, receiverQueue) = Create();
+            var (senderQueue, receiverQueue) = await CreateAsync(CancellationToken);
 
             // Act
             var result = receiverQueue.DequeueAsync(CancellationToken);
@@ -111,7 +113,7 @@ namespace Take.Elephant.Tests
         public virtual async Task DequeueMultipleItemsInParallelSucceeds()
         {
             // Arrange
-            var (senderQueue, receiverQueue) = Create();
+            var (senderQueue, receiverQueue) = await CreateAsync(CancellationToken);
             var items = new HashSet<T>();
             var count = 100;
             for (var i = 0; i < count; i++)

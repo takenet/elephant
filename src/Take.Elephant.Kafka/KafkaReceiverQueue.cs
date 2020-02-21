@@ -16,7 +16,7 @@ namespace Take.Elephant.Kafka
         private readonly ISerializer<T> _serializer;
         private readonly SemaphoreSlim _consumerStartSemaphore;
         private readonly CancellationTokenSource _cts;
-        private readonly Channel<T> _channel;
+        private readonly Channel<string> _channel;
         private Task _consumerTask;
         private bool _closed;
 
@@ -47,7 +47,7 @@ namespace Take.Elephant.Kafka
             _topic = topic;
             _consumerStartSemaphore = new SemaphoreSlim(1, 1);
             _cts = new CancellationTokenSource();
-            _channel = Channel.CreateBounded<T>(1);
+            _channel = Channel.CreateBounded<string>(1);
         }
 
         public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
@@ -55,7 +55,7 @@ namespace Take.Elephant.Kafka
             await StartConsumerTaskIfNotAsync(cancellationToken);
             if (_channel.Reader.TryRead(out var item))
             {
-                return item;
+                return _serializer.Deserialize(item);
             }
 
             return default;
@@ -64,7 +64,8 @@ namespace Take.Elephant.Kafka
         public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             await StartConsumerTaskIfNotAsync(cancellationToken);
-            return await _channel.Reader.ReadAsync(cancellationToken);
+            var resultValue = await _channel.Reader.ReadAsync(cancellationToken);
+            return _serializer.Deserialize(resultValue);
         }
 
         public Task OpenAsync(CancellationToken cancellationToken)
@@ -134,8 +135,7 @@ namespace Take.Elephant.Kafka
                 try
                 {
                     var result = _consumer.Consume(cancellationToken);
-                    var resultValue = _serializer.Deserialize(result.Value);
-                    await _channel.Writer.WriteAsync(resultValue, cancellationToken);
+                    await _channel.Writer.WriteAsync(result.Value, cancellationToken);
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {

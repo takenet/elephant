@@ -24,6 +24,11 @@ namespace Take.Elephant.Azure
             _sender = new AzureEventHubSenderQueue<T>(producer, serializer);
         }
 
+        public EventHandler<ExceptionEventArgs> ConsumerFailed
+        {
+            set => _receiver.ConsumerFailed += value;
+        }
+
         public Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             return _receiver.DequeueAsync(cancellationToken);
@@ -32,11 +37,6 @@ namespace Take.Elephant.Azure
         public Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             return _receiver.DequeueOrDefaultAsync(cancellationToken);
-        }
-
-        public ValueTask DisposeAsync()
-        {
-            return _receiver.DisposeAsync();
         }
 
         public Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
@@ -51,7 +51,15 @@ namespace Take.Elephant.Azure
 
         public Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.FromException<long>(
+               new NotSupportedException(
+                   "It is not possible to determine the number of unhandled messages on a event hub topic"));
+        }
+
+        public virtual async ValueTask DisposeAsync()
+        {
+            await _sender.DisposeAsync();
+            await _receiver.DisposeAsync();
         }
     }
 }

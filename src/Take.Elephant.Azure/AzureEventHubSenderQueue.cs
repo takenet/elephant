@@ -1,5 +1,6 @@
 ﻿using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant.Azure
 {
-    public class AzureEventHubSenderQueue<T> : ISenderQueue<T>, IBatchSenderQueue<T>
+    public class AzureEventHubSenderQueue<T> : ISenderQueue<T>, IBatchSenderQueue<T>, IAsyncDisposable
     {
         private readonly EventHubProducerClient _producer;
         private readonly ISerializer<T> _serializer;
@@ -25,19 +26,24 @@ namespace Take.Elephant.Azure
 
         public async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
-            using var eventBatch = await _producer.CreateBatchAsync();
+            using var eventBatch = await _producer.CreateBatchAsync().ConfigureAwait(false);
             eventBatch.TryAdd(new EventData(Encoding.UTF8.GetBytes(_serializer.Serialize(item))));
-            await _producer.SendAsync(eventBatch);
+            await _producer.SendAsync(eventBatch).ConfigureAwait(false);
         }
 
         public async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
         {
-            using var eventBatch = await _producer.CreateBatchAsync();
+            using var eventBatch = await _producer.CreateBatchAsync().ConfigureAwait(false);
             foreach (var item in items)
             {
                 eventBatch.TryAdd(new EventData(Encoding.UTF8.GetBytes(_serializer.Serialize(item))));
             }
-            await _producer.SendAsync(eventBatch);
+            await _producer.SendAsync(eventBatch).ConfigureAwait(false);
+        }
+
+        public virtual ValueTask DisposeAsync()
+        {
+            return _producer.DisposeAsync();
         }
     }
 }

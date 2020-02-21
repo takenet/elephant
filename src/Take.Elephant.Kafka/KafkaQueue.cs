@@ -28,6 +28,10 @@ namespace Take.Elephant.Kafka
             _senderQueue = senderQueue;
             _receiverQueue = receiverQueue;
         }
+        public EventHandler<ExceptionEventArgs> ConsumerFailed
+        {
+            set => _receiverQueue.ConsumerFailed += value;
+        }
 
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
