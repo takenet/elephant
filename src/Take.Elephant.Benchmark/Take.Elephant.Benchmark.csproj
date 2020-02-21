@@ -7,6 +7,12 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Take.Elephant.Kafka\Take.Elephant.Kafka.csproj" />
+    <ProjectReference Include="..\Take.Elephant.Tests\Take.Elephant.Tests.csproj" />
   </ItemGroup>
 
 </Project>

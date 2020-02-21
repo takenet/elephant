@@ -8,11 +8,11 @@ namespace Take.Elephant.Tests.Azure
     {
         public override (ISenderQueue<Item>, IBlockingReceiverQueue<Item>) Create()
         {
-            var connectionString = "Endpoint=sb://hmg-msging1.servicebus.windows.net/;SharedAccessKeyName=teste;SharedAccessKey=ylbReehtbO5d+K9gjL/OydTb4QTWRIeip0epxXge2p4=";
-            var topic = "funciona";
+            var connectionString = "";
+            var topic = "";
             var consumerGroup = "default";
             var serializer = new JsonItemSerializer();
-            return (new AzureEventHubSenderQueue<Item>(topic, connectionString, serializer),
+            return (new AzureEventHubSenderQueue<Item>(connectionString, topic, serializer),
                 new AzureEventHubReceiverQueue<Item>(connectionString, topic, consumerGroup, serializer));
         }
     }

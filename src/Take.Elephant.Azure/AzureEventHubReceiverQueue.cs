@@ -1,5 +1,4 @@
 using Azure.Messaging.EventHubs.Consumer;
-using Dawn;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,12 +22,17 @@ namespace Take.Elephant.Azure
         private Task _consumerTask;
 
         public AzureEventHubReceiverQueue(string connectionString, string topic, string consumerGroup, ISerializer<T> serializer)
+            : this(new EventHubConsumerClient(consumerGroup, connectionString, topic), serializer)
         {
-            _consumer = new EventHubConsumerClient(consumerGroup, connectionString, topic);
+        }
+
+        public AzureEventHubReceiverQueue(EventHubConsumerClient consumer, ISerializer<T> serializer)
+        {
+            _consumer = consumer;
+            _serializer = serializer;
             _consumerStartSemaphore = new SemaphoreSlim(1, 1);
             _channel = Channel.CreateBounded<T>(1);
             _cts = new CancellationTokenSource();
-            _serializer = serializer;
         }
 
         public async Task<T> DequeueAsync(CancellationToken cancellationToken)

@@ -9,13 +9,18 @@ namespace Take.Elephant.Azure
 {
     public class AzureEventHubSenderQueue<T> : ISenderQueue<T>, IBatchSenderQueue<T>
     {
-        private readonly ISerializer<T> _serializer;
         private readonly EventHubProducerClient _producer;
+        private readonly ISerializer<T> _serializer;
 
-        public AzureEventHubSenderQueue(string topic, string connectionString, ISerializer<T> serializer)
+        public AzureEventHubSenderQueue(string connectionString, string topic, ISerializer<T> serializer)
+            : this(new EventHubProducerClient(connectionString, topic), serializer)
         {
+        }
+
+        public AzureEventHubSenderQueue(EventHubProducerClient producer, ISerializer<T> serializer)
+        {
+            _producer = producer;
             _serializer = serializer;
-            _producer = new EventHubProducerClient(connectionString, topic);
         }
 
         public async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
