@@ -17,7 +17,6 @@
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.EventHubs" Version="5.0.1" />
     <PackageReference Include="Dawn.Guard" Version="1.6.0" />
-    <PackageReference Include="Microsoft.Azure.Management.EventHub" Version="2.5.0" />
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.4.0" />
     <PackageReference Include="Microsoft.Azure.Storage.Queue" Version="10.0.3" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.9.0" />
