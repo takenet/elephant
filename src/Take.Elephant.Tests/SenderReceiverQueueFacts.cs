@@ -15,7 +15,7 @@ namespace Take.Elephant.Tests
 
         public SenderReceiverQueueFacts()
         {
-            _cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            _cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         }
 
         public abstract (ISenderQueue<T>, IBlockingReceiverQueue<T>) Create();
@@ -103,7 +103,7 @@ namespace Take.Elephant.Tests
             var result = receiverQueue.DequeueAsync(CancellationToken);
 
             // Assert
-            await Assert.ThrowsAsync<OperationCanceledException>(async () 
+            await Assert.ThrowsAnyAsync<Exception>(async () 
                 => await result);
         }
 
