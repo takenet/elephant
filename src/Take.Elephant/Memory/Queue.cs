@@ -99,7 +99,7 @@ namespace Take.Elephant.Memory
             while (items.Count < maxBatchSize)
             {
                 var item = await DequeueOrDefaultAsync(cancellationToken);
-                if (item == default) break;
+                if (EqualityComparer<T>.Default.Equals(item, default)) break;
                 items.Add(item);
             }
 
