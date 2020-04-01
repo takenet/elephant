@@ -1,4 +1,5 @@
-﻿using NFluent;
+﻿using System.Linq;
+using NFluent;
 using Ploeh.AutoFixture;
 using System.Threading.Tasks;
 using Xunit;

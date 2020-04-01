@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="SmartFormat.Net" Version="2.3.0" />
+    <PackageReference Include="System.Linq.Async" Version="4.0.0" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
     <PackageReference Include="System.Threading.Channels" Version="4.7.0" />
   </ItemGroup>
