@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace Take.Elephant
         /// <param name="end"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IAsyncEnumerable<T>> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default);
+        IAsyncEnumerable<T> GetRangeByRankAsync(long initial = 0, long end = -1, [EnumeratorCancellation]CancellationToken cancellationToken = default);
 
         /// <summary>
         ///  Returns the specified range of elements in the sorted set stored at key. By default
@@ -48,12 +49,12 @@ namespace Take.Elephant
         /// <param name="stop"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IAsyncEnumerable<T>> GetRangeByScoreAsync(double start = 0, double stop = 0, CancellationToken cancellationToken = default);
+        IAsyncEnumerable<T> GetRangeByScoreAsync(double start = 0, double stop = 0, [EnumeratorCancellation]CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets an IEnumerable with the keyValuePair with the values and respective score on the collection.
         /// </summary>
         /// <returns></returns>
-        Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync(CancellationToken cancelationToken = default);
+        IAsyncEnumerable<KeyValuePair<double, T>> AsEnumerableWithScoreAsync([EnumeratorCancellation]CancellationToken cancellationToken = default);
     }
 }

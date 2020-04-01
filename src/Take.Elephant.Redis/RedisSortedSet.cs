@@ -35,14 +35,16 @@ namespace Take.Elephant.Redis
             }
         }
 
-        public async Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync(CancellationToken cancelationToken = default)
+        public async IAsyncEnumerable<KeyValuePair<double, T>> AsEnumerableWithScoreAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
 
             var values = await database.SortedSetRangeByScoreWithScoresAsync(Name);
-            return new AsyncEnumerableWrapper<KeyValuePair<double, T>>(
-                values.Select(k => new KeyValuePair<double, T>(k.Score, _serializer.Deserialize(k.Element)))
-            );
+
+            foreach (var value in values)
+            {
+                yield return new KeyValuePair<double, T>(value.Score, _serializer.Deserialize(value.Element));
+            }
         }
 
         public async Task<T> RemoveMaxOrDefaultAsync(CancellationToken cancelationToken = default)
@@ -89,18 +91,26 @@ namespace Take.Elephant.Redis
             return database.SortedSetRemoveAsync(Name, _serializer.Serialize(value));
         }
 
-        public async Task<IAsyncEnumerable<T>> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.SortedSetRangeByRankAsync(Name, initial, end);
-            return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
+
+            foreach (var value in values)
+            {
+                yield return _serializer.Deserialize(value);
+            }
         }
 
-        public async Task<IAsyncEnumerable<T>> GetRangeByScoreAsync(double start = 0, double stop = 0, CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> GetRangeByScoreAsync(double start = 0, double stop = 0, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.SortedSetRangeByScoreAsync(Name, start, stop);
-            return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
+            
+            foreach (var value in values)
+            {
+                yield return _serializer.Deserialize(value);
+            }
         }
     }
 }

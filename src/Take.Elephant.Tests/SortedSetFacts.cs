@@ -113,7 +113,7 @@ namespace Take.Elephant.Tests
             await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.GetRangeByScoreAsync(0.02, 0.03);
+            var rangedItens = sortedSet.GetRangeByScoreAsync(0.02, 0.03);
 
             // Assert
             AssertEquals(rangedItens.CountAsync().Result, 2);
@@ -137,7 +137,7 @@ namespace Take.Elephant.Tests
             await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.GetRangeByScoreAsync(0.02, 0.02);
+            var rangedItens = sortedSet.GetRangeByScoreAsync(0.02, 0.02);
 
             // Assert
             AssertEquals(rangedItens.CountAsync().Result, 1);
@@ -160,7 +160,7 @@ namespace Take.Elephant.Tests
             await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.GetRangeByScoreAsync(0.02, 0.02);
+            var rangedItens = sortedSet.GetRangeByScoreAsync(0.02, 0.02);
 
             // Assert
             AssertEquals(rangedItens.CountAsync().Result, 2);
@@ -182,7 +182,7 @@ namespace Take.Elephant.Tests
             await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.GetRangeByScoreAsync(1, 2);
+            var rangedItens = sortedSet.GetRangeByScoreAsync(1, 2);
 
             // Assert
             AssertEquals(rangedItens.CountAsync().Result, 0);
@@ -204,7 +204,7 @@ namespace Take.Elephant.Tests
             await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.GetRangeByRankAsync(2, 3);
+            var rangedItens = sortedSet.GetRangeByRankAsync(2, 3);
 
             // Assert
             AssertEquals(rangedItens.CountAsync().Result, 2);
@@ -228,7 +228,7 @@ namespace Take.Elephant.Tests
             await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.GetRangeByRankAsync(3, 6);
+            var rangedItens = sortedSet.GetRangeByRankAsync(3, 6);
 
             // Assert
             AssertEquals(rangedItens.CountAsync().Result, 1);
@@ -275,7 +275,7 @@ namespace Take.Elephant.Tests
             await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.AsEnumerableWithScoreAsync();
+            var rangedItens = sortedSet.AsEnumerableWithScoreAsync();
 
             // Assert
             AssertEquals(rangedItens.CountAsync().Result, 4);

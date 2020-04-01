@@ -31,8 +31,8 @@ namespace Take.Elephant.Memory
         public IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
             => _sortedList.Values.ToAsyncEnumerable();
 
-        public Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync(CancellationToken cancelationToken = default)
-            => Task.FromResult(_sortedList.ToList().ToAsyncEnumerable());
+        public IAsyncEnumerable<KeyValuePair<double, T>> AsEnumerableWithScoreAsync(CancellationToken cancellationToken = default)
+            => _sortedList.ToList().ToAsyncEnumerable();
 
         public Task<T> DequeueMaxAsync(CancellationToken cancellationToken)
         {
@@ -134,12 +134,12 @@ namespace Take.Elephant.Memory
             return _sortedList.LongCount().AsCompletedTask();
         }
 
-        public async Task<IAsyncEnumerable<T>> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default)
         {
-            await _semaphore.WaitAsync();
+            await _semaphore.WaitAsync(cancellationToken);
             try
             {
-                var length = await GetLengthAsync();
+                var length = await GetLengthAsync(cancellationToken);
                 if (initial < 0)
                 {
                     initial = length - initial;
@@ -148,16 +148,14 @@ namespace Take.Elephant.Memory
                 {
                     end = length - end;
                 }
-
-                var list = new System.Collections.Generic.List<T>();
+                
                 for (var i = initial; i <= end; i++)
                 {
                     if (i < length && i >= 0)
                     {
-                        list.Add(_sortedList.Values[(int)i]);
+                        yield return _sortedList.Values[(int)i];
                     }
                 }
-                return await Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(list));
             }
             finally
             {
@@ -176,8 +174,11 @@ namespace Take.Elephant.Memory
             return true.AsCompletedTask();
         }
 
-        public Task<IAsyncEnumerable<T>> GetRangeByScoreAsync(double start = 0, double stop = 0, CancellationToken cancellationToken = default)
-            => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_sortedList.Where(i => i.Key >= start && i.Key <= stop).Select(i => i.Value)));
+        public IAsyncEnumerable<T> GetRangeByScoreAsync(double start = 0, double stop = 0, CancellationToken cancellationToken = default)
+            => _sortedList
+                .Where(i => i.Key >= start && i.Key <= stop)
+                .Select(i => i.Value)
+                .ToAsyncEnumerable();
     }
 
     /// <summary>
