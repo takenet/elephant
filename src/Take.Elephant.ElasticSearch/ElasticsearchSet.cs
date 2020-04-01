@@ -37,14 +37,17 @@ namespace Take.Elephant.Elasticsearch
             return TryAddAsync(documentId, value, true, cancellationToken);
         }
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var results = await ElasticClient.SearchAsync<T>(c => c
-            .Index(Mapping.Index)
-            .Type(Mapping.Type)
-            .Query(q => q.MatchAll()));
+                .Index(Mapping.Index)
+                .Type(Mapping.Type)
+                .Query(q => q.MatchAll()));
 
-            return new AsyncEnumerableWrapper<T>(results.Documents);
+            foreach (var document in results.Documents)
+            {
+                yield return document;
+            }
         }
 
         public Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default(CancellationToken))

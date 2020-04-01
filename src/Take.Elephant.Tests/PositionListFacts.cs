@@ -29,7 +29,7 @@ namespace Take.Elephant.Tests
 
             // Assert
             AssertEquals(await list.GetLengthAsync(), 2);
-            var listEnumerable = await list.AsEnumerableAsync();
+            var listEnumerable = list.AsEnumerableAsync();
             AssertEquals(await listEnumerable.FirstAsync(), item2);
         }
 
@@ -47,7 +47,7 @@ namespace Take.Elephant.Tests
 
             // Assert
             AssertEquals(await list.GetLengthAsync(), 2);
-            var listEnumerable = await list.AsEnumerableAsync();
+            var listEnumerable = list.AsEnumerableAsync();
             AssertEquals(listEnumerable.ToListAsync().Result.Last(), item2);
         }
 
@@ -67,7 +67,7 @@ namespace Take.Elephant.Tests
 
             // Assert
             AssertEquals(await list.GetLengthAsync(), 3);
-            var listEnumerable = await list.AsEnumerableAsync();
+            var listEnumerable = list.AsEnumerableAsync();
             AssertEquals(listEnumerable.ToListAsync().Result[1], item2);
         }
 

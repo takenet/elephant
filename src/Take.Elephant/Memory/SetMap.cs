@@ -33,7 +33,7 @@ namespace Take.Elephant.Memory
             CancellationToken cancellationToken = default)
         {
             var set = ValueFactory();
-            var enumerable = await value.AsEnumerableAsync().ConfigureAwait(false);
+            var enumerable = value.AsEnumerableAsync();
             await enumerable.ForEachAsync(
                 async (i) => await set.AddAsync(i).ConfigureAwait(false), CancellationToken.None)
             .ConfigureAwait(false);
@@ -45,8 +45,8 @@ namespace Take.Elephant.Memory
             var items = await GetValueOrDefaultAsync(key).ConfigureAwait(false);
             if (items != null)
             {
-                return await
-                    (await items.AsEnumerableAsync().ConfigureAwait(false))
+                return await items
+                        .AsEnumerableAsync()
                         .FirstOrDefaultAsync(i => _valueEqualityComparer.Equals(i, item)).ConfigureAwait(false);
             }
 

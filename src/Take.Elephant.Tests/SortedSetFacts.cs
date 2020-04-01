@@ -251,7 +251,7 @@ namespace Take.Elephant.Tests
             await sortedSet.AddAsync(thirdItem, 0.03);
 
             // Act
-            var rangedItens = await sortedSet.AsEnumerableAsync();
+            var rangedItens = sortedSet.AsEnumerableAsync();
 
             // Assert
             AssertEquals(rangedItens.CountAsync().Result, 4);

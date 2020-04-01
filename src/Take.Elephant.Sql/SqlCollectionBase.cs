@@ -16,15 +16,14 @@ namespace Take.Elephant.Sql
 
         }
 
-        public virtual Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
+        public virtual IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
         {
             var selectColumns = Table.Columns.Keys.ToArray();
-            return Task.FromResult<IAsyncEnumerable<T>>(
-                new DbDataReaderAsyncEnumerable<T>(
-                    GetConnectionAsync,
-                    c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns),
-                    Mapper,
-                    selectColumns));
+            return new DbDataReaderAsyncEnumerable<T>(
+                GetConnectionAsync,
+                c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns),
+                Mapper,
+                selectColumns);
         }
 
         public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)

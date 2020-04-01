@@ -23,10 +23,13 @@ namespace Take.Elephant.Tests.Elasticsearch
             await _set.AddAsync(value, cancellationToken);
         }
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
         {
             await Task.Delay(_delay, cancellationToken);
-            return await _set.AsEnumerableAsync(cancellationToken);
+            await foreach (var item in _set.AsEnumerableAsync(cancellationToken))
+            {
+                yield return item;
+            }
         }
 
         public async Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)

@@ -28,11 +28,11 @@ namespace Take.Elephant.Memory
             _semaphore = new SemaphoreSlim(1);
         }
 
-        public Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult<IAsyncEnumerable<T>>(new AsyncEnumerableWrapper<T>(_sortedList.Values));
+        public IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
+            => _sortedList.Values.ToAsyncEnumerable();
 
         public Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync(CancellationToken cancelationToken = default)
-            => Task.FromResult<IAsyncEnumerable<KeyValuePair<double, T>>>(new AsyncEnumerableWrapper<KeyValuePair<double, T>>(_sortedList.ToList()));
+            => Task.FromResult(_sortedList.ToList().ToAsyncEnumerable());
 
         public Task<T> DequeueMaxAsync(CancellationToken cancellationToken)
         {

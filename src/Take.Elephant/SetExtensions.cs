@@ -15,10 +15,10 @@ namespace Take.Elephant
         /// <returns></returns>
         public static async Task<List<T>> ToListAsync<T>(this ISet<T> set)
         {
-            var enumerable = await set.AsEnumerableAsync().ConfigureAwait(false);
+            var enumerable = set.AsEnumerableAsync();
             try
             {
-                return await enumerable.ToListAsync().ConfigureAwait(false);
+                return await set.AsEnumerableAsync().ToListAsync().ConfigureAwait(false);
             }
             finally
             {

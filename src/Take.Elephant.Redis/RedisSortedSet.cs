@@ -23,12 +23,16 @@ namespace Take.Elephant.Redis
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancelationToken = default)
+        public async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancelationToken = default)
         {
             var database = GetDatabase();
 
             var values = await database.SortedSetRangeByScoreAsync(Name);
-            return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
+
+            foreach (var value in values.Select(value => _serializer.Deserialize(value)))
+            {
+                yield return value;
+            }
         }
 
         public async Task<IAsyncEnumerable<KeyValuePair<double, T>>> AsEnumerableWithScoreAsync(CancellationToken cancelationToken = default)

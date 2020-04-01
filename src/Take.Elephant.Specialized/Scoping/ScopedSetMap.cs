@@ -66,10 +66,10 @@ namespace Take.Elephant.Specialized.Scoping
                 _keySerializer = keySerializer;
             }
 
-            public virtual Task<IAsyncEnumerable<TItem>> AsEnumerableAsync(CancellationToken cancellationToken =
+            public virtual IAsyncEnumerable<TItem> AsEnumerableAsync(CancellationToken cancellationToken =
                 default)
             {
-                return _set.AsEnumerableAsync();
+                return _set.AsEnumerableAsync(cancellationToken);
             }
 
             public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,8 +37,8 @@ namespace Take.Elephant.Specialized.Scoping
             var keysSet = await KeysSetMap.GetValueOrDefaultAsync(Name).ConfigureAwait(false);
             if (keysSet != null)
             {
-                var keysEnumerable = await keysSet.AsEnumerableAsync().ConfigureAwait(false);
-                await keysEnumerable.ForEachAsync(async k =>
+                var keysEnumerable = keysSet.AsEnumerableAsync();
+                await keysEnumerable.ForEachAwaitAsync(async k =>
                 {
                     IScopedMap scopedMap;
                     if (ScopedMapDictionary.TryGetValue(k.Identifier, out scopedMap))

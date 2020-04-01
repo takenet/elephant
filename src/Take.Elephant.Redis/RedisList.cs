@@ -53,11 +53,14 @@ namespace Take.Elephant.Redis
             }
         }
 
-        public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.ListRangeAsync(Name).ConfigureAwait(false);
-            return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
+            foreach (var value in values.Select(value => _serializer.Deserialize(value)))
+            {
+                yield return value;
+            }
         }
 
         public Task<long> GetLengthAsync(CancellationToken cancellationToken = default)

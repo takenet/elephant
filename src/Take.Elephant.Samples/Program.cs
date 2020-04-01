@@ -101,7 +101,7 @@ namespace Take.Elephant.Samples
                 Console.WriteLine($"The value '{data}' exists in the set");
 
             // The set also supports the IAsyncEnumerable interface, that allows async enumeration of the items.
-            IAsyncEnumerable<Data> enumerable = await set.AsEnumerableAsync();
+            IAsyncEnumerable<Data> enumerable = set.AsEnumerableAsync();
 
             // Some async extensions are available
             Console.WriteLine($"There are '{await enumerable.CountAsync()}' items in the set, which are:");

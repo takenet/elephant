@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Take.Elephant
@@ -10,6 +11,12 @@ namespace Take.Elephant
     /// <typeparam name="T"></typeparam>
     public sealed class QueryResult<T> : IAsyncEnumerable<T>, IDisposable
     {
+        public QueryResult(IEnumerable<T> items, int total)
+            : this(items.ToAsyncEnumerable(), total)
+        {
+            
+        }
+        
         public QueryResult(IAsyncEnumerable<T> items, int total)
         {
             Items = items;

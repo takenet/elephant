@@ -15,7 +15,7 @@ namespace Take.Elephant.Tests
             {
                 var actualSet = (ISet<TValue>) actual;
                 var expectedSet = (ISet<TValue>)expected;
-                Check.That(actualSet.AsEnumerableAsync().Result.ToListAsync().Result).Contains(expectedSet.AsEnumerableAsync().Result.ToListAsync().Result);
+                Check.That(actualSet.AsEnumerableAsync().ToListAsync().Result).Contains(expectedSet.AsEnumerableAsync().ToListAsync().Result);
             }
             else
             {
@@ -84,9 +84,9 @@ namespace Take.Elephant.Tests
             AssertEquals(actualSet1, set1);
             AssertEquals(actualSet2, set2);
             AssertEquals(actualSet3, set3);
-            var enumerableActualSet1 = await actualSet1.AsEnumerableAsync();
-            var enumerableActualSet2 = await actualSet2.AsEnumerableAsync();
-            var enumerableActualSet3 = await actualSet3.AsEnumerableAsync();
+            var enumerableActualSet1 = actualSet1.AsEnumerableAsync();
+            var enumerableActualSet2 = actualSet2.AsEnumerableAsync();
+            var enumerableActualSet3 = actualSet3.AsEnumerableAsync();
             AssertEquals(await enumerableActualSet1.CountAsync(), 5);
             AssertEquals(await actualSet1.GetLengthAsync(), 5);
             AssertEquals(await enumerableActualSet2.CountAsync(), 3);

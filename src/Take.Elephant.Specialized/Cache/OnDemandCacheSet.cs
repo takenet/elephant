@@ -15,30 +15,38 @@ namespace Take.Elephant.Specialized.Cache
 
         public virtual Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default) => ExecuteWriteFunc(s => s.TryRemoveAsync(value, cancellationToken));
 
-        public virtual async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
+        public virtual async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
         {
             // The AsEnumerableAsync method always returns a value (never is null)
             // and we are not able to check if it is empty before starting enumerating it,
             // so we will start enumerate it and if there's at least one value, it is valid.
 
             // TODO: Peek only a value instead of enumerating completely
-            var cacheEnumerable = await Cache.AsEnumerableAsync(cancellationToken).ConfigureAwait(false);
+            var cacheEnumerable = Cache.AsEnumerableAsync(cancellationToken);
             var cacheValues = await cacheEnumerable.ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
             if (cacheValues.Length > 0)
             {
-                return new AsyncEnumerableWrapper<T>(cacheValues);
+                foreach (var cacheValue in cacheValues)
+                {
+                    yield return cacheValue;
+                }
             }
-
-            var sourceEnumerable = await Source.AsEnumerableAsync(cancellationToken).ConfigureAwait(false);
-            var sourceValues = await sourceEnumerable.ToArrayAsync(cancellationToken).ConfigureAwait(false);
-
-            foreach (var sourceValue in sourceValues)
+            else
             {
-                await Cache.AddAsync(sourceValue, cancellationToken).ConfigureAwait(false);
-            }
+                var sourceEnumerable = Source.AsEnumerableAsync(cancellationToken);
+                var sourceValues = await sourceEnumerable.ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-            return new AsyncEnumerableWrapper<T>(sourceValues);
+                foreach (var sourceValue in sourceValues)
+                {
+                    await Cache.AddAsync(sourceValue, cancellationToken).ConfigureAwait(false);
+                }
+
+                foreach (var sourceValue in sourceValues)
+                {
+                    yield return sourceValue;
+                }
+            }
         }
 
         public virtual Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
@@ -57,7 +65,7 @@ namespace Take.Elephant.Specialized.Cache
                 {
                     if (result > 0)
                     {
-                        var enumerable = await Source.AsEnumerableAsync(cancellationToken).ConfigureAwait(false);
+                        var enumerable = Source.AsEnumerableAsync(cancellationToken);
                         await enumerable.ForEachAsync(v => set.AddAsync(v, cancellationToken), cancellationToken).ConfigureAwait(false);
                     }
                 });

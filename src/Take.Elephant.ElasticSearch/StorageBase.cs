@@ -57,7 +57,7 @@ namespace Take.Elephant.Elasticsearch
                 .Query(_ => queryDescriptor)
                 .From(skip).Size(take), cancellationToken);
 
-            return new QueryResult<T>(new AsyncEnumerableWrapper<T>(result.Documents), (int)result.Total);
+            return new QueryResult<T>(result.Documents, (int)result.Total);
         }
 
         public async Task<bool> ContainsKeyAsync(string key, CancellationToken cancellationToken = default)

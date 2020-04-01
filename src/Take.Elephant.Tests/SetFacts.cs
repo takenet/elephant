@@ -89,7 +89,7 @@ namespace Take.Elephant.Tests
             await set.AddAsync(item3);
 
             // Act
-            var result = await set.AsEnumerableAsync();
+            var result = set.AsEnumerableAsync();
 
             // Assert
             AssertEquals(await result.CountAsync(), 3);
@@ -112,7 +112,7 @@ namespace Take.Elephant.Tests
             await set.AddAsync(item3);
 
             // Act
-            var result = await set.AsEnumerableAsync();
+            var result = set.AsEnumerableAsync();
             await set.TryRemoveAsync(item1);
             await set.TryRemoveAsync(item2);
             await set.TryRemoveAsync(item3);

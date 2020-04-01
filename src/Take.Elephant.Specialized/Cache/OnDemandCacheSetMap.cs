@@ -77,7 +77,7 @@ namespace Take.Elephant.Specialized.Cache
                 await _addTrigger(value).ConfigureAwait(false);
             }
 
-            public Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default) => _set.AsEnumerableAsync();
+            public IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default) => _set.AsEnumerableAsync();
 
             public Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default) => _set.ContainsAsync(value);
 
@@ -101,10 +101,14 @@ namespace Take.Elephant.Specialized.Cache
                 await set.AddAsync(value, cancellationToken).ConfigureAwait(false);
             }
 
-            public async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
+            public async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
             {
                 var set = await GetSetAsync().ConfigureAwait(false);
-                return await set.AsEnumerableAsync(cancellationToken).ConfigureAwait(false);
+
+                await foreach (var item in set.AsEnumerableAsync(cancellationToken))
+                {
+                    yield return item;
+                }
             }
 
             public async Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)

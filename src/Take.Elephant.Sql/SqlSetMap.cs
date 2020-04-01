@@ -61,7 +61,7 @@ namespace Take.Elephant.Sql
                         }
 
                         var success = true;
-                        var items = await value.AsEnumerableAsync(linkedCts.Token).ConfigureAwait(false);
+                        var items = value.AsEnumerableAsync(linkedCts.Token);
                         await items.ForEachAsync(
                             async item =>
                             {
@@ -196,16 +196,15 @@ namespace Take.Elephant.Sql
                 return columnValues;
             }
 
-            public override Task<IAsyncEnumerable<TItem>> AsEnumerableAsync(CancellationToken cancellationToken =
+            public override IAsyncEnumerable<TItem> AsEnumerableAsync(CancellationToken cancellationToken =
                 default)
             {                                
                 var selectColumns = Table.Columns.Keys.ToArray();                
-                return Task.FromResult<IAsyncEnumerable<TItem>>(
-                    new DbDataReaderAsyncEnumerable<TItem>(
-                        GetConnectionAsync, 
-                        c => c.CreateSelectCommand(DatabaseDriver, Table, MapKeyColumnValues, selectColumns),
-                        Mapper, 
-                        selectColumns));
+                return new DbDataReaderAsyncEnumerable<TItem>(
+                    GetConnectionAsync, 
+                    c => c.CreateSelectCommand(DatabaseDriver, Table, MapKeyColumnValues, selectColumns),
+                    Mapper, 
+                    selectColumns);
             }
 
             public override async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)

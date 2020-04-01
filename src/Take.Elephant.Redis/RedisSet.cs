@@ -44,7 +44,7 @@ namespace Take.Elephant.Redis
             return database.SetRemoveAsync(Name, _serializer.Serialize(value), WriteFlags);
         }
 
-        public virtual async Task<IAsyncEnumerable<T>> AsEnumerableAsync(CancellationToken cancellationToken = default)
+        public virtual async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase() as IDatabase;
             if (database == null) throw new NotSupportedException("The database instance is not supported");
@@ -59,7 +59,10 @@ namespace Take.Elephant.Redis
                 values = await database.SetMembersAsync(Name).ConfigureAwait(false);                
             }
 
-            return new AsyncEnumerableWrapper<T>(values.Select(value => _serializer.Deserialize(value)));
+            foreach (var value in values.Select(value => _serializer.Deserialize(value)))
+            {
+                yield return value;
+            }
         }
 
         public virtual Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)

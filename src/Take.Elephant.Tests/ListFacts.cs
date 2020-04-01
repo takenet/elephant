@@ -94,7 +94,7 @@ namespace Take.Elephant.Tests
             await list.AddAsync(item3);
 
             // Act
-            var result = await list.AsEnumerableAsync();
+            var result = list.AsEnumerableAsync();
 
             // Assert
             AssertEquals(await result.CountAsync(), 3);
