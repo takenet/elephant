@@ -1,4 +1,4 @@
-using Ploeh.AutoFixture;
+using AutoFixture;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

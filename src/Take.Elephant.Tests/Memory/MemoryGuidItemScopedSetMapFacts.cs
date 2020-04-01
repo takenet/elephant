@@ -1,5 +1,5 @@
 using System;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Take.Elephant.Memory;
 using Take.Elephant.Specialized.Scoping;
 using Take.Elephant.Tests.Specialized;

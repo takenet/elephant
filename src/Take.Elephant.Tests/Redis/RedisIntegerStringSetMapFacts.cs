@@ -1,4 +1,4 @@
-﻿using Ploeh.AutoFixture;
+﻿using AutoFixture;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
 using Take.Elephant.Redis.Serializers;

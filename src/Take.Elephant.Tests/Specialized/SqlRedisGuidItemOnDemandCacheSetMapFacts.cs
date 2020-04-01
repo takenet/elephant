@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Reflection;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
 using Take.Elephant.Sql;

@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Take.Elephant.Memory;
 using Take.Elephant.Specialized;
 using Take.Elephant.Specialized.Replication;

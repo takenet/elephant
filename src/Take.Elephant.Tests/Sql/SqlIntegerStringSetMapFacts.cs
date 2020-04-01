@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Take.Elephant.Memory;
 using Take.Elephant.Sql;
 using Take.Elephant.Sql.Mapping;

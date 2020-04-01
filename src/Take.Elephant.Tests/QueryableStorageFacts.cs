@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Xunit;
 
 namespace Take.Elephant.Tests

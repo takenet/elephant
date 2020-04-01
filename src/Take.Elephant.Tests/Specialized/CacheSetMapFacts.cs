@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NFluent;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Take.Elephant.Specialized;
 using Take.Elephant.Specialized.Cache;
 using Xunit;

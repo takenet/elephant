@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using NFluent;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using System.Threading.Tasks;
 using Xunit;
 

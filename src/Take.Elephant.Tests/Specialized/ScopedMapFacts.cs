@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Specialized.Scoping;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Xunit;
 
 namespace Take.Elephant.Tests.Specialized

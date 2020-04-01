@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using NFluent;
-using Ploeh.AutoFixture;
 using Xunit;
 
 namespace Take.Elephant.Tests

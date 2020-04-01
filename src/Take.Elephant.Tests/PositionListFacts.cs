@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Xunit;
 
 namespace Take.Elephant.Tests

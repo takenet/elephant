@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
 using Take.Elephant.Specialized.Scoping;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Take.Elephant.Memory;
 using Xunit;
 

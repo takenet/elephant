@@ -1,4 +1,4 @@
-﻿using Ploeh.AutoFixture;
+﻿using AutoFixture;
 using System;
 using Take.Elephant.Memory;
 

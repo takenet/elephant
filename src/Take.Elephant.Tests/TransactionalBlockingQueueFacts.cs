@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Shouldly;
 using Xunit;
 

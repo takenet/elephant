@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
-using Ploeh.AutoFixture;
+using AutoFixture;
 using Shouldly;
 using Xunit;
 
