@@ -10,7 +10,7 @@ namespace Take.Elephant
     /// Represents a query result.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class QueryResult<T> : IAsyncEnumerable<T>, IEnumerable<T>, IDisposable
+    public sealed class QueryResult<T> : IAsyncEnumerable<T>, IDisposable
     {
         public QueryResult(IEnumerable<T> items, int total)
             : this(items?.ToAsyncEnumerable(), total)
@@ -32,19 +32,7 @@ namespace Take.Elephant
         {
             return Items.GetAsyncEnumerator(cancellationToken);
         }
-        
-        [Obsolete]
-        public IEnumerator<T> GetEnumerator()
-        {
-            return Items.ToEnumerable().GetEnumerator();
-        }
 
-        [Obsolete]
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return Items.ToEnumerable().GetEnumerator();
-        }
-        
         public void Dispose()
         {            
             (Items as IDisposable)?.Dispose();
