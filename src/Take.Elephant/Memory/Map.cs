@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace Take.Elephant.Memory
 {
@@ -14,34 +17,44 @@ namespace Take.Elephant.Memory
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>, IOrderedQueryableStorage<TValue>, IQueryableStorage<KeyValuePair<TKey, TValue>>, IKeyQueryableMap<TKey, TValue>
+    public class Map<TKey, TValue> : IUpdatableMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IKeysMap<TKey, TValue>, IQueryableStorage<TValue>, IOrderedQueryableStorage<TValue>, IQueryableStorage<KeyValuePair<TKey, TValue>>, IKeyQueryableMap<TKey, TValue>, IDisposable
     {
-        public Map()
-            : this(() => (TValue)Activator.CreateInstance(typeof(TValue)))
+        private readonly Timer _expirationTimer;
+        private readonly double _expirationTimerIntervalMs;
+
+        public Map(TimeSpan expirationScanInterval = default)
+            : this(() => (TValue)Activator.CreateInstance(typeof(TValue)), expirationScanInterval)
         {
         }
 
-        public Map(Func<TValue> valueFactory)
-            : this(valueFactory, new DictionaryConverter<TValue>(valueFactory))
+        public Map(Func<TValue> valueFactory, TimeSpan expirationScanInterval = default)
+            : this(valueFactory, new DictionaryConverter<TValue>(valueFactory), expirationScanInterval)
         {
         }
 
-        public Map(IDictionaryConverter<TValue> dictionaryConverter)
-            : this(() => (TValue)Activator.CreateInstance(typeof(TValue)), dictionaryConverter)
+        public Map(IDictionaryConverter<TValue> dictionaryConverter, TimeSpan expirationScanInterval = default)
+            : this(() => (TValue)Activator.CreateInstance(typeof(TValue)), dictionaryConverter, expirationScanInterval)
         {
         }
 
-        public Map(Func<TValue> valueFactory, IDictionaryConverter<TValue> dictionaryConverter)
-            : this(valueFactory, dictionaryConverter, new ConcurrentDictionary<TKey, TValue>())
+        public Map(Func<TValue> valueFactory, IDictionaryConverter<TValue> dictionaryConverter, TimeSpan expirationScanInterval = default)
+            : this(valueFactory, dictionaryConverter, new ConcurrentDictionary<TKey, TValue>(), expirationScanInterval)
         {
         }
 
-        public Map(Func<TValue> valueFactory, IDictionaryConverter<TValue> dictionaryConverter, ConcurrentDictionary<TKey, TValue> internalDictionary)
+        public Map(Func<TValue> valueFactory, IDictionaryConverter<TValue> dictionaryConverter, ConcurrentDictionary<TKey, TValue> internalDictionary, TimeSpan expirationScanInterval = default)
         {
             ValueFactory = valueFactory ?? throw new ArgumentNullException(nameof(valueFactory));
             DictionaryConverter = dictionaryConverter ?? throw new ArgumentNullException(nameof(dictionaryConverter));
             InternalDictionary = internalDictionary ?? throw new ArgumentNullException(nameof(internalDictionary));
             KeyExpirationDictionary = new ConcurrentDictionary<TKey, DateTimeOffset>();
+            if (expirationScanInterval <= TimeSpan.Zero)
+            {
+                expirationScanInterval = TimeSpan.FromSeconds(30);
+            }
+            _expirationTimerIntervalMs = expirationScanInterval.TotalMilliseconds; 
+            _expirationTimer = new Timer(_expirationTimerIntervalMs);
+            _expirationTimer.Elapsed += RemoveExpiredKeys;
         }
 
         /// <summary>
@@ -137,8 +150,15 @@ namespace Take.Elephant.Memory
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!InternalDictionary.ContainsKey(key))
             {
-                return Task.FromException(new ArgumentException("$Key {key}'' not found"));
+                throw new ArgumentException("$Key {key}'' not found");
             }
+
+            if (!_expirationTimer.Enabled)
+            {
+                // The start method ignores multiple calls so it is thread-safe
+                _expirationTimer.Start();
+            }
+
             KeyExpirationDictionary[key] = expiration;
             return Task.CompletedTask;
         }
@@ -392,12 +412,69 @@ namespace Take.Elephant.Memory
         }
 
 
-        private bool KeyHasNotExpired(TKey key) => !KeyHasExpired(key);
+        protected bool KeyHasNotExpired(TKey key) => !KeyHasExpired(key);
         
-        private bool KeyHasExpired(TKey key)
+        protected bool KeyHasExpired(TKey key)
         {
             return KeyExpirationDictionary.TryGetValue(key, out var expiration) && 
                    expiration <= DateTimeOffset.UtcNow;
+        }
+
+        private void RemoveExpiredKeys(object sender, ElapsedEventArgs e)
+        {
+            // Increase the interval to avoid the timer to be triggered while processing
+            // This is better than calling Start/Stop since it call Change instead of creating new Threading.Timer
+            // instance internally by the Timers.Time class.
+            _expirationTimer.Interval = 3_600_000; // An hour
+
+            try
+            {
+                // Creates a snapshot of the expired keys
+                var expiredKeys = KeyExpirationDictionary
+                    .Where(pair => pair.Value <= DateTimeOffset.UtcNow)
+                    .Select(pair => pair.Key)
+                    .ToArray();
+
+                foreach (var key in expiredKeys)
+                {
+                    // Check again to reduce the change of the collection be changed between the snapshot and now.
+                    // This cleanup is not thread safe and a valid key may be removed by the process.
+                    if (KeyExpirationDictionary.TryRemove(key, out var keyExpiration))
+                    {
+                        if (keyExpiration <= DateTimeOffset.UtcNow)
+                        {
+                            InternalDictionary.TryRemove(key, out _);
+                        }
+                        else
+                        {
+                            // Put it back
+                            KeyExpirationDictionary[key] = keyExpiration;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError(ex.ToString());
+            }
+            finally
+            {
+                _expirationTimer.Interval = _expirationTimerIntervalMs;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _expirationTimer.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
