@@ -11,7 +11,7 @@ namespace Take.Elephant.Memory
     /// <typeparam name="T"></typeparam>
     public class Set<T> : Collection<T>, ISet<T>
     {
-        private readonly HashSet<T> _hashSet;
+        
         private readonly object _syncRoot = new object();
 
         public Set()
@@ -37,20 +37,22 @@ namespace Take.Elephant.Memory
         private Set(HashSet<T> hashSet)
             : base(hashSet)
         {
-            _hashSet = hashSet;
+            HashSet = hashSet;
         }
+        
+        protected internal HashSet<T> HashSet { get; }
 
         public virtual Task AddAsync(T value, CancellationToken cancellationToken = default)
         {
             lock (_syncRoot)
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_hashSet.Contains(value))
+                if (HashSet.Contains(value))
                 {
-                    _hashSet.Remove(value);
+                    HashSet.Remove(value);
                 }
 
-                _hashSet.Add(value);
+                HashSet.Add(value);
             }
             return TaskUtil.CompletedTask;
         }
@@ -60,14 +62,14 @@ namespace Take.Elephant.Memory
             if (value == null) throw new ArgumentNullException(nameof(value));
             lock (_syncRoot)
             {
-                return Task.FromResult(_hashSet.Remove(value));
+                return Task.FromResult(HashSet.Remove(value));
             }
         }
 
         public virtual Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            return Task.FromResult(_hashSet.Contains(value));
+            return Task.FromResult(HashSet.Contains(value));
         }
     }
 }
