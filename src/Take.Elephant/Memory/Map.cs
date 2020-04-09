@@ -41,6 +41,7 @@ namespace Take.Elephant.Memory
             ValueFactory = valueFactory ?? throw new ArgumentNullException(nameof(valueFactory));
             DictionaryConverter = dictionaryConverter ?? throw new ArgumentNullException(nameof(dictionaryConverter));
             InternalDictionary = internalDictionary ?? throw new ArgumentNullException(nameof(internalDictionary));
+            KeyExpirationDictionary = new ConcurrentDictionary<TKey, DateTimeOffset>();
         }
 
         /// <summary>
@@ -54,85 +55,97 @@ namespace Take.Elephant.Memory
         protected IDictionaryConverter<TValue> DictionaryConverter { get; }
 
         protected ConcurrentDictionary<TKey, TValue> InternalDictionary { get; }
+        
+        protected ConcurrentDictionary<TKey, DateTimeOffset> KeyExpirationDictionary { get; }
 
-        #region IMap<TKey,TValue> Members
-
-        public virtual Task<bool> TryAddAsync(TKey key,
+        public virtual Task<bool> TryAddAsync(
+            TKey key,
             TValue value,
             bool overwrite = false,
             CancellationToken cancellationToken = default)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            bool added;
+            
             if (overwrite)
             {
                 InternalDictionary.AddOrUpdate(key, value, (k, v) => value);
-                return Task.FromResult(true);
+                added = true;
+            }
+            else
+            {
+                added = InternalDictionary.TryAdd(key, value);
             }
 
-            return Task.FromResult(InternalDictionary.TryAdd(key, value));
+            if (added)
+            {
+                KeyExpirationDictionary.TryRemove(key, out _);
+            }
+
+            return Task.FromResult(added);
         }
 
-        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default) 
-            => Task.FromResult(InternalDictionary.TryGetValue(key, out var value) ? value : default(TValue));
+        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
+        {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            TryGetValue(key, out var value);
+            return Task.FromResult(value);
+        }
 
         public virtual Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            TValue value;
-            return Task.FromResult(InternalDictionary.TryRemove(key, out value));
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            var removed = InternalDictionary.TryRemove(key, out _);
+            if (removed)
+            {
+                KeyExpirationDictionary.TryRemove(key, out _);
+            }
+            return Task.FromResult(removed);
         }
 
-        public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default) 
-            => Task.FromResult(InternalDictionary.ContainsKey(key));
-
-        #endregion
-
-        #region IUpdatableMap<TKey,TValue> Members
+        public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
+        {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            var contains = InternalDictionary.ContainsKey(key) && !KeyHasExpired(key);
+            return Task.FromResult(contains);
+        }
 
         public virtual Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue)
         {
-            return InternalDictionary.TryUpdate(key, newValue, oldValue).AsCompletedTask();
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            bool updated;
+            if (InternalDictionary.TryUpdate(key, newValue, oldValue))
+            {
+                KeyExpirationDictionary.TryRemove(key, out _);
+                updated = true;
+            }
+            else
+            {
+                updated = false;
+            }
+
+            return Task.FromResult(updated);
         }
-
-        #endregion
-
-        #region IExpirableKeyMap<TKey,TValue> Members
-
-        private readonly ConcurrentDictionary<TKey, Tuple<Task, CancellationTokenSource>> _expirationTaskDictionary = new ConcurrentDictionary<TKey, Tuple<Task, CancellationTokenSource>>();
 
         public virtual Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (!InternalDictionary.ContainsKey(key)) throw new ArgumentException("Invalid key", nameof(key));
-
-            Tuple<Task, CancellationTokenSource> expirationTaskWithCts;
-            if (_expirationTaskDictionary.TryRemove(key, out expirationTaskWithCts))
-            {
-                expirationTaskWithCts.Item2.Cancel();
-            }
-
-            var cancellationTokenSource = new CancellationTokenSource();
-            var expirationTask = Task.Run(async () =>
-            {
-                await Task.Delay(ttl, cancellationTokenSource.Token).ConfigureAwait(false);
-                await TryRemoveAsync(key).ConfigureAwait(false);
-                _expirationTaskDictionary.TryRemove(key, out expirationTaskWithCts);
-            }, cancellationTokenSource.Token);
-
-            expirationTaskWithCts = new Tuple<Task, CancellationTokenSource>(expirationTask, cancellationTokenSource);
-            _expirationTaskDictionary.TryAdd(key, expirationTaskWithCts);
-            return TaskUtil.CompletedTask;
+            return SetAbsoluteKeyExpirationAsync(key, DateTimeOffset.UtcNow.Add(ttl));
         }
 
         public virtual Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
-            return SetRelativeKeyExpirationAsync(key, expiration - DateTimeOffset.UtcNow);
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (!InternalDictionary.ContainsKey(key))
+            {
+                return Task.FromException(new ArgumentException("$Key {key}'' not found"));
+            }
+            KeyExpirationDictionary[key] = expiration;
+            return Task.CompletedTask;
         }
-
-        #endregion
-
-        #region IPropertyMap<TKey, TValue> Members
 
         public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
             TValue value = GetOrCreateValue(key);
             var property = typeof(TValue).GetProperty(
                 propertyName,
@@ -146,6 +159,7 @@ namespace Take.Elephant.Memory
 
         public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
             TValue value;
             var property = typeof(TValue).GetProperty(
                 propertyName,
@@ -208,23 +222,21 @@ namespace Take.Elephant.Memory
                 }
             }
 
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
-
-        #endregion
-
-        #region IKeysMap<TKey, TValue> Members
 
         public virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync()
         {
-            return Task.FromResult<IAsyncEnumerable<TKey>>(new AsyncEnumerableWrapper<TKey>(InternalDictionary.Keys));
+            var keys = InternalDictionary.Keys.Where(KeyHasNotExpired).ToAsyncEnumerable();
+            return Task.FromResult(keys);
         }
 
-        #endregion
-
-        #region IKeyQueryableMap<TValue> Members
-
-        public virtual Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(
+            Expression<Func<TValue, bool>> @where,
+            Expression<Func<TKey, TResult>> @select,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null &&
@@ -232,28 +244,30 @@ namespace Take.Elephant.Memory
             {
                 throw new NotImplementedException("The select parameter is not supported yet");
             }
-            var totalValues = InternalDictionary                
-                .Where(pair => where.Compile().Invoke(pair.Value));
-            var resultValues = totalValues
-                .Skip(skip)
-                .Take(take)
-                .Select(pair => pair.Key);
-
-            int totalCount = 0;
+            var totalValues = InternalDictionary
+                .Where(pair => KeyHasNotExpired(pair.Key) && where.Compile().Invoke(pair.Value));
+            
+            var totalCount = 0;
             if (FetchQueryResultTotal)
             {
                 totalCount = totalValues.Count();
             }
 
-            return Task.FromResult(
-                new QueryResult<TKey>(new AsyncEnumerableWrapper<TKey>(resultValues), totalCount));
+            var resultValues = totalValues
+                .Skip(skip)
+                .Take(take)
+                .Select(pair => pair.Key);
+
+            var queryResult = new QueryResult<TKey>(resultValues, totalCount);
+            return Task.FromResult(queryResult);
         }
 
-        #endregion
-
-        #region IQueryableStorage<TValue> Members
-
-        public virtual Task<QueryResult<TValue>> QueryAsync<TResult>(Expression<Func<TValue, bool>> @where, Expression<Func<TValue, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<TValue>> QueryAsync<TResult>(
+            Expression<Func<TValue, bool>> @where,
+            Expression<Func<TValue, TResult>> @select,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null && 
@@ -263,25 +277,31 @@ namespace Take.Elephant.Memory
             }
 
             var totalValues = InternalDictionary
-                .Where(pair => where.Compile().Invoke(pair.Value));
+                .Where(pair => KeyHasNotExpired(pair.Key) && where.Compile().Invoke(pair.Value));
+
+            var totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
+            
             var resultValues = totalValues
                 .Skip(skip)
                 .Take(take)
                 .Select(pair => pair.Value);
 
-            int totalCount = 0;
-            if (FetchQueryResultTotal)
-            {
-                totalCount = totalValues.Count();
-            }
-
-            return Task.FromResult(
-                new QueryResult<TValue>(new AsyncEnumerableWrapper<TValue>(resultValues), totalCount));
+            var queryResult = new QueryResult<TValue>(resultValues, totalCount);
+            return Task.FromResult(queryResult);
         }
 
-        #endregion
-
-        public virtual Task<QueryResult<TValue>> QueryAsync<TResult, TOrderBy>(Expression<Func<TValue, bool>> where, Expression<Func<TValue, TResult>> select, Expression<Func<TValue, TOrderBy>> orderBy, bool orderByAscending, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<TValue>> QueryAsync<TResult, TOrderBy>(
+            Expression<Func<TValue, bool>> where,
+            Expression<Func<TValue, TResult>> select,
+            Expression<Func<TValue, TOrderBy>> orderBy,
+            bool orderByAscending,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null &&
@@ -291,49 +311,36 @@ namespace Take.Elephant.Memory
             }
 
             var totalValues = InternalDictionary
-                .Values
+                .Where(pair => KeyHasNotExpired(pair.Key))
+                .Select(pair => pair.Value)
                 .Where(value => where.Compile().Invoke(value));
             var orderByFunc = orderBy.Compile();
-
-            IOrderedEnumerable<TValue> orderedTotalValues;
-            if (orderByAscending)
-            {
-                orderedTotalValues = totalValues.OrderBy(orderByFunc.Invoke);
-            }
-            else
-            {
-                orderedTotalValues = totalValues.OrderByDescending(orderByFunc.Invoke);
-            }
-
-            var resultValues = orderedTotalValues
-                .Skip(skip)
-                .Take(take)
-                .Select(value => value);
-
+            
             int totalCount = 0;
             if (FetchQueryResultTotal)
             {
                 totalCount = totalValues.Count();
             }
 
+            var orderedTotalValues = orderByAscending 
+                ? totalValues.OrderBy(orderByFunc.Invoke) 
+                : totalValues.OrderByDescending(orderByFunc.Invoke);
 
-            return Task.FromResult(
-                new QueryResult<TValue>(new AsyncEnumerableWrapper<TValue>(resultValues), totalCount));
+            var resultValues = orderedTotalValues
+                .Skip(skip)
+                .Take(take)
+                .Select(value => value);
+
+            var queryResult = new QueryResult<TValue>(resultValues, totalCount);
+            return Task.FromResult(queryResult);
         }
 
-        protected TValue GetOrCreateValue(TKey key)
-        {
-            TValue value;
-
-            if (!InternalDictionary.TryGetValue(key, out value))
-            {
-                value = ValueFactory();
-                InternalDictionary.TryAdd(key, value);
-            }
-            return value;
-        }
-
-        public virtual Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TValue>, bool>> @where, Expression<Func<KeyValuePair<TKey, TValue>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<KeyValuePair<TKey, TValue>>> QueryAsync<TResult>(
+            Expression<Func<KeyValuePair<TKey, TValue>, bool>> @where,
+            Expression<Func<KeyValuePair<TKey, TValue>, TResult>> @select,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null &&
@@ -342,21 +349,55 @@ namespace Take.Elephant.Memory
                 throw new NotImplementedException("The select parameter is not supported yet");
             }
             var totalValues = InternalDictionary
-                .Where(pair => where.Compile().Invoke(pair));
-            var resultValues = totalValues
-                .Skip(skip)
-                .Take(take);
+                .Where(pair => KeyHasNotExpired(pair.Key) && where.Compile().Invoke(pair));
 
             int totalCount = 0;
             if (FetchQueryResultTotal)
             {
                 totalCount = totalValues.Count();
             }
+            
+            var resultValues = totalValues
+                .Skip(skip)
+                .Take(take);
 
-            return Task.FromResult(
-                new QueryResult<KeyValuePair<TKey, TValue>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TValue>>(resultValues), totalCount));
+            var queryResult = new QueryResult<KeyValuePair<TKey, TValue>>(resultValues, totalCount);
+            return Task.FromResult(queryResult);
+        }
+
+        protected TValue GetOrCreateValue(TKey key)
+        {
+            if (TryGetValue(key, out var value))
+            {
+                return value;
+            }
+            
+            value = ValueFactory();
+            InternalDictionary[key] = value;
+            KeyExpirationDictionary.TryRemove(key, out _);
+            return value;
+        }
+
+        protected bool TryGetValue(TKey key, out TValue value)
+        {
+            if (InternalDictionary.TryGetValue(key, out var candidateValue) &&
+                !KeyHasExpired(key))
+            {
+                value = candidateValue;
+                return true;
+            }
+
+            value = default;
+            return false;
         }
 
 
+        private bool KeyHasNotExpired(TKey key) => !KeyHasExpired(key);
+        
+        private bool KeyHasExpired(TKey key)
+        {
+            return KeyExpirationDictionary.TryGetValue(key, out var expiration) && 
+                   expiration <= DateTimeOffset.UtcNow;
+        }
     }
 }
