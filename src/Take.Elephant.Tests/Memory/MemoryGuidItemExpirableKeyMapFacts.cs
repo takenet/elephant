@@ -1,4 +1,5 @@
 ﻿using System;
+using Nest;
 using Take.Elephant.Memory;
 using Xunit;
 
@@ -9,7 +10,7 @@ namespace Take.Elephant.Tests.Memory
     {
         public override IExpirableKeyMap<Guid, Item> Create()
         {
-            return new Map<Guid, Item>();
+            return new Map<Guid, Item>(TimeSpan.FromMilliseconds(1));
         }
     }
 }

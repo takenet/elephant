@@ -16,28 +16,33 @@ namespace Take.Elephant.Memory
     {
         private readonly IEqualityComparer<TItem> _valueEqualityComparer;
 
-        public SetMap()
-            : this(EqualityComparer<TItem>.Default)
+        public SetMap(TimeSpan expirationScanInterval = default)
+            : this(EqualityComparer<TItem>.Default, expirationScanInterval)
         {
         }
 
-        public SetMap(IEqualityComparer<TItem> valueEqualityComparer)
-            : base(() => new Set<TItem>(valueEqualityComparer))
+        public SetMap(IEqualityComparer<TItem> valueEqualityComparer, TimeSpan expirationScanInterval = default)
+            : base(() => new Set<TItem>(valueEqualityComparer), expirationScanInterval)
         {
             _valueEqualityComparer = valueEqualityComparer;
         }
 
-        public override async Task<bool> TryAddAsync(TKey key,
+        public override async Task<bool> TryAddAsync(
+            TKey key,
             ISet<TItem> value,
             bool overwrite = false,
             CancellationToken cancellationToken = default)
         {
-            var set = ValueFactory();
-            var enumerable = value.AsEnumerableAsync();
-            await enumerable.ForEachAsync(
-                async (i) => await set.AddAsync(i).ConfigureAwait(false), CancellationToken.None)
-            .ConfigureAwait(false);
-            return await base.TryAddAsync(key, set, overwrite).ConfigureAwait(false);
+            if (!(value is Set<TItem> set))
+            {
+                set = new Set<TItem>();
+                await value
+                    .AsEnumerableAsync(cancellationToken)
+                    .ForEachAwaitAsync(i => set.AddAsync(i, cancellationToken), cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
+            return await base.TryAddAsync(key, set, overwrite, cancellationToken).ConfigureAwait(false);
         }
 
         public virtual async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem item)
@@ -46,17 +51,23 @@ namespace Take.Elephant.Memory
             if (items != null)
             {
                 return await items
-                        .AsEnumerableAsync()
-                        .FirstOrDefaultAsync(i => _valueEqualityComparer.Equals(i, item)).ConfigureAwait(false);
+                    .AsEnumerableAsync()
+                    .FirstOrDefaultAsync(i => _valueEqualityComparer.Equals(i, item))
+                    .ConfigureAwait(false);
             }
 
-            return default(TItem);
+            return default;
         }
 
-        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
-            => InternalDictionary.GetOrAdd(key, k => ValueFactory()).AsCompletedTask();
+        public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default) => 
+            Task.FromResult(InternalDictionary.GetOrAdd(key, k => ValueFactory()));
 
-        public virtual Task<QueryResult<TItem>> QueryAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TItem, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
+        public virtual Task<QueryResult<TItem>> QueryAsync<TResult>(
+            Expression<Func<TItem, bool>> @where,
+            Expression<Func<TItem, TResult>> @select,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
             if (select != null &&
@@ -64,26 +75,26 @@ namespace Take.Elephant.Memory
             {
                 throw new NotImplementedException("The select parameter is not supported yet");
             }
+            
             var totalValues = InternalDictionary
                 .Values
-                .Select(v => v.ToListAsync().Result)
+                .Select(v => ((Set<TItem>)v).HashSet)
                 .SelectMany(v => v)
                 .Where(where.Compile());
+            
+            var totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
 
             var resultValues = totalValues
                 .Skip(skip)
                 .Take(take)
                 .Select(pair => pair);
 
-            int totalCount = 0;
-            if (FetchQueryResultTotal)
-            {
-                totalCount = totalValues.Count();
-            }
-
-
-            return Task.FromResult(
-                new QueryResult<TItem>(new AsyncEnumerableWrapper<TItem>(resultValues), totalCount));
+            var queryResult = new QueryResult<TItem>(resultValues, totalCount);
+            return Task.FromResult(queryResult);
         }
 
         public virtual Task<QueryResult<KeyValuePair<TKey, TItem>>> QueryAsync<TResult>(Expression<Func<KeyValuePair<TKey, TItem>, bool>> @where, Expression<Func<KeyValuePair<TKey, TItem>, TResult>> @select, int skip, int take, CancellationToken cancellationToken)
@@ -100,18 +111,19 @@ namespace Take.Elephant.Memory
                     .ToListAsync().Result
                     .Select(i => new KeyValuePair<TKey, TItem>(v.Key, i)))
                 .Where(pair => where.Compile().Invoke(pair));
-            var resultValues = totalValues
-                .Skip(skip)
-                .Take(take);
-
-            int totalCount = 0;
+            
+            var totalCount = 0;
             if (FetchQueryResultTotal)
             {
                 totalCount = totalValues.Count();
             }
 
-            return Task.FromResult(
-                new QueryResult<KeyValuePair<TKey, TItem>>(new AsyncEnumerableWrapper<KeyValuePair<TKey, TItem>>(resultValues), totalCount));
+            var resultValues = totalValues
+                .Skip(skip)
+                .Take(take);
+
+            var queryResult = new QueryResult<KeyValuePair<TKey, TItem>>(resultValues, totalCount);
+            return Task.FromResult(queryResult);
         }
 
         public virtual Task<QueryResult<TKey>> QueryForKeysAsync<TResult>(Expression<Func<TItem, bool>> @where, Expression<Func<TKey, TResult>> @select, int skip, int take,
@@ -129,21 +141,20 @@ namespace Take.Elephant.Memory
                 .Where(pair =>
                     pair.Value.ToListAsync().Result.Any(m =>
                         predicate.Invoke(m)));
+            
+            var totalCount = 0;
+            if (FetchQueryResultTotal)
+            {
+                totalCount = totalValues.Count();
+            }
 
             var resultValues = totalValues
                 .Skip(skip)
                 .Take(take)
                 .Select(pair => pair.Key);
 
-            int totalCount = 0;
-            if (FetchQueryResultTotal)
-            {
-                totalCount = totalValues.Count();
-            }
-
-
-            return Task.FromResult(
-                new QueryResult<TKey>(new AsyncEnumerableWrapper<TKey>(resultValues), totalCount));
+            var queryResult = new QueryResult<TKey>(resultValues, totalCount);
+            return Task.FromResult(queryResult);
         }
     }
 }
