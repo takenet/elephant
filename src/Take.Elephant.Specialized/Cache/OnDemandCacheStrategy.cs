@@ -16,8 +16,8 @@ namespace Take.Elephant.Specialized.Cache
 
         public OnDemandCacheStrategy(T source, T cache)
         {
-            Source = source;
-            Cache = cache;
+            Source = source ?? throw new ArgumentNullException(nameof(source));
+            Cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public virtual Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> queryFunc, Func<TResult, T, Task<bool>> writeFunc)

@@ -7,8 +7,8 @@ namespace Take.Elephant.Specialized.Cache
 {
     public class OnDemandCacheSetMap<TKey, TValue> : OnDemandCacheMap<TKey, ISet<TValue>>, ISetMap<TKey, TValue>
     {
-        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, TimeSpan cacheExpiration = default(TimeSpan))
-            : base(source, cache, cacheExpiration)
+        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, TimeSpan cacheExpiration = default, TimeSpan cacheFaultTolerance = default)
+            : base(source, cache, cacheExpiration, cacheFaultTolerance)
         {
         }
 
