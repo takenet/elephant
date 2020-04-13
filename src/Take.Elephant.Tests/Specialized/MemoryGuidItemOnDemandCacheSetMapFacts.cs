@@ -23,4 +23,5 @@ namespace Take.Elephant.Tests.Specialized
             return set;
         }
     }
+
 }

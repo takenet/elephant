@@ -36,7 +36,7 @@ namespace Take.Elephant.Tests
         }
 
         [Fact(DisplayName = "SetPropertyOfExistingKeySucceeds")]
-        public async Task SetPropertyOfExistingKeySucceeds()
+        public virtual async Task SetPropertyOfExistingKeySucceeds()
         {
             // Arrange
             var map = Create();

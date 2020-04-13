@@ -17,7 +17,7 @@ namespace Take.Elephant.Tests.Specialized
             return Create(CreateSource(), CreateCache(), TimeSpan.FromMinutes(30));
         }
 
-        public virtual IMap<TKey, TValue> Create(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, TimeSpan cacheExpiration = default(TimeSpan))
+        public virtual OnDemandCacheMap<TKey, TValue> Create(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, TimeSpan cacheExpiration = default)
         {
             return new OnDemandCacheMap<TKey, TValue>(source, cache, cacheExpiration);
         }
@@ -152,7 +152,6 @@ namespace Take.Elephant.Tests.Specialized
             AssertIsFalse(await cache.ContainsKeyAsync(key2));
         }
 
-
         [Fact(DisplayName = nameof(QueryingIfItemExistsShouldAddItToCache))]
         public virtual async Task QueryingIfItemExistsShouldAddItToCache()
         {
@@ -180,10 +179,9 @@ namespace Take.Elephant.Tests.Specialized
             AssertEquals(await cache.GetValueOrDefaultAsync(key1), value1);
             AssertEquals(await cache.GetValueOrDefaultAsync(key2), value2);
         }
-
-
-        [Fact(DisplayName = nameof(AddWithExpirationShouldExpiresInCache))]
-        public virtual async Task AddWithExpirationShouldExpiresInCache()
+        
+        [Fact(DisplayName = nameof(AddingWithExpirationShouldExpiresInCache))]
+        public virtual async Task AddingWithExpirationShouldExpiresInCache()
         {
             // Arrange
             var expiration = TimeSpan.FromMilliseconds(500);

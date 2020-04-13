@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant.Specialized.Cache
 {
-    public class OnDemandCacheMap<TKey, TValue> : OnDemandCacheStrategy<IMap<TKey, TValue>>, IMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
+    public class OnDemandCacheMap<TKey, TValue> : OnDemandCacheStrategy<IMap<TKey, TValue>>, IPropertyMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
     {
         protected readonly TimeSpan CacheExpiration;
         protected readonly TimeSpan CacheFaultTolerance;
+        private readonly bool _implementsPropertyMap;
 
         public OnDemandCacheMap(
             IMap<TKey, TValue> source,
@@ -23,21 +24,23 @@ namespace Take.Elephant.Specialized.Cache
 
             CacheExpiration = cacheExpiration;
             CacheFaultTolerance = cacheFaultTolerance;
+            _implementsPropertyMap = Source is IPropertyMap<TKey, TValue> && 
+                                     Cache is IPropertyMap<TKey, TValue>;
         }
 
         public virtual Task<bool> TryAddAsync(TKey key,
             TValue value,
             bool overwrite = false,
-            CancellationToken cancellationToken = default)
-            => ExecuteWriteFunc(map => TryAddToMapAsync(key, value, overwrite, map));
+            CancellationToken cancellationToken = default) => 
+            ExecuteWriteFunc(map => TryAddWithExpirationAsync(key, value, overwrite, map));
 
-        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default) 
-            => ExecuteQueryFunc(
-                map => map.GetValueOrDefaultAsync(key),
-                (result, m) => TryAddToMapAsync(key, result, true, m));
+        public virtual Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default) => 
+            ExecuteQueryFunc(
+                map => map.GetValueOrDefaultAsync(key, cancellationToken),
+                (result, m) => TryAddWithExpirationAsync(key, result, true, m));
 
-        public virtual Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default) 
-            => ExecuteWriteFunc(map => map.TryRemoveAsync(key));
+        public virtual Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default) => 
+            ExecuteWriteFunc(map => map.TryRemoveAsync(key, cancellationToken));
 
         public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
@@ -48,31 +51,53 @@ namespace Take.Elephant.Specialized.Cache
                     // If exists in the source and not in the cache
                     if (result)
                     {
-                        var value = await Source.GetValueOrDefaultAsync(key).ConfigureAwait(false);
+                        var value = await Source.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
                         if (!IsDefaultValueOfType(value))
                         {
-                            return await TryAddToMapAsync(key, value, true, map).ConfigureAwait(false);
+                            return await TryAddWithExpirationAsync(key, value, true, map).ConfigureAwait(false);
                         }
                     }
                     return true;
                 });
         }
 
-        private async Task<bool> TryAddToMapAsync(TKey key, TValue value, bool overwrite, IMap<TKey, TValue> map)
+        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
         {
-            var added = await map.TryAddAsync(key, value, overwrite).ConfigureAwait(false);
-            if (added
-                && map == Cache
-                && CacheExpiration != default(TimeSpan)
-                && map is IExpirableKeyMap<TKey, TValue> expirableMap)
+            if (!_implementsPropertyMap)
             {
-                await expirableMap.SetRelativeKeyExpirationAsync(key, CacheExpiration).ConfigureAwait(false);
+                return Task.FromException(
+                    new NotSupportedException("Either the source or cache map doesn't implement IPropertyMap"));
             }
-
-            return added;
+            
+            return ExecuteWriteFunc(map => ((IPropertyMap<TKey, TValue>)map).SetPropertyValueAsync(key, propertyName, propertyValue));
         }
 
-        public async Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
+        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        {
+            if (!_implementsPropertyMap)
+            {
+                return Task.FromException<TProperty>(
+                    new NotSupportedException("Either the source or cache map doesn't implement IPropertyMap"));
+            }
+            
+            return ExecuteQueryFunc(map =>
+                    ((IPropertyMap<TKey, TValue>)map).GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName),
+                (propertyValue, map) =>
+                    ((IPropertyMap<TKey, TValue>)map).SetPropertyValueAsync(key, propertyName, propertyValue));
+        }
+
+        public virtual Task MergeAsync(TKey key, TValue value)
+        {
+            if (!_implementsPropertyMap)
+            {
+                return Task.FromException(
+                    new NotSupportedException("Either the source or cache map doesn't implement IPropertyMap"));
+            }
+            
+            return ExecuteWriteFunc(map => ((IPropertyMap<TKey, TValue>)map).MergeAsync(key, value));
+        }
+
+        public virtual async Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
             if (!(Source is IExpirableKeyMap<TKey, TValue> expirableSource))
             {
@@ -92,7 +117,7 @@ namespace Take.Elephant.Specialized.Cache
             }
         }
 
-        public async Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
+        public virtual async Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
             if (!(Source is IExpirableKeyMap<TKey, TValue> expirableSource))
             {
@@ -110,6 +135,20 @@ namespace Take.Elephant.Specialized.Cache
             {
                 await expirableCache.SetAbsoluteKeyExpirationAsync(key, expiration.Add(CacheFaultTolerance));
             }
+        }
+        
+        private async Task<bool> TryAddWithExpirationAsync(TKey key, TValue value, bool overwrite, IMap<TKey, TValue> map)
+        {
+            var added = await map.TryAddAsync(key, value, overwrite).ConfigureAwait(false);
+            if (added && 
+                map == Cache && 
+                CacheExpiration != default && 
+                map is IExpirableKeyMap<TKey, TValue> expirableMap)
+            {
+                await expirableMap.SetRelativeKeyExpirationAsync(key, CacheExpiration).ConfigureAwait(false);
+            }
+
+            return added;
         }
     }
 }

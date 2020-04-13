@@ -12,8 +12,7 @@ namespace Take.Elephant.Specialized.Cache
         {
         }
 
-        public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key,
-            CancellationToken cancellationToken = default)
+        public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var cacheValue = await Cache.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
             if (cacheValue != null)
@@ -52,7 +51,7 @@ namespace Take.Elephant.Specialized.Cache
         private ISet<TValue> GetKeyExpirationCacheSet(TKey key, ISet<TValue> cacheSet)
         {
             // Provides a set that calls a function to expires the key when a value is added
-            if (CacheExpiration != default(TimeSpan) && Cache is IExpirableKeyMap<TKey, ISet<TValue>> expirableMap)
+            if (CacheExpiration != default && Cache is IExpirableKeyMap<TKey, ISet<TValue>> expirableMap)
             {
                 return new TriggeredSet<TValue>(cacheSet, i => expirableMap.SetRelativeKeyExpirationAsync(key, CacheExpiration));                
             }
@@ -77,13 +76,13 @@ namespace Take.Elephant.Specialized.Cache
                 await _addTrigger(value).ConfigureAwait(false);
             }
 
-            public IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default) => _set.AsEnumerableAsync();
+            public IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default) => _set.AsEnumerableAsync(cancellationToken);
 
-            public Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default) => _set.ContainsAsync(value);
+            public Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default) => _set.ContainsAsync(value, cancellationToken);
 
-            public Task<long> GetLengthAsync(CancellationToken cancellationToken = default) => _set.GetLengthAsync();
+            public Task<long> GetLengthAsync(CancellationToken cancellationToken = default) => _set.GetLengthAsync(cancellationToken);
 
-            public Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default) => _set.TryRemoveAsync(value);
+            public Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default) => _set.TryRemoveAsync(value, cancellationToken);
         }
 
         private sealed class LazySet<T> : ISet<T>
