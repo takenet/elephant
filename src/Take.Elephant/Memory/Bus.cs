@@ -13,16 +13,27 @@ namespace Take.Elephant.Memory
     /// <typeparam name="TMessage"></typeparam>
     public class Bus<TChannel, TMessage> : IBus<TChannel, TMessage>
     {
-        public readonly ConcurrentDictionary<TChannel, ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>> _channelHandlerDictionary;
+        private readonly string _busName;
+        private static readonly ConcurrentDictionary<string, ConcurrentDictionary<TChannel, ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>>> _busChannelHandlerDictionary;
 
-        public Bus()
+        static Bus()
         {
-            _channelHandlerDictionary = new ConcurrentDictionary<TChannel, ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>>();
+            _busChannelHandlerDictionary = new ConcurrentDictionary<string, ConcurrentDictionary<TChannel, ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>>>();
         }
+        
+        public Bus(string busName = "default")
+        {
+            _busName = busName ?? throw new ArgumentNullException(nameof(busName));
+        }
+
+        private ConcurrentDictionary<TChannel, ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>> ChannelHandlerDictionary =>
+            _busChannelHandlerDictionary.GetOrAdd(
+                _busName, 
+                _ => new ConcurrentDictionary<TChannel, ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>>());
 
         public virtual Task SubscribeAsync(TChannel channel, Func<TChannel, TMessage, CancellationToken, Task> handler, CancellationToken cancellationToken)
         {
-            _channelHandlerDictionary.AddOrUpdate(
+            ChannelHandlerDictionary.AddOrUpdate(
                 channel,
                 new ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>()
                 {
@@ -39,13 +50,13 @@ namespace Take.Elephant.Memory
 
         public virtual Task UnsubscribeAsync(TChannel channel, CancellationToken cancellationToken)
         {
-            _channelHandlerDictionary.TryRemove(channel, out _);
+            ChannelHandlerDictionary.TryRemove(channel, out _);
             return Task.CompletedTask;
         }
 
         public virtual async Task PublishAsync(TChannel channel, TMessage message, CancellationToken cancellationToken)
         {
-            if (!_channelHandlerDictionary.TryGetValue(channel, out var handlers)) return;
+            if (!ChannelHandlerDictionary.TryGetValue(channel, out var handlers)) return;
 
             await Task.WhenAll(handlers.Select(h => h(channel, message, cancellationToken)));
         }
