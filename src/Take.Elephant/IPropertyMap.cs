@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Take.Elephant
 {
@@ -18,8 +19,9 @@ namespace Take.Elephant
         /// <param name="key"></param>
         /// <param name="propertyName"></param>
         /// <param name="propertyValue"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue);
+        Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a property value for the item in the specific key. 
@@ -28,8 +30,9 @@ namespace Take.Elephant
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="key"></param>
         /// <param name="propertyName"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName);
+        Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Merge the properties of the map item.
@@ -38,7 +41,8 @@ namespace Take.Elephant
         /// </summary>
         /// <param name="key">The map item key.</param>
         /// <param name="value">The partial or complete item value.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task MergeAsync(TKey key, TValue value);
+        Task MergeAsync(TKey key, TValue value, CancellationToken cancellationToken = default);
     }
 }

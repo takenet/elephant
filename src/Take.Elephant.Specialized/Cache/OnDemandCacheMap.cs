@@ -61,7 +61,8 @@ namespace Take.Elephant.Specialized.Cache
                 });
         }
 
-        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
+        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue,
+            CancellationToken cancellationToken = default)
         {
             if (!_implementsPropertyMap)
             {
@@ -69,10 +70,11 @@ namespace Take.Elephant.Specialized.Cache
                     new NotSupportedException("Either the source or cache map doesn't implement IPropertyMap"));
             }
             
-            return ExecuteWriteFunc(map => ((IPropertyMap<TKey, TValue>)map).SetPropertyValueAsync(key, propertyName, propertyValue));
+            return ExecuteWriteFunc(map => ((IPropertyMap<TKey, TValue>)map).SetPropertyValueAsync(key, propertyName, propertyValue, cancellationToken));
         }
 
-        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName,
+            CancellationToken cancellationToken = default)
         {
             if (!_implementsPropertyMap)
             {
@@ -81,12 +83,12 @@ namespace Take.Elephant.Specialized.Cache
             }
             
             return ExecuteQueryFunc(map =>
-                    ((IPropertyMap<TKey, TValue>)map).GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName),
+                    ((IPropertyMap<TKey, TValue>)map).GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName, cancellationToken),
                 (propertyValue, map) =>
-                    ((IPropertyMap<TKey, TValue>)map).SetPropertyValueAsync(key, propertyName, propertyValue));
+                    ((IPropertyMap<TKey, TValue>)map).SetPropertyValueAsync(key, propertyName, propertyValue, cancellationToken));
         }
 
-        public virtual Task MergeAsync(TKey key, TValue value)
+        public virtual Task MergeAsync(TKey key, TValue value, CancellationToken cancellationToken = default)
         {
             if (!_implementsPropertyMap)
             {
@@ -94,7 +96,7 @@ namespace Take.Elephant.Specialized.Cache
                     new NotSupportedException("Either the source or cache map doesn't implement IPropertyMap"));
             }
             
-            return ExecuteWriteFunc(map => ((IPropertyMap<TKey, TValue>)map).MergeAsync(key, value));
+            return ExecuteWriteFunc(map => ((IPropertyMap<TKey, TValue>)map).MergeAsync(key, value, cancellationToken));
         }
 
         public virtual async Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)

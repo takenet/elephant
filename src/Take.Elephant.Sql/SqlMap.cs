@@ -100,7 +100,8 @@ namespace Take.Elephant.Sql
                 new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns), KeyMapper, selectColumns));
         }
 
-        public virtual async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
+        public virtual async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName,
+            TProperty propertyValue, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));           
@@ -124,7 +125,7 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task MergeAsync(TKey key, TValue value)
+        public virtual async Task MergeAsync(TKey key, TValue value, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -150,7 +151,8 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        public virtual async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName,
+            CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));

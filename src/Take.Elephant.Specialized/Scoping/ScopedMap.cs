@@ -49,15 +49,17 @@ namespace Take.Elephant.Specialized.Scoping
         public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default) => 
             Map.ContainsKeyAsync(key);
 
-        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue) => 
-            CastMapOrThrow<IPropertyMap<TKey, TValue>>().SetPropertyValueAsync(key, propertyName, propertyValue);
+        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue,
+            CancellationToken cancellationToken = default) => 
+            CastMapOrThrow<IPropertyMap<TKey, TValue>>().SetPropertyValueAsync(key, propertyName, propertyValue, cancellationToken);
 
-        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName) => 
-            CastMapOrThrow<IPropertyMap<TKey, TValue>>().GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName);
+        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName,
+            CancellationToken cancellationToken = default) => 
+            CastMapOrThrow<IPropertyMap<TKey, TValue>>().GetPropertyValueOrDefaultAsync<TProperty>(key, propertyName, cancellationToken);
 
-        public virtual async Task MergeAsync(TKey key, TValue value)
+        public virtual async Task MergeAsync(TKey key, TValue value, CancellationToken cancellationToken = default)
         {
-            await CastMapOrThrow<IPropertyMap<TKey, TValue>>().MergeAsync(key, value).ConfigureAwait(false);
+            await CastMapOrThrow<IPropertyMap<TKey, TValue>>().MergeAsync(key, value, cancellationToken).ConfigureAwait(false);
             await Scope.AddKeyAsync(Identifier, KeySerializer.Serialize(key)).ConfigureAwait(false);
         }
 

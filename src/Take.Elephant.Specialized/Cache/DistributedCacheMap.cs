@@ -60,20 +60,21 @@ namespace Take.Elephant.Specialized.Cache
             return false;
         }
 
-        public override async Task MergeAsync(TKey key, TValue value)
+        public override async Task MergeAsync(TKey key, TValue value, CancellationToken cancellationToken = default)
         {
-            await EnsureSubscribedAsync();
+            await EnsureSubscribedAsync(cancellationToken);
             
-            await base.MergeAsync(key, value);
-            await PublishEventAsync(key);
+            await base.MergeAsync(key, value, cancellationToken);
+            await PublishEventAsync(key, cancellationToken);
         }
 
-        public override async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
+        public override async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName,
+            TProperty propertyValue, CancellationToken cancellationToken = default)
         {
-            await EnsureSubscribedAsync();
+            await EnsureSubscribedAsync(cancellationToken);
             
-            await base.SetPropertyValueAsync(key, propertyName, propertyValue);
-            await PublishEventAsync(key);
+            await base.SetPropertyValueAsync(key, propertyName, propertyValue, cancellationToken);
+            await PublishEventAsync(key, cancellationToken);
         }
         
         private async Task EnsureSubscribedAsync(CancellationToken cancellationToken = default)

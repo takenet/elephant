@@ -163,7 +163,7 @@ namespace Take.Elephant.Memory
             return Task.CompletedTask;
         }
 
-        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
+        public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             TValue value = GetOrCreateValue(key);
@@ -177,7 +177,8 @@ namespace Take.Elephant.Memory
             return Task.FromResult<object>(null);
         }
 
-        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        public virtual Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName,
+            CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             TValue value;
@@ -194,7 +195,7 @@ namespace Take.Elephant.Memory
             return Task.FromResult(propertyValue);
         }
 
-        public virtual Task MergeAsync(TKey key, TValue value)
+        public virtual Task MergeAsync(TKey key, TValue value, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));

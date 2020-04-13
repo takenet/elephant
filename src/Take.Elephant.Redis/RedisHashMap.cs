@@ -82,7 +82,7 @@ namespace Take.Elephant.Redis
 
         #region IPropertyMap<TKey,TValue> Members
 
-        public virtual async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue)
+        public virtual async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
@@ -94,7 +94,7 @@ namespace Take.Elephant.Redis
             await database.HashSetAsync(GetRedisKey(key), propertyName, propertyValue.ToRedisValue(), When.Always, WriteFlags);
         }
 
-        public virtual Task MergeAsync(TKey key, TValue value)
+        public virtual Task MergeAsync(TKey key, TValue value, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -111,7 +111,8 @@ namespace Take.Elephant.Redis
                 TaskUtil.CompletedTask;
         }
 
-        public virtual async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName)
+        public virtual async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName,
+            CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
