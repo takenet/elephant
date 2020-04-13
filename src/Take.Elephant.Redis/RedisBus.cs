@@ -15,6 +15,7 @@ namespace Take.Elephant.Redis
     /// <typeparam name="TValue"></typeparam>
     public class RedisBus<TKey, TValue> : StorageBase<TKey>, IBus<TKey, TValue>
     {
+        private readonly string _channelNamePrefix;
         private readonly ISerializer<TValue> _serializer;
         private readonly TimeSpan _handlerTimeout;
 
@@ -41,6 +42,7 @@ namespace Take.Elephant.Redis
             CommandFlags writeFlags = CommandFlags.None)
             : base(channelNamePrefix, connectionMultiplexer, db, readFlags, writeFlags)
         {
+            _channelNamePrefix = channelNamePrefix;
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _handlerTimeout = handlerTimeout == default 
                 ? TimeSpan.FromSeconds(60) :
@@ -87,8 +89,13 @@ namespace Take.Elephant.Redis
             return GetSubscriber().PublishAsync(GetRedisChannel(channel), _serializer.Serialize(message));
         }
 
-        protected virtual string GetRedisChannel(TKey channel) => GetRedisKey(channel);
+        protected virtual string GetRedisChannel(TKey channel) => $"{_channelNamePrefix}:{KeyToString(channel)}";
 
-        protected virtual TKey GetChannelFromString(string value) => GetKeyFromString(value);
+        protected virtual TKey GetChannelFromString(string value)
+        {
+            // Trim the channel name prefix
+            var keyWithoutPrefix = value.Substring(_channelNamePrefix.Length + 1, value.Length - _channelNamePrefix.Length - 1);
+            return GetKeyFromString(keyWithoutPrefix);
+        }
     }
 }
