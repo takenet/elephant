@@ -17,7 +17,7 @@ namespace Take.Elephant.Redis
             int db = 0,
             CommandFlags readFlags = CommandFlags.None,
             CommandFlags writeFlags = CommandFlags.None)
-            : this(queueName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags)
+            : this(queueName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, true)
         {
         }
 
@@ -27,8 +27,9 @@ namespace Take.Elephant.Redis
             ISerializer<T> serializer,
             int db = 0,
             CommandFlags readFlags = CommandFlags.None,
-            CommandFlags writeFlags = CommandFlags.None)
-            : base(queueName, connectionMultiplexer, db, readFlags, writeFlags)
+            CommandFlags writeFlags = CommandFlags.None,
+            bool disposeMultiplexer = false)
+            : base(queueName, connectionMultiplexer, db, readFlags, writeFlags, disposeMultiplexer)
         {
             _serializer = serializer;
             _semaphore = new SemaphoreSlim(1);

@@ -17,11 +17,11 @@ namespace Take.Elephant.Redis
         private readonly bool _useScanOnEnumeration;
 
         public RedisSet(string setName, string configuration, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
-            : this(setName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, useScanOnEnumeration)
+            : this(setName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, useScanOnEnumeration, true)
         { }
 
-        public RedisSet(string setName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
-            : base(setName, connectionMultiplexer, db, readFlags, writeFlags)
+        public RedisSet(string setName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true, bool disposeMultiplexer = false)
+            : base(setName, connectionMultiplexer, db, readFlags, writeFlags, disposeMultiplexer)
         {
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             _serializer = serializer;

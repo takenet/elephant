@@ -27,7 +27,7 @@ namespace Take.Elephant.Redis
             int db = 0,
             CommandFlags readFlags = CommandFlags.None,
             CommandFlags writeFlags = CommandFlags.None)
-            : this(channelNamePrefix, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, handlerTimeout, db, readFlags, writeFlags)
+            : this(channelNamePrefix, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, handlerTimeout, db, readFlags, writeFlags, true)
         {
 
         }
@@ -39,8 +39,9 @@ namespace Take.Elephant.Redis
             TimeSpan handlerTimeout = default,
             int db = 0,
             CommandFlags readFlags = CommandFlags.None,
-            CommandFlags writeFlags = CommandFlags.None)
-            : base(channelNamePrefix, connectionMultiplexer, db, readFlags, writeFlags)
+            CommandFlags writeFlags = CommandFlags.None,
+            bool disposeMultiplexer = false)
+            : base(channelNamePrefix, connectionMultiplexer, db, readFlags, writeFlags, disposeMultiplexer)
         {
             _channelNamePrefix = channelNamePrefix;
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));

@@ -11,12 +11,15 @@ namespace Take.Elephant.Redis
         protected readonly CommandFlags ReadFlags;
         protected readonly CommandFlags WriteFlags;
 
+        private readonly bool _disposeMultiplexer;
+
         public StorageBase(string name, string configuration, int db, CommandFlags readFlags, CommandFlags writeFlags)
-            : this(name, StackExchange.Redis.ConnectionMultiplexer.Connect(ConfigurationOptions.Parse(configuration)), db, readFlags, writeFlags)
+            : this(name, StackExchange.Redis.ConnectionMultiplexer.Connect(ConfigurationOptions.Parse(configuration)), db, readFlags, writeFlags, true)
         {
+            
         }
 
-        protected StorageBase(string name, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags)
+        protected StorageBase(string name, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags, bool disposeMultiplexer = false)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             ConnectionMultiplexer = connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
@@ -24,6 +27,7 @@ namespace Take.Elephant.Redis
             Db = db;
             ReadFlags = readFlags;
             WriteFlags = writeFlags;
+            _disposeMultiplexer = disposeMultiplexer;
         }
 
         ~StorageBase()
@@ -55,7 +59,10 @@ namespace Take.Elephant.Redis
         {
             if (disposing)
             {
-                ConnectionMultiplexer.Dispose();
+                if (_disposeMultiplexer)
+                {
+                    ConnectionMultiplexer.Dispose();
+                }
             }
         }
 
