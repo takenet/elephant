@@ -2,12 +2,15 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Memory;
+using Take.Elephant.Specialized.NotifyWrite;
 
 namespace Take.Elephant.Specialized.Cache
 {
-    public class DistributedCacheSetMap<TKey, TValue> : ISetMap<TKey, TValue>
+    public class DistributedCacheSetMap<TKey, TValue> : ISetMap<TKey, TValue>, IAsyncDisposable, IDisposable
     {
-        private readonly DistributedCacheMap<TKey, ISet<TValue>> _map;
+        private readonly ISetMap<TKey, TValue> _underlyingSetMap;
+        private readonly DistributedCacheStrategy<TKey, ISet<TValue>> _strategy;
+
         public DistributedCacheSetMap(
             ISetMap<TKey, TValue> source, 
             IBus<string, SynchronizationEvent<TKey>> synchronizationBus, 
@@ -15,41 +18,41 @@ namespace Take.Elephant.Specialized.Cache
             TimeSpan cacheExpiration = default, 
             TimeSpan cacheFaultTolerance = default)
         {
-            _map = new DistributedCacheMap<TKey, ISet<TValue>>(
-                () => new SetMap<TKey, TValue>(), 
-                (m, c, e, t) => new OnDemandCacheSetMap<TKey, TValue>((ISetMap<TKey, TValue>)m, (SetMap<TKey, TValue>)c, e, t),
-                source, 
-                synchronizationBus, 
-                synchronizationChannel, 
-                cacheExpiration, 
-                cacheFaultTolerance);
+            var memoryCache = new SetMap<TKey, TValue>();
+            var onDemandCacheMap = new OnDemandCacheSetMap<TKey, TValue>(source, memoryCache, cacheExpiration, cacheFaultTolerance);
+            _strategy = new DistributedCacheStrategy<TKey, ISet<TValue>>(memoryCache, synchronizationBus, synchronizationChannel);
+            _underlyingSetMap = new NotifyWriteSetMap<TKey, TValue>(onDemandCacheMap, _strategy.PublishEventAsync);
         }
-        
-        public virtual Task<bool> TryAddAsync(TKey key, ISet<TValue> value, bool overwrite = false, CancellationToken cancellationToken = default) => 
-            _map.TryAddAsync(key, value, overwrite, cancellationToken);
 
-        public virtual Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default) => 
-            _map.TryRemoveAsync(key, cancellationToken);
+        public Task<bool> TryAddAsync(TKey key, ISet<TValue> value, bool overwrite = false, CancellationToken cancellationToken = default) => 
+            _underlyingSetMap.TryAddAsync(key, value, overwrite, cancellationToken);
 
-        public virtual Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default) => 
-            _map.ContainsKeyAsync(key, cancellationToken);
+        public Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default) => 
+            _underlyingSetMap.GetValueOrDefaultAsync(key, cancellationToken);
 
-        public virtual async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
+        public Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default) => 
+            _underlyingSetMap.TryRemoveAsync(key, cancellationToken);
+
+        public Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default) => 
+            _underlyingSetMap.ContainsKeyAsync(key, cancellationToken);
+
+        public Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default) => 
+            _underlyingSetMap.GetValueOrEmptyAsync(key, cancellationToken);
+
+        public virtual ValueTask DisposeAsync() => _strategy.DisposeAsync();
+
+        public void Dispose()
         {
-            var set = await _map.GetValueOrDefaultAsync(key, cancellationToken);
-            if (set != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                
+                DisposeAsync().GetAwaiter().GetResult();
             }
-
-            return set;
-        }
-
-        public async Task<ISet<TValue>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
-        {
-            var set = await ((OnDemandCacheSetMap<TKey, TValue>)_map.OnDemandCacheMap).GetValueOrEmptyAsync(key, cancellationToken);
-
-            return set;
         }
     }
 }
