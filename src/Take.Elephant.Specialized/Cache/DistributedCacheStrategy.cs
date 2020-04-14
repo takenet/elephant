@@ -48,7 +48,7 @@ namespace Take.Elephant.Specialized.Cache
             await _cache.TryRemoveAsync(@event.Key, cancellationToken);
         }
 
-        private async Task EnsureSubscribedAsync(CancellationToken cancellationToken = default)
+        private async Task EnsureSubscribedAsync(CancellationToken cancellationToken)
         {
             if (!_subscriptionTask.IsCompleted)
             {
