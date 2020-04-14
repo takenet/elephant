@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Take.Elephant.Tests.Specialized
 {
-    public abstract class DistributedCacheMapFacts<TKey, TValue> : MapFacts<TKey, TValue>
+    public abstract class DistributedCacheMapFacts<TKey, TValue> : MapFacts<TKey, TValue> where TValue : class
     {
         public override IMap<TKey, TValue> Create()
         {
@@ -16,7 +16,7 @@ namespace Take.Elephant.Tests.Specialized
             return Create(source, synchronizationBus, synchronizationChannel);
         }
 
-        public DistributedCacheMap<TKey, TValue> Create(IMap<TKey, TValue> source, IBus<string, SynchronizationEvent<TKey>> synchronizationBus, string synchronizationChannel)
+        public virtual IMap<TKey, TValue> Create(IMap<TKey, TValue> source, IBus<string, SynchronizationEvent<TKey>> synchronizationBus, string synchronizationChannel)
         {
             return new DistributedCacheMap<TKey, TValue>(source, synchronizationBus, synchronizationChannel);
         }
@@ -52,9 +52,9 @@ namespace Take.Elephant.Tests.Specialized
             var actual1 = await target1.GetValueOrDefaultAsync(key);
             var actual2 = await target2.GetValueOrDefaultAsync(key);
             var actual3 = await target3.GetValueOrDefaultAsync(key);
-            actual1.ShouldBe(value3);
-            actual2.ShouldBe(value3);
-            actual3.ShouldBe(value3);
+            AssertEquals(actual1, value3);
+            AssertEquals(actual2, value3);
+            AssertEquals(actual3, value3);
         }
         
         [Fact(DisplayName = nameof(AddShouldRetrieveFromCache))]
@@ -86,9 +86,9 @@ namespace Take.Elephant.Tests.Specialized
             var actual1 = await target1.GetValueOrDefaultAsync(key);
             var actual2 = await target2.GetValueOrDefaultAsync(key);
             var actual3 = await target3.GetValueOrDefaultAsync(key);
-            actual1.ShouldBe(value3);
-            actual2.ShouldBe(value3);
-            actual3.ShouldBe(value3);
+            AssertEquals(actual1, value3);
+            AssertEquals(actual2, value3);
+            AssertEquals(actual3, value3);
         }
         
         [Fact(DisplayName = nameof(RemoveShouldSynchronizeTheCache))]
@@ -119,9 +119,9 @@ namespace Take.Elephant.Tests.Specialized
             var actual1 = await target1.GetValueOrDefaultAsync(key);
             var actual2 = await target2.GetValueOrDefaultAsync(key);
             var actual3 = await target3.GetValueOrDefaultAsync(key);
-            actual1.ShouldBeNull();
-            actual2.ShouldBeNull();
-            actual3.ShouldBeNull();
+            AssertIsNull(actual1);
+            AssertIsNull(actual2);
+            AssertIsNull(actual3);
         }
     }
 }
