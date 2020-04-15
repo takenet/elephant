@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,7 +54,7 @@ namespace Take.Elephant.Redis
             }
         }
 
-        public async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> AsEnumerableAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.ListRangeAsync(Name).ConfigureAwait(false);

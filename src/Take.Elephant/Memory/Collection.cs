@@ -22,7 +22,7 @@ namespace Take.Elephant.Memory
         /// </summary>
         public bool FetchQueryResultTotal { get; set; } = true;
 
-        public virtual IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default) => new AsyncEnumerableWrapper<T>(_collection);
+        public virtual IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default) => _collection.ToAsyncEnumerable();
 
         public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default) => Task.FromResult<long>(_collection.Count);
 

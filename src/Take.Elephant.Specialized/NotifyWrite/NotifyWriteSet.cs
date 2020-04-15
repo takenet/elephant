@@ -36,7 +36,7 @@ namespace Take.Elephant.Specialized.NotifyWrite
             return false;
         }
 
-        public IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default) => 
+        public IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default) =>
             _set.AsEnumerableAsync(cancellationToken);
 
         public Task<long> GetLengthAsync(CancellationToken cancellationToken = default) => 

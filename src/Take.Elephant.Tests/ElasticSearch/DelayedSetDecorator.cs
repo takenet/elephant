@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace Take.Elephant.Tests.Elasticsearch
             await _set.AddAsync(value, cancellationToken);
         }
 
-        public async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> AsEnumerableAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             await Task.Delay(_delay, cancellationToken);
             await foreach (var item in _set.AsEnumerableAsync(cancellationToken))

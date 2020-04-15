@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace Take.Elephant.Specialized.Cache
 
         public virtual Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default) => ExecuteWriteFunc(s => s.TryRemoveAsync(value, cancellationToken));
 
-        public virtual async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
+        public virtual async IAsyncEnumerable<T> AsEnumerableAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             // The AsEnumerableAsync method always returns a value (never is null)
             // and we are not able to check if it is empty before starting enumerating it,

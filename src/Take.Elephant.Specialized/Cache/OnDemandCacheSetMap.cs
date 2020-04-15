@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -116,7 +117,7 @@ namespace Take.Elephant.Specialized.Cache
                 await set.AddAsync(value, cancellationToken).ConfigureAwait(false);
             }
 
-            public async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancellationToken = default)
+            public async IAsyncEnumerable<T> AsEnumerableAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
             {
                 var set = await GetSetAsync().ConfigureAwait(false);
 

@@ -66,36 +66,27 @@ namespace Take.Elephant.Specialized.Scoping
                 _keySerializer = keySerializer;
             }
 
-            public virtual IAsyncEnumerable<TItem> AsEnumerableAsync(CancellationToken cancellationToken =
-                default)
-            {
-                return _set.AsEnumerableAsync(cancellationToken);
-            }
+            public virtual IAsyncEnumerable<TItem> AsEnumerableAsync(CancellationToken cancellationToken = default) =>
+                _set.AsEnumerableAsync(cancellationToken);
 
-            public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
-            {
-                return _set.GetLengthAsync();
-            }
+            public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default) => 
+                _set.GetLengthAsync(cancellationToken);
 
-            public virtual Task AddAsync(TItem value, CancellationToken cancellationToken = default)
-            {
-                return _set.AddAsync(value);
-            }
+            public virtual Task AddAsync(TItem value, CancellationToken cancellationToken = default) => 
+                _set.AddAsync(value, cancellationToken);
 
             public virtual async Task<bool> TryRemoveAsync(TItem value, CancellationToken cancellationToken = default)
             {
-                if (!await _set.TryRemoveAsync(value).ConfigureAwait(false)) return false;
-                if (await GetLengthAsync() == 0)
+                if (!await _set.TryRemoveAsync(value, cancellationToken).ConfigureAwait(false)) return false;
+                if (await GetLengthAsync(cancellationToken) == 0)
                 {
                     await _scope.RemoveKeyAsync(_identifier, _keySerializer.Serialize(_key)).ConfigureAwait(false);
                 }
                 return true;
             }
 
-            public virtual Task<bool> ContainsAsync(TItem value, CancellationToken cancellationToken = default)
-            {
-                return _set.ContainsAsync(value);
-            }
+            public virtual Task<bool> ContainsAsync(TItem value, CancellationToken cancellationToken = default) => 
+                _set.ContainsAsync(value, cancellationToken);
         }
     }
 }

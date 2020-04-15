@@ -21,13 +21,13 @@ namespace Take.Elephant.Redis
             _serializer = serializer;
         }
 
-        public override Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancelationToken = default)
+        public override Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
         }
 
-        public override async Task<ISortedSet<TItem>> GetValueOrDefaultAsync(TKey key, CancellationToken cancelationToken = default)
+        public override async Task<ISortedSet<TItem>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             if (await database.KeyExistsAsync(GetRedisKey(key), ReadFlags).ConfigureAwait(false))
@@ -38,12 +38,12 @@ namespace Take.Elephant.Redis
             return null;
         }
 
-        public Task<ISortedSet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancelationToken = default)
+        public Task<ISortedSet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             return CreateList(key).AsCompletedTask<ISortedSet<TItem>>();
         }
 
-        public override async Task<bool> TryAddAsync(TKey key, ISortedSet<TItem> value, bool overwrite = false, CancellationToken cancelationToken = default)
+        public override async Task<bool> TryAddAsync(TKey key, ISortedSet<TItem> value, bool overwrite = false, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -74,7 +74,7 @@ namespace Take.Elephant.Redis
             return success;
         }
 
-        public override Task<bool> TryRemoveAsync(TKey key, CancellationToken cancelationToken = default)
+        public override Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);

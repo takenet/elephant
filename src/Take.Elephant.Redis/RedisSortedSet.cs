@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace Take.Elephant.Redis
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
-        public async IAsyncEnumerable<T> AsEnumerableAsync(CancellationToken cancelationToken = default)
+        public async IAsyncEnumerable<T> AsEnumerableAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
 
@@ -35,7 +36,7 @@ namespace Take.Elephant.Redis
             }
         }
 
-        public async IAsyncEnumerable<KeyValuePair<double, T>> AsEnumerableWithScoreAsync(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<KeyValuePair<double, T>> AsEnumerableWithScoreAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
 
@@ -47,7 +48,7 @@ namespace Take.Elephant.Redis
             }
         }
 
-        public async Task<T> RemoveMaxOrDefaultAsync(CancellationToken cancelationToken = default)
+        public async Task<T> RemoveMaxOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.SortedSetRangeByRankAsync(Name, -1, -1);
@@ -60,7 +61,7 @@ namespace Take.Elephant.Redis
             return !result.IsNull ? _serializer.Deserialize(result) : default(T);
         }
 
-        public async Task<T> RemoveMinOrDefaultAsync(CancellationToken cancelationToken = default)
+        public async Task<T> RemoveMinOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.SortedSetRangeByRankAsync(Name, 0, 0);
@@ -73,13 +74,13 @@ namespace Take.Elephant.Redis
             return !result.IsNull ? _serializer.Deserialize(result) : default(T);
         }
 
-        public Task AddAsync(T item, double score, CancellationToken cancelationToken = default)
+        public Task AddAsync(T item, double score, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.SortedSetAddAsync(Name, _serializer.Serialize(item), score, WriteFlags);
         }
 
-        public Task<long> GetLengthAsync(CancellationToken cancelationToken = default)
+        public Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             return database.SortedSetLengthAsync(Name);
@@ -91,7 +92,7 @@ namespace Take.Elephant.Redis
             return database.SortedSetRemoveAsync(Name, _serializer.Serialize(value));
         }
 
-        public async IAsyncEnumerable<T> GetRangeByRankAsync(long initial = 0, long end = -1, CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> GetRangeByRankAsync(long initial = 0, long end = -1, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.SortedSetRangeByRankAsync(Name, initial, end);
@@ -102,7 +103,7 @@ namespace Take.Elephant.Redis
             }
         }
 
-        public async IAsyncEnumerable<T> GetRangeByScoreAsync(double start = 0, double stop = 0, CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> GetRangeByScoreAsync(double start = 0, double stop = 0, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var values = await database.SortedSetRangeByScoreAsync(Name, start, stop);
