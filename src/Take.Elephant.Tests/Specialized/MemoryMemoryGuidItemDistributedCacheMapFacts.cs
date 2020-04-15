@@ -1,12 +1,19 @@
 using System;
 using Take.Elephant.Memory;
 using Take.Elephant.Specialized.Cache;
+using Xunit;
 
 namespace Take.Elephant.Tests.Specialized
 {
-    public class MemoryGuidItemDistributedCacheMapFacts : GuidItemDistributedCacheMapFacts
+    [Trait("Category", nameof(Memory))]
+    public class MemoryMemoryGuidItemDistributedCacheMapFacts : GuidItemDistributedCacheMapFacts
     {
         public override IMap<Guid, Item> CreateSource()
+        {
+            return new Map<Guid, Item>();
+        }
+
+        public override IMap<Guid, Item> CreateCache()
         {
             return new Map<Guid, Item>();
         }

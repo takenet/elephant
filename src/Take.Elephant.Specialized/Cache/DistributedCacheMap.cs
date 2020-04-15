@@ -1,13 +1,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Take.Elephant.Memory;
 using Take.Elephant.Specialized.NotifyWrite;
 
 namespace Take.Elephant.Specialized.Cache
 {
     /// <summary>
-    /// Implements a <see cref="IMap{TKey,TValue}"/> that cache the values on demand in memory, using a bus to invalidate the cache between instances. 
+    /// Implements a <see cref="IMap{TKey,TValue}"/> that cache the values on demand, using a bus to invalidate the cache between instances. 
     /// </summary>
     public class DistributedCacheMap<TKey, TValue> : IPropertyMap<TKey, TValue>, IAsyncDisposable, IDisposable
     {
@@ -16,14 +15,14 @@ namespace Take.Elephant.Specialized.Cache
 
         public DistributedCacheMap(
             IMap<TKey, TValue> source,
+            IMap<TKey, TValue> cache,
             IBus<string, SynchronizationEvent<TKey>> synchronizationBus,
             string synchronizationChannel,
             TimeSpan cacheExpiration = default,
             TimeSpan cacheFaultTolerance = default)
         {
-            var memoryCache = new Map<TKey, TValue>();
-            var onDemandCacheMap = new OnDemandCacheMap<TKey, TValue>(source, memoryCache, cacheExpiration, cacheFaultTolerance);
-            _strategy = new DistributedCacheStrategy<TKey, TValue>(memoryCache, synchronizationBus, synchronizationChannel);
+            var onDemandCacheMap = new OnDemandCacheMap<TKey, TValue>(source, cache, cacheExpiration, cacheFaultTolerance);
+            _strategy = new DistributedCacheStrategy<TKey, TValue>(cache, synchronizationBus, synchronizationChannel);
             _underlyingMap = new NotifyWriteMap<TKey, TValue>(onDemandCacheMap, _strategy.PublishEventAsync);
         }
         
