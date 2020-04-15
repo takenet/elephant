@@ -71,6 +71,6 @@ namespace Take.Elephant.Memory
             ChannelHandlerDictionary = new ConcurrentDictionary<TChannel, ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>>();
         }
         
-        public ConcurrentDictionary<TChannel, ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>> ChannelHandlerDictionary { get; }
+        internal ConcurrentDictionary<TChannel, ConcurrentBag<Func<TChannel, TMessage, CancellationToken, Task>>> ChannelHandlerDictionary { get; }
     }
 }
