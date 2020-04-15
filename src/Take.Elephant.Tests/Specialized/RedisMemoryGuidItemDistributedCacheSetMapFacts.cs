@@ -1,13 +1,33 @@
 using System;
 using AutoFixture;
 using Take.Elephant.Memory;
+using Take.Elephant.Redis;
 using Take.Elephant.Specialized.Cache;
+using Take.Elephant.Tests.Redis;
+using Xunit;
 
 namespace Take.Elephant.Tests.Specialized
 {
-    public class MemoryGuidItemDistributedCacheSetMapFacts : GuidItemDistributedCacheSetMapFacts
+    [Collection("Redis")]
+    [Trait("Category", nameof(Redis))]
+    public class RedisMemoryGuidItemDistributedCacheSetMapFacts : GuidItemDistributedCacheSetMapFacts
     {
+        private readonly RedisFixture _redisFixture;
+
+        public RedisMemoryGuidItemDistributedCacheSetMapFacts(RedisFixture redisFixture)
+        {
+            _redisFixture = redisFixture;
+        }        
+        
         public override IMap<Guid, ISet<Item>> CreateSource()
+        {
+            var db = 1;
+            _redisFixture.Server.FlushDatabase(db);            
+            var setMap = new RedisSetMap<Guid, Item>("guid-items", _redisFixture.Connection.Configuration, new ItemSerializer(), db);
+            return setMap;
+        }
+        
+        public override IMap<Guid, ISet<Item>> CreateCache()
         {
             return new SetMap<Guid, Item>();
         }

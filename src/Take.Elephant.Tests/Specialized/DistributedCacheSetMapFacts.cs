@@ -28,9 +28,9 @@ namespace Take.Elephant.Tests.Specialized
 
         public abstract ISet<TValue> CreateValue(TKey key, bool populate);
 
-        public override IMap<TKey, ISet<TValue>> Create(IMap<TKey, ISet<TValue>> source, IBus<string, SynchronizationEvent<TKey>> synchronizationBus, string synchronizationChannel)
+        public override IMap<TKey, ISet<TValue>> Create(IMap<TKey, ISet<TValue>> source, IMap<TKey, ISet<TValue>> cache, IBus<string, SynchronizationEvent<TKey>> synchronizationBus, string synchronizationChannel)
         {
-            return new DistributedCacheSetMap<TKey, TValue>((ISetMap<TKey,TValue>)source, synchronizationBus, synchronizationChannel);
+            return new DistributedCacheSetMap<TKey, TValue>((ISetMap<TKey,TValue>)source, (ISetMap<TKey,TValue>)cache, synchronizationBus, synchronizationChannel);
         }
     }
 }

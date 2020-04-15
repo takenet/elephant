@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Shouldly;
 using Take.Elephant.Specialized.Cache;
 using Xunit;
 
@@ -10,18 +9,21 @@ namespace Take.Elephant.Tests.Specialized
         public override IMap<TKey, TValue> Create()
         {
             var source = CreateSource();
+            var cache = CreateCache();
             var synchronizationBus = CreateSynchronizationBus();
             var synchronizationChannel = CreateSynchronizationChannel();
 
-            return Create(source, synchronizationBus, synchronizationChannel);
+            return Create(source, cache, synchronizationBus, synchronizationChannel);
         }
 
-        public virtual IMap<TKey, TValue> Create(IMap<TKey, TValue> source, IBus<string, SynchronizationEvent<TKey>> synchronizationBus, string synchronizationChannel)
+        public virtual IMap<TKey, TValue> Create(IMap<TKey, TValue> source, IMap<TKey, TValue> cache, IBus<string, SynchronizationEvent<TKey>> synchronizationBus, string synchronizationChannel)
         {
-            return new DistributedCacheMap<TKey, TValue>(source, synchronizationBus, synchronizationChannel);
+            return new DistributedCacheMap<TKey, TValue>(source, cache, synchronizationBus, synchronizationChannel);
         }
 
         public abstract IMap<TKey, TValue> CreateSource();
+        
+        public abstract IMap<TKey, TValue> CreateCache();
         
         public abstract IBus<string, SynchronizationEvent<TKey>> CreateSynchronizationBus();
 
@@ -32,11 +34,12 @@ namespace Take.Elephant.Tests.Specialized
         {
             // Arrange
             var source = CreateSource();
+            var cache = CreateCache();
             var synchronizationBus = CreateSynchronizationBus();
             var synchronizationChannel = CreateSynchronizationChannel();
-            var target1 = Create(source, synchronizationBus, synchronizationChannel);
-            var target2 = Create(source, synchronizationBus, synchronizationChannel);
-            var target3 = Create(source, synchronizationBus, synchronizationChannel);
+            var target1 = Create(source, cache, synchronizationBus, synchronizationChannel);
+            var target2 = Create(source, cache, synchronizationBus, synchronizationChannel);
+            var target3 = Create(source, cache, synchronizationBus, synchronizationChannel);
 
             var key = CreateKey();
             var value1 = CreateValue(key);
@@ -62,11 +65,12 @@ namespace Take.Elephant.Tests.Specialized
         {
             // Arrange
             var source = CreateSource();
+            var cache = CreateCache();
             var synchronizationBus = CreateSynchronizationBus();
             var synchronizationChannel = CreateSynchronizationChannel();
-            var target1 = Create(source, synchronizationBus, synchronizationChannel);
-            var target2 = Create(source, synchronizationBus, synchronizationChannel);
-            var target3 = Create(source, synchronizationBus, synchronizationChannel);
+            var target1 = Create(source, cache, synchronizationBus, synchronizationChannel);
+            var target2 = Create(source, cache, synchronizationBus, synchronizationChannel);
+            var target3 = Create(source, cache, synchronizationBus, synchronizationChannel);
             var key = CreateKey();
             var value1 = CreateValue(key);
             var value2 = CreateValue(key);
@@ -95,11 +99,12 @@ namespace Take.Elephant.Tests.Specialized
         {
             // Arrange
             var source = CreateSource();
+            var cache = CreateCache();
             var synchronizationBus = CreateSynchronizationBus();
             var synchronizationChannel = CreateSynchronizationChannel();
-            var target1 = Create(source, synchronizationBus, synchronizationChannel);
-            var target2 = Create(source, synchronizationBus, synchronizationChannel);
-            var target3 = Create(source, synchronizationBus, synchronizationChannel);
+            var target1 = Create(source, cache, synchronizationBus, synchronizationChannel);
+            var target2 = Create(source, cache, synchronizationBus, synchronizationChannel);
+            var target3 = Create(source, cache, synchronizationBus, synchronizationChannel);
             var key = CreateKey();
             var value1 = CreateValue(key);
             var value2 = CreateValue(key);
