@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Xunit;
 using AutoFixture;
+using Shouldly;
 
 namespace Take.Elephant.Tests
 {
@@ -112,8 +113,8 @@ namespace Take.Elephant.Tests
             AssertIsDefault(actual);
         }
 
-        [Fact(DisplayName = "ExpireInvalidKeyByRelativeTtlThrowsArgumentException")]
-        public async Task ExpireInvalidKeyByRelativeTtlThrowsArgumentException()
+        [Fact(DisplayName = nameof(ExpireInvalidKeyByRelativeTtlReturnsFalse))]
+        public async Task ExpireInvalidKeyByRelativeTtlReturnsFalse()
         {
             // Arrange
             var map = Create();
@@ -121,12 +122,14 @@ namespace Take.Elephant.Tests
             var ttl = CreateTtl();
 
             // Act
-            await AssertThrowsAsync<ArgumentException>(() =>
-                map.SetRelativeKeyExpirationAsync(key, ttl));
+            var actual = await map.SetRelativeKeyExpirationAsync(key, ttl);
+            
+            // Assert
+            actual.ShouldBeFalse();
         }
 
-        [Fact(DisplayName = "ExpireInvalidKeyByAbsoluteExpirationDateThrowsArgumentException")]
-        public async Task ExpireInvalidKeyByExpirationDateThrowsArgumentException()
+        [Fact(DisplayName = nameof(ExpireInvalidKeyByExpirationDateReturnsFalse))]
+        public async Task ExpireInvalidKeyByExpirationDateReturnsFalse()
         {
             // Arrange
             var map = Create();
@@ -135,8 +138,10 @@ namespace Take.Elephant.Tests
             var expiration = DateTimeOffset.UtcNow.Add(ttl);
 
             // Act
-            await AssertThrowsAsync<ArgumentException>(() =>
-                map.SetAbsoluteKeyExpirationAsync(key, expiration));
+            var actual = await map.SetAbsoluteKeyExpirationAsync(key, expiration);
+            
+            // Assert
+            actual.ShouldBeFalse();
         }
     }
 }

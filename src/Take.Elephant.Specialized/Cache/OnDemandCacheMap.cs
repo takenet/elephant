@@ -99,7 +99,7 @@ namespace Take.Elephant.Specialized.Cache
             return ExecuteWriteFunc(map => ((IPropertyMap<TKey, TValue>)map).MergeAsync(key, value, cancellationToken));
         }
 
-        public virtual async Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
+        public virtual async Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
             if (!(Source is IExpirableKeyMap<TKey, TValue> expirableSource))
             {
@@ -111,15 +111,17 @@ namespace Take.Elephant.Specialized.Cache
                 throw new NotSupportedException("The cache map doesn't implement IExpirableKeyMap");
             }
 
-            await expirableSource.SetRelativeKeyExpirationAsync(key, ttl);
-
-            if (ttl < CacheExpiration)
+            var success = await expirableSource.SetRelativeKeyExpirationAsync(key, ttl);
+            if (success &&
+                ttl < CacheExpiration)
             {
-                await expirableCache.SetRelativeKeyExpirationAsync(key, ttl.Add(CacheFaultTolerance));
+                success = await expirableCache.SetRelativeKeyExpirationAsync(key, ttl.Add(CacheFaultTolerance));
             }
+
+            return success;
         }
 
-        public virtual async Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
+        public virtual async Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
             if (!(Source is IExpirableKeyMap<TKey, TValue> expirableSource))
             {
@@ -131,12 +133,14 @@ namespace Take.Elephant.Specialized.Cache
                 throw new NotSupportedException("The cache map doesn't implement IExpirableKeyMap");
             }
 
-            await expirableSource.SetAbsoluteKeyExpirationAsync(key, expiration);
-
-            if (expiration - DateTimeOffset.UtcNow < CacheExpiration)
+            var success = await expirableSource.SetAbsoluteKeyExpirationAsync(key, expiration);
+            if (success &&
+                expiration - DateTimeOffset.UtcNow < CacheExpiration)
             {
-                await expirableCache.SetAbsoluteKeyExpirationAsync(key, expiration.Add(CacheFaultTolerance));
+                success = await expirableCache.SetAbsoluteKeyExpirationAsync(key, expiration.Add(CacheFaultTolerance));
             }
+
+            return success;
         }
         
         protected async Task<bool> TryAddWithExpirationAsync(TKey key, TValue value, bool overwrite, IMap<TKey, TValue> map, CancellationToken cancellationToken)

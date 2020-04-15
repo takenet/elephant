@@ -36,40 +36,36 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public virtual Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl) =>
+        public virtual Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl) =>
             SetAbsoluteKeyExpirationAsync(key, DateTimeOffset.UtcNow.Add(ttl));
 
-        public virtual async Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
+        public virtual async Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using var cancellationTokenSource = CreateCancellationTokenSource();
+            await using var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            var keyColumnValues = KeyMapper.GetColumnValues(key);
+            var columnValues = new Dictionary<string, object>
             {
-                using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
-                {
-                    var keyColumnValues = KeyMapper.GetColumnValues(key);
-                    var columnValues = new Dictionary<string, object>
-                    {
-                        {_expirationColumnName, expiration}
-                    };
+                {_expirationColumnName, expiration}
+            };
 
-                    using (var command = connection.CreateTextCommand(
-                        DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
-                        new
-                        {
-                            schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
-                            tableName = DatabaseDriver.ParseIdentifier(Table.Name),
-                            columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                            filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())
-                        },
-                        keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver))))
-                    {
-                        if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) ==
-                            0)
-                        {
-                            throw new ArgumentException("Invalid key", nameof(key));
-                        }
-                    }
-                }
+            await using var command = connection.CreateTextCommand(
+                DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
+                new
+                {
+                    schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
+                    tableName = DatabaseDriver.ParseIdentifier(Table.Name),
+                    columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
+                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())
+                },
+                keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
+            
+            if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
+            {
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>

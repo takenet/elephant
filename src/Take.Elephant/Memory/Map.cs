@@ -140,17 +140,17 @@ namespace Take.Elephant.Memory
             return Task.FromResult(updated);
         }
 
-        public virtual Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
+        public virtual Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
             return SetAbsoluteKeyExpirationAsync(key, DateTimeOffset.UtcNow.Add(ttl));
         }
 
-        public virtual Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
+        public virtual Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!InternalDictionary.ContainsKey(key))
             {
-                throw new ArgumentException("$Key {key}'' not found");
+                return Task.FromResult(false);
             }
 
             if (!_expirationTimer.Enabled)
@@ -160,7 +160,7 @@ namespace Take.Elephant.Memory
             }
 
             KeyExpirationDictionary[key] = expiration;
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
 
         public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue, CancellationToken cancellationToken = default)

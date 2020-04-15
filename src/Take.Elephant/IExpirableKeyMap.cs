@@ -16,7 +16,7 @@ namespace Take.Elephant
         /// <param name="key">The key.</param>
         /// <param name="ttl">The TTL.</param>
         /// <returns></returns>
-        Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl);
+        Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl);
 
         /// <summary>
         /// Sets the absolute key expiration date.
@@ -24,6 +24,6 @@ namespace Take.Elephant
         /// <param name="key">The key.</param>
         /// <param name="expiration">The expiration.</param>
         /// <returns></returns>
-        Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration);
+        Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration);
     }
 }

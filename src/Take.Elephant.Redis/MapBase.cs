@@ -35,24 +35,18 @@ namespace Take.Elephant.Redis
         
         #region IExpirableKeyMap<TKey, TValue> Members
 
-        public virtual async Task SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
+        public virtual Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var database = GetDatabase();
-            if (!await database.KeyExpireAsync(GetRedisKey(key), ttl, WriteFlags).ConfigureAwait(false))
-            {
-                throw new ArgumentException("Invalid key", nameof(key));
-            }
+            return database.KeyExpireAsync(GetRedisKey(key), ttl, WriteFlags);
         }
 
-        public virtual async Task SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
+        public virtual Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var database = GetDatabase();
-            if (!await database.KeyExpireAsync(GetRedisKey(key), expiration.UtcDateTime, WriteFlags).ConfigureAwait(false))
-            {
-                throw new ArgumentException("Invalid key", nameof(key));
-            }
+            return database.KeyExpireAsync(GetRedisKey(key), expiration.UtcDateTime, WriteFlags);
         }
 
         #endregion
