@@ -62,7 +62,7 @@ namespace Take.Elephant.Sql
 
                         var success = true;
                         var items = value.AsEnumerableAsync(linkedCts.Token);
-                        await items.ForEachAsync(
+                        await items.ForEachAwaitAsync(
                             async item =>
                             {
                                 if (!success) return;

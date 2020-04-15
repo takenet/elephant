@@ -26,8 +26,14 @@ namespace Take.Elephant.Specialized.Cache
             var sourceValue = await Source.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
             if (sourceValue == null) return null;
 
-            // Passes an empty set for futher synchronization
-            cacheValue = await ((ISetMap<TKey, TValue>)Cache).GetValueOrEmptyAsync(key, cancellationToken);
+            // Try add the source values to the cache
+            await TryAddWithExpirationAsync(key, sourceValue, false, Cache, cancellationToken).ConfigureAwait(false);
+            
+            // Get a reference to the cached set
+            cacheValue = await ((ISetMap<TKey, TValue>)Cache)
+                .GetValueOrEmptyAsync(key, cancellationToken)
+                .ConfigureAwait(false);
+            
             return new OnDemandCacheSet<TValue>(sourceValue, GetKeyExpirationCacheSet(key, cacheValue));
         }
 
@@ -42,16 +48,26 @@ namespace Take.Elephant.Specialized.Cache
                     cacheValue);
             }
 
-            var sourceValue = await ((ISetMap<TKey, TValue>)Source).GetValueOrEmptyAsync(key, cancellationToken).ConfigureAwait(false);
+            var sourceValue = await ((ISetMap<TKey, TValue>)Source)
+                .GetValueOrEmptyAsync(key, cancellationToken)
+                .ConfigureAwait(false);
 
-            // Passes an empty set for futher synchronization            
+            if (await TryAddWithExpirationAsync(key, sourceValue, false, Cache, cancellationToken).ConfigureAwait(false))
+            {
+                // Gets an updated reference to the cache set
+                cacheValue = await ((ISetMap<TKey, TValue>) Cache)
+                    .GetValueOrEmptyAsync(key, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
             return new OnDemandCacheSet<TValue>(sourceValue, GetKeyExpirationCacheSet(key, cacheValue));
         }
 
         private ISet<TValue> GetKeyExpirationCacheSet(TKey key, ISet<TValue> cacheSet)
         {
             // Provides a set that calls a function to expires the key when a value is added
-            if (CacheExpiration != default && Cache is IExpirableKeyMap<TKey, ISet<TValue>> expirableMap)
+            if (CacheExpiration != default && 
+                Cache is IExpirableKeyMap<TKey, ISet<TValue>> expirableMap)
             {
                 return new TriggeredSet<TValue>(cacheSet, i => expirableMap.SetRelativeKeyExpirationAsync(key, CacheExpiration));                
             }

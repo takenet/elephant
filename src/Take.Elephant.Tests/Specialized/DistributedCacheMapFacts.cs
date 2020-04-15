@@ -67,7 +67,6 @@ namespace Take.Elephant.Tests.Specialized
             var target1 = Create(source, synchronizationBus, synchronizationChannel);
             var target2 = Create(source, synchronizationBus, synchronizationChannel);
             var target3 = Create(source, synchronizationBus, synchronizationChannel);
-
             var key = CreateKey();
             var value1 = CreateValue(key);
             var value2 = CreateValue(key);

@@ -49,11 +49,11 @@ namespace Take.Elephant.Redis
 
             internalSet = CreateSet(key, transaction);
 
-            var enumerableAsync = value.AsEnumerableAsync();
+            var enumerableAsync = value.AsEnumerableAsync(cancellationToken);
             await enumerableAsync.ForEachAsync(item =>
             {
-                commandTasks.Add(internalSet.AddAsync(item));
-            }, CancellationToken.None).ConfigureAwait(false);
+                commandTasks.Add(internalSet.AddAsync(item, cancellationToken));
+            }, cancellationToken).ConfigureAwait(false);
 
             var success = await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false);
             await Task.WhenAll(commandTasks).ConfigureAwait(false);

@@ -7,7 +7,8 @@ namespace Take.Elephant.Specialized.Cache
 {
     public class OnDemandCacheSet<T> : OnDemandCacheStrategy<ISet<T>>, ISet<T>
     {
-        public OnDemandCacheSet(ISet<T> source, ISet<T> cache) : base(source, cache)
+        public OnDemandCacheSet(ISet<T> source, ISet<T> cache) 
+            : base(source, cache)
         {
         }
 

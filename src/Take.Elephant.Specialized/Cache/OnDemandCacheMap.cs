@@ -32,12 +32,12 @@ namespace Take.Elephant.Specialized.Cache
             TValue value,
             bool overwrite = false,
             CancellationToken cancellationToken = default) => 
-            ExecuteWriteFunc(map => TryAddWithExpirationAsync(key, value, overwrite, map));
+            ExecuteWriteFunc(map => TryAddWithExpirationAsync(key, value, overwrite, map, cancellationToken));
 
         public virtual Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default) => 
             ExecuteQueryFunc(
                 map => map.GetValueOrDefaultAsync(key, cancellationToken),
-                (result, m) => TryAddWithExpirationAsync(key, result, true, m));
+                (result, m) => TryAddWithExpirationAsync(key, result, true, m, cancellationToken));
 
         public virtual Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default) => 
             ExecuteWriteFunc(map => map.TryRemoveAsync(key, cancellationToken));
@@ -54,7 +54,7 @@ namespace Take.Elephant.Specialized.Cache
                         var value = await Source.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
                         if (!IsDefaultValueOfType(value))
                         {
-                            return await TryAddWithExpirationAsync(key, value, true, map).ConfigureAwait(false);
+                            return await TryAddWithExpirationAsync(key, value, true, map, cancellationToken).ConfigureAwait(false);
                         }
                     }
                     return true;
@@ -139,9 +139,9 @@ namespace Take.Elephant.Specialized.Cache
             }
         }
         
-        private async Task<bool> TryAddWithExpirationAsync(TKey key, TValue value, bool overwrite, IMap<TKey, TValue> map)
+        protected async Task<bool> TryAddWithExpirationAsync(TKey key, TValue value, bool overwrite, IMap<TKey, TValue> map, CancellationToken cancellationToken)
         {
-            var added = await map.TryAddAsync(key, value, overwrite).ConfigureAwait(false);
+            var added = await map.TryAddAsync(key, value, overwrite, cancellationToken).ConfigureAwait(false);
             if (added && 
                 map == Cache && 
                 CacheExpiration != default && 

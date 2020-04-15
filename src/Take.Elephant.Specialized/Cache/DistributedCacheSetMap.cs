@@ -19,9 +19,9 @@ namespace Take.Elephant.Specialized.Cache
             TimeSpan cacheFaultTolerance = default)
         {
             var memoryCache = new SetMap<TKey, TValue>();
-            var onDemandCacheMap = new OnDemandCacheSetMap<TKey, TValue>(source, memoryCache, cacheExpiration, cacheFaultTolerance);
+            var onDemandCacheSetMap = new OnDemandCacheSetMap<TKey, TValue>(source, memoryCache, cacheExpiration, cacheFaultTolerance);
             _strategy = new DistributedCacheStrategy<TKey, ISet<TValue>>(memoryCache, synchronizationBus, synchronizationChannel);
-            _underlyingSetMap = new NotifyWriteSetMap<TKey, TValue>(onDemandCacheMap, _strategy.PublishEventAsync);
+            _underlyingSetMap = new NotifyWriteSetMap<TKey, TValue>(onDemandCacheSetMap, _strategy.PublishEventAsync);
         }
 
         public Task<bool> TryAddAsync(TKey key, ISet<TValue> value, bool overwrite = false, CancellationToken cancellationToken = default) => 
