@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using NFluent;
@@ -48,6 +49,20 @@ namespace Take.Elephant.Tests
         {
             var exec = Check.ThatAsyncCode(func).Throws<TException>();
             return TaskUtil.CompletedTask;
+        }
+
+        public virtual void AssertCollectionEquals<T>(ICollection<T> actual, ICollection<T> expected)
+        {
+            AssertCollectionEqualsAsync(actual, expected).GetAwaiter().GetResult();
+        }
+        
+        public virtual async Task AssertCollectionEqualsAsync<T>(ICollection<T> actual, ICollection<T> expected)
+        {
+            var actualArray = await actual.AsEnumerableAsync().ToArrayAsync();
+            var expectedArray = await expected.AsEnumerableAsync().ToArrayAsync();
+
+            Check.That(actualArray).HasSize(expectedArray.Length);
+            Check.That(actualArray).Contains(expectedArray);
         }
     }
 }

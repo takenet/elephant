@@ -15,7 +15,8 @@ namespace Take.Elephant.Tests
             {
                 var actualSet = (ISet<TValue>) actual;
                 var expectedSet = (ISet<TValue>)expected;
-                Check.That(actualSet.AsEnumerableAsync().ToListAsync().Result).Contains(expectedSet.AsEnumerableAsync().ToListAsync().Result);
+                
+                base.AssertCollectionEquals(actualSet, expectedSet);
             }
             else
             {

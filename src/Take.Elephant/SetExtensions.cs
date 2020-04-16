@@ -31,5 +31,21 @@ namespace Take.Elephant
             }
             return memorySet;
         }
+
+        /// <summary>
+        /// Adds multiple instances of <see cref="T"/> to the set.
+        /// </summary>
+        /// <param name="set"></param>
+        /// <param name="items"></param>
+        /// <param name="cancellationToken"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static async Task AddRangeAsync<T>(this ISet<T> set, IAsyncEnumerable<T> items, CancellationToken cancellationToken = default)
+        {
+            await foreach (var item in items.WithCancellation(cancellationToken).ConfigureAwait(false))
+            {
+                await set.AddAsync(item, cancellationToken).ConfigureAwait(false);
+            }
+        }
     }
 }

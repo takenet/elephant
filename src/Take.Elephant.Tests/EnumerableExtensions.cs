@@ -21,7 +21,5 @@ namespace Take.Elephant.Tests
                                             parameter);
             return memberIdentiyExpression;
         }
-
-
     }
 }

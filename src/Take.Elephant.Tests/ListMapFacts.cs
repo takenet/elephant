@@ -13,7 +13,8 @@ namespace Take.Elephant.Tests
             {
                 var actualSet = (IList<TValue>)actual;
                 var expectedSet = (IList<TValue>)expected;
-                Check.That(actualSet.AsEnumerableAsync().ToListAsync().Result).Contains(expectedSet.AsEnumerableAsync().ToListAsync().Result);
+                
+                base.AssertCollectionEquals(actualSet, expectedSet);
             }
             else
             {

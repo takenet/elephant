@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NFluent;
 using AutoFixture;
+using Shouldly;
 using Take.Elephant.Specialized;
 using Take.Elephant.Specialized.Cache;
 using Xunit;
@@ -23,7 +24,8 @@ namespace Take.Elephant.Tests.Specialized
             {
                 var actualSet = (ISet<TValue>)actual;
                 var expectedSet = (ISet<TValue>)expected;
-                Check.That(actualSet.AsEnumerableAsync().ToListAsync().Result).Contains(expectedSet.AsEnumerableAsync().ToListAsync().Result);
+
+                base.AssertCollectionEquals(actualSet, expectedSet);
             }
             else
             {
@@ -149,8 +151,7 @@ namespace Take.Elephant.Tests.Specialized
             AssertIsTrue(await map.ContainsItemAsync(key, item2));
             AssertIsFalse(await map.ContainsItemAsync(key, item3));
         }
-
-
+        
         [Fact(DisplayName = "RemoveMultipleItemsSucceeds")]
         public virtual async Task RemoveMultipleItemsSucceeds()
         {
@@ -173,6 +174,30 @@ namespace Take.Elephant.Tests.Specialized
             AssertIsFalse(await map.ContainsItemAsync(key, item1));
             AssertIsFalse(await map.ContainsItemAsync(key, item2));
             AssertIsTrue(await map.ContainsItemAsync(key, item3));
+        }
+        
+        [Fact(DisplayName = nameof(AddItemBeforeCacheSynchronizationShouldRetrieveFromSource))]
+        public virtual async Task AddItemBeforeCacheSynchronizationShouldRetrieveFromSource()
+        {
+            // Arrange
+            var source = (ISetMap<TKey, TValue>)CreateSource();
+            var cache1 = (ISetMap<TKey, TValue>)CreateCache();
+            var cache2 = (ISetMap<TKey, TValue>)CreateCache();
+            var target1 = (ISetMap<TKey, TValue>)Create(source, cache1);
+            var target2 = (ISetMap<TKey, TValue>)Create(source, cache2);
+            var key = CreateKey();
+            var item1 = CreateItem();
+            var item2 = CreateItem();
+            var item3 = CreateItem();
+            await source.AddItemsAsync(key, new[] {item1, item2}.ToAsyncEnumerable());
+
+            // Act
+            await target1.AddItemAsync(key, item3);
+            
+            // Assert
+            var actual1 = await target1.GetValueOrEmptyAsync(key);
+            var actual2 = await target2.GetValueOrEmptyAsync(key);
+            AssertEquals(actual1, actual2);
         }
     }
 }
