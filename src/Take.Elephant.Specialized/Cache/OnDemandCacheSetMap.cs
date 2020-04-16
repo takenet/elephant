@@ -28,9 +28,9 @@ namespace Take.Elephant.Specialized.Cache
             if (sourceValue == null) return null;
 
             // Try add the source values to the cache
-            await TryAddWithExpirationAsync(key, sourceValue, false, Cache, cancellationToken).ConfigureAwait(false);
+            await TryAddWithExpirationAsync(key, sourceValue, true, Cache, cancellationToken).ConfigureAwait(false);
             
-            // Get a reference to the cached set
+            // Gets an updated reference to the cache set
             cacheValue = await ((ISetMap<TKey, TValue>)Cache)
                 .GetValueOrEmptyAsync(key, cancellationToken)
                 .ConfigureAwait(false);
@@ -49,11 +49,12 @@ namespace Take.Elephant.Specialized.Cache
                     cacheValue);
             }
 
+            // Retrieve from source and add to the cache
             var sourceValue = await ((ISetMap<TKey, TValue>)Source)
                 .GetValueOrEmptyAsync(key, cancellationToken)
                 .ConfigureAwait(false);
-
-            if (await TryAddWithExpirationAsync(key, sourceValue, false, Cache, cancellationToken).ConfigureAwait(false))
+            
+            if (await TryAddWithExpirationAsync(key, sourceValue, true, Cache, cancellationToken).ConfigureAwait(false))
             {
                 // Gets an updated reference to the cache set
                 cacheValue = await ((ISetMap<TKey, TValue>) Cache)
