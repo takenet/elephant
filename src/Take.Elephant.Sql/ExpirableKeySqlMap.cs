@@ -39,7 +39,13 @@ namespace Take.Elephant.Sql
         public virtual Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl) =>
             SetAbsoluteKeyExpirationAsync(key, DateTimeOffset.UtcNow.Add(ttl));
 
-        public virtual async Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
+        public virtual async Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration) => 
+            await DefineExpirationValueAsync(key, expiration);
+
+        public virtual async Task<bool> RemoveExpirationAsync(TKey key) => 
+            await DefineExpirationValueAsync(key, null);
+
+        private async Task<bool> DefineExpirationValueAsync(TKey key, DateTimeOffset? expiration)
         {
             using var cancellationTokenSource = CreateCancellationTokenSource();
             await using var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false);
@@ -59,7 +65,7 @@ namespace Take.Elephant.Sql
                     filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())
                 },
                 keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
-            
+
             if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
             {
                 return false;

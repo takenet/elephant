@@ -163,6 +163,19 @@ namespace Take.Elephant.Memory
             return Task.FromResult(true);
         }
 
+        public virtual Task<bool> RemoveExpirationAsync(TKey key)
+        {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (!InternalDictionary.ContainsKey(key))
+            {
+                return Task.FromResult(false);
+            }
+
+            KeyExpirationDictionary.TryRemove(key, out _);
+
+            return Task.FromResult(true);
+        }
+
         public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));

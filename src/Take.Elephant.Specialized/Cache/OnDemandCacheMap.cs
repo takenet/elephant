@@ -142,7 +142,34 @@ namespace Take.Elephant.Specialized.Cache
 
             return success;
         }
-        
+
+        public virtual async Task<bool> RemoveExpirationAsync(TKey key)
+        {
+            if (!(Source is IExpirableKeyMap<TKey, TValue> expirableSource))
+            {
+                throw new NotSupportedException("The source map doesn't implement IExpirableKeyMap");
+            }
+
+            if (!(Cache is IExpirableKeyMap<TKey, TValue> expirableCache))
+            {
+                throw new NotSupportedException("The cache map doesn't implement IExpirableKeyMap");
+            }
+
+            var success = await expirableSource.RemoveExpirationAsync(key);
+            if (success)
+            {
+                success = await expirableCache.RemoveExpirationAsync(key);
+            }
+
+            return success;
+        }
+
+        private void VerifySourceCacheExpirableType()
+        {
+
+        }
+
+
         protected async Task<bool> TryAddWithExpirationAsync(TKey key, TValue value, bool overwrite, IMap<TKey, TValue> map, CancellationToken cancellationToken)
         {
             var added = await map.TryAddAsync(key, value, overwrite, cancellationToken).ConfigureAwait(false);
