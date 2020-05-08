@@ -163,5 +163,21 @@ namespace Take.Elephant.Tests
             //Assert
             removedExpired.ShouldBeTrue();
         }
+
+        [Fact(DisplayName = nameof(RemoveExpirationFromExistentPersistentKeyReturnsFalse))]
+        public async Task RemoveExpirationFromExistentPersistentKeyReturnsFalse()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var value = CreateValue(key);
+            if (!await map.TryAddAsync(key, value, false)) throw new Exception("Could not arrange the test");
+
+            //Act
+            var removedExpired = await map.RemoveExpirationAsync(key);
+
+            //Assert
+            removedExpired.ShouldBeFalse();
+        }
     }
 }

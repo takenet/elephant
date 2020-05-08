@@ -39,21 +39,15 @@ namespace Take.Elephant.Sql
         public virtual Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl) =>
             SetAbsoluteKeyExpirationAsync(key, DateTimeOffset.UtcNow.Add(ttl));
 
-        public virtual async Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration) =>
-            await DefineExpirationValueAsync(key, expiration);
-
-        public virtual async Task<bool> RemoveExpirationAsync(TKey key) =>
-            await DefineExpirationValueAsync(key, DBNull.Value);
-
-        private async Task<bool> DefineExpirationValueAsync(TKey key, object expiration)
+        public virtual async Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
             using var cancellationTokenSource = CreateCancellationTokenSource();
             await using var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false);
             var keyColumnValues = KeyMapper.GetColumnValues(key);
             var columnValues = new Dictionary<string, object>
-            {
-                {_expirationColumnName, expiration}
-            };                  
+                {
+                    {_expirationColumnName, expiration}
+                };
 
             await using var command = connection.CreateTextCommand(
                 DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
@@ -62,9 +56,44 @@ namespace Take.Elephant.Sql
                     schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
                     tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())
+                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())                    
                 },
                 keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
+
+            if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public virtual async Task<bool> RemoveExpirationAsync(TKey key)
+        {
+            using var cancellationTokenSource = CreateCancellationTokenSource();
+            await using var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            var keyColumnValues = KeyMapper.GetColumnValues(key);
+            var columnValues = new Dictionary<string, object>
+                {
+                    {_expirationColumnName, DBNull.Value}
+                };
+
+            await using var command = connection.CreateTextCommand(
+                DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
+                new
+                {
+                    schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
+                    tableName = DatabaseDriver.ParseIdentifier(Table.Name),
+                    columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
+                    filter = SqlHelper.CombineAndEqualsWithIsNotNullStatement(DatabaseDriver, 
+                                                                                             SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
+                                                                                             SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()))
+                },
+                keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
+
+            var teste = SqlHelper.CombineAndEqualsWithIsNotNullStatement(DatabaseDriver,
+                                                                                             SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
+                                                                                             SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()));
 
             if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
             {

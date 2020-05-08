@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.NetworkInformation;
 using System.Text;
 
 namespace Take.Elephant.Sql
 {
     public static class SqlHelper
-    {        
+    {
         public static string GetAndEqualsStatement(IDatabaseDriver databaseDriver, IDictionary<string, object> filterValues)
         {
             if (filterValues == null) return databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
@@ -23,7 +24,7 @@ namespace Take.Elephant.Sql
         public static string GetAndEqualsStatement(IDatabaseDriver databaseDriver, string[] columns, string[] parameters)
         {
             return columns.Length == 0 ?
-                databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne) : 
+                databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne) :
                 GetSeparateEqualsStatement(databaseDriver, databaseDriver.GetSqlStatementTemplate(SqlStatement.And), columns, parameters);
         }
 
@@ -93,6 +94,20 @@ namespace Take.Elephant.Sql
 
         }
 
+        public static string GetIsNotNullStatement(IDatabaseDriver databaseDriver, string[] columns)
+        {
+            return GetSeparateColumnsStatement(databaseDriver,
+                  databaseDriver.GetSqlStatementTemplate(SqlStatement.And),
+                  columns,
+                  columns, (d, c, p) => databaseDriver.GetSqlStatementTemplate(SqlStatement.QueryIsNotNull).Format(
+                               new
+                               {
+                                   column = databaseDriver.ParseIdentifier(c)
+                               }));
+        }
+
+        public static string CombineAndEqualsWithIsNotNullStatement(IDatabaseDriver databaseDriver, string andEqualStatement, string isNotNullStatement) => $"{andEqualStatement} {databaseDriver.GetSqlStatementTemplate(SqlStatement.And)} {isNotNullStatement}";
+
         public static string GetSeparateColumnsStatement(IDatabaseDriver databaseDriver, string separator, string[] columns, string[] parameters, Func<IDatabaseDriver, string, string, string> statement)
         {
             if (columns.Length == 0)
@@ -125,8 +140,8 @@ namespace Take.Elephant.Sql
         }
 
         public static SqlWhereStatement TranslateToSqlWhereClause<TEntity>(
-            IDatabaseDriver databaseDriver, 
-            Expression<Func<TEntity, bool>> where, 
+            IDatabaseDriver databaseDriver,
+            Expression<Func<TEntity, bool>> where,
             IDbTypeMapper dbTypeMapper,
             IDictionary<string, string> parameterReplacementDictionary = null)
         {
@@ -134,7 +149,7 @@ namespace Take.Elephant.Sql
             {
                 return new SqlWhereStatement(databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne), new Dictionary<string, object>());
             }
-            
+
             var translator = new SqlExpressionTranslator(databaseDriver, dbTypeMapper, parameterReplacementDictionary);
             return translator.GetStatement(where);
         }

@@ -30,6 +30,7 @@ namespace Take.Elephant.Sql
         PrimaryKeyConstraintDefinition,
         QueryEquals,
         QueryGreatherThen,
+        QueryIsNotNull,
         QueryLessThen,
         Select,
         SelectCount,
