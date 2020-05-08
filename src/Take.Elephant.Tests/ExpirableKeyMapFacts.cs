@@ -27,7 +27,7 @@ namespace Take.Elephant.Tests
 
         [Fact(DisplayName = "ExpireExistingKeyByRelativeTtlSucceeds")]
         public async Task ExpireExistingKeyByRelativeTtlSucceeds()
-        {            
+        {
             // Arrange
             var map = Create();
             var key = CreateKey();
@@ -77,7 +77,7 @@ namespace Take.Elephant.Tests
 
             // Act
             await map.SetRelativeKeyExpirationAsync(key, ttl + ttl + ttl);
-            
+
             // Assert
             await Task.Delay(ttl);
             var actual = await map.GetValueOrDefaultAsync(key);
@@ -100,7 +100,7 @@ namespace Take.Elephant.Tests
             var expiration = now.Add(ttl);
             var updatedExpiration = now.Add(ttl + ttl + ttl);
             await map.SetAbsoluteKeyExpirationAsync(key, expiration);
-            
+
             // Act
             await map.SetAbsoluteKeyExpirationAsync(key, updatedExpiration);
 
@@ -123,7 +123,7 @@ namespace Take.Elephant.Tests
 
             // Act
             var actual = await map.SetRelativeKeyExpirationAsync(key, ttl);
-            
+
             // Assert
             actual.ShouldBeFalse();
         }
@@ -139,9 +139,46 @@ namespace Take.Elephant.Tests
 
             // Act
             var actual = await map.SetAbsoluteKeyExpirationAsync(key, expiration);
-            
+
             // Assert
             actual.ShouldBeFalse();
         }
+
+        [Fact(DisplayName = nameof(RemoveExpirationFromExistentVolatileKeyReturnsTrue))]
+        public async Task RemoveExpirationFromExistentVolatileKeyReturnsTrue()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var value = CreateValue(key);
+            if (!await map.TryAddAsync(key, value, false)) throw new Exception("Could not arrange the test");
+            var ttl = CreateTtl();
+            var now = DateTimeOffset.UtcNow;
+            var expiration = now.Add(ttl);
+            await map.SetAbsoluteKeyExpirationAsync(key, expiration);
+
+            //Act
+            var removedExpired = await map.RemoveExpirationAsync(key);
+
+            //Assert
+            removedExpired.ShouldBeTrue();
+        }
+
+        [Fact(DisplayName =nameof(RemoveExpirationFromExistentPersistantKeyReturnFalse))]
+        public async Task RemoveExpirationFromExistentPersistantKeyReturnFalse()
+        {
+            // Arrange
+            var map = Create();
+            var key = CreateKey();
+            var value = CreateValue(key);
+            if (!await map.TryAddAsync(key, value, false)) throw new Exception("Could not arrange the test");
+
+            // Act
+            var removedExpired = await map.RemoveExpirationAsync(key);
+
+            // Assert
+            removedExpired.ShouldBeFalse();
+        }
+
     }
 }
