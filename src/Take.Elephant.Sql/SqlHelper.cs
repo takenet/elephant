@@ -85,11 +85,11 @@ namespace Take.Elephant.Sql
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.And),
                 columns,
                 columns,
-                (d, c, p) => databaseDriver.GetSqlStatementTemplate(SqlStatement.QueryEquals).Format(
+                (_, column, __) => databaseDriver.GetSqlStatementTemplate(SqlStatement.QueryEquals).Format(
                     new
                     {
-                        column = $"{databaseDriver.ParseIdentifier(sourceTableName)}.{databaseDriver.ParseIdentifier(c)}",
-                        value = $"{databaseDriver.ParseIdentifier(targetTableName)}.{databaseDriver.ParseIdentifier(c)}",
+                        column = $"{databaseDriver.ParseIdentifier(sourceTableName)}.{databaseDriver.ParseIdentifier(column)}",
+                        value = $"{databaseDriver.ParseIdentifier(targetTableName)}.{databaseDriver.ParseIdentifier(column)}",
                     }));
 
         }
@@ -99,14 +99,15 @@ namespace Take.Elephant.Sql
             return GetSeparateColumnsStatement(databaseDriver,
                   databaseDriver.GetSqlStatementTemplate(SqlStatement.And),
                   columns,
-                  columns, (d, c, p) => databaseDriver.GetSqlStatementTemplate(SqlStatement.QueryIsNotNull).Format(
-                               new
-                               {
-                                   column = databaseDriver.ParseIdentifier(c)
-                               }));
+                  columns,
+                  (_, column, __) => databaseDriver.GetSqlStatementTemplate(SqlStatement.QueryIsNotNull).Format(
+                      new
+                      {
+                          column = databaseDriver.ParseIdentifier(column)
+                      }));
         }
 
-        public static string CombineAndEqualsWithIsNotNullStatement(IDatabaseDriver databaseDriver, string andEqualStatement, string isNotNullStatement) => $"{andEqualStatement} {databaseDriver.GetSqlStatementTemplate(SqlStatement.And)} {isNotNullStatement}";
+        public static string GetCombinedAndStatement(IDatabaseDriver databaseDriver, string firstStatement, string secondStatement) => $"({firstStatement}) {databaseDriver.GetSqlStatementTemplate(SqlStatement.And)} ({secondStatement})";
 
         public static string GetSeparateColumnsStatement(IDatabaseDriver databaseDriver, string separator, string[] columns, string[] parameters, Func<IDatabaseDriver, string, string, string> statement)
         {

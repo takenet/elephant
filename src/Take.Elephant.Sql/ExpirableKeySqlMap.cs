@@ -85,13 +85,13 @@ namespace Take.Elephant.Sql
                     schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
                     tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                    filter = SqlHelper.CombineAndEqualsWithIsNotNullStatement(DatabaseDriver, 
+                    filter = SqlHelper.GetCombinedAndStatement(DatabaseDriver, 
                                                                                              SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
                                                                                              SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()))
                 },
                 keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
 
-            var teste = SqlHelper.CombineAndEqualsWithIsNotNullStatement(DatabaseDriver,
+            var teste = SqlHelper.GetCombinedAndStatement(DatabaseDriver,
                                                                                              SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
                                                                                              SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()));
 
