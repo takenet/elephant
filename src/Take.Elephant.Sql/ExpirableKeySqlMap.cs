@@ -18,9 +18,9 @@ namespace Take.Elephant.Sql
     {
         private readonly string _expirationColumnName;
 
-        public ExpirableKeySqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, string expirationColumnName) 
+        public ExpirableKeySqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, string expirationColumnName)
             : base(new ExpirationDatabaseDriver(databaseDriver, expirationColumnName), connectionString, table, keyMapper, valueMapper)
-        {            
+        {
             _expirationColumnName = expirationColumnName ?? throw new ArgumentNullException(nameof(expirationColumnName));
             if (!Table.Columns.TryGetValue(expirationColumnName, out var expirationColumnType))
             {
@@ -45,9 +45,9 @@ namespace Take.Elephant.Sql
             await using var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false);
             var keyColumnValues = KeyMapper.GetColumnValues(key);
             var columnValues = new Dictionary<string, object>
-            {
-                {_expirationColumnName, expiration}
-            };
+                {
+                    {_expirationColumnName, expiration}
+                };
 
             await using var command = connection.CreateTextCommand(
                 DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
@@ -56,10 +56,45 @@ namespace Take.Elephant.Sql
                     schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
                     tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())
+                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())                    
                 },
                 keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
-            
+
+            if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public virtual async Task<bool> RemoveExpirationAsync(TKey key)
+        {
+            using var cancellationTokenSource = CreateCancellationTokenSource();
+            await using var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            var keyColumnValues = KeyMapper.GetColumnValues(key);
+            var columnValues = new Dictionary<string, object>
+                {
+                    {_expirationColumnName, DBNull.Value}
+                };
+
+            await using var command = connection.CreateTextCommand(
+                DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
+                new
+                {
+                    schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
+                    tableName = DatabaseDriver.ParseIdentifier(Table.Name),
+                    columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
+                    filter = SqlHelper.GetCombinedAndStatement(DatabaseDriver, 
+                                                                                             SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
+                                                                                             SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()))
+                },
+                keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
+
+            var teste = SqlHelper.GetCombinedAndStatement(DatabaseDriver,
+                                                                                             SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
+                                                                                             SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()));
+
             if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
             {
                 return false;
@@ -73,12 +108,12 @@ namespace Take.Elephant.Sql
         /// </summary>
         /// <seealso cref="Take.Elephant.Sql.IDatabaseDriver" />
         private class ExpirationDatabaseDriver : IDatabaseDriver
-        {            
+        {
             private readonly IDatabaseDriver _underlyingDatabaseDriver;
             private readonly string _expirationColumnName;
 
             public ExpirationDatabaseDriver(IDatabaseDriver underlyingDatabaseDriver, string expirationColumnName)
-            {                
+            {
                 _underlyingDatabaseDriver = underlyingDatabaseDriver ?? throw new ArgumentNullException(nameof(underlyingDatabaseDriver));
                 _expirationColumnName = underlyingDatabaseDriver.ParseIdentifier(expirationColumnName ?? throw new ArgumentNullException(nameof(expirationColumnName)));
             }
@@ -104,7 +139,7 @@ namespace Take.Elephant.Sql
             public string GetSqlTypeName(DbType dbType) => _underlyingDatabaseDriver.GetSqlTypeName(dbType);
 
             public DbParameter CreateParameter(string parameterName, object value) => _underlyingDatabaseDriver.CreateParameter(parameterName, value);
-            
+
             public DbParameter CreateParameter(string parameterName, object value, SqlType sqlType) => _underlyingDatabaseDriver.CreateParameter(parameterName, value, sqlType);
 
             public string ParseParameterName(string parameterName) => _underlyingDatabaseDriver.ParseParameterName(parameterName);

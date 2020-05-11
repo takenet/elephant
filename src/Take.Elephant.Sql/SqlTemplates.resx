@@ -312,6 +312,9 @@ OUTPUT inserted.{incrementColumnName};</value>
   <data name="QueryGreatherThen" xml:space="preserve">
     <value>{column} &gt; {value}</value>
   </data>
+  <data name="QueryIsNotNull" xml:space="preserve">
+    <value>{column} IS NOT NULL</value>
+  </data>
   <data name="QueryLessThen" xml:space="preserve">
     <value>{column} &lt; {value}</value>
   </data>

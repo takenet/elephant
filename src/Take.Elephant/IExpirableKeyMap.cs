@@ -25,5 +25,12 @@ namespace Take.Elephant
         /// <param name="expiration">The expiration.</param>
         /// <returns></returns>
         Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration);
+
+        /// <summary>
+        /// Remove expiration value from a register
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        Task<bool> RemoveExpirationAsync(TKey key);
     }
 }

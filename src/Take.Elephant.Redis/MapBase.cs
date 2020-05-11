@@ -49,6 +49,13 @@ namespace Take.Elephant.Redis
             return database.KeyExpireAsync(GetRedisKey(key), expiration.UtcDateTime, WriteFlags);
         }
 
+        public virtual Task<bool> RemoveExpirationAsync(TKey key)
+        {
+            if (key == null) throw new ArgumentException(nameof(key));
+            var database = GetDatabase();
+            return database.KeyPersistAsync(GetRedisKey(key), WriteFlags);
+        }
+
         #endregion
 
         public virtual Task<IAsyncEnumerable<TKey>> GetKeysAsync()

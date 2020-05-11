@@ -52,7 +52,7 @@ namespace Take.Elephant.Memory
             {
                 expirationScanInterval = TimeSpan.FromSeconds(30);
             }
-            _expirationTimerIntervalMs = expirationScanInterval.TotalMilliseconds; 
+            _expirationTimerIntervalMs = expirationScanInterval.TotalMilliseconds;
             _expirationTimer = new Timer(_expirationTimerIntervalMs);
             _expirationTimer.Elapsed += RemoveExpiredKeys;
         }
@@ -68,7 +68,7 @@ namespace Take.Elephant.Memory
         protected IDictionaryConverter<TValue> DictionaryConverter { get; }
 
         protected ConcurrentDictionary<TKey, TValue> InternalDictionary { get; }
-        
+
         protected ConcurrentDictionary<TKey, DateTimeOffset> KeyExpirationDictionary { get; }
 
         public virtual Task<bool> TryAddAsync(
@@ -79,7 +79,7 @@ namespace Take.Elephant.Memory
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             bool added;
-            
+
             if (overwrite)
             {
                 InternalDictionary.AddOrUpdate(key, value, (k, v) => value);
@@ -163,6 +163,18 @@ namespace Take.Elephant.Memory
             return Task.FromResult(true);
         }
 
+        public virtual Task<bool> RemoveExpirationAsync(TKey key)
+        {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (!InternalDictionary.ContainsKey(key))
+            {
+                return Task.FromResult(false);
+            }
+
+            var removed = KeyExpirationDictionary.TryRemove(key, out _);
+            return Task.FromResult(removed);
+        }
+
         public virtual Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue, CancellationToken cancellationToken = default)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
@@ -189,8 +201,8 @@ namespace Take.Elephant.Memory
             if (property == null) throw new ArgumentException("The property name is invalid", nameof(propertyName));
             var propertyValue = default(TProperty);
             if (InternalDictionary.TryGetValue(key, out value))
-            { 
-                propertyValue = (TProperty) property.GetValue(value);
+            {
+                propertyValue = (TProperty)property.GetValue(value);
             }
             return Task.FromResult(propertyValue);
         }
@@ -267,7 +279,7 @@ namespace Take.Elephant.Memory
             }
             var totalValues = InternalDictionary
                 .Where(pair => KeyHasNotExpired(pair.Key) && where.Compile().Invoke(pair.Value));
-            
+
             var totalCount = 0;
             if (FetchQueryResultTotal)
             {
@@ -291,7 +303,7 @@ namespace Take.Elephant.Memory
             CancellationToken cancellationToken)
         {
             if (@where == null) @where = value => true;
-            if (select != null && 
+            if (select != null &&
                 select.ReturnType != typeof(TValue))
             {
                 throw new NotImplementedException("The select parameter is not supported yet");
@@ -305,7 +317,7 @@ namespace Take.Elephant.Memory
             {
                 totalCount = totalValues.Count();
             }
-            
+
             var resultValues = totalValues
                 .Skip(skip)
                 .Take(take)
@@ -336,15 +348,15 @@ namespace Take.Elephant.Memory
                 .Select(pair => pair.Value)
                 .Where(value => where.Compile().Invoke(value));
             var orderByFunc = orderBy.Compile();
-            
+
             int totalCount = 0;
             if (FetchQueryResultTotal)
             {
                 totalCount = totalValues.Count();
             }
 
-            var orderedTotalValues = orderByAscending 
-                ? totalValues.OrderBy(orderByFunc.Invoke) 
+            var orderedTotalValues = orderByAscending
+                ? totalValues.OrderBy(orderByFunc.Invoke)
                 : totalValues.OrderByDescending(orderByFunc.Invoke);
 
             var resultValues = orderedTotalValues
@@ -377,7 +389,7 @@ namespace Take.Elephant.Memory
             {
                 totalCount = totalValues.Count();
             }
-            
+
             var resultValues = totalValues
                 .Skip(skip)
                 .Take(take);
@@ -392,7 +404,7 @@ namespace Take.Elephant.Memory
             {
                 return value;
             }
-            
+
             value = ValueFactory();
             InternalDictionary[key] = value;
             KeyExpirationDictionary.TryRemove(key, out _);
@@ -414,10 +426,10 @@ namespace Take.Elephant.Memory
 
 
         protected bool KeyHasNotExpired(TKey key) => !KeyHasExpired(key);
-        
+
         protected bool KeyHasExpired(TKey key)
         {
-            return KeyExpirationDictionary.TryGetValue(key, out var expiration) && 
+            return KeyExpirationDictionary.TryGetValue(key, out var expiration) &&
                    expiration <= DateTimeOffset.UtcNow;
         }
 

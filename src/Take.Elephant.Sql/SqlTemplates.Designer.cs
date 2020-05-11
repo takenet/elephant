@@ -19,7 +19,7 @@ namespace Take.Elephant.Sql {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class SqlTemplates {
@@ -355,10 +355,17 @@ namespace Take.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to set transaction isolation level serializable;
-        ///INSERT INTO {schemaName}.{tableName} ({columns}) 
-        ///SELECT {values}
-        ///WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} ).
+        ///   Looks up a localized string similar to 
+        ///      BEGIN TRY
+        ///        INSERT INTO {schemaName}.{tableName} ({columns}) 
+        ///        SELECT {values}
+        ///        WHERE NOT EXISTS ( SELECT 1 FROM {schemaName}.{tableName} WHERE {filter} )
+        ///      END TRY
+        ///      BEGIN CATCH
+        ///        IF ERROR_NUMBER() &lt;&gt; 2627
+        ///        THROW
+        ///      END CATCH
+        ///    .
         /// </summary>
         public static string InsertWhereNotExists {
             get {
@@ -575,6 +582,15 @@ namespace Take.Elephant.Sql {
         public static string QueryGreatherThen {
             get {
                 return ResourceManager.GetString("QueryGreatherThen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {column} IS NOT NULL.
+        /// </summary>
+        public static string QueryIsNotNull {
+            get {
+                return ResourceManager.GetString("QueryIsNotNull", resourceCulture);
             }
         }
         
