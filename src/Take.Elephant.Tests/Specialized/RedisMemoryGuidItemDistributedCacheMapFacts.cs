@@ -1,6 +1,8 @@
 using System;
+using Newtonsoft.Json;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
+using Take.Elephant.Redis.Serializers;
 using Take.Elephant.Specialized.Cache;
 using Take.Elephant.Tests.Redis;
 using Xunit;
@@ -33,7 +35,21 @@ namespace Take.Elephant.Tests.Specialized
 
         public override IBus<string, SynchronizationEvent<Guid>> CreateSynchronizationBus()
         {
-            return new Bus<string, SynchronizationEvent<Guid>>();
+            return new RedisBus<string, SynchronizationEvent<Guid>>(
+                "guid-items", _redisFixture.Connection.Configuration, new SynchronizationEventJsonSerializer());
+        }
+    }
+    
+    public class SynchronizationEventJsonSerializer : ISerializer<SynchronizationEvent<Guid>>
+    {
+        public SynchronizationEvent<Guid> Deserialize(string value)
+        {
+            return JsonConvert.DeserializeObject<SynchronizationEvent<Guid>>(value);
+        }
+
+        public string Serialize(SynchronizationEvent<Guid> value)
+        {
+            return JsonConvert.SerializeObject(value);
         }
     }
 }

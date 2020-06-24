@@ -22,20 +22,20 @@ namespace Take.Elephant.Samples
             Console.WriteLine(@"Choose an implementation: ");
             Console.ForegroundColor = ConsoleColor.White;
 
-            foreach (Implementation value in Enum.GetValues(typeof(Implementation)))
+            foreach (Engine value in Enum.GetValues(typeof(Engine)))
             {
                 Console.WriteLine($"{(int)value}. {value}");
             }
-            Implementation option;
-            if (!Enum.TryParse(Console.ReadLine(), out option))
-                option = Implementation.Memory;
+
+            if (!Enum.TryParse(Console.ReadLine(), out Engine engine))
+                engine = Engine.Memory;
 
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Using the '{option}' implementation");
+            Console.WriteLine($"Using the '{engine}' implementation");
             Console.ForegroundColor = ConsoleColor.White;
 
             // Run map samples
-            IDataMap dataMap = GetDataMapImplementation(option);
+            IDataMap dataMap = GetDataMapImplementation(engine);
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("Map samples");
             Console.ForegroundColor = ConsoleColor.White;
@@ -45,14 +45,14 @@ namespace Take.Elephant.Samples
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("Set samples");
             Console.ForegroundColor = ConsoleColor.White;
-            IDataSet dataSet = GetDataSetImplementation(option);
+            IDataSet dataSet = GetDataSetImplementation(engine);
             await RunSetSamplesAsync(dataSet);
 
             // Run set map samples
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("SetMap samples");
             Console.ForegroundColor = ConsoleColor.White;
-            IDataSetMap dataSetMap = GetDataSetMapImplementation(option);
+            IDataSetMap dataSetMap = GetDataSetMapImplementation(engine);
             await RunSetMapSamplesAsync(dataSetMap);
 
             Console.ReadLine();
@@ -127,39 +127,39 @@ namespace Take.Elephant.Samples
 
         }
 
-        public static IDataMap GetDataMapImplementation(Implementation type)
+        public static IDataMap GetDataMapImplementation(Engine engine)
         {
-            switch (type)
+            switch (engine)
             {                
-                case Implementation.Redis:
+                case Engine.Redis:
                     return new RedisDataMap();
-                case Implementation.Sql:
+                case Engine.Sql:
                     return new SqlDataMap();
                 default:
                     return new MemoryDataMap();
             }
         }
 
-        public static IDataSet GetDataSetImplementation(Implementation type)
+        public static IDataSet GetDataSetImplementation(Engine type)
         {
             switch (type)
             {
-                case Implementation.Redis:
+                case Engine.Redis:
                     return new RedisDataSet();
-                case Implementation.Sql:
+                case Engine.Sql:
                     return new SqlDataSet();
                 default:
                     return new MemoryDataSet();
             }
         }
 
-        public static IDataSetMap GetDataSetMapImplementation(Implementation type)
+        public static IDataSetMap GetDataSetMapImplementation(Engine type)
         {
             switch (type)
             {
-                case Implementation.Redis:
+                case Engine.Redis:
                     return new RedisDataSetMap();
-                case Implementation.Sql:
+                case Engine.Sql:
                     return new SqlDataSetMap();
                 default:
                     return new MemoryDataSetMap();

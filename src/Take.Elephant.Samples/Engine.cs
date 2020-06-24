@@ -1,6 +1,6 @@
 namespace Take.Elephant.Samples
 {
-    public enum Implementation
+    public enum Engine
     {
         Memory = 1,
         Redis = 2,
