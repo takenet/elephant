@@ -8,9 +8,9 @@ Persistence library that provides common data structures as composable elements 
 
 ## Introduction
 
-Today's applications stores data in different places like the own process memory, SQL databases, Redis and other NoSQL databases. Usually, the developer uses distinct code patterns for each one of these storage engines. For memory storage, primitives and simple data structures are used, like lists and hashes. And for SQL databases, the most common pattern is the repository + unit of work. While this seems like the right thing to do (since you cannot perform advanced queries on a Redis database - for instance), sometimes the developer doesn't need the specific capabilities of that engine, and so there's no need to implement the storage engine specific pattern instead of using simple data structures.
+Today's applications store data in different places like the own process memory, SQL databases, Redis, and other NoSQL databases. Usually, the developer uses distinct code patterns for each one of these storage engines. For memory storage, primitives and simple data structures are used, like lists and hashes. And for SQL databases, the most common pattern is the repository + unit of work. While this seems like the right thing to do (since you cannot perform advanced queries on a Redis database - for instance), sometimes the developer doesn't need the specific capabilities of that engine, and so there's no need to implement the storage engine specific pattern instead of using simple data structures.
 
-For instance, there's no semantic difference between a repository ```GetById``` method and a ```Dictionary``` (hash table) ```TryGetValue``` method. But even if the application only uses the first method, probably the developer will implement something like the repository pattern for SQL data access. But what happens if the persistence layer needs to be moved to Redis or Mongodb? Probably, the developer will implement the repository pattern for the target engine, leaving empty some methods that are not supported (like queries on Redis). Or maybe, they will need to refactor the code that uses the storage class...
+For instance, there's no semantic difference between a repository ```GetById``` method and a ```Dictionary``` (hash table) ```TryGetValue``` method. But even if the application only uses the first method, probably the developer will implement something like the repository pattern for SQL data access. But what happens if the persistence layer needs to be moved to Redis or Elasticsearch? Probably, the developer will implement the repository pattern for the target engine, leaving empty some methods that are not supported (like queries on Redis). Or maybe, they will need to refactor the code that uses the storage class...
 
 The idea behind this library is to expose a common layer that can be used with multiple storage engines, while isolating the specific capabilities of each one, allowing the developer to compose the application storage infrastructure accordingly to its needs. It starts from common data structures, expanding according to the capabilities of each target engine. 
 
@@ -52,26 +52,21 @@ NumberMap        | Map    | Map for number values with atomic increment and decr
 PropertyMap      | Map    | Map that allows the insertion and update of specific properties of the value document. | Memory, Redis, SQL
 UpdatableMap     | Map    | Map that supports value updates under specific conditions.	| Memory, SQL Server, PostgreSQL
 
-### Other
-
-Name             | Description                                        
------------------|------------------------------------------------------------
-AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface 
-
 ## Current supported storage engines
 
 * Memory (System.Collections)
 * Redis
 * SQL Server
 * PostgreSQL
-* RabbitMQ
-* Microsoft Message Queueing
+* Azure Storage Queues
+* Azure Service Bus
+* Azure Event Hub
 * Kafka
 * Elasticsearch
 
 ## Requirements (to build from source)
-* C# 7.3 (Visual Studio 2015 or newer)
-* .NET Framework 4.6.1;.NET Standard 2.0
+* C# 8.0
+* .NET Core 3.1
 
 ### NuGet
 
@@ -79,7 +74,7 @@ AsyncEnumerable  | Async implementation of ```IEnumerable<T>``` interface
 * [Take.Elephant.Redis](https://nuget.org/packages/Take.Elephant.Redis/)
 * [Take.Elephant.Sql](https://nuget.org/packages/Take.Elephant.Sql/)
 * [Take.Elephant.Sql.PostgreSql](https://nuget.org/packages/Take.Elephant.Sql.PostgreSql/)
-* [Take.Elephant.RabbitMQ](https://nuget.org/packages/Take.Elephant.RabbitMQ/)
+* [Take.Elephant.Azure](https://nuget.org/packages/Take.Elephant.Azure/)
 
 ### Samples
 
