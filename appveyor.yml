@@ -39,7 +39,7 @@ assembly_info:
 artifacts:
   - path: '**\Take.Elephant*.nupkg'
 deploy:
-- provider: NuGet
+  provider: NuGet
   api_key:
     secure: jLC/R7f0Z4Ydk6BitDPVST62W15H51x6DMwrL5+pTUUWUD53jQw7uzjgmdl2NIw5
   skip_symbols: false
