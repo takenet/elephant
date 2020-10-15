@@ -53,7 +53,6 @@ namespace Take.Elephant.Elasticsearch
 
             var result = await ElasticClient.SearchAsync<T>(s => s
                 .Index(Mapping.Index)
-                .Type(Mapping.Type)
                 .Query(_ => queryDescriptor)
                 .From(skip).Size(take), cancellationToken);
 
@@ -68,8 +67,7 @@ namespace Take.Elephant.Elasticsearch
             }
 
             var response = await ElasticClient.DocumentExistsAsync<T>(key, d => d
-                .Index(Mapping.Index)
-                .Type(Mapping.Type),
+                .Index(Mapping.Index),
                 cancellationToken);
 
             return response.Exists;
@@ -84,8 +82,7 @@ namespace Take.Elephant.Elasticsearch
 
             var result = await ElasticClient.GetAsync<T>(key,
                 d => d
-                .Index(Mapping.Index)
-                .Type(Mapping.Type),
+                .Index(Mapping.Index),
                 cancellationToken);
 
             return result?.Source;
@@ -106,9 +103,8 @@ namespace Take.Elephant.Elasticsearch
             if (overwrite || !await ContainsKeyAsync(key, cancellationToken))
             {
                 var result = await ElasticClient.IndexAsync(new IndexRequest<T>(value,
-                    Mapping.Index,
-                    Mapping.Type,
-                    key.ToString()), cancellationToken);
+                    Mapping.Index, key), 
+                    cancellationToken);
 
                 return result.IsValid;
             }
@@ -124,9 +120,8 @@ namespace Take.Elephant.Elasticsearch
             }
 
             var result = await ElasticClient.DeleteAsync<T>(key,
-                d => d.Index(Mapping.Index)
-                      .Type(Mapping.Type),
-                cancellationToken);
+                d => d.Index(Mapping.Index),
+                             cancellationToken);
 
             return result.IsValid;
         }
