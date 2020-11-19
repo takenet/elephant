@@ -18,6 +18,7 @@ namespace Take.Elephant.Sql
         private readonly IDbTypeMapper _dbTypeMapper;
         private readonly IDictionary<string, string> _parameterReplacementDictionary;
         private readonly string _parameterPrefix;
+        private readonly Queue<string> _parameterNames;
 
         private string _valuePrefix;
         private string _valueSuffix;
@@ -26,13 +27,14 @@ namespace Take.Elephant.Sql
         public SqlExpressionTranslator(
             IDatabaseDriver databaseDriver,
             IDbTypeMapper dbTypeMapper,
-            IDictionary<string, string> parameterReplacementDictionary = null, 
+            IDictionary<string, string> parameterReplacementDictionary = null,
             string parameterPrefix = "Param")
         {
             _databaseDriver = databaseDriver;
             _dbTypeMapper = dbTypeMapper;
             _parameterReplacementDictionary = parameterReplacementDictionary;
             _parameterPrefix = parameterPrefix ?? throw new ArgumentNullException(nameof(parameterPrefix));
+            _parameterNames = new Queue<string>();
 
             _filter = new StringBuilder();
             _filterValues = new Dictionary<string, object>();
@@ -141,6 +143,7 @@ namespace Take.Elephant.Sql
                         parameterName = _parameterReplacementDictionary[parameterName];
                     }
                     _filter.Append(_databaseDriver.ParseIdentifier(parameterName));
+                    _parameterNames.Enqueue(parameterName);
                     return node;
 
                 case ExpressionType.MemberAccess:
@@ -293,9 +296,20 @@ namespace Take.Elephant.Sql
             if (value == null)
             {
                 return _databaseDriver.GetSqlStatementTemplate(SqlStatement.Null);
-            }            
-            
-            var name = $"{_parameterPrefix}{_parameterCount++}";
+            }
+
+            var name = $"{_parameterPrefix}{_parameterCount}";
+            if (_parameterNames.Any())
+            {
+                name = _parameterNames.Dequeue();
+                if (_filterValues.ContainsKey(name))
+                {
+                    name = $"{name}{_parameterCount}";
+                }
+            }
+
+            _parameterCount++;
+
             var parameterName = _databaseDriver.ParseParameterName(name);
             var dbType = DbTypeMapper.GetDbType(type);
             if ((dbType == DbType.String || dbType == DbType.StringFixedLength) &&
