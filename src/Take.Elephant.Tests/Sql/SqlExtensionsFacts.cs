@@ -94,7 +94,7 @@ namespace Take.Elephant.Tests.Sql
             AssertEquals(actual[2].Size, 500);
 
             //Parameter with different name from the comparison field, automatic size by value length
-            AssertEquals(actual[3].ParameterName, "@PersonalField3");
+            AssertEquals(actual[3].ParameterName, $"@PersonalField$3");
             AssertEquals(actual[3].Value, param3);
             AssertEquals(actual[3].Direction, ParameterDirection.Input);
             AssertEquals(actual[3].DbType, DbType.String);

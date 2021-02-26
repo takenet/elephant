@@ -9,6 +9,8 @@ namespace Take.Elephant.Sql
 {
     public static class SqlExtensions
     {
+        public const string PARAMETER_COUNT_SEPARATOR = "__";
+
         /// <summary>
         /// Transform to a flat string with comma separate values.
         /// </summary>
@@ -34,20 +36,19 @@ namespace Take.Elephant.Sql
             IDatabaseDriver databaseDriver,
             IDictionary<string, SqlType> columnTypes)
         {
-            if (columnTypes.TryGetValue(keyValuePair.Key, out var sqlType))
+            SqlType sqlType;
+            if (columnTypes.TryGetValue(keyValuePair.Key, out sqlType))
             {
                 return keyValuePair.ToDbParameter(databaseDriver, sqlType);
             }
-            else
-            {
-                // Queries with multiples parameters for same column add a number to the end of parameter key.
-                // Try to get the sqlType for parameter removing the digits at the end of parameter key
-                var key = Regex.Replace(keyValuePair.Key, @"\d*$", string.Empty);
 
-                return columnTypes.TryGetValue(key, out var sqlType2)
-                    ? keyValuePair.ToDbParameter(databaseDriver, sqlType2)
-                    : keyValuePair.ToDbParameter(databaseDriver);
-            }
+            // Queries with multiples parameters for same column add separator between the parameter name and the parameter number.
+            // Try to get the sqlType for parameter spliting the key on the parameter separator
+            var key = keyValuePair.Key.Split(SqlExpressionTranslator.PARAMETER_COUNT_SEPARATOR)[0];
+
+            return columnTypes.TryGetValue(key, out sqlType)
+                ? keyValuePair.ToDbParameter(databaseDriver, sqlType)
+                : keyValuePair.ToDbParameter(databaseDriver);
         }
 
         public static IEnumerable<DbParameter> ToDbParameters(
