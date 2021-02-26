@@ -9,8 +9,6 @@ namespace Take.Elephant.Sql
 {
     public static class SqlExtensions
     {
-        public const string PARAMETER_COUNT_SEPARATOR = "__";
-
         /// <summary>
         /// Transform to a flat string with comma separate values.
         /// </summary>
