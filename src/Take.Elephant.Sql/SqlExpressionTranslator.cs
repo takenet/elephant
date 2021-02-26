@@ -11,7 +11,7 @@ namespace Take.Elephant.Sql
 {
     public class SqlExpressionTranslator : ExpressionVisitor
     {
-        public const string PARAMETER_COUNT_SEPARATOR = "$";
+        internal const string PARAMETER_COUNT_SEPARATOR = "$";
 
         private readonly StringBuilder _filter;
         private readonly IDictionary<string, object> _filterValues;
