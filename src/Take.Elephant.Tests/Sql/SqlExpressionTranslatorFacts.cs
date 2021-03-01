@@ -18,7 +18,6 @@ namespace Take.Elephant.Tests.Sql
 
         public IDatabaseDriver DatabaseDriver { get; }
 
-
         public SqlExpressionTranslator GetTarget()
         {
             return new SqlExpressionTranslator(DatabaseDriver, DbTypeMapper.Default);
@@ -27,7 +26,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleEqualsConstantClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty == "abcd";
             var target = GetTarget();
 
@@ -42,7 +41,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleEqualsConstantWithComplexTypeClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<TestItem, bool>> expression = i => i.Value3.ToString() == "XYZ";
             var target = GetTarget();
 
@@ -57,7 +56,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleContainsConstantClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty.Contains("abcd");
             var target = GetTarget();
 
@@ -72,7 +71,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleStartsWithConstantClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty.StartsWith("abcd");
             var target = GetTarget();
 
@@ -87,7 +86,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleEndsWithConstantClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty.EndsWith("abcd");
             var target = GetTarget();
 
@@ -102,7 +101,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleEqualsWithSqlInjectionShouldBeHandled()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty == "abcd'); DROP TABLE MyTable; --";
             var target = GetTarget();
 
@@ -117,7 +116,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleEqualsExplicitBooleanConstantClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.BooleanProperty == false || i.BooleanProperty == true;
             var target = GetTarget();
 
@@ -125,15 +124,15 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual.Where, "(([BooleanProperty] = @BooleanProperty) OR ([BooleanProperty] = @BooleanProperty1))");
+            AssertEquals(actual.Where, "(([BooleanProperty] = @BooleanProperty) OR ([BooleanProperty] = @BooleanProperty$1))");
             AssertEquals(actual.FilterValues["BooleanProperty"], false);
-            AssertEquals(actual.FilterValues["BooleanProperty1"], true);
+            AssertEquals(actual.FilterValues["BooleanProperty$1"], true);
         }
 
         [Fact(Skip = "Not supported yet")]
         public void SingleEqualsBooleanConstantClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.BooleanProperty;
             var target = GetTarget();
 
@@ -148,7 +147,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleNotEqualsConstantClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty != "abcd";
             var target = GetTarget();
 
@@ -163,7 +162,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleNullConstantClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty == null;
             var target = GetTarget();
 
@@ -178,7 +177,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleNotNullConstantClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty != null;
             var target = GetTarget();
 
@@ -193,7 +192,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleEqualsMemberClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             var item = new Item
             {
                 StringProperty = "abcd"
@@ -213,7 +212,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void SingleEqualsExternalMemberClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             var item = new TestItem
             {
                 Value1 = "abcd",
@@ -234,7 +233,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact(Skip = "Not supported yet")]
         public void SingleEqualsNullMemberClauseShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             var item = new Item
             {
                 StringProperty = null
@@ -254,7 +253,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void MultipleConstantsAndClausesShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty == "abcd" && i.IntegerProperty == 2 && i.RandomProperty == "random value";
             var target = GetTarget();
 
@@ -271,7 +270,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void MultipleConstantsOrClausesShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty == "abcd" || i.IntegerProperty == 2 || i.RandomProperty == "random value";
             var target = GetTarget();
 
@@ -288,7 +287,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void MultipleConstantsAndOrClausesShouldCreateSql()
         {
-            // Arrange            
+            // Arrange
             Expression<Func<Item, bool>> expression = i => i.StringProperty == "abcd" && i.IntegerProperty == 2 || i.RandomProperty.Contains("random value");
             var target = GetTarget();
 
@@ -305,7 +304,7 @@ namespace Take.Elephant.Tests.Sql
         [Fact]
         public void MultipleConstantAndMemberAccessAndClausesShouldCreateSql()
         {
-            // Arrange        
+            // Arrange
             var item = new Item
             {
                 StringProperty = "abcd",
@@ -324,8 +323,7 @@ namespace Take.Elephant.Tests.Sql
             AssertEquals(actual.FilterValues["RandomProperty"], "random value");
         }
 
-
-        class TestItem
+        private class TestItem
         {
             public string Value1 { get; set; }
 

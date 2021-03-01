@@ -19,7 +19,6 @@ namespace Take.Elephant.Tests.Sql
 
         public IDatabaseDriver DatabaseDriver { get; }
 
-
         public SqlWhereStatement GetTarget(Expression expression)
         {
             var sqlExpressionTranslator = new SqlExpressionTranslator(DatabaseDriver, DbTypeMapper.Default);
@@ -53,16 +52,16 @@ namespace Take.Elephant.Tests.Sql
             var param7 = true;
             var param8 = Guid.NewGuid();
 
-            // Arrange            
-            Expression<Func<FakeDocument, bool>> expression = i => 
-                i.Id == param0 && 
-                i.Name == param1 && 
+            // Arrange
+            Expression<Func<FakeDocument, bool>> expression = i =>
+                i.Id == param0 &&
+                i.Name == param1 &&
                 (i.PersonalField == param2 || i.PersonalField == param3) &&
                 i.DateProperty == param4 &&
                 (i.DecimalProperty == param5 || i.FloatProperty == param6) &&
                 i.BooleanProperty == param7 &&
                 i.GuidProperty == param8;
-            
+
             var target = GetTarget(expression);
 
             // Act
@@ -95,12 +94,12 @@ namespace Take.Elephant.Tests.Sql
             AssertEquals(actual[2].Size, 500);
 
             //Parameter with different name from the comparison field, automatic size by value length
-            AssertEquals(actual[3].ParameterName, "@PersonalField3");
+            AssertEquals(actual[3].ParameterName, $"@PersonalField$3");
             AssertEquals(actual[3].Value, param3);
             AssertEquals(actual[3].Direction, ParameterDirection.Input);
             AssertEquals(actual[3].DbType, DbType.String);
             AssertEquals(((SqlParameter)actual[3]).SqlDbType, SqlDbType.NVarChar);
-            AssertEquals(actual[3].Size, 5);
+            AssertEquals(actual[3].Size, 500);
 
             AssertEquals(actual[4].ParameterName, "@DateProperty");
             AssertEquals(actual[4].Value, param4);

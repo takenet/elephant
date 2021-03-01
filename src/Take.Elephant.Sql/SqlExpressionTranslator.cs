@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -12,6 +11,8 @@ namespace Take.Elephant.Sql
 {
     public class SqlExpressionTranslator : ExpressionVisitor
     {
+        internal const string PARAMETER_COUNT_SEPARATOR = "$";
+
         private readonly StringBuilder _filter;
         private readonly IDictionary<string, object> _filterValues;
         private readonly IDatabaseDriver _databaseDriver;
@@ -83,7 +84,6 @@ namespace Take.Elephant.Sql
                     }
                     else
                     {
-
                         @operator = _databaseDriver.GetSqlStatementTemplate(SqlStatement.NotEqual);
                     }
                     break;
@@ -304,7 +304,7 @@ namespace Take.Elephant.Sql
                 name = _parameterNames.Dequeue();
                 if (_filterValues.ContainsKey(name))
                 {
-                    name = $"{name}{_parameterCount}";
+                    name = $"{name}{PARAMETER_COUNT_SEPARATOR}{_parameterCount}";
                 }
             }
 
