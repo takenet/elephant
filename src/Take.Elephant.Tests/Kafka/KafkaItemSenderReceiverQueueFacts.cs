@@ -1,11 +1,9 @@
 using Confluent.Kafka;
 using System;
-using System.IO;
 using System.Linq;
-using Confluent.Kafka.Admin;
 using Take.Elephant.Kafka;
-using Xunit;
 using Take.Elephant.Tests.Azure;
+using Xunit;
 
 namespace Take.Elephant.Tests.Kafka
 {
