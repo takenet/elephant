@@ -396,4 +396,33 @@ namespace Take.Elephant.Sql
                 keyAndColumnValues.ToDbParameters(databaseDriver, table));
         }
     }
+
+    public class DbConnectionExtensionInstantiable : IDbConnectionExtensionInstantiable
+    {
+        public DbCommand CreateSelectTop1Command(
+            DbConnection connection,
+            IDatabaseDriver databaseDriver,
+            ITable table,
+            string[] selectColumns,
+            IDictionary<string, object> filterValues)
+        {
+            var command = connection.CreateSelectTop1Command(databaseDriver, table, selectColumns, filterValues);
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@ExpirableKeySqlMap_ExpirationDate";
+            parameter.Value = DateTimeOffset.UtcNow;
+            command.Parameters.Add(parameter);
+
+            return command;
+        }
+    }
+
+    public interface IDbConnectionExtensionInstantiable
+    {
+        public DbCommand CreateSelectTop1Command(
+            DbConnection connection,
+            IDatabaseDriver databaseDriver,
+            ITable table,
+            string[] selectColumns,
+            IDictionary<string, object> filterValues);
+    }
 }

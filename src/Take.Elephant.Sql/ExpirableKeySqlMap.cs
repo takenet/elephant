@@ -56,7 +56,7 @@ namespace Take.Elephant.Sql
                     schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
                     tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())                    
+                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())
                 },
                 keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
 
@@ -85,7 +85,7 @@ namespace Take.Elephant.Sql
                     schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
                     tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetCombinedAndStatement(DatabaseDriver, 
+                    filter = SqlHelper.GetCombinedAndStatement(DatabaseDriver,
                                                                                              SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
                                                                                              SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()))
                 },
@@ -129,7 +129,7 @@ namespace Take.Elephant.Sql
                     case SqlStatement.SelectCount:
                     case SqlStatement.SelectTop1:
                     case SqlStatement.SelectSkipTake:
-                        var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > '{DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}Z')";
+                        var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > @ExpirableKeySqlMap_ExpirationDate)";
                         sql = InjectSqlFilter(sql, expirationFilter);
                         break;
                 }
