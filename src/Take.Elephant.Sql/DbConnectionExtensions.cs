@@ -308,7 +308,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateMergeCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> keyValues,
@@ -366,7 +366,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateMergeIncrementCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string incrementColumnName,
