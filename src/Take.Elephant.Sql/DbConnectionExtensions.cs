@@ -53,12 +53,13 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateTextCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             string commandTemplate,
             object format,
             IEnumerable<DbParameter> sqlParameters = null)
         {
-            var command = connection.CreateCommand();
+            var decoratedConnection = new DbConnectionDecorator(connection);
+            var command = decoratedConnection.CreateCommand();
             command.CommandText = commandTemplate.Format(format);
             command.CommandType = System.Data.CommandType.Text;
 
@@ -74,13 +75,15 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateDeleteCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues)
         {
             if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
-            return connection.CreateTextCommand(
+            var decoratedConnection = new DbConnectionDecorator(connection);
+
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Delete),
                 new
                 {
@@ -92,7 +95,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateUpdateCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues,
@@ -100,7 +103,9 @@ namespace Take.Elephant.Sql
         {
             if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
             if (columnValues == null) throw new ArgumentNullException(nameof(columnValues));
-            return connection.CreateTextCommand(
+            var decoratedConnection = new DbConnectionDecorator(connection);
+
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
                 new
                 {
@@ -113,12 +118,14 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateContainsCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues)
         {
-            return connection.CreateTextCommand(
+            var decoratedConnection = new DbConnectionDecorator(connection);
+
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Exists),
                 new
                 {
@@ -130,12 +137,14 @@ namespace Take.Elephant.Sql
         }        
 
         public static DbCommand CreateInsertCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> columnValues)
         {
-            return connection.CreateTextCommand(
+            var decoratedConnection = new DbConnectionDecorator(connection);
+
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Insert),
                 new
                 {
@@ -148,13 +157,15 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateInsertOutputCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> columnValues,
             string[] outputColumnNames)
         {
-            return connection.CreateTextCommand(
+            var decoratedConnection = new DbConnectionDecorator(connection);
+
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertOutput),
                 new
                 {
@@ -168,15 +179,16 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateInsertWhereNotExistsCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues,
             IDictionary<string, object> columnValues)
         {
             var sqlTemplate = databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertWhereNotExists);
+            var decoratedConnection = new DbConnectionDecorator(connection);
 
-            return connection.CreateTextCommand(
+            return decoratedConnection.CreateTextCommand(
                 sqlTemplate,
                 new
                 {
@@ -192,7 +204,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues,
@@ -200,7 +212,9 @@ namespace Take.Elephant.Sql
             bool distinct = false)
         {
             if (selectColumns == null) throw new ArgumentNullException(nameof(selectColumns));
-            return connection.CreateTextCommand(
+            var decoratedConnection = new DbConnectionDecorator(connection);
+
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinct : SqlStatement.Select),
                 new
                 {
@@ -213,7 +227,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectCountCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string filter = null,
@@ -221,7 +235,9 @@ namespace Take.Elephant.Sql
             bool distinct = false)
         {
             if (filter == null) filter = databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
-            return connection.CreateTextCommand(
+            var decoratedConnection = new DbConnectionDecorator(connection);
+
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectCountDistinct : SqlStatement.SelectCount),
                 new
                 {
@@ -233,12 +249,14 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectCountCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues)
         {
-            return connection.CreateTextCommand(
+            var decoratedConnection = new DbConnectionDecorator(connection);
+
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectCount),
                 new
                 {
@@ -250,7 +268,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectSkipTakeCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string[] selectColumns,
@@ -270,8 +288,9 @@ namespace Take.Elephant.Sql
             {
                 orderBy = $"{orderBy} {databaseDriver.GetSqlStatementTemplate(SqlStatement.Desc)}";
             }
+            var decoratedConnection = new DbConnectionDecorator(connection);
 
-            return connection.CreateTextCommand(
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct
                     ? SqlStatement.SelectDistinctSkipTake
                     : SqlStatement.SelectSkipTake),
@@ -289,13 +308,14 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectTop1Command(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string[] selectColumns,
             IDictionary<string, object> filterValues)
         {
-            return connection.CreateTextCommand(
+            var decoratedConnection = new DbConnectionDecorator(connection);
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectTop1),
                 new
                 {
@@ -308,7 +328,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateMergeCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> keyValues,
@@ -346,8 +366,9 @@ namespace Take.Elephant.Sql
                 allColumns = columns;
                 allValues = values;
             }
+            var decoratedConnection = new DbConnectionDecorator(connection);
 
-            return connection.CreateTextCommand(
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Merge),
                 new
                 {
@@ -366,7 +387,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateMergeIncrementCommand(
-            this DbConnectionDecorator connection,
+            this DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string incrementColumnName,
@@ -376,8 +397,9 @@ namespace Take.Elephant.Sql
             var keyAndColumnValues = keyValues
                 .Union(columnValues)
                 .ToDictionary(c => c.Key, c => c.Value);
+            var decoratedConnection = new DbConnectionDecorator(connection);
 
-            return connection.CreateTextCommand(
+            return decoratedConnection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.MergeIncrement),
                 new
                 {
