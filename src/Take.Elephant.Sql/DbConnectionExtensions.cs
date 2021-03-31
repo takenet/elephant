@@ -53,7 +53,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateTextCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             string commandTemplate,
             object format,
             IEnumerable<DbParameter> sqlParameters = null)
@@ -192,7 +192,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues,
@@ -213,7 +213,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectCountCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string filter = null,
@@ -233,7 +233,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectCountCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues)
@@ -250,7 +250,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectSkipTakeCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string[] selectColumns,
@@ -289,7 +289,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateSelectTop1Command(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string[] selectColumns,
