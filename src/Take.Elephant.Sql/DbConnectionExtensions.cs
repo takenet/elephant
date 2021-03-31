@@ -74,7 +74,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateDeleteCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues)
@@ -92,7 +92,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateUpdateCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues,
@@ -113,7 +113,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateContainsCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues)
@@ -130,7 +130,7 @@ namespace Take.Elephant.Sql
         }        
 
         public static DbCommand CreateInsertCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> columnValues)
@@ -148,7 +148,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateInsertOutputCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> columnValues,
@@ -168,7 +168,7 @@ namespace Take.Elephant.Sql
         }
 
         public static DbCommand CreateInsertWhereNotExistsCommand(
-            this DbConnection connection,
+            this DbConnectionDecorator connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues,
