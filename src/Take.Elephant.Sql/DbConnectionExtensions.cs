@@ -200,7 +200,7 @@ namespace Take.Elephant.Sql
             bool distinct = false)
         {
             if (selectColumns == null) throw new ArgumentNullException(nameof(selectColumns));
-            return connection.CreateTextCommand(
+            var command = connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinct : SqlStatement.Select),
                 new
                 {
@@ -210,6 +210,13 @@ namespace Take.Elephant.Sql
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
+
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@ExpirableKeySqlMap_ExpirationDate";
+            parameter.Value = DateTimeOffset.UtcNow;
+            command.Parameters.Add(parameter);
+
+            return command;
         }
 
         public static DbCommand CreateSelectCountCommand(
@@ -221,7 +228,7 @@ namespace Take.Elephant.Sql
             bool distinct = false)
         {
             if (filter == null) filter = databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
-            return connection.CreateTextCommand(
+            var command = connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectCountDistinct : SqlStatement.SelectCount),
                 new
                 {
@@ -230,6 +237,13 @@ namespace Take.Elephant.Sql
                     filter = filter
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
+
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@ExpirableKeySqlMap_ExpirationDate";
+            parameter.Value = DateTimeOffset.UtcNow;
+            command.Parameters.Add(parameter);
+
+            return command;
         }
 
         public static DbCommand CreateSelectCountCommand(
@@ -238,7 +252,7 @@ namespace Take.Elephant.Sql
             ITable table,
             IDictionary<string, object> filterValues)
         {
-            return connection.CreateTextCommand(
+            var command = connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectCount),
                 new
                 {
@@ -247,6 +261,13 @@ namespace Take.Elephant.Sql
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
+
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@ExpirableKeySqlMap_ExpirationDate";
+            parameter.Value = DateTimeOffset.UtcNow;
+            command.Parameters.Add(parameter);
+
+            return command;
         }
 
         public static DbCommand CreateSelectSkipTakeCommand(
@@ -271,7 +292,7 @@ namespace Take.Elephant.Sql
                 orderBy = $"{orderBy} {databaseDriver.GetSqlStatementTemplate(SqlStatement.Desc)}";
             }
 
-            return connection.CreateTextCommand(
+            var command = connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct
                     ? SqlStatement.SelectDistinctSkipTake
                     : SqlStatement.SelectSkipTake),
@@ -286,6 +307,13 @@ namespace Take.Elephant.Sql
                     orderBy = orderBy
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
+
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@ExpirableKeySqlMap_ExpirationDate";
+            parameter.Value = DateTimeOffset.UtcNow;
+            command.Parameters.Add(parameter);
+
+            return command;
         }
 
         public static DbCommand CreateSelectTop1Command(
@@ -295,7 +323,7 @@ namespace Take.Elephant.Sql
             string[] selectColumns,
             IDictionary<string, object> filterValues)
         {
-            return connection.CreateTextCommand(
+            var command = connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectTop1),
                 new
                 {
@@ -305,6 +333,13 @@ namespace Take.Elephant.Sql
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
+
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@ExpirableKeySqlMap_ExpirationDate";
+            parameter.Value = DateTimeOffset.UtcNow;
+            command.Parameters.Add(parameter);
+
+            return command;
         }
 
         public static DbCommand CreateMergeCommand(
