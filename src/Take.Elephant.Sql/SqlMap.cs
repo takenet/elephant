@@ -16,10 +16,15 @@ namespace Take.Elephant.Sql
     /// <typeparam name="TValue"></typeparam>
     public class SqlMap<TKey, TValue> : MapStorageBase<TKey, TValue>, IKeysMap<TKey, TValue>, IPropertyMap<TKey, TValue>, IUpdatableMap<TKey, TValue>
     {
-        public SqlMap(string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper)
+        private IDbConnectionExtensionInstantiable _dbConnectionExtensions;
+        public SqlMap(string connectionString,
+            ITable table,
+            IMapper<TKey> keyMapper,
+            IMapper<TValue> valueMapper,
+            IDbConnectionExtensionInstantiable dbConnectionExtensionsDecorator)
             : this(new SqlDatabaseDriver(), connectionString, table, keyMapper, valueMapper)
         {
-
+            _dbConnectionExtensions = dbConnectionExtensionsDecorator;
         }
 
         public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper)
@@ -163,7 +168,7 @@ namespace Take.Elephant.Sql
                 {
                     var keyColumnValues = KeyMapper.GetColumnValues(key);
 
-                    using (var command = connection.CreateSelectTop1Command(DatabaseDriver, Table, new[] { propertyName }, keyColumnValues))
+                    using (var command = _dbConnectionExtensions.CreateSelectTop1Command(connection, DatabaseDriver, Table, new[] { propertyName }, keyColumnValues))
                     {
                         var dbValue = await command.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                         if (dbValue != null && !(dbValue is DBNull))
