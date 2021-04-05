@@ -118,7 +118,8 @@ namespace Take.Elephant.Sql
                 _expirationColumnName = underlyingDatabaseDriver.ParseIdentifier(expirationColumnName ?? throw new ArgumentNullException(nameof(expirationColumnName)));
             }
 
-            public DbConnection CreateConnection(string connectionString) => _underlyingDatabaseDriver.CreateConnection(connectionString);
+            public DbConnection CreateConnection(string connectionString)
+                => new DbConnectionDecorator(_underlyingDatabaseDriver.CreateConnection(connectionString));
 
             public string GetSqlStatementTemplate(SqlStatement sqlStatement)
             {

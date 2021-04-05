@@ -39,7 +39,7 @@ namespace Take.Elephant.Sql
             _dbConnection.Open();
         }
 
-        public new DbCommand CreateCommand()
+        protected override DbCommand CreateDbCommand()
         {
             var command = _dbConnection.CreateCommand();
             var parameter = command.CreateParameter();
@@ -51,11 +51,6 @@ namespace Take.Elephant.Sql
         }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DbCommand CreateDbCommand()
         {
             throw new NotImplementedException();
         }
