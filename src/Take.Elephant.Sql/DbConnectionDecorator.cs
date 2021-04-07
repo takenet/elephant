@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Take.Elephant.Sql
 {
@@ -48,6 +49,18 @@ namespace Take.Elephant.Sql
 
             command.Parameters.Add(parameter);
             return command;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            _dbConnection.Dispose();
+        }
+
+        public override async ValueTask DisposeAsync()
+        {
+            await base.DisposeAsync();
+            await _dbConnection.DisposeAsync();
         }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
