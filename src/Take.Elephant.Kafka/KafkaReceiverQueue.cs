@@ -1,11 +1,11 @@
-using Confluent.Kafka;
-using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Confluent.Kafka;
+using Newtonsoft.Json;
 
 namespace Take.Elephant.Kafka
 {
@@ -113,7 +113,11 @@ namespace Take.Elephant.Kafka
                         .StartNew(
                             () => ConsumeAsync(_cts.Token),
                             TaskCreationOptions.LongRunning)
-                        .Unwrap();
+                        .Unwrap()
+                        .ContinueWith(
+                            async _ => await StartConsumerTaskIfNotAsync(cancellationToken),
+                            TaskContinuationOptions.OnlyOnFaulted
+                        );
                 }
             }
             finally
@@ -134,7 +138,7 @@ namespace Take.Elephant.Kafka
                 try
                 {
                     var result = _consumer.Consume(cancellationToken);
-                    var resultValue = _serializer.Deserialize(result.Value);
+                    var resultValue = _serializer.Deserialize(result.Message.Value);
                     await _channel.Writer.WriteAsync(resultValue, cancellationToken);
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)

@@ -75,6 +75,7 @@ UpdatableMap     | Map    | Map that supports value updates under specific condi
 * [Take.Elephant.Sql](https://nuget.org/packages/Take.Elephant.Sql/)
 * [Take.Elephant.Sql.PostgreSql](https://nuget.org/packages/Take.Elephant.Sql.PostgreSql/)
 * [Take.Elephant.Azure](https://nuget.org/packages/Take.Elephant.Azure/)
+* [Take.Elephant.Kafka](https://nuget.org/packages/Take.Elephant.Kafka/)
 
 ### Samples
 
