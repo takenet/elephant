@@ -9,30 +9,11 @@ using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
 {
-    public static class DbConnectionExtensions
+    public class DbConnectionExtensions : IDbConnectionExtensions
     {
-        public static Task<int> ExecuteNonQueryAsync(
-            this DbConnection connection,
-            string commandText,
-            CancellationToken cancellationToken,
-            SqlParameter[] sqlParameters = null)
-        {
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = commandText;
-                command.CommandType = System.Data.CommandType.Text;
-                if (sqlParameters != null &&
-                    sqlParameters.Length > 0)
-                {
-                    command.Parameters.AddRange(sqlParameters);
-                }
 
-                return command.ExecuteNonQueryAsync(cancellationToken);
-            }
-        }
-
-        public static async Task<TResult> ExecuteScalarAsync<TResult>(
-            this DbConnection connection,
+        public async Task<TResult> ExecuteScalarAsync<TResult>(
+            DbConnection connection,
             string commandText,
             CancellationToken cancellationToken,
             SqlParameter[] sqlParameters = null)
@@ -52,8 +33,8 @@ namespace Take.Elephant.Sql
             }
         }
 
-        public static DbCommand CreateTextCommand(
-            this DbConnection connection,
+        public DbCommand CreateTextCommand(
+            DbConnection connection,
             string commandTemplate,
             object format,
             IEnumerable<DbParameter> sqlParameters = null)
@@ -73,14 +54,14 @@ namespace Take.Elephant.Sql
             return command;
         }
 
-        public static DbCommand CreateDeleteCommand(
-            this DbConnection connection,
+        public DbCommand CreateDeleteCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues)
         {
             if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Delete),
                 new
                 {
@@ -91,8 +72,8 @@ namespace Take.Elephant.Sql
                 filterValues.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateUpdateCommand(
-            this DbConnection connection,
+        public DbCommand CreateUpdateCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues,
@@ -100,7 +81,7 @@ namespace Take.Elephant.Sql
         {
             if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
             if (columnValues == null) throw new ArgumentNullException(nameof(columnValues));
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
                 new
                 {
@@ -112,13 +93,13 @@ namespace Take.Elephant.Sql
                 filterValues.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateContainsCommand(
-            this DbConnection connection,
+        public DbCommand CreateContainsCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues)
         {
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Exists),
                 new
                 {
@@ -127,15 +108,15 @@ namespace Take.Elephant.Sql
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
-        }        
+        }
 
-        public static DbCommand CreateInsertCommand(
-            this DbConnection connection,
+        public DbCommand CreateInsertCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> columnValues)
         {
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Insert),
                 new
                 {
@@ -147,14 +128,14 @@ namespace Take.Elephant.Sql
                 columnValues.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateInsertOutputCommand(
-            this DbConnection connection,
+        public DbCommand CreateInsertOutputCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> columnValues,
             string[] outputColumnNames)
         {
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertOutput),
                 new
                 {
@@ -167,8 +148,8 @@ namespace Take.Elephant.Sql
                 columnValues.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateInsertWhereNotExistsCommand(
-            this DbConnection connection,
+        public DbCommand CreateInsertWhereNotExistsCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues,
@@ -176,7 +157,7 @@ namespace Take.Elephant.Sql
         {
             var sqlTemplate = databaseDriver.GetSqlStatementTemplate(SqlStatement.InsertWhereNotExists);
 
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 sqlTemplate,
                 new
                 {
@@ -191,8 +172,8 @@ namespace Take.Elephant.Sql
                 columnValues.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateSelectCommand(
-            this DbConnection connection,
+        public DbCommand CreateSelectCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues,
@@ -200,7 +181,7 @@ namespace Take.Elephant.Sql
             bool distinct = false)
         {
             if (selectColumns == null) throw new ArgumentNullException(nameof(selectColumns));
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinct : SqlStatement.Select),
                 new
                 {
@@ -212,8 +193,8 @@ namespace Take.Elephant.Sql
                 filterValues?.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateSelectCountCommand(
-            this DbConnection connection,
+        public DbCommand CreateSelectCountCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string filter = null,
@@ -221,7 +202,7 @@ namespace Take.Elephant.Sql
             bool distinct = false)
         {
             if (filter == null) filter = databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectCountDistinct : SqlStatement.SelectCount),
                 new
                 {
@@ -232,13 +213,13 @@ namespace Take.Elephant.Sql
                 filterValues?.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateSelectCountCommand(
-            this DbConnection connection,
+        public DbCommand CreateSelectCountCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> filterValues)
         {
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectCount),
                 new
                 {
@@ -249,8 +230,8 @@ namespace Take.Elephant.Sql
                 filterValues?.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateSelectSkipTakeCommand(
-            this DbConnection connection,
+        public DbCommand CreateSelectSkipTakeCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string[] selectColumns,
@@ -271,7 +252,7 @@ namespace Take.Elephant.Sql
                 orderBy = $"{orderBy} {databaseDriver.GetSqlStatementTemplate(SqlStatement.Desc)}";
             }
 
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(distinct
                     ? SqlStatement.SelectDistinctSkipTake
                     : SqlStatement.SelectSkipTake),
@@ -288,14 +269,14 @@ namespace Take.Elephant.Sql
                 filterValues?.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateSelectTop1Command(
-            this DbConnection connection,
+        public DbCommand CreateSelectTop1Command(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string[] selectColumns,
             IDictionary<string, object> filterValues)
         {
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectTop1),
                 new
                 {
@@ -307,8 +288,8 @@ namespace Take.Elephant.Sql
                 filterValues?.ToDbParameters(databaseDriver, table));
         }
 
-        public static DbCommand CreateMergeCommand(
-            this DbConnection connection,
+        public DbCommand CreateMergeCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             IDictionary<string, object> keyValues,
@@ -320,8 +301,8 @@ namespace Take.Elephant.Sql
                 .ToDictionary(c => c.Key, c => c.Value);
 
             IEnumerable<DbParameter> parameters;
-            string columnNamesAndValues;            
-            
+            string columnNamesAndValues;
+
             var columns = keyAndColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate();
             string allColumns; // Including identity columns
             var values = keyAndColumnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate();
@@ -347,7 +328,7 @@ namespace Take.Elephant.Sql
                 allValues = values;
             }
 
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Merge),
                 new
                 {
@@ -365,8 +346,8 @@ namespace Take.Elephant.Sql
                 parameters);
         }
 
-        public static DbCommand CreateMergeIncrementCommand(
-            this DbConnection connection,
+        public DbCommand CreateMergeIncrementCommand(
+            DbConnection connection,
             IDatabaseDriver databaseDriver,
             ITable table,
             string incrementColumnName,
@@ -377,7 +358,7 @@ namespace Take.Elephant.Sql
                 .Union(columnValues)
                 .ToDictionary(c => c.Key, c => c.Value);
 
-            return connection.CreateTextCommand(
+            return CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.MergeIncrement),
                 new
                 {

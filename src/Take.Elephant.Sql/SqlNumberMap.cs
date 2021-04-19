@@ -43,7 +43,13 @@ namespace Take.Elephant.Sql
                 {
                     var keyColumnValues = KeyMapper.GetColumnValues(key);
                     var columnValues = GetColumnValues(value);
-                    using (var command = connection.CreateMergeIncrementCommand(DatabaseDriver, Table, _numberColumnName, keyColumnValues, columnValues))
+                    using (var command = ConnectionExtensions.CreateMergeIncrementCommand(
+                        connection,
+                        DatabaseDriver,
+                        Table,
+                        _numberColumnName,
+                        keyColumnValues,
+                        columnValues))
                     {
                         return (long)await command.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                     }

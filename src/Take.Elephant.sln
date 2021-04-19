@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Tests", "Take
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6A6D0432-F3B4-4DBE-B07F-05D2901D0237}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		..\appveyor.yml = ..\appveyor.yml
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
@@ -30,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Kafka", "Take
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Elasticsearch", "Take.Elephant.ElasticSearch\Take.Elephant.Elasticsearch.csproj", "{4CAFB6C5-9F17-46FA-90A8-621DA1C91423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Take.Elephant.EntityFramework", "Take.Elephant.EntityFramework\Take.Elephant.EntityFramework.csproj", "{F21FEBAC-B468-4EFA-8A2C-00A85CF56907}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.EntityFramework", "Take.Elephant.EntityFramework\Take.Elephant.EntityFramework.csproj", "{F21FEBAC-B468-4EFA-8A2C-00A85CF56907}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

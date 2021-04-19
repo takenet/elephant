@@ -10,14 +10,25 @@ namespace Take.Elephant.Sql.Mapping
     /// <inheritdoc />        
     public class Table : ITable
     {
+        private readonly IDbConnectionExtensions _connectionExtensions;
         private readonly SchemaSynchronizationStrategy _synchronizationStrategy;
         private readonly SemaphoreSlim _schemaSynchronizedSemaphore;
         private int _synchronizationsTries;
-        
+
+        public Table(string name,
+            string[] keyColumnsNames,
+            IDictionary<string, SqlType> columns,
+            string schema = null,
+            SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.UntilSuccess)
+            : this(name, keyColumnsNames, columns, new DbConnectionExtensions(), schema, synchronizationStrategy)
+        {
+        }
+
         public Table(
             string name,
             string[] keyColumnsNames,
             IDictionary<string, SqlType> columns,
+            IDbConnectionExtensions connectionExtensions,
             string schema = null,
             SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.UntilSuccess)
         {
@@ -32,6 +43,7 @@ namespace Take.Elephant.Sql.Mapping
             Name = name ?? throw new ArgumentNullException(nameof(name));
             KeyColumnsNames = keyColumnsNames;
             Columns = columns;
+            this._connectionExtensions = connectionExtensions;
             Schema = schema;
             _schemaSynchronizedSemaphore = new SemaphoreSlim(1);
         }
@@ -62,7 +74,7 @@ namespace Take.Elephant.Sql.Mapping
         public virtual async Task SynchronizeSchemaAsync(string connectionString, IDatabaseDriver databaseDriver, CancellationToken cancellationToken)
         {
             if (_synchronizationStrategy == SchemaSynchronizationStrategy.Ignore) return;
-            
+
             if (ShouldSynchronizeSchema)
             {
                 await _schemaSynchronizedSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -75,7 +87,7 @@ namespace Take.Elephant.Sql.Mapping
                         if (databaseDriver == null) throw new ArgumentNullException(nameof(databaseDriver));
 
                         _synchronizationsTries++;
-                        
+
                         using (var connection = databaseDriver.CreateConnection(connectionString))
                         {
                             await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -88,7 +100,8 @@ namespace Take.Elephant.Sql.Mapping
                                 });
 
                             // Check if the table exists
-                            var tableExists = await connection.ExecuteScalarAsync<bool>(
+                            var tableExists = await  _connectionExtensions.ExecuteScalarAsync<bool>(
+                                connection,
                                 tableExistsSql,
                                 cancellationToken).ConfigureAwait(false);
 
@@ -122,12 +135,12 @@ namespace Take.Elephant.Sql.Mapping
         /// Try to execute the schema synchronization until it succeeds.
         /// </summary>
         UntilSuccess,
-        
+
         /// <summary>
         /// Try to execute the schema synchronization only one time. 
         /// </summary>
         TryOnce,
-        
+
         /// <summary>
         /// Do not try to synchronize the table schema.
         /// </summary>

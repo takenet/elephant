@@ -40,8 +40,8 @@ namespace Take.Elephant.Sql
                     var columnValues = GetColumnValues(key, value, true);
                     var keyColumnValues = GetKeyColumnValues(columnValues);
                     using (var command = overwrite ? 
-                        connection.CreateMergeCommand(DatabaseDriver, Table, keyColumnValues, columnValues) : 
-                        connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table, keyColumnValues, columnValues))
+                        ConnectionExtensions.CreateMergeCommand(connection, DatabaseDriver, Table, keyColumnValues, columnValues) : 
+                        ConnectionExtensions.CreateInsertWhereNotExistsCommand(connection, DatabaseDriver, Table, keyColumnValues, columnValues))
                     {
                         return await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) > 0;
                     }
@@ -62,7 +62,7 @@ namespace Take.Elephant.Sql
                     return await new DbDataReaderAsyncEnumerable<TValue>(
                         // ReSharper disable once AccessToDisposedClosure
                         t => connection.AsCompletedTask(),
-                        c => c.CreateSelectCommand(DatabaseDriver, Table, keyColumnValues, selectColumns),
+                        c => ConnectionExtensions.CreateSelectCommand(c, DatabaseDriver, Table, keyColumnValues, selectColumns),
                         Mapper,
                         selectColumns)
                         .FirstOrDefaultAsync(cancellationTokenSource.Token)
@@ -97,7 +97,7 @@ namespace Take.Elephant.Sql
         {
             var selectColumns = Table.KeyColumnsNames;
             return Task.FromResult<IAsyncEnumerable<TKey>>(
-                new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns), KeyMapper, selectColumns));
+                new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => ConnectionExtensions.CreateSelectCommand(c, DatabaseDriver, Table, null, selectColumns), KeyMapper, selectColumns));
         }
 
         public virtual async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName,
@@ -114,7 +114,7 @@ namespace Take.Elephant.Sql
                     var keyColumnValues = KeyMapper.GetColumnValues(key);
                     var columnValues = new Dictionary<string, object> { { propertyName, Mapper.DbTypeMapper.ToDbType(propertyValue, Table.Columns[propertyName].Type) } };
 
-                    using (var command = connection.CreateMergeCommand(DatabaseDriver, Table, keyColumnValues, columnValues))
+                    using (var command = ConnectionExtensions.CreateMergeCommand(connection, DatabaseDriver, Table, keyColumnValues, columnValues))
                     {
                         if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
                         {
@@ -139,7 +139,7 @@ namespace Take.Elephant.Sql
 
                     if (columnValues.Any())
                     {
-                        using (var command = connection.CreateMergeCommand(DatabaseDriver, Table, keyColumnValues, columnValues))
+                        using (var command = ConnectionExtensions.CreateMergeCommand(connection, DatabaseDriver, Table, keyColumnValues, columnValues))
                         {
                             if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
                             {
@@ -163,7 +163,7 @@ namespace Take.Elephant.Sql
                 {
                     var keyColumnValues = KeyMapper.GetColumnValues(key);
 
-                    using (var command = connection.CreateSelectTop1Command(DatabaseDriver, Table, new[] { propertyName }, keyColumnValues))
+                    using (var command = ConnectionExtensions.CreateSelectTop1Command(connection, DatabaseDriver, Table, new[] { propertyName }, keyColumnValues))
                     {
                         var dbValue = await command.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                         if (dbValue != null && !(dbValue is DBNull))
@@ -193,7 +193,8 @@ namespace Take.Elephant.Sql
 
                     var newColumnValues = GetColumnValues(key, newValue, true);
 
-                    using (var command = connection.CreateTextCommand(
+                    using (var command = ConnectionExtensions.CreateTextCommand(
+                        connection,
                         DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),                        
                         new
                         {

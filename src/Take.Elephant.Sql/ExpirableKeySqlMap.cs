@@ -49,14 +49,15 @@ namespace Take.Elephant.Sql
                     {_expirationColumnName, expiration}
                 };
 
-            await using var command = connection.CreateTextCommand(
+            await using var command = ConnectionExtensions.CreateTextCommand(
+                connection,
                 DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
                 new
                 {
                     schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
                     tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())                    
+                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())
                 },
                 keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
 
@@ -78,22 +79,20 @@ namespace Take.Elephant.Sql
                     {_expirationColumnName, DBNull.Value}
                 };
 
-            await using var command = connection.CreateTextCommand(
+            await using var command = ConnectionExtensions.CreateTextCommand(
+                connection,
                 DatabaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
                 new
                 {
                     schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
                     tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetCombinedAndStatement(DatabaseDriver, 
-                                                                                             SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
-                                                                                             SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()))
+                    filter = SqlHelper.GetCombinedAndStatement(
+                        DatabaseDriver,
+                        SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
+                        SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()))
                 },
                 keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
-
-            var teste = SqlHelper.GetCombinedAndStatement(DatabaseDriver,
-                                                                                             SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
-                                                                                             SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()));
 
             if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
             {
@@ -129,6 +128,9 @@ namespace Take.Elephant.Sql
                     case SqlStatement.SelectCount:
                     case SqlStatement.SelectTop1:
                     case SqlStatement.SelectSkipTake:
+                    case SqlStatement.SelectDistinct:
+                    case SqlStatement.SelectCountDistinct:
+                    case SqlStatement.SelectDistinctSkipTake:
                         var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > '{DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}Z')";
                         sql = InjectSqlFilter(sql, expirationFilter);
                         break;
@@ -152,7 +154,8 @@ namespace Take.Elephant.Sql
 
             private static string InjectSqlFilter(string sql, string filter)
             {
-                if (sql.Contains("ORDER BY")) return sql.Replace("ORDER BY", $"{filter} ORDER BY");
+                if (sql.Contains("ORDER BY"))
+                    return sql.Replace("ORDER BY", $"{filter} ORDER BY");
                 return $"{sql} {filter}";
             }
         }

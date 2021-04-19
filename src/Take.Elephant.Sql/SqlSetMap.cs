@@ -70,7 +70,7 @@ namespace Take.Elephant.Sql
                                 var itemKeyColumnValues = GetKeyColumnValues(columnValues);
 
                                 using (
-                                    var command = connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table, itemKeyColumnValues, columnValues))
+                                    var command = ConnectionExtensions.CreateInsertWhereNotExistsCommand(connection, DatabaseDriver, Table, itemKeyColumnValues, columnValues))
                                 {
                                     command.Transaction = transaction;
                                     success =
@@ -156,7 +156,7 @@ namespace Take.Elephant.Sql
             {
                 return await new DbDataReaderAsyncEnumerable<TItem>(
                             GetConnectionAsync,
-                            c => c.CreateSelectCommand(DatabaseDriver, Table, keyColumnValues, selectColumns),
+                            c => ConnectionExtensions.CreateSelectCommand(c, DatabaseDriver, Table, keyColumnValues, selectColumns),
                             Mapper,
                             selectColumns)
                             .FirstOrDefaultAsync(cancellationTokenSource.Token);
@@ -169,7 +169,7 @@ namespace Take.Elephant.Sql
             return Task.FromResult<IAsyncEnumerable<TKey>>(
                 new DbDataReaderAsyncEnumerable<TKey>(
                     GetConnectionAsync, 
-                    c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns),
+                    c => ConnectionExtensions.CreateSelectCommand(c, DatabaseDriver, Table, null, selectColumns),
                     KeyMapper, 
                     selectColumns));
         }
@@ -202,7 +202,7 @@ namespace Take.Elephant.Sql
                 var selectColumns = Table.Columns.Keys.ToArray();                
                 return new DbDataReaderAsyncEnumerable<TItem>(
                     GetConnectionAsync, 
-                    c => c.CreateSelectCommand(DatabaseDriver, Table, MapKeyColumnValues, selectColumns),
+                    c => ConnectionExtensions.CreateSelectCommand(c, DatabaseDriver, Table, MapKeyColumnValues, selectColumns),
                     Mapper, 
                     selectColumns);
             }
@@ -213,7 +213,7 @@ namespace Take.Elephant.Sql
                 {
                     using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                     {
-                        using (var countCommand = connection.CreateSelectCountCommand(DatabaseDriver, Table, MapKeyColumnValues))
+                        using (var countCommand = ConnectionExtensions.CreateSelectCountCommand(connection, DatabaseDriver, Table, MapKeyColumnValues))
                         {
                             var result = await countCommand.ExecuteScalarAsync(cancellationTokenSource.Token).ConfigureAwait(false);
                             // In postgre, it is a long; in sql server, a int32...

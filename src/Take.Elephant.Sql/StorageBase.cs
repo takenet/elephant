@@ -12,10 +12,16 @@ namespace Take.Elephant.Sql
     public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>, IOrderedQueryableStorage<TEntity>, IDistinctQueryableStorage<TEntity>
     {
         protected StorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TEntity> mapper)
+            : this(databaseDriver, connectionString, table, mapper, new DbConnectionExtensions())
+        {
+        }
+
+        protected StorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TEntity> mapper, IDbConnectionExtensions dbConnectionExtensions)
         {
             ConnectionString = connectionString;
             Table = table;
             Mapper = mapper;
+            ConnectionExtensions = dbConnectionExtensions;
             DatabaseDriver = databaseDriver;
         }
 
@@ -34,18 +40,21 @@ namespace Take.Elephant.Sql
 
         protected IMapper<TEntity> Mapper { get; }
 
+        protected IDbConnectionExtensions ConnectionExtensions { get; }
+
         protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken, DbTransaction sqlTransaction = null)
         {
-            using (var command = connection.CreateDeleteCommand(DatabaseDriver, Table, filterValues))
+            using (var command = ConnectionExtensions.CreateDeleteCommand(connection, DatabaseDriver, Table, filterValues))
             {
-                if (sqlTransaction != null) command.Transaction = sqlTransaction;
+                if (sqlTransaction != null)
+                    command.Transaction = sqlTransaction;
                 return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) > 0;
             }
         }
 
         protected async Task<bool> ContainsAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken)
         {
-            using (var command = connection.CreateContainsCommand(DatabaseDriver, Table, filterValues))
+            using (var command = ConnectionExtensions.CreateContainsCommand(connection, DatabaseDriver, Table, filterValues))
             {
                 return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
             }
@@ -139,7 +148,7 @@ namespace Take.Elephant.Sql
         {
             var filter = whereStatement.Where;
             var filterValues = whereStatement.FilterValues;
-            
+
             using (var connection = await GetConnectionAsync(cancellationToken))
             {
                 if (additionalFilterValues != null)
@@ -154,7 +163,8 @@ namespace Take.Elephant.Sql
                 int totalCount = 0;
                 if (FetchQueryResultTotal)
                 {
-                    using (var countCommand = connection.CreateSelectCountCommand(
+                    using (var countCommand = ConnectionExtensions.CreateSelectCountCommand(
+                        connection,
                         DatabaseDriver,
                         Table,
                         filter,
@@ -170,7 +180,8 @@ namespace Take.Elephant.Sql
                     new DbDataReaderAsyncEnumerable<TEntity>(
                         GetConnectionAsync,
                         c =>
-                            c.CreateSelectSkipTakeCommand(
+                            ConnectionExtensions.CreateSelectSkipTakeCommand(
+                                c,
                                 DatabaseDriver,
                                 Table,
                                 selectColumns,
