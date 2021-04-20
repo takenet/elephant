@@ -131,7 +131,7 @@ namespace Take.Elephant.Sql
                     case SqlStatement.SelectDistinct:
                     case SqlStatement.SelectCountDistinct:
                     case SqlStatement.SelectDistinctSkipTake:
-                        var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > '{DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss}Z')";
+                        var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > '@ExpirableKeySqlMap_ExpirationDate')";
                         sql = InjectSqlFilter(sql, expirationFilter);
                         break;
                 }
