@@ -276,7 +276,7 @@ namespace Take.Elephant.Sql
             string[] selectColumns,
             IDictionary<string, object> filterValues)
         {
-            return CreateTextCommand(connection,
+            var command = CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.SelectTop1),
                 new
                 {
@@ -286,6 +286,20 @@ namespace Take.Elephant.Sql
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
+
+            AddParemeter(command);
+
+            return command;
+        }
+
+        private DbCommand AddParemeter(DbCommand command)
+        {
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@ExpirableKeySqlMap_ExpirationDate";
+            parameter.Value = DateTimeOffset.UtcNow;
+            command.Parameters.Add(parameter);
+
+            return command;
         }
 
         public DbCommand CreateMergeCommand(
