@@ -181,7 +181,7 @@ namespace Take.Elephant.Sql
             bool distinct = false)
         {
             if (selectColumns == null) throw new ArgumentNullException(nameof(selectColumns));
-            return CreateTextCommand(connection,
+            var command = CreateTextCommand(connection,
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinct : SqlStatement.Select),
                 new
                 {
@@ -191,6 +191,10 @@ namespace Take.Elephant.Sql
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
+
+            AddParemeter(command);
+
+            return command;
         }
 
         public DbCommand CreateSelectCountCommand(
