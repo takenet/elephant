@@ -192,7 +192,7 @@ namespace Take.Elephant.Sql
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
 
-            AddParemeter(command);
+            AddParameter(command);
 
             return command;
         }
@@ -291,12 +291,12 @@ namespace Take.Elephant.Sql
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
 
-            AddParemeter(command);
+            AddParameter(command);
 
             return command;
         }
 
-        private DbCommand AddParemeter(DbCommand command)
+        private DbCommand AddParameter(DbCommand command)
         {
             var parameter = command.CreateParameter();
             parameter.ParameterName = "@ExpirableKeySqlMap_ExpirationDate";
