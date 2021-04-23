@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant.Sql
 {
-    public class DbConnectionDecorator : DbConnection
+    public sealed class DbConnectionDecorator : DbConnection
     {
         private readonly DbConnection _dbConnection;
         public DbConnectionDecorator(DbConnection dbConnection)
@@ -65,7 +65,7 @@ namespace Take.Elephant.Sql
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
         {
-            throw new NotImplementedException();
+            return _dbConnection.BeginTransaction(isolationLevel);
         }
     }
 }
