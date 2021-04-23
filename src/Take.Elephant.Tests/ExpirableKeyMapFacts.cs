@@ -24,7 +24,7 @@ namespace Take.Elephant.Tests
         {
             return TimeSpan.FromMilliseconds(500);
         }
-
+        
         [Fact(DisplayName = "ExpireExistingKeyByRelativeTtlSucceeds")]
         public async Task ExpireExistingKeyByRelativeTtlSucceeds()
         {
