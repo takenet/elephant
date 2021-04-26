@@ -21,7 +21,7 @@ namespace Take.Elephant.Sql
         private readonly string _expirationColumnName;
 
         public ExpirableKeySqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, string expirationColumnName)
-            : base(new ExpirationDatabaseDriver(databaseDriver, expirationColumnName), connectionString, table, keyMapper, valueMapper)
+            : base(new ExpirationDatabaseDriverDecorator(databaseDriver, expirationColumnName), connectionString, table, keyMapper, valueMapper)
         {
             _expirationColumnName = expirationColumnName ?? throw new ArgumentNullException(nameof(expirationColumnName));
             if (!Table.Columns.TryGetValue(expirationColumnName, out var expirationColumnType))
@@ -106,20 +106,20 @@ namespace Take.Elephant.Sql
         /// Injects a SQL statement to avoid retrieving expired items.
         /// </summary>
         /// <seealso cref="Take.Elephant.Sql.IDatabaseDriver" />
-        internal class ExpirationDatabaseDriver : IDatabaseDriver
+        internal class ExpirationDatabaseDriverDecorator : IDatabaseDriver
         {
             private readonly IDatabaseDriver _underlyingDatabaseDriver;
             private readonly string _expirationColumnName;
             public const string EXPIRATION_DATE_PARAMETER_NAME = "@ExpirableKeySqlMap_ExpirationDate";
 
-            public ExpirationDatabaseDriver(IDatabaseDriver underlyingDatabaseDriver, string expirationColumnName)
+            public ExpirationDatabaseDriverDecorator(IDatabaseDriver underlyingDatabaseDriver, string expirationColumnName)
             {
                 _underlyingDatabaseDriver = underlyingDatabaseDriver ?? throw new ArgumentNullException(nameof(underlyingDatabaseDriver));
                 _expirationColumnName = underlyingDatabaseDriver.ParseIdentifier(expirationColumnName ?? throw new ArgumentNullException(nameof(expirationColumnName)));
             }
 
             public DbConnection CreateConnection(string connectionString)
-                => new ExpirationDbConnection(_underlyingDatabaseDriver.CreateConnection(connectionString));
+                => new ExpirationDbConnectionDecorator(_underlyingDatabaseDriver.CreateConnection(connectionString));
 
             public string GetSqlStatementTemplate(SqlStatement sqlStatement)
             {
@@ -165,10 +165,10 @@ namespace Take.Elephant.Sql
     /// <summary>
     /// Implements a new behavior for DbConnection with a custom parameter.
     /// </summary>
-    internal class ExpirationDbConnection : DbConnection
+    internal class ExpirationDbConnectionDecorator : DbConnection
     {
         private readonly DbConnection _dbConnection;
-        public ExpirationDbConnection(DbConnection dbConnection)
+        public ExpirationDbConnectionDecorator(DbConnection dbConnection)
         {
             _dbConnection = dbConnection;
         }
@@ -208,7 +208,7 @@ namespace Take.Elephant.Sql
         {
             var command = _dbConnection.CreateCommand();
             var parameter = command.CreateParameter();
-            parameter.ParameterName = ExpirableKeySqlMap<int,int>.ExpirationDatabaseDriver.EXPIRATION_DATE_PARAMETER_NAME;
+            parameter.ParameterName = ExpirableKeySqlMap<int,int>.ExpirationDatabaseDriverDecorator.EXPIRATION_DATE_PARAMETER_NAME;
             parameter.Value = DateTimeOffset.UtcNow;
 
             command.Parameters.Add(parameter);
