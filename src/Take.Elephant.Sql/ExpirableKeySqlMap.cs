@@ -200,6 +200,12 @@ namespace Take.Elephant.Sql
             _dbConnection.Open();
         }
 
+        public override async ValueTask DisposeAsync()
+        {
+            await base.DisposeAsync();
+            await _dbConnection.DisposeAsync();
+        }
+
         protected override DbCommand CreateDbCommand()
         {
             var command = _dbConnection.CreateCommand();
@@ -215,12 +221,6 @@ namespace Take.Elephant.Sql
         {
             base.Dispose(disposing);
             _dbConnection.Dispose();
-        }
-
-        public override async ValueTask DisposeAsync()
-        {
-            await base.DisposeAsync();
-            await _dbConnection.DisposeAsync();
         }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
