@@ -87,15 +87,12 @@ namespace Take.Elephant.Sql
                     schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
                     tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetCombinedAndStatement(DatabaseDriver, 
-                                                                                             SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
-                                                                                             SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()))
+                    filter = SqlHelper.GetCombinedAndStatement(
+                        DatabaseDriver,
+                        SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
+                        SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()))
                 },
                 keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
-
-            var teste = SqlHelper.GetCombinedAndStatement(DatabaseDriver,
-                                                                                             SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
-                                                                                             SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()));
 
             if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
             {
@@ -113,6 +110,7 @@ namespace Take.Elephant.Sql
         {
             private readonly IDatabaseDriver _underlyingDatabaseDriver;
             private readonly string _expirationColumnName;
+            public const string EXPIRATION_DATE_PARAMETER_NAME = "@ExpirableKeySqlMap_ExpirationDate";
 
             public ExpirationDatabaseDriver(IDatabaseDriver underlyingDatabaseDriver, string expirationColumnName)
             {
@@ -135,7 +133,7 @@ namespace Take.Elephant.Sql
                     case SqlStatement.SelectDistinct:
                     case SqlStatement.SelectCountDistinct:
                     case SqlStatement.SelectDistinctSkipTake:
-                        var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > @ExpirableKeySqlMap_ExpirationDate)";
+                        var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > {EXPIRATION_DATE_PARAMETER_NAME})";
                         sql = InjectSqlFilter(sql, expirationFilter);
                         break;
                 }
@@ -210,7 +208,7 @@ namespace Take.Elephant.Sql
         {
             var command = _dbConnection.CreateCommand();
             var parameter = command.CreateParameter();
-            parameter.ParameterName = "@ExpirableKeySqlMap_ExpirationDate";
+            parameter.ParameterName = ExpirableKeySqlMap<int,int>.ExpirationDatabaseDriver.EXPIRATION_DATE_PARAMETER_NAME;
             parameter.Value = DateTimeOffset.UtcNow;
 
             command.Parameters.Add(parameter);
