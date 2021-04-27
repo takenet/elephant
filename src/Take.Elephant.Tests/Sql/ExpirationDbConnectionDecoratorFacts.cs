@@ -19,7 +19,7 @@ namespace Take.Elephant.Tests.Sql
         public void DisposeOnDecoratorShouldDisposeDbConnection()
         {
             // Arrange
-            var decorator = new ExpirationDbConnectionDecorator(_dbConnection);
+            var decorator = new ExpirableKeySqlMap<int, int>.ExpirationDbConnectionDecorator(_dbConnection);
 
             // Act
             decorator.Dispose();
@@ -32,7 +32,7 @@ namespace Take.Elephant.Tests.Sql
         public async Task DisposeAsyncOnDecoratorShouldDisposeAsyncDbConnection()
         {
             // Arrange
-            var decorator = new ExpirationDbConnectionDecorator(_dbConnection);
+            var decorator = new ExpirableKeySqlMap<int, int>.ExpirationDbConnectionDecorator(_dbConnection);
 
             // Act
             await decorator.DisposeAsync();

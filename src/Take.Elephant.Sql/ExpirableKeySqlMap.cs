@@ -160,70 +160,70 @@ namespace Take.Elephant.Sql
                 return $"{sql} {filter}";
             }
         }
-    }
 
-    /// <summary>
-    /// Implements a new behavior for DbConnection with a custom parameter.
-    /// </summary>
-    internal class ExpirationDbConnectionDecorator : DbConnection
-    {
-        private readonly DbConnection _dbConnection;
-        public ExpirationDbConnectionDecorator(DbConnection dbConnection)
+        /// <summary>
+        /// Implements a new behavior for DbConnection with a custom parameter.
+        /// </summary>
+        internal class ExpirationDbConnectionDecorator : DbConnection
         {
-            _dbConnection = dbConnection;
-        }
+            private readonly DbConnection _dbConnection;
+            public ExpirationDbConnectionDecorator(DbConnection dbConnection)
+            {
+                _dbConnection = dbConnection;
+            }
 
-        public override string ConnectionString { get => _dbConnection.ConnectionString; set => _dbConnection.ConnectionString = value; }
+            public override string ConnectionString { get => _dbConnection.ConnectionString; set => _dbConnection.ConnectionString = value; }
 
-        public override string Database => _dbConnection.Database;
+            public override string Database => _dbConnection.Database;
 
-        public override string DataSource => _dbConnection.DataSource;
+            public override string DataSource => _dbConnection.DataSource;
 
-        public override string ServerVersion => _dbConnection.ServerVersion;
+            public override string ServerVersion => _dbConnection.ServerVersion;
 
-        public override ConnectionState State => _dbConnection.State;
+            public override ConnectionState State => _dbConnection.State;
 
-        public override void ChangeDatabase(string databaseName)
-        {
-            _dbConnection.ChangeDatabase(databaseName);
-        }
+            public override void ChangeDatabase(string databaseName)
+            {
+                _dbConnection.ChangeDatabase(databaseName);
+            }
 
-        public override void Close()
-        {
-            _dbConnection.Close();
-        }
+            public override void Close()
+            {
+                _dbConnection.Close();
+            }
 
-        public override void Open()
-        {
-            _dbConnection.Open();
-        }
+            public override void Open()
+            {
+                _dbConnection.Open();
+            }
 
-        public override async ValueTask DisposeAsync()
-        {
-            await base.DisposeAsync();
-            await _dbConnection.DisposeAsync();
-        }
+            public override async ValueTask DisposeAsync()
+            {
+                await base.DisposeAsync();
+                await _dbConnection.DisposeAsync();
+            }
 
-        protected override DbCommand CreateDbCommand()
-        {
-            var command = _dbConnection.CreateCommand();
-            var parameter = command.CreateParameter();
-            parameter.ParameterName = ExpirableKeySqlMap<int,int>.ExpirationDatabaseDriverDecorator.EXPIRATION_DATE_PARAMETER_NAME;
-            parameter.Value = DateTimeOffset.UtcNow;
+            protected override DbCommand CreateDbCommand()
+            {
+                var command = _dbConnection.CreateCommand();
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = ExpirationDatabaseDriverDecorator.EXPIRATION_DATE_PARAMETER_NAME;
+                parameter.Value = DateTimeOffset.UtcNow;
 
-            command.Parameters.Add(parameter);
-            return command;
-        }
+                command.Parameters.Add(parameter);
+                return command;
+            }
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            _dbConnection.Dispose();
-        }
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+                _dbConnection.Dispose();
+            }
 
-        protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
-        {
-            return _dbConnection.BeginTransaction(isolationLevel);
+            protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
+            {
+                return _dbConnection.BeginTransaction(isolationLevel);
+            }
         }
     }
 }
