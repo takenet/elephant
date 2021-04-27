@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant.Tests.Sql
 {
-    public class DbConnectionDecoratorFacts : FactsBase
+    public class ExpirationDbConnectionDecoratorFacts : FactsBase
     {
         private readonly DbConnection _dbConnection;
 
-        public DbConnectionDecoratorFacts()
+        public ExpirationDbConnectionDecoratorFacts()
         {
             _dbConnection = Substitute.For<DbConnection>();
         }
