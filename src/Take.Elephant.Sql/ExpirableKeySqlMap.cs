@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -16,7 +15,7 @@ namespace Take.Elephant.Sql
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class ExpirableKeySqlMap<TKey, TValue> : SqlMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
+    public partial class ExpirableKeySqlMap<TKey, TValue> : SqlMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
     {
         private readonly string _expirationColumnName;
 
@@ -100,130 +99,6 @@ namespace Take.Elephant.Sql
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Injects a SQL statement to avoid retrieving expired items.
-        /// </summary>
-        /// <seealso cref="Take.Elephant.Sql.IDatabaseDriver" />
-        internal class ExpirationDatabaseDriverDecorator : IDatabaseDriver
-        {
-            private readonly IDatabaseDriver _underlyingDatabaseDriver;
-            private readonly string _expirationColumnName;
-            public const string EXPIRATION_DATE_PARAMETER_NAME = "@ExpirableKeySqlMap_ExpirationDate";
-
-            public ExpirationDatabaseDriverDecorator(IDatabaseDriver underlyingDatabaseDriver, string expirationColumnName)
-            {
-                _underlyingDatabaseDriver = underlyingDatabaseDriver ?? throw new ArgumentNullException(nameof(underlyingDatabaseDriver));
-                _expirationColumnName = underlyingDatabaseDriver.ParseIdentifier(expirationColumnName ?? throw new ArgumentNullException(nameof(expirationColumnName)));
-            }
-
-            public DbConnection CreateConnection(string connectionString)
-                => new ExpirationDbConnectionDecorator(_underlyingDatabaseDriver.CreateConnection(connectionString));
-
-            public string GetSqlStatementTemplate(SqlStatement sqlStatement)
-            {
-                var sql = _underlyingDatabaseDriver.GetSqlStatementTemplate(sqlStatement);
-                switch (sqlStatement)
-                {
-                    case SqlStatement.Select:
-                    case SqlStatement.SelectCount:
-                    case SqlStatement.SelectTop1:
-                    case SqlStatement.SelectSkipTake:
-                    case SqlStatement.SelectDistinct:
-                    case SqlStatement.SelectCountDistinct:
-                    case SqlStatement.SelectDistinctSkipTake:
-                        var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > {EXPIRATION_DATE_PARAMETER_NAME})";
-                        sql = InjectSqlFilter(sql, expirationFilter);
-                        break;
-                }
-                return sql;
-            }
-
-            public string GetSqlTypeName(DbType dbType) => _underlyingDatabaseDriver.GetSqlTypeName(dbType);
-
-            public DbParameter CreateParameter(string parameterName, object value) => _underlyingDatabaseDriver.CreateParameter(parameterName, value);
-
-            public DbParameter CreateParameter(string parameterName, object value, SqlType sqlType) => _underlyingDatabaseDriver.CreateParameter(parameterName, value, sqlType);
-
-            public string ParseParameterName(string parameterName) => _underlyingDatabaseDriver.ParseParameterName(parameterName);
-
-            public string ParseIdentifier(string identifier) => _underlyingDatabaseDriver.ParseIdentifier(identifier);
-
-            public TimeSpan Timeout => _underlyingDatabaseDriver.Timeout;
-
-            public string DefaultSchema => _underlyingDatabaseDriver.DefaultSchema;
-
-            private static string InjectSqlFilter(string sql, string filter)
-            {
-                if (sql.Contains("ORDER BY")) return sql.Replace("ORDER BY", $"{filter} ORDER BY");
-                return $"{sql} {filter}";
-            }
-        }
-
-        /// <summary>
-        /// Implements a new behavior for DbConnection with a custom parameter.
-        /// </summary>
-        internal class ExpirationDbConnectionDecorator : DbConnection
-        {
-            private readonly DbConnection _dbConnection;
-            public ExpirationDbConnectionDecorator(DbConnection dbConnection)
-            {
-                _dbConnection = dbConnection;
-            }
-
-            public override string ConnectionString { get => _dbConnection.ConnectionString; set => _dbConnection.ConnectionString = value; }
-
-            public override string Database => _dbConnection.Database;
-
-            public override string DataSource => _dbConnection.DataSource;
-
-            public override string ServerVersion => _dbConnection.ServerVersion;
-
-            public override ConnectionState State => _dbConnection.State;
-
-            public override void ChangeDatabase(string databaseName)
-            {
-                _dbConnection.ChangeDatabase(databaseName);
-            }
-
-            public override void Close()
-            {
-                _dbConnection.Close();
-            }
-
-            public override void Open()
-            {
-                _dbConnection.Open();
-            }
-
-            public override async ValueTask DisposeAsync()
-            {
-                await base.DisposeAsync();
-                await _dbConnection.DisposeAsync();
-            }
-
-            protected override DbCommand CreateDbCommand()
-            {
-                var command = _dbConnection.CreateCommand();
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = ExpirationDatabaseDriverDecorator.EXPIRATION_DATE_PARAMETER_NAME;
-                parameter.Value = DateTimeOffset.UtcNow;
-
-                command.Parameters.Add(parameter);
-                return command;
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                base.Dispose(disposing);
-                _dbConnection.Dispose();
-            }
-
-            protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
-            {
-                return _dbConnection.BeginTransaction(isolationLevel);
-            }
         }
     }
 }
