@@ -11,7 +11,6 @@ namespace Take.Elephant.Kafka
 {
     public class KafkaReceiverQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, IOpenable, ICloseable, IDisposable
     {
-        private readonly string _topic;
         private readonly IConsumer<Ignore, string> _consumer;
         private readonly ISerializer<T> _serializer;
         private readonly SemaphoreSlim _consumerStartSemaphore;
@@ -44,11 +43,13 @@ namespace Take.Elephant.Kafka
             if (string.IsNullOrWhiteSpace(topic)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
             _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
             _serializer = serializer;
-            _topic = topic;
+            Topic = topic;
             _consumerStartSemaphore = new SemaphoreSlim(1, 1);
             _cts = new CancellationTokenSource();
             _channel = Channel.CreateBounded<T>(1);
         }
+
+        public string Topic { get; }
 
         public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
@@ -124,9 +125,9 @@ namespace Take.Elephant.Kafka
 
         private async Task ConsumeAsync(CancellationToken cancellationToken)
         {
-            if (_consumer.Subscription.All(s => s != _topic))
+            if (_consumer.Subscription.All(s => s != Topic))
             {
-                _consumer.Subscribe(_topic);
+                _consumer.Subscribe(Topic);
             }
 
             while (!cancellationToken.IsCancellationRequested)
