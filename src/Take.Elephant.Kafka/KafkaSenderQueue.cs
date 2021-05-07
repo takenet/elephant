@@ -9,7 +9,6 @@ namespace Take.Elephant.Kafka
     public class KafkaSenderQueue<T> : ISenderQueue<T>, IDisposable
     {
         private readonly IProducer<Null, string> _producer;
-        private readonly string _topic;
         private readonly ISerializer<T> _serializer;
 
         public KafkaSenderQueue(string bootstrapServers, string topic, ISerializer<T> serializer, Confluent.Kafka.ISerializer<string> kafkaSerializer = null)
@@ -43,14 +42,16 @@ namespace Take.Elephant.Kafka
 
             _producer = producer;
             _serializer = serializer;
-            _topic = topic;
+            Topic = topic;
         }
+
+        public string Topic { get; }
 
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             var stringItem = _serializer.Serialize(item);
             return _producer.ProduceAsync(
-                _topic,
+                Topic,
                 new Message<Null, string>
                 {
                     Value = stringItem
