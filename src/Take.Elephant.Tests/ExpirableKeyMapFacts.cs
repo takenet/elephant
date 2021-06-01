@@ -40,8 +40,8 @@ namespace Take.Elephant.Tests
             await Task.Delay(ttl + ttl);
 
             // Assert
-            var actual = await map.GetValueOrDefaultAsync(key);
-            AssertIsDefault(actual);
+            var contains = await map.ContainsKeyAsync(key);
+            AssertIsFalse(contains);
         }
 
         [Fact(DisplayName = "ExpireExistingKeyByAbsoluteExpirationDateSucceeds")]
@@ -60,8 +60,8 @@ namespace Take.Elephant.Tests
             await Task.Delay(ttl + ttl);
 
             // Assert
-            var actual = await map.GetValueOrDefaultAsync(key);
-            AssertIsDefault(actual);
+            var contains = await map.ContainsKeyAsync(key);
+            AssertIsDefault(contains);
         }
 
         [Fact(DisplayName = "UpdateKeyTtlSucceeds")]
@@ -76,15 +76,16 @@ namespace Take.Elephant.Tests
             await map.SetRelativeKeyExpirationAsync(key, ttl);
 
             // Act
-            await map.SetRelativeKeyExpirationAsync(key, ttl + ttl + ttl);
+            var newTtl = ttl * 3;
+            await map.SetRelativeKeyExpirationAsync(key, newTtl);
 
             // Assert
             await Task.Delay(ttl);
             var actual = await map.GetValueOrDefaultAsync(key);
             AssertEquals(actual, value);
-            await Task.Delay(ttl + ttl + ttl);
-            actual = await map.GetValueOrDefaultAsync(key);
-            AssertIsDefault(actual);
+            await Task.Delay(newTtl);
+            var contains = await map.ContainsKeyAsync(key);
+            AssertIsFalse(contains);
         }
 
         [Fact(DisplayName = "UpdateKeyExpirationDateSucceeds")]
@@ -109,8 +110,8 @@ namespace Take.Elephant.Tests
             var actual = await map.GetValueOrDefaultAsync(key);
             AssertEquals(actual, value);
             await Task.Delay(ttl + ttl + ttl);
-            actual = await map.GetValueOrDefaultAsync(key);
-            AssertIsDefault(actual);
+            var contains = await map.ContainsKeyAsync(key);
+            AssertIsDefault(contains);
         }
 
         [Fact(DisplayName = nameof(ExpireInvalidKeyByRelativeTtlReturnsFalse))]

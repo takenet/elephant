@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using Take.Elephant.Sql.Mapping;
 
 [assembly: InternalsVisibleTo("Take.Elephant.Tests")]
@@ -40,6 +42,7 @@ namespace Take.Elephant.Sql
                     case SqlStatement.SelectDistinct:
                     case SqlStatement.SelectCountDistinct:
                     case SqlStatement.SelectDistinctSkipTake:
+                    case SqlStatement.Exists:
                         var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > {EXPIRATION_DATE_PARAMETER_NAME})";
                         sql = InjectSqlFilter(sql, expirationFilter);
                         break;
@@ -63,7 +66,19 @@ namespace Take.Elephant.Sql
 
             private static string InjectSqlFilter(string sql, string filter)
             {
-                if (sql.Contains("ORDER BY")) return sql.Replace("ORDER BY", $"{filter} ORDER BY");
+                if (sql.Contains("ORDER BY"))
+                    return sql.Replace("ORDER BY", $"{filter} ORDER BY");
+                if (sql.StartsWith("SELECT CASE WHEN EXISTS", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var regex = new Regex(@"(SELECT CASE WHEN EXISTS \(\()(.*?)(\))(.*?)(END)");
+                    var matches = regex.Matches(sql);
+                    if (matches.Any())
+                    {
+                        var captureGroups = matches.First().Groups;
+                        // first group is always the entire string, so we can skip that
+                        return $"{captureGroups[1]}{captureGroups[2]} {filter}{captureGroups[3]}{captureGroups[4]}{captureGroups[5]}";
+                    }
+                }
                 return $"{sql} {filter}";
             }
         }
