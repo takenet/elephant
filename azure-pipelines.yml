@@ -5,15 +5,22 @@
 
 trigger:
 - master
+- main
 
-pool:
-  vmImage: 'ubuntu-latest'
+name: 0.9.$(Rev:.r)
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+resources:
+  repositories:   
+  - repository: templates
+    type: git
+    name: Operações/template-take-blip
+    ref: refs/tags/v1.2
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+extends:
+  template: template-pipeline.yml@templates    
+  parameters:    
+    packagename: elephant-test-nuget    
+    type: dotnet
+    to: nuget
+    nugetServiceConnection: TestNuget  
+    includeSymbols: true
