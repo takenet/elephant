@@ -8,6 +8,8 @@ trigger:
 - main
 
 name: 0.9$(Rev:.r)
+pool:
+  vmImage: 'windows-latest'
 
 resources:
   repositories:   
