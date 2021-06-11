@@ -7,7 +7,7 @@ trigger:
 - master
 - main
 
-name: 0.9.$(Rev:.r)
+name: 0.9$(Rev:.r)
 
 resources:
   repositories:   
