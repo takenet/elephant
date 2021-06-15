@@ -26,3 +26,4 @@ extends:
     to: nuget
     nugetServiceConnection: TestNuget  
     includeSymbols: true
+    testParameters: --configuration Release --no-build --filter "Category=Memory"
