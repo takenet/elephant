@@ -16,7 +16,7 @@ resources:
   - repository: templates
     type: git
     name: Operações/template-take-blip
-    ref: refs/heads/feature/step-test-nuget
+    ref: refs/tags/v1.2.1
 
 extends:
   template: template-pipeline.yml@templates    
