@@ -18,7 +18,7 @@
     <LangVersion>7.1</LangVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <IsPublishable>false</IsPublishable>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
