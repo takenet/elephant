@@ -5,15 +5,25 @@
 
 trigger:
 - master
+- main
 
+name: 0.9$(Rev:.r)
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+resources:
+  repositories:   
+  - repository: templates
+    type: git
+    name: Operações/template-take-blip
+    ref: refs/tags/v1.2.1
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+extends:
+  template: template-pipeline.yml@templates    
+  parameters:    
+    packagename: elephant    
+    type: dotnet
+    to: nuget
+    nugetServiceConnection: Nuget.org Take  
+    includeSymbols: true
+    testParameters: --configuration Release --no-build --filter "Category=Memory"
