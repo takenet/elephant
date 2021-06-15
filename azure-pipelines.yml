@@ -16,14 +16,14 @@ resources:
   - repository: templates
     type: git
     name: Operações/template-take-blip
-    ref: refs/heads/feature/step-test-nuget
+    ref: refs/tags/v1.2.1
 
 extends:
   template: template-pipeline.yml@templates    
   parameters:    
-    packagename: elephant-test-nuget    
+    packagename: elephant    
     type: dotnet
     to: nuget
-    nugetServiceConnection: TestNuget  
+    nugetServiceConnection: Nuget.org Take  
     includeSymbols: true
     testParameters: --configuration Release --no-build --filter "Category=Memory"
