@@ -4,7 +4,7 @@
 
 Persistence library that provides common data structures as composable elements to abstract any storage engine, including SQL databases.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/g7bhodvyl8ymy9dp?svg=true)](https://ci.appveyor.com/project/Take/elephant)
+[![Build Status](https://curupira.visualstudio.com/BLiP/_apis/build/status/takenet.elephant?repoName=takenet%2Felephant&branchName=master)](https://curupira.visualstudio.com/BLiP/_build/latest?definitionId=1259&repoName=takenet%2Felephant&branchName=master)
 
 ## Introduction
 
