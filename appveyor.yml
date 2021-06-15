@@ -5,7 +5,7 @@ platform: Any CPU
 cache: src/packages
 branches:
   only:
-    - master
+    - none
 before_build:
 - dotnet restore src/Take.Elephant.sln
 build:
