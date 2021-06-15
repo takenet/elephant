@@ -24,6 +24,6 @@ extends:
     packagename: elephant    
     type: dotnet
     to: nuget
-    nugetServiceConnection: TestNuget  
+    nugetServiceConnection: Nuget.org Take  
     includeSymbols: true
     testParameters: --configuration Release --no-build --filter "Category=Memory"
