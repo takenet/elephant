@@ -11,6 +11,10 @@ name: 0.9$(Rev:.r)
 pool:
   vmImage: 'windows-latest'
 
+variables:
+- name: SkipDecorator
+  value: true 
+
 resources:
   repositories:   
   - repository: templates
