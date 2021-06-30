@@ -57,11 +57,11 @@ namespace Take.Elephant.Tests
 
             // Act
             await map.SetAbsoluteKeyExpirationAsync(key, expiration);
-            await Task.Delay(ttl + ttl);
+            await Task.Delay(ttl * 2);
 
             // Assert
             var contains = await map.ContainsKeyAsync(key);
-            AssertIsDefault(contains);
+            AssertIsFalse(contains);
         }
 
         [Fact(DisplayName = "UpdateKeyTtlSucceeds")]
@@ -111,7 +111,7 @@ namespace Take.Elephant.Tests
             AssertEquals(actual, value);
             await Task.Delay(ttl + ttl + ttl);
             var contains = await map.ContainsKeyAsync(key);
-            AssertIsDefault(contains);
+            AssertIsFalse(contains);
         }
 
         [Fact(DisplayName = nameof(ExpireInvalidKeyByRelativeTtlReturnsFalse))]

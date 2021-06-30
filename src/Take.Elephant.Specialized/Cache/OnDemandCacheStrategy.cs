@@ -8,22 +8,22 @@ namespace Take.Elephant.Specialized.Cache
     /// and the reading ones are executed first in the cache and if not found, in the source. If a value is found in the source,
     /// it is stored in the cache.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class OnDemandCacheStrategy<T>
+    /// <typeparam name="TMap"></typeparam>
+    public class OnDemandCacheStrategy<TMap>
     {
-        protected readonly T Source;
-        protected readonly T Cache;
+        protected readonly TMap Source;
+        protected readonly TMap Cache;
 
-        public OnDemandCacheStrategy(T source, T cache)
+        public OnDemandCacheStrategy(TMap source, TMap cache)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
-        public virtual Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> queryFunc, Func<TResult, T, Task<bool>> writeFunc)
+        public virtual Task<TResult> ExecuteQueryFunc<TResult>(Func<TMap, Task<TResult>> queryFunc, Func<TResult, TMap, Task<bool>> writeFunc)
             => ExecuteQueryFunc(queryFunc, async (r, s) => { await writeFunc(r, s); }); // DO NOT SIMPLIFY THIS LAMBDA!
 
-        public virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<T, Task<TResult>> queryFunc, Func<TResult, T, Task> writeFunc)
+        public virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<TMap, Task<TResult>> queryFunc, Func<TResult, TMap, Task> writeFunc)
         {
             // Tries in the cache
             var value = await queryFunc(Cache).ConfigureAwait(false);
@@ -38,7 +38,7 @@ namespace Take.Elephant.Specialized.Cache
             return value;
         }
 
-        public virtual async Task ExecuteWriteFunc(Func<T, Task> func)
+        public virtual async Task ExecuteWriteFunc(Func<TMap, Task> func)
         {
             // Writes in the source
             await func(Source).ConfigureAwait(false);
@@ -46,7 +46,7 @@ namespace Take.Elephant.Specialized.Cache
             await func(Cache).ConfigureAwait(false);
         }
 
-        public virtual async Task<bool> ExecuteWriteFunc(Func<T, Task<bool>> func)
+        public virtual async Task<bool> ExecuteWriteFunc(Func<TMap, Task<bool>> func)
         {
             // Writes in the source
             if (await func(Source).ConfigureAwait(false))
