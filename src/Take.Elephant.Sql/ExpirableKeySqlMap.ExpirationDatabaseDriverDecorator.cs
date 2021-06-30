@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using Take.Elephant.Sql.Mapping;
 
-[assembly: InternalsVisibleTo("Take.Elephant.Tests")]
 namespace Take.Elephant.Sql
 {
     public partial class ExpirableKeySqlMap<TKey, TValue>
@@ -40,6 +41,7 @@ namespace Take.Elephant.Sql
                     case SqlStatement.SelectDistinct:
                     case SqlStatement.SelectCountDistinct:
                     case SqlStatement.SelectDistinctSkipTake:
+                    case SqlStatement.Exists:
                         var expirationFilter = $"AND ({_expirationColumnName} IS NULL OR {_expirationColumnName} > {EXPIRATION_DATE_PARAMETER_NAME})";
                         sql = InjectSqlFilter(sql, expirationFilter);
                         break;
@@ -61,10 +63,9 @@ namespace Take.Elephant.Sql
 
             public string DefaultSchema => _underlyingDatabaseDriver.DefaultSchema;
 
-            private static string InjectSqlFilter(string sql, string filter)
+            private static string InjectSqlFilter(string sql, string filterToInject)
             {
-                if (sql.Contains("ORDER BY")) return sql.Replace("ORDER BY", $"{filter} ORDER BY");
-                return $"{sql} {filter}";
+                return sql.Replace("WHERE {filter}", $"WHERE ({{filter}}) {filterToInject}");
             }
         }
     }
