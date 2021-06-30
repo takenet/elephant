@@ -1,27 +1,25 @@
-﻿[[_TOC_]]
-
-# Running tests using local Kafka instance
+﻿## Running tests using local Kafka instance
 
 You have two alternatives, run with lenses or run in your machine only the kafka with docker. It's preferable that you use lenses
 
-## Using lenses
+### Using Lenses
 
 There is a free tool that provide monitoring and local development for your kafka env. Only Lenses box is free, is paid for production use.
 
-### Important: Lenses requires at least 4GB of RAM to works fine. Make sure that your Docker Desktop is providing it.
+##### Important: Lenses requires at least 4GB of RAM to works fine. Make sure that your Docker Desktop is providing it.
 
 Just follow:
 
 https://lenses.io/box/
 
-## Using docker
+### Using Docker
 
-### Whats is needed
+#### Whats is needed
 
 Docker
 Docker Compose
 
-### Installing and starting kafka
+#### Installing and starting kafka
 
 Create one file named `docker-compose.yml` with this content:
 ```
@@ -86,6 +84,6 @@ kafka_1      | [2019-11-25 16:39:34,156] DEBUG [PartitionStateMachine controller
 kafka_1      | [2019-11-25 16:39:34,200] INFO [SocketServer brokerId=1] Started data-plane processors for 1 acceptors (kafka.network.SocketServer)
 kafka_1      | [2019-11-25 16:39:34,220] INFO [KafkaServer id=1] started (kafka.server.KafkaServer)
 ```
-### Check logs on kafka to see events of consuming and producing
+#### Check logs on kafka to see events of consuming and producing
 
 `docker-compose logs --f`
