@@ -456,7 +456,7 @@ namespace Take.Elephant.Sql {
         
         /// <summary>
         ///   Looks up a localized string similar to DECLARE @dummy int;
-        ///MERGE {schemaName}.{tableName} WITH (HOLDLOCK) AS target
+        ///MERGE {schemaName}.{tableName} AS target
         ///USING (SELECT {columnNamesAndValues}) as source
         ///ON ({on})
         ///WHEN MATCHED THEN
@@ -471,7 +471,7 @@ namespace Take.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MERGE {schemaName}.{tableName} WITH (HOLDLOCK) AS target
+        ///   Looks up a localized string similar to MERGE {schemaName}.{tableName} AS target
         ///USING (SELECT {columnNamesAndValues}) as source
         ///ON ({on})
         ///WHEN MATCHED THEN
