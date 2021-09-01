@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant
 {
-    public interface IBlockingStreamQueue<T> : IBlockingQueue<T>
+    public interface IBlockingStreamQueue<T> : IBlockingQueue<T>, IStreamSenderQueue<T>
     {
-        Task EnqueueAsync(T item, string id, CancellationToken cancellationToken = default(CancellationToken));
+
     }
 }

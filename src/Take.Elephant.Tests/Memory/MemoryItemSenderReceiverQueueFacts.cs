@@ -6,9 +6,9 @@ namespace Take.Elephant.Tests.Memory
     [Trait("Category", nameof(Memory))]
     public class MemoryItemSenderReceiverQueueFacts : ItemSenderReceiverQueueFacts
     {
-        public override (ISenderQueue<Item>, IBlockingReceiverQueue<Item>) Create()
+        public override (IStreamSenderQueue<Item>, IBlockingReceiverQueue<Item>) Create()
         {
-            var queue = new Queue<Item>();
+            var queue = new StreamQueue<Item>();
             return (queue, queue);
         }
     }

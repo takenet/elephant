@@ -18,7 +18,7 @@ namespace Take.Elephant.Tests
             _cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
         }
 
-        public abstract (ISenderQueue<T>, IBlockingReceiverQueue<T>) Create();
+        public abstract (IStreamSenderQueue<T>, IBlockingReceiverQueue<T>) Create();
 
         public CancellationToken CancellationToken => _cts.Token;
 
@@ -36,6 +36,21 @@ namespace Take.Elephant.Tests
 
             // Act
             await senderQueue.EnqueueAsync(item, CancellationToken);
+
+            // Assert
+            AssertEquals(await receiverQueue.DequeueAsync(CancellationToken), item);
+        }
+
+        [Fact(DisplayName = nameof(EnqueueNewItemWithIdSucceeds))]
+        public virtual async Task EnqueueNewItemWithIdSucceeds()
+        {
+            // Arrange
+            var (senderQueue, receiverQueue) = Create();
+            var item = CreateItem();
+            var id = Guid.NewGuid().ToString();
+
+            // Act
+            await senderQueue.EnqueueAsync(item, id, CancellationToken);
 
             // Assert
             AssertEquals(await receiverQueue.DequeueAsync(CancellationToken), item);

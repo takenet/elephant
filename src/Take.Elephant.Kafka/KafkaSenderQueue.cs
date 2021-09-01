@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant.Kafka
 {
-    public class KafkaSenderQueue<T> : ISenderQueue<T>, IDisposable
+    public class KafkaSenderQueue<T> : IStreamSenderQueue<T>, IDisposable
     {
         private readonly IProducer<Null, string> _producer;
         private readonly IProducer<string, string> _producerKey;

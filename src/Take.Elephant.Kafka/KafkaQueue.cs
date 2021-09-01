@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant.Kafka
 {
-    public class KafkaQueue<T> : IBlockingQueue<T>, ICloseable, IDisposable, IBlockingStreamQueue<T>
+    public class KafkaQueue<T> : IBlockingStreamQueue<T>, ICloseable, IDisposable
     {
         private readonly KafkaSenderQueue<T> _senderQueue;
         private readonly KafkaReceiverQueue<T> _receiverQueue;

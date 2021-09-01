@@ -39,6 +39,18 @@ namespace Take.Elephant
         Task EnqueueAsync(T item, CancellationToken cancellationToken = default);
     }
 
+    public interface IStreamSenderQueue<T>: ISenderQueue<T>
+    {
+        /// <summary>
+        /// Enqueues an item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task EnqueueAsync(T item, string id, CancellationToken cancellationToken = default);
+    }
+
     public interface IBatchSenderQueue<T>
     {
         /// <summary>
