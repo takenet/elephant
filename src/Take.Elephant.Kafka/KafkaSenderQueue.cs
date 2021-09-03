@@ -8,8 +8,7 @@ namespace Take.Elephant.Kafka
 {
     public class KafkaSenderQueue<T> : IStreamSenderQueue<T>, IDisposable
     {
-        private readonly IProducer<Null, string> _producer;
-        private readonly IProducer<string, string> _producerKey;
+        private readonly IProducer<string, string> _producer;
         private readonly ISerializer<T> _serializer;
 
         public KafkaSenderQueue(string bootstrapServers, string topic, ISerializer<T> serializer, Confluent.Kafka.ISerializer<string> kafkaSerializer = null)
@@ -23,7 +22,7 @@ namespace Take.Elephant.Kafka
             ISerializer<T> serializer,
             Confluent.Kafka.ISerializer<string> kafkaSerializer = null)
             : this(
-                  new ProducerBuilder<Null, string>(producerConfig)
+                  new ProducerBuilder<string, string>(producerConfig)
                         .SetValueSerializer(kafkaSerializer ?? new StringSerializer())
                         .Build(),
                   serializer,
@@ -32,7 +31,7 @@ namespace Take.Elephant.Kafka
         }
 
         public KafkaSenderQueue(
-            IProducer<Null, string> producer,
+            IProducer<string, string> producer,
             ISerializer<T> serializer,
             string topic)
         {
@@ -46,21 +45,6 @@ namespace Take.Elephant.Kafka
             Topic = topic;
         }
 
-        public KafkaSenderQueue(
-            IProducer<string, string> producerKey,
-            ISerializer<T> serializer,
-            string topic)
-        {
-            if (string.IsNullOrWhiteSpace(topic))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
-            }
-
-            _producerKey = producerKey;
-            _serializer = serializer;
-            Topic = topic;
-        }
-
         public string Topic { get; }
 
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
@@ -68,8 +52,9 @@ namespace Take.Elephant.Kafka
             var stringItem = _serializer.Serialize(item);
             return _producer.ProduceAsync(
                 Topic,
-                new Message<Null, string>
+                new Message<string, string>
                 {
+                    Key = Guid.NewGuid().ToString(),
                     Value = stringItem
                 });
         }
@@ -77,7 +62,7 @@ namespace Take.Elephant.Kafka
         public virtual Task EnqueueAsync(T item, string messageId, CancellationToken cancellationToken = default)
         {
             var stringItem = _serializer.Serialize(item);
-            return _producerKey.ProduceAsync(
+            return _producer.ProduceAsync(
                 Topic,
                 new Message<string, string>
                 {

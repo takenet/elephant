@@ -10,7 +10,7 @@ namespace Take.Elephant.Tests.Kafka
     [Trait("Category", nameof(Kafka))]
     public class KafkaItemSenderReceiverQueueFacts : ItemSenderReceiverQueueFacts
     {
-        public override (ISenderQueue<Item>, IBlockingReceiverQueue<Item>) Create()
+        public override (IStreamSenderQueue<Item>, IBlockingReceiverQueue<Item>) Create()
         {
             ClientConfig clientConfig;
             var topic = "items";
