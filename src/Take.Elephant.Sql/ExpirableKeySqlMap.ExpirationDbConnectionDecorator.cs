@@ -65,7 +65,10 @@ namespace Take.Elephant.Sql
             protected override void Dispose(bool disposing)
             {
                 base.Dispose(disposing);
-                _dbConnection.Dispose();
+                if (disposing)
+                {
+                    _dbConnection.Dispose();
+                }
             }
 
             protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
