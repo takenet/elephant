@@ -59,5 +59,5 @@ namespace Take.Elephant
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IEnumerable<T>> DequeueBatchAsync(int maxBatchSize, CancellationToken cancellationToken);
-    }
+    }    
 }
