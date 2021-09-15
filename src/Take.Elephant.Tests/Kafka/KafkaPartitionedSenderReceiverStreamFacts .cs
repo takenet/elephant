@@ -8,11 +8,12 @@ using Xunit;
 namespace Take.Elephant.Tests.Kafka
 {
     [Trait("Category", nameof(Kafka))]
-    public class KafkaItemSenderReceiverQueueFacts : ItemSenderReceiverQueueFacts
+    public class KafkaPartitionedSenderReceiverStreamFacts : ItemSenderReceiverStreamFacts
     {
         private readonly string topic = "items";
         private static readonly ClientConfig clientConfig = GetKafkaConfig();
         private static readonly ConsumerConfig consumerConfig = new ConsumerConfig(clientConfig) { GroupId = "default" };
+
 
         private static ClientConfig GetKafkaConfig()
         {
@@ -47,13 +48,8 @@ namespace Take.Elephant.Tests.Kafka
             return clientConfig;
         }
 
-        public override (ISenderQueue<Item>, IBlockingReceiverQueue<Item>) Create()
+        public override (IEventStreamPublisher<string, Item>, IEventStreamConsumer<string, Item>) CreateStream()
         {
-            var consumerConfig = new ConsumerConfig(clientConfig)
-            {
-                GroupId = "default"
-            };
-            
             var adminClient = new AdminClientBuilder(clientConfig).Build();
             var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(5));
             var topicMetadata = metadata.Topics.FirstOrDefault(t => t.Topic == topic);
@@ -67,13 +63,13 @@ namespace Take.Elephant.Tests.Kafka
                 {
                     var topicPartition = new TopicPartition(topic, new Partition(partition.PartitionId));
                     var offSet = consumer.QueryWatermarkOffsets(topicPartition, TimeSpan.FromSeconds(5));
-                    consumer.Commit(new TopicPartitionOffset[] {new TopicPartitionOffset(topicPartition, offSet.High)});
+                    consumer.Commit(new TopicPartitionOffset[] { new TopicPartitionOffset(topicPartition, offSet.High) });
                 }
                 consumer.Close();
             }
-            
-            var senderQueue = new KafkaSenderQueue<Item>(new ProducerConfig(clientConfig), topic, new JsonItemSerializer());
-            var receiverQueue = new KafkaReceiverQueue<Item>(consumerConfig, topic, new JsonItemSerializer());
+
+            var senderQueue = new PartitionedKafkaSender<string, Item>(new ProducerConfig(clientConfig), topic);
+            var receiverQueue = new PartitionedKafkaReceiver<string, Item>(consumerConfig, topic, new JsonItemSerializer());
             receiverQueue.OpenAsync(CancellationToken).Wait();
             return (senderQueue, receiverQueue);
         }
