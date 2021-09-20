@@ -42,8 +42,8 @@ namespace Take.Elephant.Tests
             AssertEquals((key, item), await receiverQueue.ConsumeAsync(key, CancellationToken));
         }
 
-        [Fact(DisplayName = nameof(EnqueueExistingItemSucceeds))]
-        public virtual async Task EnqueueExistingItemSucceeds()
+        [Fact(DisplayName = nameof(PublishExistingItemSucceeds))]
+        public virtual async Task PublishExistingItemSucceeds()
         {
             // Arrange
             var (senderQueue, receiverQueue) = CreateStream();

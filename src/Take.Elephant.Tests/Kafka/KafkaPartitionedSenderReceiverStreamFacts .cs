@@ -68,7 +68,7 @@ namespace Take.Elephant.Tests.Kafka
                 consumer.Close();
             }
 
-            var senderQueue = new PartitionedKafkaSender<string, Item>(new ProducerConfig(clientConfig), topic);
+            var senderQueue = new PartitionedKafkaSender<string, Item>(new ProducerConfig(clientConfig), topic, new JsonItemSerializer());
             var receiverQueue = new PartitionedKafkaReceiver<string, Item>(consumerConfig, topic, new JsonItemSerializer());
             receiverQueue.OpenAsync(CancellationToken).Wait();
             return (senderQueue, receiverQueue);
