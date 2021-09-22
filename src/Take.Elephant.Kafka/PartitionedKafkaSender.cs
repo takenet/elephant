@@ -9,7 +9,6 @@ namespace Take.Elephant.Kafka
     public class PartitionedKafkaSender<TKey, TEvent> : IEventStreamPublisher<TKey, TEvent>, IDisposable
     {
         private readonly IProducer<TKey, TEvent> _producer;
-        private readonly ISerializer<TEvent> _serializer;
 
         public PartitionedKafkaSender(string bootstrapServers, string topic, ISerializer<TEvent> serializer, Confluent.Kafka.ISerializer<TEvent> kafkaSerializer = null)
             : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer, kafkaSerializer)

@@ -29,9 +29,8 @@ namespace Take.Elephant
         /// <summary>
         /// Consume an item of the stream.
         /// </summary>
-        /// <param name="key"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<(TKey key, TEvent item)> ConsumeAsync(TKey key, CancellationToken cancellationToken);
+        Task<(TKey key, TEvent item)> ConsumeOrDefaultAsync(CancellationToken cancellationToken);
     }
 }

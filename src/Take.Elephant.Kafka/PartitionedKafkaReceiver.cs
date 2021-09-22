@@ -13,7 +13,7 @@ namespace Take.Elephant.Kafka
         private readonly IConsumer<TKey, TEvent> _partitionedConsumer;
         private readonly SemaphoreSlim _consumerStartSemaphore;
         private readonly CancellationTokenSource _cts;
-        private readonly Channel<TEvent> _channel;
+        private readonly Channel<Message<TKey, TEvent>> _channel;
         private Task _consumerTask;
         private bool _closed;
 
@@ -44,17 +44,17 @@ namespace Take.Elephant.Kafka
             Topic = topic;
             _consumerStartSemaphore = new SemaphoreSlim(1, 1);
             _cts = new CancellationTokenSource();
-            _channel = Channel.CreateBounded<TEvent>(1);
+            _channel = Channel.CreateBounded<Message<TKey, TEvent>>(1);
         }
 
         public string Topic { get; }
 
-        public virtual async Task<(TKey key, TEvent item)> ConsumeAsync(TKey key, CancellationToken cancellationToken)
+        public virtual async Task<(TKey key, TEvent item)> ConsumeOrDefaultAsync(CancellationToken cancellationToken)
         {
             await StartConsumerTaskIfNotAsync(cancellationToken);
-            if (_channel.Reader.TryRead(out var item))
+            if (_channel.Reader.TryRead(out var message))
             {
-                return (key, item);
+                return (message.Key, message.Value);
             }
 
             return default;
@@ -128,7 +128,7 @@ namespace Take.Elephant.Kafka
                 try
                 {
                     var result = _partitionedConsumer.Consume(cancellationToken);
-                    await _channel.Writer.WriteAsync(result.Message.Value, cancellationToken);
+                    await _channel.Writer.WriteAsync(result.Message, cancellationToken);
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,14 +46,17 @@ namespace Take.Elephant.Memory
                 return TaskUtil.CompletedTask;
             }
         }
-        public async Task<(TKey key, TEvent item)> ConsumeAsync(TKey key, CancellationToken cancellationToken)
+        public async Task<(TKey key, TEvent item)> ConsumeOrDefaultAsync(CancellationToken cancellationToken)
         {
+            (TKey, TEvent) result;
             lock (_syncRoot)
             {
-                return _dictionary.TryRemove(key, out var result)
-                    ? (key, result)
-                    : (default(TKey), default(TEvent));
+                var key = _dictionary.FirstOrDefault().Key;
+                result = _dictionary.TryRemove(key, out var eventResult)
+                   ? (key, eventResult)
+                   : (default(TKey), default(TEvent));
             }
+            return await Task.FromResult(result);
         }
     }
 }
