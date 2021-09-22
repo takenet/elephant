@@ -37,9 +37,10 @@ namespace Take.Elephant.Tests
 
             // Act
             await senderQueue.PublishAsync(key, item, CancellationToken);
+            await DelayTestAsync();
 
             // Assert
-            AssertEquals((key, item), await receiverQueue.ConsumeAsync(key, CancellationToken));
+            AssertEquals((key, item), await receiverQueue.ConsumeOrDefaultAsync(CancellationToken));
         }
 
         [Fact(DisplayName = nameof(PublishExistingItemSucceeds))]
@@ -53,69 +54,72 @@ namespace Take.Elephant.Tests
             // Act
             await senderQueue.PublishAsync(key, item, CancellationToken);
             await senderQueue.PublishAsync(key, item, CancellationToken);
+            await DelayTestAsync();
 
             // Assert
-            AssertEquals((key, item), await receiverQueue.ConsumeAsync(key, CancellationToken));
-            AssertEquals((key, item), await receiverQueue.ConsumeAsync(key, CancellationToken));
+            AssertEquals((key, item), await receiverQueue.ConsumeOrDefaultAsync(CancellationToken));
+            AssertEquals((key, item), await receiverQueue.ConsumeOrDefaultAsync(CancellationToken));
+        }        
+
+        [Fact(DisplayName = nameof(PublishMultipleItemsSucceeds))]
+        public virtual async Task PublishMultipleItemsSucceeds()
+        {
+            // Arrange
+            var (senderQueue, receiverQueue) = CreateStream();
+            var items = new ConcurrentBag<Tuple<string,Item>>();
+            var count = 10;
+            for (int i = 0; i < count; i++)
+            {
+                var item = CreateItem();
+                var key = Guid.NewGuid().ToString();
+                items.Add(new Tuple<string, Item>(key,item));
+            }
+
+            // Act
+            var enumerator = items.GetEnumerator();
+            var tasks = Enumerable
+                .Range(0, count)
+                .Where(_ => enumerator.MoveNext())
+                .Select(_ => Task.Run(async () => await senderQueue.PublishAsync(enumerator.Current.Item1, enumerator.Current.Item2,  CancellationToken)));
+
+            await Task.WhenAll(tasks);
+            await DelayTestAsync();
+
+            // Assert
+
+            foreach (var itemBag in items)
+            {
+                var item = await receiverQueue.ConsumeOrDefaultAsync(CancellationToken);
+                if (item.key == null)
+                {
+                    break;
+                }
+
+                AssertIsTrue(items.Where(i => i.Item1 == item.key).Any());
+            }
         }
 
-        //[Fact(DisplayName = nameof(EnqueueMultipleItemsSucceeds))]
-        //public virtual async Task EnqueueMultipleItemsSucceeds()
-        //{
-        //    // Arrange
-        //    var (senderQueue, receiverQueue) = CreateStream();
-        //    var items = new ConcurrentBag<T>();
-        //    var count = 100;
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        var item = CreateItem();
-        //        items.Add(item);
-        //    }
+        [Fact(DisplayName = nameof(ConsumeEmptyReturnsDefault))]
+        public virtual void ConsumeEmptyReturnsDefault()
+        {
+            // Arrange
+            var (senderQueue, receiverQueue) = CreateStream();
 
-        //    // Act
-        //    var enumerator = items.GetEnumerator();
-        //    var tasks = Enumerable
-        //        .Range(0, count)
-        //        .Where(_ => enumerator.MoveNext())
-        //        .Select(_ => Task.Run(async () => await senderQueue.EnqueueAsync(enumerator.Current, CancellationToken)));
+            // Act
+            Item actual;
 
-        //    await Task.WhenAll(tasks);
+            try
+            {
+                actual = receiverQueue.ConsumeOrDefaultAsync(CancellationToken).Result.item;
+            }
+            catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested)
+            {
+                actual = default;
+            }
 
-        //    // Assert
-
-        //    foreach (var itemBag in items)
-        //    {
-        //        var item = await receiverQueue.DequeueAsync(CancellationToken);
-        //        if (item == null)
-        //        {
-        //            break;
-        //        }
-
-        //        AssertIsTrue(items.Contains(item));
-        //    }
-        //}
-
-        //[Fact(DisplayName = nameof(DequeueEmptyReturnsDefault))]
-        //public virtual async Task DequeueEmptyReturnsDefault()
-        //{
-        //    // Arrange
-        //    var (senderQueue, receiverQueue) = CreateStream();
-
-        //    // Act
-        //    T actual;
-
-        //    try
-        //    {
-        //        actual = await receiverQueue.DequeueAsync(CancellationToken);
-        //    }
-        //    catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested)
-        //    {
-        //        actual = default;
-        //    }
-
-        //    // Assert
-        //    AssertIsDefault(actual);
-        //}
+            // Assert
+            AssertIsDefault(actual);
+        }
 
         protected virtual void Dispose(bool disposing)
         {
@@ -130,5 +134,7 @@ namespace Take.Elephant.Tests
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        private static async Task DelayTestAsync() => await Task.Delay(4000);
     }
 }
