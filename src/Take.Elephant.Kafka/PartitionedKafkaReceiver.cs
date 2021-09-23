@@ -154,8 +154,6 @@ namespace Take.Elephant.Kafka
 
         public void Dispose()
         {
-            _partitionedConsumer.Close();
-            _partitionedConsumer.Dispose();
             Dispose(true);
             GC.SuppressFinalize(this);
         }
