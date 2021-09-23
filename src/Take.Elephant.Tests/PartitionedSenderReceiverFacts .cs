@@ -31,41 +31,41 @@ namespace Take.Elephant.Tests
         public virtual async Task PublishNewItemSucceeds()
         {
             // Arrange
-            var (senderQueue, receiverQueue) = CreateStream();
+            var (streamPublisher, streamConsumer) = CreateStream();
             var item = CreateItem();
             var key = Guid.NewGuid().ToString();
 
             // Act
-            await senderQueue.PublishAsync(key, item, CancellationToken);
+            await streamPublisher.PublishAsync(key, item, CancellationToken);
             await DelayTestAsync();
 
             // Assert
-            AssertEquals((key, item), await receiverQueue.ConsumeOrDefaultAsync(CancellationToken));
+            AssertEquals((key, item), await streamConsumer.ConsumeOrDefaultAsync(CancellationToken));
         }
 
         [Fact(DisplayName = nameof(PublishExistingItemSucceeds))]
         public virtual async Task PublishExistingItemSucceeds()
         {
             // Arrange
-            var (senderQueue, receiverQueue) = CreateStream();
+            var (streamPublisher, streamConsumer) = CreateStream();
             var item = CreateItem();
             var key = Guid.NewGuid().ToString();
 
             // Act
-            await senderQueue.PublishAsync(key, item, CancellationToken);
-            await senderQueue.PublishAsync(key, item, CancellationToken);
+            await streamPublisher.PublishAsync(key, item, CancellationToken);
+            await streamPublisher.PublishAsync(key, item, CancellationToken);
             await DelayTestAsync();
 
             // Assert
-            AssertEquals((key, item), await receiverQueue.ConsumeOrDefaultAsync(CancellationToken));
-            AssertEquals((key, item), await receiverQueue.ConsumeOrDefaultAsync(CancellationToken));
+            AssertEquals((key, item), await streamConsumer.ConsumeOrDefaultAsync(CancellationToken));
+            AssertEquals((key, item), await streamConsumer.ConsumeOrDefaultAsync(CancellationToken));
         }        
 
         [Fact(DisplayName = nameof(PublishMultipleItemsSucceeds))]
         public virtual async Task PublishMultipleItemsSucceeds()
         {
             // Arrange
-            var (senderQueue, receiverQueue) = CreateStream();
+            var (streamPublisher, streamConsumer) = CreateStream();
             var items = new ConcurrentBag<Tuple<string,Item>>();
             var count = 10;
             for (int i = 0; i < count; i++)
@@ -80,7 +80,7 @@ namespace Take.Elephant.Tests
             var tasks = Enumerable
                 .Range(0, count)
                 .Where(_ => enumerator.MoveNext())
-                .Select(_ => Task.Run(async () => await senderQueue.PublishAsync(enumerator.Current.Item1, enumerator.Current.Item2,  CancellationToken)));
+                .Select(_ => Task.Run(async () => await streamPublisher.PublishAsync(enumerator.Current.Item1, enumerator.Current.Item2,  CancellationToken)));
 
             await Task.WhenAll(tasks);
             await DelayTestAsync();
@@ -89,7 +89,7 @@ namespace Take.Elephant.Tests
 
             foreach (var itemBag in items)
             {
-                var item = await receiverQueue.ConsumeOrDefaultAsync(CancellationToken);
+                var item = await streamConsumer.ConsumeOrDefaultAsync(CancellationToken);
                 if (item.key == null)
                 {
                     break;
@@ -103,14 +103,14 @@ namespace Take.Elephant.Tests
         public virtual void ConsumeEmptyReturnsDefault()
         {
             // Arrange
-            var (senderQueue, receiverQueue) = CreateStream();
+            var (streamPublisher, streamConsumer) = CreateStream();
 
             // Act
             Item actual;
 
             try
             {
-                actual = receiverQueue.ConsumeOrDefaultAsync(CancellationToken).Result.item;
+                actual = streamConsumer.ConsumeOrDefaultAsync(CancellationToken).Result.item;
             }
             catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested)
             {
