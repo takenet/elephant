@@ -10,19 +10,35 @@ namespace Take.Elephant.Kafka
     {
         private readonly IProducer<TKey, TEvent> _producer;
 
-        public PartitionedKafkaSender(string bootstrapServers, string topic, ISerializer<TEvent> serializer, Confluent.Kafka.ISerializer<TEvent> kafkaSerializer = null)
-            : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer, kafkaSerializer)
+        public PartitionedKafkaSender(string bootstrapServers, string topic, ISerializer<TEvent> serializer)
+            : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer)
+        {
+        }
+
+        public PartitionedKafkaSender(string bootstrapServers, string topic, Confluent.Kafka.ISerializer<TEvent> kafkaSerializer)
+            : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, kafkaSerializer)
         {
         }
 
         public PartitionedKafkaSender(
             ProducerConfig producerConfig,            
             string topic,
-            ISerializer<TEvent> serializer,
-             Confluent.Kafka.ISerializer<TEvent> kafkaSerializer = null)
+            ISerializer<TEvent> serializer)
             : this(
                   new ProducerBuilder<TKey, TEvent>(producerConfig)
-                        .SetValueSerializer(kafkaSerializer ?? new EventSerializer(serializer))
+                        .SetValueSerializer(new EventSerializer(serializer))
+                        .Build(),
+                  topic)
+        {
+        }
+
+        public PartitionedKafkaSender(
+            ProducerConfig producerConfig,
+            string topic,
+            Confluent.Kafka.ISerializer<TEvent> kafkaSerializer)
+            : this(
+                  new ProducerBuilder<TKey, TEvent>(producerConfig)
+                        .SetValueSerializer(kafkaSerializer)
                         .Build(),
                   topic)
         {
