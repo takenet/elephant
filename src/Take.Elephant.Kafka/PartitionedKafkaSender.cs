@@ -93,7 +93,7 @@ namespace Take.Elephant.Kafka
             }
             public byte[] Serialize(TEvent data, SerializationContext context)
             {
-                return Encoding.ASCII.GetBytes(_serializer.Serialize(data));
+                return Encoding.UTF8.GetBytes(_serializer.Serialize(data));
             }
         }
     }

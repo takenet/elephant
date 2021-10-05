@@ -87,6 +87,7 @@ namespace Take.Elephant.Kafka
                     _partitionedConsumer.Close();
                 }
 
+                _consumerStartSemaphore.Dispose();
                 _partitionedConsumer.Dispose();
                 _cts.Dispose();
             }
