@@ -4,14 +4,15 @@ using System.Threading.Tasks;
 namespace Take.Elephant
 {
     /// <summary>
-    /// Defines a stream storage container.
+    /// Defines a stream storage container.    
     /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TEvent"></typeparam>
+    /// <typeparam name="TKey">Defines a key to ensure that messages are consumed in the correct order</typeparam>
+    /// <typeparam name="TEvent">Defines the object that will be sent in the stream</typeparam>
     public interface IPartitionedStream<TKey, TEvent> : IEventStreamPublisher<TKey, TEvent>, IEventStreamConsumer<TKey, TEvent>
     {
-        //discutir essa implementação amanhã / tirar duvidas
+        
     }
+
     public interface IEventStreamPublisher<TKey, TEvent>
     {
         /// <summary>
