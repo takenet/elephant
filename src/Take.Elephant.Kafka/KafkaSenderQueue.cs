@@ -8,10 +8,15 @@ namespace Take.Elephant.Kafka
 {
     public class KafkaSenderQueue<T> : ISenderQueue<T>, IDisposable
     {
-        private readonly IProducer<Null, string> _producer;
+        private readonly IEventStreamPublisher<Null, string> _producer;
         private readonly ISerializer<T> _serializer;
 
-        public KafkaSenderQueue(string bootstrapServers, string topic, ISerializer<T> serializer, Confluent.Kafka.ISerializer<string> kafkaSerializer = null)
+        public KafkaSenderQueue(string bootstrapServers, string topic, ISerializer<T> serializer)
+            : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer)
+        {
+        }
+
+        public KafkaSenderQueue(string bootstrapServers, string topic, ISerializer<T> serializer, Confluent.Kafka.ISerializer<string> kafkaSerializer)
             : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer, kafkaSerializer)
         {
         }
@@ -20,29 +25,22 @@ namespace Take.Elephant.Kafka
             ProducerConfig producerConfig,
             string topic,
             ISerializer<T> serializer,
-            Confluent.Kafka.ISerializer<string> kafkaSerializer = null)
-            : this(
-                  new ProducerBuilder<Null, string>(producerConfig)
-                        .SetValueSerializer(kafkaSerializer ?? new StringSerializer())
-                        .Build(),
-                  serializer,
-                  topic)
+            Confluent.Kafka.ISerializer<string> kafkaSerializer)
         {
+            Topic = topic;
+            _serializer = serializer;
+            _producer = new KafkaEventStreamPublisher<Null, string>(producerConfig, topic, kafkaSerializer);
         }
 
         public KafkaSenderQueue(
-            IProducer<Null, string> producer,
-            ISerializer<T> serializer,
-            string topic)
+            ProducerConfig producerConfig,
+            string topic,
+            ISerializer<T> serializer)
         {
-            if (string.IsNullOrWhiteSpace(topic))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
-            }
 
-            _producer = producer;
             _serializer = serializer;
             Topic = topic;
+            _producer = new KafkaEventStreamPublisher<Null, string>(producerConfig, topic, new StringSerializer());
         }
 
         public string Topic { get; }
@@ -50,37 +48,10 @@ namespace Take.Elephant.Kafka
         public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             var stringItem = _serializer.Serialize(item);
-            return _producer.ProduceAsync(
-                Topic,
-                new Message<Null, string>
-                {
-                    Value = stringItem
-                });
+            return _producer.PublishAsync(null, stringItem, cancellationToken);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _producer?.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-    }
-
-    public class JsonSerializer<T> : Confluent.Kafka.ISerializer<T>
-    {
-        public byte[] Serialize(T data, SerializationContext context)
-        {
-            var json = JsonConvert.SerializeObject(data, Formatting.None);
-
-            return Serializers.Utf8.Serialize(json, context);
-        }
+        public void Dispose() => (_producer as IDisposable)?.Dispose();
     }
 
     public class StringSerializer : Confluent.Kafka.ISerializer<string>

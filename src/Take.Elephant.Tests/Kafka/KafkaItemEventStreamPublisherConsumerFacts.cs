@@ -8,13 +8,12 @@ using Xunit;
 namespace Take.Elephant.Tests.Kafka
 {
     [Trait("Category", nameof(Kafka))]
-    public class KafkaItemSenderReceiverQueueFacts : ItemSenderReceiverQueueFacts
+    public class KafkaItemEventStreamPublisherConsumerFacts : ItemEventStreamPublisherConsumerFacts
     {
-        private readonly string _topic = "items";
-        private static readonly ClientConfig _clientConfig = GetKafkaConfig();
-        private static readonly ConsumerConfig _consumerConfig = new ConsumerConfig(_clientConfig) { GroupId = "default" };
-        private KafkaSenderQueue<Item> _senderQueue;
-        private KafkaReceiverQueue<Item> _receiverQueue;
+        private readonly string topic = "items";
+        private static readonly ClientConfig clientConfig = GetKafkaConfig();
+        private static readonly ConsumerConfig consumerConfig = new ConsumerConfig(clientConfig) { GroupId = "default" };
+
 
         private static ClientConfig GetKafkaConfig()
         {
@@ -49,16 +48,11 @@ namespace Take.Elephant.Tests.Kafka
             return clientConfig;
         }
 
-        public override (ISenderQueue<Item>, IBlockingReceiverQueue<Item>) Create()
+        public override (IEventStreamPublisher<string, Item>, IEventStreamConsumer<string, Item>) CreateStream()
         {
-            var consumerConfig = new ConsumerConfig(_clientConfig)
-            {
-                GroupId = "default"
-            };
-            
-            var adminClient = new AdminClientBuilder(_clientConfig).Build();
+            var adminClient = new AdminClientBuilder(clientConfig).Build();
             var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(5));
-            var topicMetadata = metadata.Topics.FirstOrDefault(t => t.Topic == _topic);
+            var topicMetadata = metadata.Topics.FirstOrDefault(t => t.Topic == topic);
             if (topicMetadata != null)
             {
                 var consumer = new ConsumerBuilder<Ignore, Item>(consumerConfig)
@@ -67,28 +61,17 @@ namespace Take.Elephant.Tests.Kafka
 
                 foreach (var partition in topicMetadata.Partitions)
                 {
-                    var topicPartition = new TopicPartition(_topic, new Partition(partition.PartitionId));
+                    var topicPartition = new TopicPartition(topic, new Partition(partition.PartitionId));
                     var offSet = consumer.QueryWatermarkOffsets(topicPartition, TimeSpan.FromSeconds(5));
-                    consumer.Commit(new TopicPartitionOffset[] {new TopicPartitionOffset(topicPartition, offSet.High)});
+                    consumer.Commit(new TopicPartitionOffset[] { new TopicPartitionOffset(topicPartition, offSet.High) });
                 }
                 consumer.Close();
             }
-            
-            var senderQueue = new KafkaSenderQueue<Item>(new ProducerConfig(_clientConfig), _topic, new JsonItemSerializer());
-            var receiverQueue = new KafkaReceiverQueue<Item>(consumerConfig, _topic, new JsonItemSerializer());
+
+            var senderQueue = new KafkaEventStreamPublisher<string, Item>(new ProducerConfig(clientConfig), topic, new JsonItemSerializer());
+            var receiverQueue = new KafkaEventStreamConsumer<string, Item>(consumerConfig, topic, new JsonItemSerializer());
             receiverQueue.OpenAsync(CancellationToken).Wait();
-
-            _senderQueue = senderQueue;
-            _receiverQueue = receiverQueue;
-
             return (senderQueue, receiverQueue);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _senderQueue?.Dispose();
-            _receiverQueue?.Dispose();
-            base.Dispose(disposing);
         }
     }
 }
