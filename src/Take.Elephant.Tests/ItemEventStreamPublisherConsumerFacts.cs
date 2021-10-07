@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Take.Elephant.Tests
 {
-    public abstract class ItemSenderReceiverStreamFacts: PartitionedSenderReceiverFacts<string, Item>
+    public abstract class ItemEventStreamPublisherConsumerFacts : EventStreamPublisherConsumerFacts<string, Item>
     {
     }
 }

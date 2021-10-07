@@ -29,7 +29,7 @@ namespace Take.Elephant.Kafka
         {
             Topic = topic;
             _serializer = serializer;
-            _producer = new PartitionedKafkaSender<Null, string>(producerConfig, topic, kafkaSerializer);
+            _producer = new KafkaEventStreamPublisher<Null, string>(producerConfig, topic, kafkaSerializer);
         }
 
         public KafkaSenderQueue(
@@ -40,7 +40,7 @@ namespace Take.Elephant.Kafka
 
             _serializer = serializer;
             Topic = topic;
-            _producer = new PartitionedKafkaSender<Null, string>(producerConfig, topic, new StringSerializer());
+            _producer = new KafkaEventStreamPublisher<Null, string>(producerConfig, topic, new StringSerializer());
         }
 
         public string Topic { get; }

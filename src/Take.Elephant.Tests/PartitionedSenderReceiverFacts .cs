@@ -9,11 +9,11 @@ using Xunit;
 
 namespace Take.Elephant.Tests
 {
-    public abstract class PartitionedSenderReceiverFacts<TKey, TEvent> : FactsBase, IDisposable
+    public abstract class EventStreamPublisherConsumerFacts<TKey, TEvent> : FactsBase, IDisposable
     {
         private readonly CancellationTokenSource _cts;
 
-        public PartitionedSenderReceiverFacts()
+        public EventStreamPublisherConsumerFacts()
         {
             _cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
         }

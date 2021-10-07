@@ -8,7 +8,7 @@ using Confluent.Kafka;
 
 namespace Take.Elephant.Kafka
 {
-    public class PartitionedKafkaReceiver<TKey, TEvent> : IEventStreamConsumer<TKey, TEvent>, IOpenable, ICloseable, IDisposable
+    public class KafkaEventStreamConsumer<TKey, TEvent> : IEventStreamConsumer<TKey, TEvent>, IOpenable, ICloseable, IDisposable
     {
         private readonly IConsumer<TKey, TEvent> _partitionedConsumer;
         private readonly SemaphoreSlim _consumerStartSemaphore;
@@ -17,12 +17,12 @@ namespace Take.Elephant.Kafka
         private Task _consumerTask;
         private bool _closed;
 
-        public PartitionedKafkaReceiver(string bootstrapServers, string topic, string groupId, ISerializer<TEvent> serializer, IDeserializer<TEvent> deserializer = null)
+        public KafkaEventStreamConsumer(string bootstrapServers, string topic, string groupId, ISerializer<TEvent> serializer, IDeserializer<TEvent> deserializer = null)
             : this(new ConsumerConfig() { BootstrapServers = bootstrapServers, GroupId = groupId }, topic, serializer, deserializer)
         {
         }
 
-        public PartitionedKafkaReceiver(
+        public KafkaEventStreamConsumer(
             ConsumerConfig consumerConfig,
             string topic,
             ISerializer<TEvent> serializer,
@@ -36,7 +36,7 @@ namespace Take.Elephant.Kafka
         {
         }
 
-        public PartitionedKafkaReceiver(IConsumer<TKey, TEvent> consumer, ISerializer<TEvent> serializer, string topic)
+        public KafkaEventStreamConsumer(IConsumer<TKey, TEvent> consumer, ISerializer<TEvent> serializer, string topic)
         {
             if (string.IsNullOrWhiteSpace(topic))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));

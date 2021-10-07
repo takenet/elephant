@@ -6,21 +6,21 @@ using Confluent.Kafka;
 
 namespace Take.Elephant.Kafka
 {
-    public class PartitionedKafkaSender<TKey, TEvent> : IEventStreamPublisher<TKey, TEvent>, IDisposable
+    public class KafkaEventStreamPublisher<TKey, TEvent> : IEventStreamPublisher<TKey, TEvent>, IDisposable
     {
         private readonly IProducer<TKey, TEvent> _producer;
 
-        public PartitionedKafkaSender(string bootstrapServers, string topic, ISerializer<TEvent> serializer)
+        public KafkaEventStreamPublisher(string bootstrapServers, string topic, ISerializer<TEvent> serializer)
             : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer)
         {
         }
 
-        public PartitionedKafkaSender(string bootstrapServers, string topic, Confluent.Kafka.ISerializer<TEvent> kafkaSerializer)
+        public KafkaEventStreamPublisher(string bootstrapServers, string topic, Confluent.Kafka.ISerializer<TEvent> kafkaSerializer)
             : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, kafkaSerializer)
         {
         }
 
-        public PartitionedKafkaSender(
+        public KafkaEventStreamPublisher(
             ProducerConfig producerConfig,            
             string topic,
             ISerializer<TEvent> serializer)
@@ -32,7 +32,7 @@ namespace Take.Elephant.Kafka
         {
         }
 
-        public PartitionedKafkaSender(
+        public KafkaEventStreamPublisher(
             ProducerConfig producerConfig,
             string topic,
             Confluent.Kafka.ISerializer<TEvent> kafkaSerializer)
@@ -44,7 +44,7 @@ namespace Take.Elephant.Kafka
         {
         }
 
-        public PartitionedKafkaSender(
+        public KafkaEventStreamPublisher(
             IProducer<TKey, TEvent> producer,
             string topic)
         {
@@ -59,9 +59,9 @@ namespace Take.Elephant.Kafka
 
         public string Topic { get; }
 
-        public Task PublishAsync(TKey key, TEvent item, CancellationToken cancellationToken)
+        public async Task PublishAsync(TKey key, TEvent item, CancellationToken cancellationToken)
         {
-            return _producer.ProduceAsync(
+            await _producer.ProduceAsync(
                 Topic,
                 new Message<TKey, TEvent>
                 {
@@ -83,6 +83,7 @@ namespace Take.Elephant.Kafka
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
         public class EventSerializer : Confluent.Kafka.ISerializer<TEvent>
         {
             private readonly ISerializer<TEvent> _serializer;

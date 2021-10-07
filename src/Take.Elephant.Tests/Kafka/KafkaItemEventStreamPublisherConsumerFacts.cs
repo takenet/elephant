@@ -8,7 +8,7 @@ using Xunit;
 namespace Take.Elephant.Tests.Kafka
 {
     [Trait("Category", nameof(Kafka))]
-    public class KafkaPartitionedSenderReceiverStreamFacts : ItemSenderReceiverStreamFacts
+    public class KafkaItemEventStreamPublisherConsumerFacts : ItemEventStreamPublisherConsumerFacts
     {
         private readonly string topic = "items";
         private static readonly ClientConfig clientConfig = GetKafkaConfig();
@@ -68,8 +68,8 @@ namespace Take.Elephant.Tests.Kafka
                 consumer.Close();
             }
 
-            var senderQueue = new PartitionedKafkaSender<string, Item>(new ProducerConfig(clientConfig), topic, new JsonItemSerializer());
-            var receiverQueue = new PartitionedKafkaReceiver<string, Item>(consumerConfig, topic, new JsonItemSerializer());
+            var senderQueue = new KafkaEventStreamPublisher<string, Item>(new ProducerConfig(clientConfig), topic, new JsonItemSerializer());
+            var receiverQueue = new KafkaEventStreamConsumer<string, Item>(consumerConfig, topic, new JsonItemSerializer());
             receiverQueue.OpenAsync(CancellationToken).Wait();
             return (senderQueue, receiverQueue);
         }

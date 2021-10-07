@@ -11,13 +11,13 @@ namespace Take.Elephant.Memory
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TEvent"></typeparam>
-    public class PartitionedStream<TKey, TEvent> : IPartitionedStream<TKey, TEvent>
+    public class EventStream<TKey, TEvent> : IEventStream<TKey, TEvent>
     {
         private readonly ConcurrentDictionary<TKey, TEvent> _dictionary;
         private readonly ConcurrentQueue<Tuple<TaskCompletionSource<TEvent>, CancellationTokenRegistration>> _promisesQueue;
         private readonly object _syncRoot = new object();
 
-        public PartitionedStream()
+        public EventStream()
         {
             _dictionary = new ConcurrentDictionary<TKey, TEvent>();
             _promisesQueue = new ConcurrentQueue<Tuple<TaskCompletionSource<TEvent>, CancellationTokenRegistration>>();
