@@ -67,7 +67,8 @@ namespace Take.Elephant.Kafka
                 {
                     Key = key,
                     Value = item
-                });
+                },
+                cancellationToken);
         }
 
         protected virtual void Dispose(bool disposing)
