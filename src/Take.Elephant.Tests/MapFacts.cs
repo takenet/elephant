@@ -106,7 +106,7 @@ namespace Take.Elephant.Tests
                     Enumerable
                         .Range(0, count)
                         .Select(i => Task.Run(
-                            () => map.TryAddAsync(key, value, false))));
+                            async () => await map.TryAddAsync(key, value, false))));
             
             // Assert
             AssertEquals(actuals.Count(c => c == true), 1);

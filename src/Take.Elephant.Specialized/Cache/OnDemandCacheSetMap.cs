@@ -13,6 +13,11 @@ namespace Take.Elephant.Specialized.Cache
         {
         }
 
+        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, CacheOptions cacheOptions)
+            : base(source, cache, cacheOptions)
+        {
+        }
+
         public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var cacheValue = await Cache.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
@@ -68,10 +73,10 @@ namespace Take.Elephant.Specialized.Cache
         private ISet<TValue> GetKeyExpirationCacheSet(TKey key, ISet<TValue> cacheSet)
         {
             // Provides a set that calls a function to expires the key when a value is added
-            if (CacheExpiration != default && 
+            if (CacheOptions.CacheExpiration != default && 
                 Cache is IExpirableKeyMap<TKey, ISet<TValue>> expirableMap)
             {
-                return new TriggeredSet<TValue>(cacheSet, i => expirableMap.SetRelativeKeyExpirationAsync(key, CacheExpiration));                
+                return new TriggeredSet<TValue>(cacheSet, i => expirableMap.SetRelativeKeyExpirationAsync(key, CacheOptions.CacheExpiration));                
             }
             
             return cacheSet;
