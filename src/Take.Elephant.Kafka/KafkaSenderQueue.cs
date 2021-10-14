@@ -46,7 +46,7 @@ namespace Take.Elephant.Kafka
             string topic)
         {
             _serializer = serializer;
-             Topic = topic;
+            Topic = topic;
             _producer = new KafkaEventStreamPublisher<Null, string>(producer, topic);
         }
 
