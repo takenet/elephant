@@ -24,23 +24,30 @@ namespace Take.Elephant.Kafka
         public KafkaSenderQueue(
             ProducerConfig producerConfig,
             string topic,
-            ISerializer<T> serializer,
-            Confluent.Kafka.ISerializer<string> kafkaSerializer)
+            ISerializer<T> serializer)
+            : this(producerConfig, topic, serializer, null)
         {
-            Topic = topic;
-            _serializer = serializer;
-            _producer = new KafkaEventStreamPublisher<Null, string>(producerConfig, topic, kafkaSerializer);
         }
 
         public KafkaSenderQueue(
             ProducerConfig producerConfig,
             string topic,
-            ISerializer<T> serializer)
+            ISerializer<T> serializer,
+            Confluent.Kafka.ISerializer<string> kafkaSerializer)
         {
-
-            _serializer = serializer;
             Topic = topic;
-            _producer = new KafkaEventStreamPublisher<Null, string>(producerConfig, topic, new StringSerializer());
+            _serializer = serializer;
+            _producer = new KafkaEventStreamPublisher<Null, string>(producerConfig, topic, kafkaSerializer ?? new StringSerializer());
+        }
+
+        public KafkaSenderQueue(
+            IProducer<Null, string> producer,
+            ISerializer<T> serializer,
+            string topic)
+        {
+            _serializer = serializer;
+             Topic = topic;
+            _producer = new KafkaEventStreamPublisher<Null, string>(producer, topic);
         }
 
         public string Topic { get; }
