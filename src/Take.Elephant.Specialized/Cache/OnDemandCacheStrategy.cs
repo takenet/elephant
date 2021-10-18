@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Take.Elephant.Specialized.Cache
 {
@@ -13,15 +14,27 @@ namespace Take.Elephant.Specialized.Cache
     {
         protected readonly TMap Source;
         protected readonly TMap Cache;
+        protected readonly CacheOptions CacheOptions;
+        protected readonly ILogger Logger;
 
         public OnDemandCacheStrategy(TMap source, TMap cache)
+            : this(source, cache, new CacheOptions(), new TraceLogger())
+        {
+        }
+        public OnDemandCacheStrategy(TMap source, TMap cache, CacheOptions cacheOptions, ILogger logger)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Cache = cache ?? throw new ArgumentNullException(nameof(cache));
+            CacheOptions = cacheOptions ?? throw new ArgumentNullException(nameof(cacheOptions);
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public virtual Task<TResult> ExecuteQueryFunc<TResult>(Func<TMap, Task<TResult>> queryFunc, Func<TResult, TMap, Task<bool>> writeFunc)
-            => ExecuteQueryFunc(queryFunc, async (r, s) => { await writeFunc(r, s); }); // DO NOT SIMPLIFY THIS LAMBDA!
+        public virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<TMap, Task<TResult>> queryFunc, Func<TResult, TMap, Task<bool>> writeFunc)
+        {
+            return await ExecuteQueryFunc(
+                queryFunc, 
+                async (r, s) => { await writeFunc(r, s); }); // DO NOT SIMPLIFY THIS LAMBDA!
+        }
 
         public virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<TMap, Task<TResult>> queryFunc, Func<TResult, TMap, Task> writeFunc)
         {
@@ -34,7 +47,17 @@ namespace Take.Elephant.Specialized.Cache
             if (IsDefaultValueOfType(value)) return value;
 
             // Caches the value
-            await writeFunc(value, Cache).ConfigureAwait(false);
+            try
+            {
+                await writeFunc(value, Cache).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                if (CacheOptions.ThrowOnCacheWritingExceptions)
+                    throw;
+
+                Logger.LogWarning(e, "Failed to write retrieved value from source to cache (this exception is being ignored and won't affect the read from source)");
+            }
             return value;
         }
 
@@ -42,8 +65,19 @@ namespace Take.Elephant.Specialized.Cache
         {
             // Writes in the source
             await func(Source).ConfigureAwait(false);
+
             // Try to write in the cache
-            await func(Cache).ConfigureAwait(false);
+            try
+            {
+                await func(Cache).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                if (CacheOptions.ThrowOnCacheWritingExceptions)
+                    throw;
+
+                Logger.LogWarning(e, "Failed to write to cache (this exception is being ignored and won't affect the write to source)");
+            }
         }
 
         public virtual async Task<bool> ExecuteWriteFunc(Func<TMap, Task<bool>> func)
@@ -51,10 +85,22 @@ namespace Take.Elephant.Specialized.Cache
             // Writes in the source
             if (await func(Source).ConfigureAwait(false))
             {
-                // Try to write in the cache
-                await func(Cache).ConfigureAwait(false);
+                try
+                {
+                    // Try to write in the cache
+                    await func(Cache).ConfigureAwait(false);
+                } 
+                catch (Exception e)
+                {
+                    if (CacheOptions.ThrowOnCacheWritingExceptions)
+                        throw;
+
+                    Logger.LogWarning(e, "Failed to write to cache (this exception is being ignored and won't affect the write to source)");
+                }
+
                 // Ignores the cache write result since the source is OK.
                 return true;
+
             }
 
             return false;
