@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Take.Elephant.Specialized.Cache
 {
     public class OnDemandCacheMap<TKey, TValue> : OnDemandCacheStrategy<IMap<TKey, TValue>>, IPropertyMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
     {
-        protected readonly CacheOptions CacheOptions;
         private readonly bool _implementsPropertyMap;
 
         public OnDemandCacheMap(
@@ -14,18 +14,17 @@ namespace Take.Elephant.Specialized.Cache
             IMap<TKey, TValue> cache,
             TimeSpan cacheExpiration = default,
             TimeSpan cacheFaultTolerance = default)
-            : this(source, cache, new CacheOptions { CacheExpiration = cacheExpiration, CacheFaultTolerance = cacheFaultTolerance })
+            : this(source, cache, new CacheOptions { CacheExpiration = cacheExpiration, CacheFaultTolerance = cacheFaultTolerance }, new TraceLogger())
         {
         }
 
         public OnDemandCacheMap(
             IMap<TKey, TValue> source,
             IMap<TKey, TValue> cache,
-            CacheOptions cacheOptions)
-            : base(source, cache)
+            CacheOptions cacheOptions,
+            ILogger logger)
+            : base(source, cache, cacheOptions, logger)
         {
-            CacheOptions = cacheOptions ?? throw new ArgumentNullException(nameof(cacheOptions));
-
             if (cacheOptions.CacheExpiration != default && !(cache is IExpirableKeyMap<TKey, TValue>))
             {
                 throw new ArgumentException("To enable cache expiration, the cache map should implement IExpirableKeyMap");

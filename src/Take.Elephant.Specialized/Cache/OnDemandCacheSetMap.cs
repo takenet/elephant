@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Take.Elephant.Specialized.Cache
 {
@@ -13,8 +14,8 @@ namespace Take.Elephant.Specialized.Cache
         {
         }
 
-        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, CacheOptions cacheOptions)
-            : base(source, cache, cacheOptions)
+        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, CacheOptions cacheOptions, ILogger logger)
+            : base(source, cache, cacheOptions, logger)
         {
         }
 

@@ -25,7 +25,7 @@ namespace Take.Elephant.Specialized.Cache
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            CacheOptions = cacheOptions ?? throw new ArgumentNullException(nameof(cacheOptions);
+            CacheOptions = cacheOptions ?? throw new ArgumentNullException(nameof(cacheOptions));
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
