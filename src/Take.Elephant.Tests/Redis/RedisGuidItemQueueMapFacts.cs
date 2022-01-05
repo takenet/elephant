@@ -36,6 +36,7 @@ namespace Take.Elephant.Tests.Redis
             return set;
         }
         
+        [Fact(Skip = "Atomic add not supported by the current implementation")]
         public override Task AddExistingKeyConcurrentlyReturnsFalse()
         {
             // Not supported by this class
