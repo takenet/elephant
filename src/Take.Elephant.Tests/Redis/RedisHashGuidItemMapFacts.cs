@@ -25,6 +25,7 @@ namespace Take.Elephant.Tests.Redis
             return new RedisHashMap<Guid, Item>(mapName, new TypeRedisDictionaryConverter<Item>(), _redisFixture.Connection.Configuration, db);
         }
         
+        [Fact(Skip = "Atomic add not supported by the current implementation")]
         public override Task AddExistingKeyConcurrentlyReturnsFalse()
         {
             // Not supported by this class
