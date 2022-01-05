@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using System;
+using System.Threading.Tasks;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
 using Xunit;
@@ -36,6 +37,13 @@ namespace Take.Elephant.Tests.Redis
                 sortedSet.AddAsync(Fixture.Create<Item>(), 1).Wait();
             }
             return sortedSet;
+        }
+        
+        [Fact(Skip = "Atomic add not supported by the current implementation")]
+        public override Task AddExistingKeyConcurrentlyReturnsFalse()
+        {
+            // Not supported by this class
+            return base.AddExistingKeyConcurrentlyReturnsFalse();
         }
     }
 }

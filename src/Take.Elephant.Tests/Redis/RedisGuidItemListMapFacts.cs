@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using System;
+using System.Threading.Tasks;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
 using Xunit;
@@ -37,6 +38,12 @@ namespace Take.Elephant.Tests.Redis
                 set.AddAsync(Fixture.Create<Item>()).Wait();
             }
             return set;
+        }
+
+        public override Task AddExistingKeyConcurrentlyReturnsFalse()
+        {
+            // Not supported by this class
+            return Task.CompletedTask;
         }
     }
 }
