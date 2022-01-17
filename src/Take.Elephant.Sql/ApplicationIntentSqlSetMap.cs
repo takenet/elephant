@@ -43,8 +43,14 @@ namespace Take.Elephant.Sql
 
         public virtual async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            await SynchronizeSchemaAsync(default);
-            return await _readOnlySetMap.GetValueOrDefaultAsync(key, cancellationToken);
+            // We must use a write connection here since we do not control how the returned ISet<TItem> will be used.
+            return await _writeSetMap.GetValueOrDefaultAsync(key, cancellationToken);
+        }
+        
+        public virtual async Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
+        {
+            // We must use a write connection here since we do not control how the returned ISet<TItem> will be used.
+            return await _writeSetMap.GetValueOrEmptyAsync(key, cancellationToken);
         }
 
         public virtual async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
@@ -52,13 +58,7 @@ namespace Take.Elephant.Sql
             await SynchronizeSchemaAsync(cancellationToken);
             return await _readOnlySetMap.ContainsKeyAsync(key, cancellationToken);
         }
-
-        public virtual async Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
-        {
-            await SynchronizeSchemaAsync(cancellationToken);
-            return await _readOnlySetMap.GetValueOrEmptyAsync(key, cancellationToken);
-        }
-
+        
         public virtual async Task<TItem> GetItemOrDefaultAsync(TKey key, TItem item)
         {
             await SynchronizeSchemaAsync(default);
