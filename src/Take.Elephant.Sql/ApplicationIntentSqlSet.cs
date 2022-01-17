@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +15,7 @@ namespace Take.Elephant.Sql
     /// More info:
     /// https://docs.microsoft.com/en-us/sql/database-engine/availability-groups/windows/secondary-replica-connection-redirection-always-on-availability-groups
     /// </summary>
-    public class ApplicationIntentSqlSet<T> : ApplicationIntentStorageBase, ISet<T>
+    public class ApplicationIntentSqlSet<T> : ApplicationIntentStorageBase, ISet<T>, IQueryableStorage<T>, IOrderedQueryableStorage<T>, IDistinctQueryableStorage<T>
     {
         private readonly SqlSet<T> _readOnlySet;
         private readonly SqlSet<T> _writeSet;
@@ -48,6 +50,27 @@ namespace Take.Elephant.Sql
             {
                 yield return item;
             }
+        }
+
+        public virtual async Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, int skip, int take,
+            CancellationToken cancellationToken)
+        {
+            await SynchronizeSchemaAsync(cancellationToken);
+            return await _readOnlySet.QueryAsync(@where, @select, skip, take, cancellationToken);
+        }
+
+        public virtual async Task<QueryResult<T>> QueryAsync<TResult, TOrderBy>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, Expression<Func<T, TOrderBy>> orderBy, bool orderByAscending,
+            int skip, int take, CancellationToken cancellationToken)
+        {
+            await SynchronizeSchemaAsync(cancellationToken);
+            return await _readOnlySet.QueryAsync(@where, @select, orderBy, orderByAscending, skip, take, cancellationToken);
+        }
+
+        public virtual async Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, bool distinct, int skip, int take,
+            CancellationToken cancellationToken)
+        {
+            await SynchronizeSchemaAsync(cancellationToken);
+            return await _readOnlySet.QueryAsync(@where, @select, distinct, skip, take, cancellationToken);
         }
     }
 }

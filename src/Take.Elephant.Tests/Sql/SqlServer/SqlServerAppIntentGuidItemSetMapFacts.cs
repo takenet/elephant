@@ -37,7 +37,7 @@ namespace Take.Elephant.Tests.Sql.SqlServer
             // The operations below should be, ideally, executed in a ReadOnly connection, but the current ApplicationIntentSqlSetMap implementation doesn't support it.
             // The reason is that the underlying SqlSetMap returns an InternalSqlSetMap which cannot be intercepted to change the connection string.
             _databaseDriver.ReceivedConnectionStrings[2].ShouldNotContain("ApplicationIntent"); // GetValueOrDefaultAsync/Contains operation
-            _databaseDriver.ReceivedConnectionStrings[3].ShouldNotContain("ApplicationIntent"); // SqlSet.AsEnumerableAsync operation
+            _databaseDriver.ReceivedConnectionStrings[3].ShouldNotContain("ApplicationIntent"); // ISet.AsEnumerableAsync operation
         }
         
         [Fact]
@@ -57,6 +57,17 @@ namespace Take.Elephant.Tests.Sql.SqlServer
             _databaseDriver.ReceivedConnectionStrings[0].ShouldNotContain("ApplicationIntent");       // Schema synchronization
             _databaseDriver.ReceivedConnectionStrings[1].ShouldNotContain("ApplicationIntent");       // TryAddAsync operation
             _databaseDriver.ReceivedConnectionStrings[2].ShouldContain("ApplicationIntent=ReadOnly"); // ContainsKeyAsync operation
+        }
+
+        [Fact]
+        public override async Task GetEmptyListSucceeds()
+        {
+            await base.GetEmptyListSucceeds();
+            _databaseDriver.ReceivedConnectionStrings.Count.ShouldBe(2);
+            _databaseDriver.ReceivedConnectionStrings[0].ShouldNotContain("ApplicationIntent"); // Schema synchronization
+            // The operation below should be, ideally, executed in a ReadOnly connection, but the current ApplicationIntentSqlSetMap implementation doesn't support it.
+            // The reason is that the underlying SqlSetMap returns an InternalSqlSetMap which cannot be intercepted to change the connection string.            
+            _databaseDriver.ReceivedConnectionStrings[1].ShouldNotContain("ApplicationIntent"); // ISet.GetLenghtAsync operation
         }
     }
 }
