@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Take.Elephant.Sql;
 using Take.Elephant.Sql.Mapping;
+using Xunit;
 
 namespace Take.Elephant.Tests.Sql
 {

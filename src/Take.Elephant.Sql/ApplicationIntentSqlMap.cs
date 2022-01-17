@@ -37,6 +37,10 @@ namespace Take.Elephant.Sql
 
         public virtual async Task<bool> TryUpdateAsync(TKey key, TValue newValue, TValue oldValue) => await _writeMap.TryUpdateAsync(key, newValue, oldValue);
     
+        public virtual async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue,
+            CancellationToken cancellationToken = new CancellationToken()) =>
+            await _writeMap.SetPropertyValueAsync(key, propertyName, propertyValue, cancellationToken);
+
         public virtual async Task<TValue> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = new CancellationToken())
         {
             await SynchronizeSchemaAsync(cancellationToken);
@@ -54,14 +58,7 @@ namespace Take.Elephant.Sql
             await SynchronizeSchemaAsync(default);
             return await _readOnlyMap.GetKeysAsync();
         }
-
-        public virtual async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName, TProperty propertyValue,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            await SynchronizeSchemaAsync(cancellationToken);
-            await _readOnlyMap.SetPropertyValueAsync(key, propertyName, propertyValue, cancellationToken);
-        }
-
+        
         public virtual async Task<TProperty> GetPropertyValueOrDefaultAsync<TProperty>(TKey key, string propertyName,
             CancellationToken cancellationToken = new CancellationToken())
         {

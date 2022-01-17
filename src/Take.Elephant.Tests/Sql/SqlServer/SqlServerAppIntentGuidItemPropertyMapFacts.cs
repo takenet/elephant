@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Threading.Tasks;
 using Shouldly;
 using Take.Elephant.Sql;
@@ -9,24 +8,23 @@ using Xunit;
 namespace Take.Elephant.Tests.Sql.SqlServer
 {
     [Collection(nameof(SqlServer)), Trait("Category", nameof(SqlServer))]
-    public class SqlServerAppIntentGuidItemMapFacts : GuidItemMapFacts
+    public class SqlServerAppIntentGuidItemPropertyMapFacts : GuidItemPropertyMapFacts
     {
         private readonly SqlServerFixture _serverFixture;
         private readonly AuditableDatabaseDriver _databaseDriver;
 
-        public SqlServerAppIntentGuidItemMapFacts(SqlServerFixture serverFixture)
+        public SqlServerAppIntentGuidItemPropertyMapFacts(SqlServerFixture serverFixture)
         {
             _serverFixture = serverFixture;
             _databaseDriver = (AuditableDatabaseDriver)serverFixture.DatabaseDriver;
             _databaseDriver.ReceivedConnectionStrings.Clear();
         }
-        
-        public override IMap<Guid, Item> Create()
+
+        public override IPropertyMap<Guid, Item> Create()
         {
             var table = TableBuilder
                 .WithName("GuidItems")
-                .WithColumnsFromTypeProperties<Item>(p => !p.Name.Equals(nameof(Item.StringProperty)))
-                .WithColumn(nameof(Item.StringProperty), new SqlType(DbType.String, int.MaxValue))
+                .WithColumnsFromTypeProperties<Item>()
                 .WithKeyColumnFromType<Guid>("Key")
                 .Build();
             _serverFixture.DropTable(table.Schema, table.Name);
@@ -35,34 +33,29 @@ namespace Take.Elephant.Tests.Sql.SqlServer
             var valueMapper = new TypeMapper<Item>(table);
             return new ApplicationIntentSqlMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
         }
-
+        
         [Fact]
-        public override async Task AddNewKeyAndValueSucceeds()
+        public override async Task SetPropertyOfExistingKeySucceeds()
         {
-            await base.AddNewKeyAndValueSucceeds();
-            _databaseDriver.ReceivedConnectionStrings.Count.ShouldBe(3);
+            await base.SetPropertyOfExistingKeySucceeds();
+            
+            _databaseDriver.ReceivedConnectionStrings.Count.ShouldBe(4);
             _databaseDriver.ReceivedConnectionStrings[0].ShouldNotContain("ApplicationIntent");       // Schema synchronization
             _databaseDriver.ReceivedConnectionStrings[1].ShouldNotContain("ApplicationIntent");       // TryAddAsync operation
-            _databaseDriver.ReceivedConnectionStrings[2].ShouldContain("ApplicationIntent=ReadOnly"); // GetValueOrDefaultAsync operation
+            _databaseDriver.ReceivedConnectionStrings[2].ShouldNotContain("ApplicationIntent");       // SetPropertyValueAsync operation
+            _databaseDriver.ReceivedConnectionStrings[3].ShouldContain("ApplicationIntent=ReadOnly"); // GetPropertyValueOrDefaultAsync operation
         }
 
         [Fact]
-        public override async Task TryRemoveNonExistingKeyFails()
+        public override async Task MergeWithExistingValueSucceeds()
         {
-            await base.TryRemoveNonExistingKeyFails();
-            _databaseDriver.ReceivedConnectionStrings.Count.ShouldBe(2);
-            _databaseDriver.ReceivedConnectionStrings[0].ShouldNotContain("ApplicationIntent"); // Schema synchronization
-            _databaseDriver.ReceivedConnectionStrings[1].ShouldNotContain("ApplicationIntent"); // TryRemoveAsync operation
-        }
-
-        [Fact]
-        public override async Task CheckForExistingKeyReturnsTrue()
-        {
-            await base.CheckForExistingKeyReturnsTrue();
-            _databaseDriver.ReceivedConnectionStrings.Count.ShouldBe(3);
+            await base.MergeWithExistingValueSucceeds();
+            
+            _databaseDriver.ReceivedConnectionStrings.Count.ShouldBe(4);
             _databaseDriver.ReceivedConnectionStrings[0].ShouldNotContain("ApplicationIntent");       // Schema synchronization
             _databaseDriver.ReceivedConnectionStrings[1].ShouldNotContain("ApplicationIntent");       // TryAddAsync operation
-            _databaseDriver.ReceivedConnectionStrings[2].ShouldContain("ApplicationIntent=ReadOnly"); // ContainsKeyAsync operation
+            _databaseDriver.ReceivedConnectionStrings[2].ShouldNotContain("ApplicationIntent");       // MergeAsync operation
+            _databaseDriver.ReceivedConnectionStrings[3].ShouldContain("ApplicationIntent=ReadOnly"); // GetPropertyValueOrDefaultAsync operation
         }
     }
 }

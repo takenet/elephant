@@ -10,7 +10,6 @@ namespace Take.Elephant.Tests
 {
     public abstract class PropertyMapFacts<TKey, TValue, TProperty> : FactsBase
     {
-
         public abstract IPropertyMap<TKey, TValue> Create();
 
         public virtual TKey CreateKey()
@@ -112,7 +111,7 @@ namespace Take.Elephant.Tests
         }
 
         [Fact(DisplayName = "MergeWithExistingValueSucceeds")]
-        public async Task MergeWithExistingValueSucceeds()
+        public virtual async Task MergeWithExistingValueSucceeds()
         {
             // Arrange
             var map = Create();
