@@ -24,7 +24,7 @@ namespace Take.Elephant.Tests.Sql.SqlServer
                 useDatabaseCommand.ExecuteNonQuery();
             }
 
-            DatabaseDriver = new AuditableDatabaseDriver(new SqlDatabaseDriver());
+            DatabaseDriver = new SqlDatabaseDriver();
         }
 
         public DbConnection Connection { get; }

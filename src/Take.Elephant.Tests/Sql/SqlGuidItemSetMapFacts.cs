@@ -31,8 +31,11 @@ namespace Take.Elephant.Tests.Sql
             _serverFixture.DropTable(table.Schema, table.Name);
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            return new SqlSetMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
+            return Create(table, keyMapper, valueMapper);
         }
+
+        protected virtual IMap<Guid, ISet<Item>> Create(Table table, ValueMapper<Guid> keyMapper, TypeMapper<Item> valueMapper) =>
+            new SqlSetMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
 
         public override ISet<Item> CreateValue(Guid key, bool populate)
         {

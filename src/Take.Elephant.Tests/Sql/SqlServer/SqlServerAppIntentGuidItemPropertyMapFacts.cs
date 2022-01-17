@@ -17,13 +17,12 @@ namespace Take.Elephant.Tests.Sql.SqlServer
             : base(serverFixture)
         {
             _serverFixture = serverFixture;
-            _databaseDriver = (AuditableDatabaseDriver)serverFixture.DatabaseDriver;
-            _databaseDriver.ReceivedConnectionStrings.Clear();
+            _databaseDriver = new AuditableDatabaseDriver(serverFixture.DatabaseDriver);
         }
         
         protected override IPropertyMap<Guid, Item> Create(ITable table, ValueMapper<Guid> keyMapper,
             TypeMapper<Item> valueMapper) =>
-            new ApplicationIntentSqlMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString,
+            new ApplicationIntentSqlMap<Guid, Item>(_databaseDriver, _serverFixture.ConnectionString,
                 table, keyMapper, valueMapper);
 
         [Fact]
