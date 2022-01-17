@@ -9,32 +9,21 @@ using Xunit;
 namespace Take.Elephant.Tests.Sql.SqlServer
 {
     [Collection(nameof(SqlServer)), Trait("Category", nameof(SqlServer))]
-    public class SqlServerAppIntentGuidItemMapFacts : GuidItemMapFacts
+    public class SqlServerAppIntentGuidItemMapFacts : SqlGuidItemMapFacts
     {
         private readonly SqlServerFixture _serverFixture;
         private readonly AuditableDatabaseDriver _databaseDriver;
 
         public SqlServerAppIntentGuidItemMapFacts(SqlServerFixture serverFixture)
+            : base(serverFixture)
         {
             _serverFixture = serverFixture;
             _databaseDriver = (AuditableDatabaseDriver)serverFixture.DatabaseDriver;
             _databaseDriver.ReceivedConnectionStrings.Clear();
         }
-        
-        public override IMap<Guid, Item> Create()
-        {
-            var table = TableBuilder
-                .WithName("GuidItems")
-                .WithColumnsFromTypeProperties<Item>(p => !p.Name.Equals(nameof(Item.StringProperty)))
-                .WithColumn(nameof(Item.StringProperty), new SqlType(DbType.String, int.MaxValue))
-                .WithKeyColumnFromType<Guid>("Key")
-                .Build();
-            _serverFixture.DropTable(table.Schema, table.Name);
 
-            var keyMapper = new ValueMapper<Guid>("Key");
-            var valueMapper = new TypeMapper<Item>(table);
-            return new ApplicationIntentSqlMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
-        }
+        protected override IMap<Guid, Item> Create(ITable table, ValueMapper<Guid> keyMapper, TypeMapper<Item> valueMapper) =>
+            new ApplicationIntentSqlMap<Guid, Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, keyMapper, valueMapper);
 
         [Fact]
         public override async Task AddNewKeyAndValueSucceeds()
