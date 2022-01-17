@@ -17,7 +17,9 @@ namespace Take.Elephant.Tests.Sql
             var table = TableBuilder.WithName("ItemsSet").WithKeyColumnsFromTypeProperties<Item>().Build();
             _serverFixture.DropTable(table.Schema, table.Name);
             var mapper = new TypeMapper<Item>(table);
-            return new SqlSet<Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, mapper);
+            return Create(table, mapper);
         }
+
+        protected virtual ISet<Item> Create(ITable table, TypeMapper<Item> mapper) => new SqlSet<Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, mapper);
     }
 }

@@ -43,13 +43,13 @@ namespace Take.Elephant.Sql
 
         public virtual async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            // We must use a write connection here since we do not control how the returned ISet<TItem> will be used.
+            // We must use the writable map here since we do not control how the returned ISet<TItem> will be used.
             return await _writeSetMap.GetValueOrDefaultAsync(key, cancellationToken);
         }
         
         public virtual async Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            // We must use a write connection here since we do not control how the returned ISet<TItem> will be used.
+            // We must use the writable map here since we do not control how the returned ISet<TItem> will be used.
             return await _writeSetMap.GetValueOrEmptyAsync(key, cancellationToken);
         }
 
