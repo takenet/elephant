@@ -39,7 +39,8 @@ namespace Take.Elephant.Sql
 
         public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
         {
-            return GetEnumeratorAsync(cancellationToken).Result;
+            // TODO: This is a blocking operation in a async context. How may we fix this?
+            return GetEnumeratorAsync(cancellationToken).GetAwaiter().GetResult();
         }
     }
 }
