@@ -17,36 +17,43 @@ namespace Take.Elephant.Sql
     /// </summary>
     public class ApplicationIntentSqlSet<T> : ApplicationIntentStorageBase, ISet<T>, IQueryableStorage<T>, IOrderedQueryableStorage<T>, IDistinctQueryableStorage<T>
     {
-        private readonly SqlSet<T> _readOnlySet;
-        private readonly SqlSet<T> _writeSet;
+        protected readonly SqlSet<T> ReadOnlySet;
+        protected readonly SqlSet<T> WriteSet;
         
         public ApplicationIntentSqlSet(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<T> mapper)
             : base(databaseDriver, connectionString, table)
         {
-            _readOnlySet = new SqlSet<T>(databaseDriver, ReadOnlyConnectionString, ReadOnlyTable, mapper);
-            _writeSet = new SqlSet<T>(databaseDriver, connectionString, table, mapper);
+            ReadOnlySet = new SqlSet<T>(databaseDriver, ReadOnlyConnectionString, ReadOnlyTable, mapper);
+            WriteSet = new SqlSet<T>(databaseDriver, connectionString, table, mapper);
+        }
+
+        internal ApplicationIntentSqlSet(SqlSet<T> readOnlySet, SqlSet<T> writeSet, IDatabaseDriver databaseDriver, string connectionString, ITable table)
+            : base(databaseDriver, connectionString, table)
+        {
+            ReadOnlySet = readOnlySet;
+            WriteSet = writeSet;
         }
         
-        public virtual async Task AddAsync(T value, CancellationToken cancellationToken = default) => await _writeSet.AddAsync(value, cancellationToken);
+        public virtual async Task AddAsync(T value, CancellationToken cancellationToken = default) => await WriteSet.AddAsync(value, cancellationToken);
 
-        public virtual async Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default) => await _writeSet.TryRemoveAsync(value, cancellationToken);
+        public virtual async Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default) => await WriteSet.TryRemoveAsync(value, cancellationToken);
 
         public virtual async Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
         {
             await SynchronizeSchemaAsync(cancellationToken);
-            return await _readOnlySet.ContainsAsync(value, cancellationToken);
+            return await ReadOnlySet.ContainsAsync(value, cancellationToken);
         }
 
         public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             await SynchronizeSchemaAsync(cancellationToken);
-            return await _readOnlySet.GetLengthAsync(cancellationToken);
+            return await ReadOnlySet.GetLengthAsync(cancellationToken);
         }
 
         public virtual async IAsyncEnumerable<T> AsEnumerableAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            await SynchronizeSchemaAsync(cancellationToken);
-            await foreach (var item in _readOnlySet.AsEnumerableAsync(cancellationToken))
+            await SynchronizeSchemaAsync(cancellationToken).ConfigureAwait(false);
+            await foreach (var item in ReadOnlySet.AsEnumerableAsync(cancellationToken))
             {
                 yield return item;
             }
@@ -56,21 +63,21 @@ namespace Take.Elephant.Sql
             CancellationToken cancellationToken)
         {
             await SynchronizeSchemaAsync(cancellationToken);
-            return await _readOnlySet.QueryAsync(@where, @select, skip, take, cancellationToken);
+            return await ReadOnlySet.QueryAsync(@where, @select, skip, take, cancellationToken);
         }
 
         public virtual async Task<QueryResult<T>> QueryAsync<TResult, TOrderBy>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, Expression<Func<T, TOrderBy>> orderBy, bool orderByAscending,
             int skip, int take, CancellationToken cancellationToken)
         {
             await SynchronizeSchemaAsync(cancellationToken);
-            return await _readOnlySet.QueryAsync(@where, @select, orderBy, orderByAscending, skip, take, cancellationToken);
+            return await ReadOnlySet.QueryAsync(@where, @select, orderBy, orderByAscending, skip, take, cancellationToken);
         }
 
         public virtual async Task<QueryResult<T>> QueryAsync<TResult>(Expression<Func<T, bool>> @where, Expression<Func<T, TResult>> @select, bool distinct, int skip, int take,
             CancellationToken cancellationToken)
         {
             await SynchronizeSchemaAsync(cancellationToken);
-            return await _readOnlySet.QueryAsync(@where, @select, distinct, skip, take, cancellationToken);
+            return await ReadOnlySet.QueryAsync(@where, @select, distinct, skip, take, cancellationToken);
         }
     }
 }
