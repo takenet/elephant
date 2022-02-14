@@ -9,7 +9,7 @@ trigger:
 
 name: 0.9$(Rev:.r)
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2022'
 
 variables:
 - name: SkipDecorator
