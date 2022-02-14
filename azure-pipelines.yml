@@ -31,4 +31,3 @@ extends:
     nugetServiceConnection: Nuget.org Take  
     includeSymbols: true
     testParameters: --configuration Release --no-build --filter "Category=Memory"
-    dotnetVersion: "6.0.x"
