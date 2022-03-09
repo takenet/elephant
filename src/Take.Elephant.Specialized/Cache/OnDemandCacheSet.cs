@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant.Specialized.Cache
 {
-    public class OnDemandCacheSet<T> : OnDemandCacheStrategy<ISet<T>>, ISet<T>
+    public class OnDemandCacheSet<T> : OnDemandCacheBase<ISet<T>>, ISet<T>
     {
         public OnDemandCacheSet(ISet<T> source, ISet<T> cache) 
             : base(source, cache)

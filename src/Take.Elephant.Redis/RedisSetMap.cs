@@ -9,8 +9,10 @@ namespace Take.Elephant.Redis
 {
     public class RedisSetMap<TKey, TItem> : MapBase<TKey, ISet<TItem>>, ISetMap<TKey, TItem>
     {
+        private const string EMPTY_SET_INDICATOR = "__ELEPHANT_EMPTY_SET_INDICATOR__";
         private readonly ISerializer<TItem> _serializer;
         private readonly bool _useScanOnEnumeration;
+        private readonly bool _supportEmptySets;
 
         public RedisSetMap(string mapName, string configuration, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
             : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags)
@@ -21,8 +23,7 @@ namespace Take.Elephant.Redis
         public RedisSetMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
             : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
         {
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
-            _serializer = serializer;
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _useScanOnEnumeration = useScanOnEnumeration;
         }
 
@@ -31,29 +32,55 @@ namespace Take.Elephant.Redis
             bool overwrite = false,
             CancellationToken cancellationToken = default)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
             var internalSet = value as InternalSet;
-            if (internalSet != null) return internalSet.Key.Equals(key) && overwrite;
+            if (internalSet != null)
+            {
+                return internalSet.Key.Equals(key) && overwrite;
+            }
 
             var database = GetDatabase() as IDatabase;
-            if (database == null) throw new NotSupportedException("The database instance type is not supported");
+            if (database == null)
+            {
+                throw new NotSupportedException("The database instance type is not supported");
+            }
 
             var redisKey = GetRedisKey(key);
-            if (await database.KeyExistsAsync(redisKey, ReadFlags) && !overwrite) return false;
+            if (await database.KeyExistsAsync(redisKey, ReadFlags) && !overwrite)
+            {
+                return false;
+            }
 
             var transaction = database.CreateTransaction();
             var commandTasks = new List<Task>();
-            if (overwrite) commandTasks.Add(transaction.KeyDeleteAsync(redisKey, WriteFlags));
+            if (overwrite)
+            {
+                commandTasks.Add(transaction.KeyDeleteAsync(redisKey, WriteFlags));
+            }
 
             internalSet = CreateSet(key, transaction);
 
             var enumerableAsync = value.AsEnumerableAsync(cancellationToken);
+            int itemsAdded = 0;
             await enumerableAsync.ForEachAsync(item =>
             {
+                itemsAdded++;
                 commandTasks.Add(internalSet.AddAsync(item, cancellationToken));
             }, cancellationToken).ConfigureAwait(false);
+
+            if (_supportEmptySets)
+            {
+                commandTasks.Add(transaction.StringSetAsync(GetEmptySetIndicatorForKey(redisKey), itemsAdded > 0, TimeSpan.FromMinutes(15)));
+            }
 
             var success = await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false);
             await Task.WhenAll(commandTasks).ConfigureAwait(false);
@@ -64,7 +91,15 @@ namespace Take.Elephant.Redis
             CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
-            if (await database.KeyExistsAsync(GetRedisKey(key), ReadFlags).ConfigureAwait(false))
+            var redisKey = GetRedisKey(key);
+
+            if (_supportEmptySets
+                && bool.TryParse((await database.StringGetAsync(GetEmptySetIndicatorForKey(redisKey))).ToString(), out bool isEmpty)
+                && isEmpty)
+            {
+                return new Memory.Set<TItem>();
+            }
+            else if (await database.KeyExistsAsync(redisKey, ReadFlags).ConfigureAwait(false))
             {
                 return CreateSet(key);
             }
@@ -77,22 +112,32 @@ namespace Take.Elephant.Redis
             return CreateSet(key).AsCompletedTask<ISet<TItem>>();
         }
 
-        public override Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
+        public override async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
-            return database.KeyDeleteAsync(GetRedisKey(key), WriteFlags);
+            var redisKey = GetRedisKey(key);
+            var removed = await database.KeyDeleteAsync(redisKey, WriteFlags);
+
+            if (_supportEmptySets && removed)
+            {
+                await database.KeyDeleteAsync(GetEmptySetIndicatorForKey(redisKey), WriteFlags);
+            }
+
+            return removed;
         }
 
-        public override Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
+        public override async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
-            return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
+            return await database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
         }
 
         protected virtual InternalSet CreateSet(TKey key, ITransaction transaction = null)
         {
             return new InternalSet(key, GetRedisKey(key), _serializer, ConnectionMultiplexer, Db, ReadFlags, WriteFlags, transaction, _useScanOnEnumeration);
         }
+
+        private RedisKey GetEmptySetIndicatorForKey(string key) => $"{key}{EMPTY_SET_INDICATOR}";
 
         protected class InternalSet : RedisSet<TItem>
         {
@@ -101,7 +146,11 @@ namespace Take.Elephant.Redis
             public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags, ITransaction transaction = null, bool useScanOnEnumeration = true)
                 : base(setName, connectionMultiplexer, serializer, db, readFlags, writeFlags, useScanOnEnumeration)
             {
-                if (key == null) throw new ArgumentNullException(nameof(key));
+                if (key == null)
+                {
+                    throw new ArgumentNullException(nameof(key));
+                }
+
                 Key = key;
 
                 _transaction = transaction;
@@ -112,6 +161,37 @@ namespace Take.Elephant.Redis
             protected override IDatabaseAsync GetDatabase()
             {
                 return _transaction ?? base.GetDatabase();
+            }
+        }
+
+        // http://www.cs.utexas.edu/~lin/papers/hpca01.pdf
+        // https://stackoverflow.com/questions/19648513/perceptron-branch-predictor-implementation-in-c
+        private class PerceptronPredictor
+        {
+            public const int HISTORY_SIZE = 62;
+            public const float THETA = (1.93f * HISTORY_SIZE) + 14;
+            public readonly float[] _history = new float[HISTORY_SIZE];
+            public readonly float[] _weight = new float[HISTORY_SIZE];
+
+            public float Predict()
+            {
+                float y = 0;
+                for (int i = 0; i < HISTORY_SIZE; i++)
+                {
+                    y += _weight[i] * _history[i];
+                }
+
+                return y;
+            }
+
+            public void Train(float actual, float predicted)
+            {
+                if (((predicted < 0) != (actual < 0)) || (Math.Abs(predicted) < THETA))
+                {
+                    for (int i = 0; i < HISTORY_SIZE; i++) {
+                        _weight[i] = _weight[i] + actual * _history[i];
+                    }
+                }
             }
         }
     }

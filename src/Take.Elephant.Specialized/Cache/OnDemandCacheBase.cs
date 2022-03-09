@@ -10,18 +10,14 @@ namespace Take.Elephant.Specialized.Cache
     /// it is stored in the cache.
     /// </summary>
     /// <typeparam name="TMap"></typeparam>
-    public class OnDemandCacheStrategy<TMap>
+    public class OnDemandCacheBase<TMap>
     {
-        protected readonly TMap Source;
-        protected readonly TMap Cache;
-        protected readonly CacheOptions CacheOptions;
-        protected readonly ILogger Logger;
-
-        public OnDemandCacheStrategy(TMap source, TMap cache)
+        public OnDemandCacheBase(TMap source, TMap cache)
             : this(source, cache, new CacheOptions(), new TraceLogger())
         {
         }
-        public OnDemandCacheStrategy(TMap source, TMap cache, CacheOptions cacheOptions, ILogger logger)
+
+        public OnDemandCacheBase(TMap source, TMap cache, CacheOptions cacheOptions, ILogger logger)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Cache = cache ?? throw new ArgumentNullException(nameof(cache));
@@ -29,22 +25,32 @@ namespace Take.Elephant.Specialized.Cache
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        protected TMap Source { get; }
+
+        protected TMap Cache { get; }
+
+        protected CacheOptions CacheOptions { get; }
+
+        protected ILogger Logger { get; }
+
         public virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<TMap, Task<TResult>> queryFunc, Func<TResult, TMap, Task<bool>> writeFunc)
-        {
-            return await ExecuteQueryFunc(
-                queryFunc, 
-                async (r, s) => { await writeFunc(r, s); }); // DO NOT SIMPLIFY THIS LAMBDA!
-        }
+            => await ExecuteQueryFunc(queryFunc, async (r, s) => await writeFunc(r, s));
 
         public virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<TMap, Task<TResult>> queryFunc, Func<TResult, TMap, Task> writeFunc)
         {
             // Tries in the cache
             var value = await queryFunc(Cache).ConfigureAwait(false);
-            if (!IsDefaultValueOfType(value)) return value;
+            if (!IsDefaultValueOfType(value))
+            {
+                return value;
+            }
 
             // Tries in the source
             value = await queryFunc(Source).ConfigureAwait(false);
-            if (IsDefaultValueOfType(value)) return value;
+            if (IsDefaultValueOfType(value))
+            {
+                return value;
+            }
 
             // Caches the value
             try
@@ -54,7 +60,9 @@ namespace Take.Elephant.Specialized.Cache
             catch (Exception e)
             {
                 if (CacheOptions.ThrowOnCacheWritingExceptions)
+                {
                     throw;
+                }
 
                 Logger.LogWarning(e, "Failed to write retrieved value from source to cache (this exception is being ignored and won't affect the read from source)");
             }
@@ -74,7 +82,9 @@ namespace Take.Elephant.Specialized.Cache
             catch (Exception e)
             {
                 if (CacheOptions.ThrowOnCacheWritingExceptions)
+                {
                     throw;
+                }
 
                 Logger.LogWarning(e, "Failed to write to cache (this exception is being ignored and won't affect the write to source)");
             }
@@ -89,11 +99,13 @@ namespace Take.Elephant.Specialized.Cache
                 {
                     // Try to write in the cache
                     await func(Cache).ConfigureAwait(false);
-                } 
+                }
                 catch (Exception e)
                 {
                     if (CacheOptions.ThrowOnCacheWritingExceptions)
+                    {
                         throw;
+                    }
 
                     Logger.LogWarning(e, "Failed to write to cache (this exception is being ignored and won't affect the write to source)");
                 }
