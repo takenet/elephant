@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
@@ -37,6 +38,13 @@ namespace Take.Elephant.Tests.Specialized
         {
             return new RedisBus<string, SynchronizationEvent<Guid>>(
                 "guid-items", _redisFixture.Connection.Configuration, new SynchronizationEventJsonSerializer());
+        }
+        
+        [Fact(Skip = "Atomic add not supported by the current implementation")]
+        public override Task AddExistingKeyConcurrentlyReturnsFalse()
+        {
+            // Not supported by this class
+            return base.AddExistingKeyConcurrentlyReturnsFalse();
         }
     }
     

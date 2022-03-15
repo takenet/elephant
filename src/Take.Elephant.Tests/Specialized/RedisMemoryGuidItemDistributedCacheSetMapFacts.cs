@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using AutoFixture;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
@@ -49,6 +50,11 @@ namespace Take.Elephant.Tests.Specialized
             return set;
         }
         
-        
+        [Fact(Skip = "Atomic add not supported by the current implementation")]
+        public override Task AddExistingKeyConcurrentlyReturnsFalse()
+        {
+            // Not supported by this class
+            return base.AddExistingKeyConcurrentlyReturnsFalse();
+        }
     }
 }

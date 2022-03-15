@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
 using Take.Elephant.Redis.Converters;
@@ -37,6 +38,13 @@ namespace Take.Elephant.Tests.Redis
         public override ISerializer<Guid> CreateKeySerializer()
         {
             return new GuidSerializer();
+        }
+        
+        [Fact(Skip = "Atomic add not supported by the current implementation")]
+        public override Task AddExistingKeyConcurrentlyReturnsFalse()
+        {
+            // Not supported by this class
+            return base.AddExistingKeyConcurrentlyReturnsFalse();
         }
     }
 }
