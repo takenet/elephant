@@ -8,7 +8,7 @@ namespace Take.Elephant.Tests.Redis
 {
     [Trait("Category", nameof(Redis))]
     [Collection(nameof(Redis))]
-    public class RedisGuidItemSetMapFacts : GuidItemSetMapFacts, IDisposable
+    public class RedisGuidItemSetMapFacts : GuidItemSetMapFacts
     {
         private readonly RedisFixture _redisFixture;
 
@@ -37,12 +37,6 @@ namespace Take.Elephant.Tests.Redis
                 set.AddAsync(Fixture.Create<Item>()).Wait();
             }
             return set;
-        }
-
-        public void Dispose()
-        {
-            _redisFixture.Server.FlushDatabase();
-            _redisFixture.Dispose();
         }
     }
 }
