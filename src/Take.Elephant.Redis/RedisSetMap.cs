@@ -23,7 +23,7 @@ namespace Take.Elephant.Redis
                            CommandFlags readFlags = CommandFlags.None,
                            CommandFlags writeFlags = CommandFlags.None,
                            bool useScanOnEnumeration = true,
-                           bool supportEmptySets = true,
+                           bool supportEmptySets = false,
                            TimeSpan? emptyIndicatorExpiration = default)
             : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, useScanOnEnumeration, supportEmptySets, emptyIndicatorExpiration)
         {
