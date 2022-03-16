@@ -6,6 +6,7 @@
 trigger:
 - master
 - main
+- beta/*
 
 name: 0.10$(Rev:.r)
 pool:
