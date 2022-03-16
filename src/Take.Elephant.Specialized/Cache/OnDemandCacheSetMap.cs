@@ -19,6 +19,8 @@ namespace Take.Elephant.Specialized.Cache
         {
         }
 
+        public bool SupportsEmptySets => ((ISetMap<TKey, TValue>)Cache).SupportsEmptySets;
+
         public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var cacheValue = await Cache.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
@@ -30,17 +32,26 @@ namespace Take.Elephant.Specialized.Cache
                     cacheValue);
             }
 
-            var sourceValue = await Source.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
-            if (sourceValue == null) return null;
+            var sourceValue = await ((ISetMap<TKey, TValue>)Source).GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
+
+            if (sourceValue is null)
+            {
+                if (((ISetMap<TKey, TValue>)Cache).SupportsEmptySets)
+                {
+                    await Cache.TryAddAsync(key, null, false, cancellationToken).ConfigureAwait(false);
+                }
+
+                return null;
+            }
 
             // Try add the source values to the cache
             await TryAddWithExpirationAsync(key, sourceValue, true, Cache, cancellationToken).ConfigureAwait(false);
-            
+
             // Gets an updated reference to the cache set
             cacheValue = await ((ISetMap<TKey, TValue>)Cache)
                 .GetValueOrEmptyAsync(key, cancellationToken)
                 .ConfigureAwait(false);
-            
+
             return new OnDemandCacheSet<TValue>(sourceValue, GetKeyExpirationCacheSet(key, cacheValue));
         }
 
@@ -59,11 +70,11 @@ namespace Take.Elephant.Specialized.Cache
             var sourceValue = await ((ISetMap<TKey, TValue>)Source)
                 .GetValueOrEmptyAsync(key, cancellationToken)
                 .ConfigureAwait(false);
-            
+
             if (await TryAddWithExpirationAsync(key, sourceValue, true, Cache, cancellationToken).ConfigureAwait(false))
             {
                 // Gets an updated reference to the cache set
-                cacheValue = await ((ISetMap<TKey, TValue>) Cache)
+                cacheValue = await ((ISetMap<TKey, TValue>)Cache)
                     .GetValueOrEmptyAsync(key, cancellationToken)
                     .ConfigureAwait(false);
             }
@@ -74,12 +85,12 @@ namespace Take.Elephant.Specialized.Cache
         private ISet<TValue> GetKeyExpirationCacheSet(TKey key, ISet<TValue> cacheSet)
         {
             // Provides a set that calls a function to expires the key when a value is added
-            if (CacheOptions.CacheExpiration != default && 
+            if (CacheOptions.CacheExpiration != default &&
                 Cache is IExpirableKeyMap<TKey, ISet<TValue>> expirableMap)
             {
-                return new TriggeredSet<TValue>(cacheSet, i => expirableMap.SetRelativeKeyExpirationAsync(key, CacheOptions.CacheExpiration));                
+                return new TriggeredSet<TValue>(cacheSet, i => expirableMap.SetRelativeKeyExpirationAsync(key, CacheOptions.CacheExpiration));
             }
-            
+
             return cacheSet;
         }
 
@@ -155,7 +166,8 @@ namespace Take.Elephant.Specialized.Cache
             private async Task<ISet<T>> GetSetAsync()
             {
                 var set = await _lazySet.Value.ConfigureAwait(false);
-                if (set == null) throw new InvalidOperationException("The set factory returned null");
+                if (set == null)
+                    throw new InvalidOperationException("The set factory returned null");
                 return set;
             }
         }

@@ -18,19 +18,38 @@ namespace Take.Elephant.Redis
         private readonly ISerializer<T> _serializer;
         private readonly bool _useScanOnEnumeration;
         private readonly bool _supportEmptySets;
+        private readonly TimeSpan? _emptyIndicatorExpiration;
 
-        public RedisSet(string setName, string configuration, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
-            : this(setName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, useScanOnEnumeration, true)
-        { }
+        public RedisSet(string setName,
+                        string configuration,
+                        ISerializer<T> serializer,
+                        int db = 0,
+                        CommandFlags readFlags = CommandFlags.None,
+                        CommandFlags writeFlags = CommandFlags.None,
+                        bool useScanOnEnumeration = true,
+                        bool supportEmptySets = true,
+                        TimeSpan? emptyIndicatorExpiration = default)
+            : this(setName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, useScanOnEnumeration, true, supportEmptySets, emptyIndicatorExpiration)
+        {
+        }
 
-        public RedisSet(string setName, IConnectionMultiplexer connectionMultiplexer, ISerializer<T> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true, bool disposeMultiplexer = false)
+        public RedisSet(string setName,
+                        IConnectionMultiplexer connectionMultiplexer,
+                        ISerializer<T> serializer,
+                        int db = 0,
+                        CommandFlags readFlags = CommandFlags.None,
+                        CommandFlags writeFlags = CommandFlags.None,
+                        bool useScanOnEnumeration = true,
+                        bool disposeMultiplexer = false,
+                        bool supportEmptySets = false,
+                        TimeSpan? emptyIndicatorExpiration = default)
             : base(setName, connectionMultiplexer, db, readFlags, writeFlags, disposeMultiplexer)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _useScanOnEnumeration = useScanOnEnumeration;
+            _supportEmptySets = supportEmptySets;
+            _emptyIndicatorExpiration = emptyIndicatorExpiration;
         }
-
-        #region ISet<T> Members
 
         public virtual async Task AddAsync(T value, CancellationToken cancellationToken = default)
         {
@@ -40,15 +59,20 @@ namespace Take.Elephant.Redis
             }
 
             var database = GetDatabase();
-            await database.SetAddAsync(Name, _serializer.Serialize(value), WriteFlags);
+            // this must be done this way (instead of awaiting each one separately)
+            // otherwise, a "deadlock" will occur when database is a transaction database
+            // https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
+            var tasks = new List<Task> { database.SetAddAsync(Name, _serializer.Serialize(value), WriteFlags) };
 
             if (_supportEmptySets)
             {
-                await database.StringSetAsync($"{Name}{EMPTY_SET_INDICATOR}", false, TimeSpan.FromMinutes(15), flags: WriteFlags);
+                tasks.Add(database.StringSetAsync($"{Name}{EMPTY_SET_INDICATOR}", false.ToString(), _emptyIndicatorExpiration, flags: WriteFlags));
             }
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
-        public virtual async Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default)
+        public virtual Task<bool> TryRemoveAsync(T value, CancellationToken cancellationToken = default)
         {
             if (value == null)
             {
@@ -62,13 +86,12 @@ namespace Take.Elephant.Redis
             // which would cause one extra trip to the database when fetching values in those cases
 
             var database = GetDatabase();
-            return await database.SetRemoveAsync(Name, _serializer.Serialize(value), WriteFlags);
+            return database.SetRemoveAsync(Name, _serializer.Serialize(value), WriteFlags);
         }
 
         public virtual async IAsyncEnumerable<T> AsEnumerableAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var database = GetDatabase() as IDatabase;
-            if (database == null)
+            if (!(GetDatabase() is IDatabase database))
             {
                 throw new NotSupportedException("The database instance is not supported");
             }
@@ -97,15 +120,14 @@ namespace Take.Elephant.Redis
             }
 
             var database = GetDatabase();
-            return await database.SetContainsAsync(Name, _serializer.Serialize(value), ReadFlags);
+            return await database.SetContainsAsync(Name, _serializer.Serialize(value), ReadFlags).ConfigureAwait(false);
         }
 
         public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
-            return await database.SetLengthAsync(Name, ReadFlags);
+            return await database.SetLengthAsync(Name, ReadFlags).ConfigureAwait(false);
         }
 
-        #endregion
     }
 }

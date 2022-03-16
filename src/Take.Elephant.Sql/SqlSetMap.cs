@@ -25,6 +25,8 @@ namespace Take.Elephant.Sql
             _addIsolationLevel = addIsolationLevel;
         }
 
+        public bool SupportsEmptySets => false;
+
         public virtual async Task<bool> TryAddAsync(TKey key,
             ISet<TItem> value,
             bool overwrite = false,

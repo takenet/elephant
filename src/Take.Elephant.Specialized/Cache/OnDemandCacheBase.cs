@@ -34,7 +34,7 @@ namespace Take.Elephant.Specialized.Cache
         protected ILogger Logger { get; }
 
         public virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<TMap, Task<TResult>> queryFunc, Func<TResult, TMap, Task<bool>> writeFunc)
-            => await ExecuteQueryFunc(queryFunc, async (r, s) => await writeFunc(r, s));
+            => await ExecuteQueryFunc(queryFunc, (r, s) => (Task)writeFunc(r, s));
 
         public virtual async Task<TResult> ExecuteQueryFunc<TResult>(Func<TMap, Task<TResult>> queryFunc, Func<TResult, TMap, Task> writeFunc)
         {

@@ -1,5 +1,6 @@
 ﻿using StackExchange.Redis;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -13,19 +14,39 @@ namespace Take.Elephant.Redis
         private readonly ISerializer<TItem> _serializer;
         private readonly bool _useScanOnEnumeration;
         private readonly bool _supportEmptySets;
+        private readonly TimeSpan _emptyIndicatorExpiration;
 
-        public RedisSetMap(string mapName, string configuration, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
-            : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags)
+        public RedisSetMap(string mapName,
+                           string configuration,
+                           ISerializer<TItem> serializer,
+                           int db = 0,
+                           CommandFlags readFlags = CommandFlags.None,
+                           CommandFlags writeFlags = CommandFlags.None,
+                           bool useScanOnEnumeration = true,
+                           bool supportEmptySets = true,
+                           TimeSpan? emptyIndicatorExpiration = default)
+            : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, useScanOnEnumeration, supportEmptySets, emptyIndicatorExpiration)
         {
-            _useScanOnEnumeration = useScanOnEnumeration;
         }
 
-        public RedisSetMap(string mapName, IConnectionMultiplexer connectionMultiplexer, ISerializer<TItem> serializer, int db = 0, CommandFlags readFlags = CommandFlags.None, CommandFlags writeFlags = CommandFlags.None, bool useScanOnEnumeration = true)
+        public RedisSetMap(string mapName,
+                           IConnectionMultiplexer connectionMultiplexer,
+                           ISerializer<TItem> serializer,
+                           int db = 0,
+                           CommandFlags readFlags = CommandFlags.None,
+                           CommandFlags writeFlags = CommandFlags.None,
+                           bool useScanOnEnumeration = true,
+                           bool supportEmptySets = false,
+                           TimeSpan? emptyIndicatorExpiration = default)
             : base(mapName, connectionMultiplexer, db, readFlags, writeFlags)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _useScanOnEnumeration = useScanOnEnumeration;
+            _supportEmptySets = supportEmptySets;
+            _emptyIndicatorExpiration = emptyIndicatorExpiration ?? TimeSpan.FromMinutes(15);
         }
+
+        public bool SupportsEmptySets => _supportEmptySets;
 
         public override async Task<bool> TryAddAsync(TKey key,
             ISet<TItem> value,
@@ -37,30 +58,34 @@ namespace Take.Elephant.Redis
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            var internalSet = value as InternalSet;
-            if (internalSet != null)
+            if (value is InternalSet internalSet)
             {
                 return internalSet.Key.Equals(key) && overwrite;
             }
 
-            var database = GetDatabase() as IDatabase;
-            if (database == null)
+            if (!(GetDatabase() is IDatabase database))
             {
                 throw new NotSupportedException("The database instance type is not supported");
             }
 
             var redisKey = GetRedisKey(key);
-            if (await database.KeyExistsAsync(redisKey, ReadFlags) && !overwrite)
+            if (await database.KeyExistsAsync(redisKey, ReadFlags).ConfigureAwait(false) && !overwrite)
             {
                 return false;
             }
 
             var transaction = database.CreateTransaction();
+
+            if (value == null && _supportEmptySets)
+            {
+                _ = transaction.StringSetAsync(GetEmptySetIndicatorForKey(redisKey), true.ToString(), _emptyIndicatorExpiration).ConfigureAwait(false);
+                return await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false);
+            }
+            else if (value == null)
+            {
+                return false;
+            }
+
             var commandTasks = new List<Task>();
             if (overwrite)
             {
@@ -79,11 +104,12 @@ namespace Take.Elephant.Redis
 
             if (_supportEmptySets)
             {
-                commandTasks.Add(transaction.StringSetAsync(GetEmptySetIndicatorForKey(redisKey), itemsAdded > 0, TimeSpan.FromMinutes(15)));
+                commandTasks.Add(transaction.StringSetAsync(GetEmptySetIndicatorForKey(redisKey), (itemsAdded > 0).ToString(), _emptyIndicatorExpiration));
             }
 
             var success = await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false);
             await Task.WhenAll(commandTasks).ConfigureAwait(false);
+
             return success;
         }
 
@@ -93,15 +119,14 @@ namespace Take.Elephant.Redis
             var database = GetDatabase();
             var redisKey = GetRedisKey(key);
 
-            if (_supportEmptySets
+            if ((_supportEmptySets
                 && bool.TryParse((await database.StringGetAsync(GetEmptySetIndicatorForKey(redisKey))).ToString(), out bool isEmpty)
                 && isEmpty)
+                || await database.KeyExistsAsync(redisKey, ReadFlags).ConfigureAwait(false))
             {
-                return new Memory.Set<TItem>();
-            }
-            else if (await database.KeyExistsAsync(redisKey, ReadFlags).ConfigureAwait(false))
-            {
+                // TODO can't return memory here, as adds won't reflect in the cache
                 return CreateSet(key);
+                //return new Memory.Set<TItem>();
             }
 
             return null;
@@ -161,37 +186,6 @@ namespace Take.Elephant.Redis
             protected override IDatabaseAsync GetDatabase()
             {
                 return _transaction ?? base.GetDatabase();
-            }
-        }
-
-        // http://www.cs.utexas.edu/~lin/papers/hpca01.pdf
-        // https://stackoverflow.com/questions/19648513/perceptron-branch-predictor-implementation-in-c
-        private class PerceptronPredictor
-        {
-            public const int HISTORY_SIZE = 62;
-            public const float THETA = (1.93f * HISTORY_SIZE) + 14;
-            public readonly float[] _history = new float[HISTORY_SIZE];
-            public readonly float[] _weight = new float[HISTORY_SIZE];
-
-            public float Predict()
-            {
-                float y = 0;
-                for (int i = 0; i < HISTORY_SIZE; i++)
-                {
-                    y += _weight[i] * _history[i];
-                }
-
-                return y;
-            }
-
-            public void Train(float actual, float predicted)
-            {
-                if (((predicted < 0) != (actual < 0)) || (Math.Abs(predicted) < THETA))
-                {
-                    for (int i = 0; i < HISTORY_SIZE; i++) {
-                        _weight[i] = _weight[i] + actual * _history[i];
-                    }
-                }
             }
         }
     }

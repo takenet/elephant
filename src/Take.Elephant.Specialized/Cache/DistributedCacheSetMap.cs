@@ -26,6 +26,8 @@ namespace Take.Elephant.Specialized.Cache
             _underlyingSetMap = new NotifyWriteSetMap<TKey, TValue>(onDemandCacheSetMap, _strategy.PublishEventAsync);
         }
 
+        public bool SupportsEmptySets => _underlyingSetMap.SupportsEmptySets;
+
         public Task<bool> TryAddAsync(TKey key, ISet<TValue> value, bool overwrite = false, CancellationToken cancellationToken = default) => 
             _underlyingSetMap.TryAddAsync(key, value, overwrite, cancellationToken);
 

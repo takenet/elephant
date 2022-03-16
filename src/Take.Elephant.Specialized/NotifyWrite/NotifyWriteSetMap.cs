@@ -20,6 +20,8 @@ namespace Take.Elephant.Specialized.NotifyWrite
             _notifyWriteMap = new NotifyWriteMap<TKey, ISet<TValue>>(setMap, writeHandler);
         }
 
+        public bool SupportsEmptySets => false;
+
         public Task<bool> TryAddAsync(TKey key, ISet<TValue> value, bool overwrite = false, CancellationToken cancellationToken = default) => 
             _notifyWriteMap.TryAddAsync(key, value, overwrite, cancellationToken);
         

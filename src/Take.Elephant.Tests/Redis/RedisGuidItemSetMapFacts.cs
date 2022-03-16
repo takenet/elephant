@@ -8,20 +8,21 @@ namespace Take.Elephant.Tests.Redis
 {
     [Trait("Category", nameof(Redis))]
     [Collection(nameof(Redis))]
-    public class RedisGuidItemSetMapFacts : GuidItemSetMapFacts
+    public class RedisGuidItemSetMapFacts : GuidItemSetMapFacts, IDisposable
     {
         private readonly RedisFixture _redisFixture;
-        public const string MapName = "guid-items";
 
         public RedisGuidItemSetMapFacts(RedisFixture redisFixture)
         {
             _redisFixture = redisFixture;
         }
 
+        public string MapName => "guid-items";
+
         public override IMap<Guid, ISet<Item>> Create()
         {
             var db = 1;
-            _redisFixture.Server.FlushDatabase(db);            
+            _redisFixture.Server.FlushDatabase(db);
             var setMap = new RedisSetMap<Guid, Item>(MapName, _redisFixture.Connection.Configuration, new ItemSerializer(), db);
             return setMap;
         }
@@ -36,6 +37,12 @@ namespace Take.Elephant.Tests.Redis
                 set.AddAsync(Fixture.Create<Item>()).Wait();
             }
             return set;
+        }
+
+        public void Dispose()
+        {
+            _redisFixture.Server.FlushDatabase();
+            _redisFixture.Dispose();
         }
     }
 }
