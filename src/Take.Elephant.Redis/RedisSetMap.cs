@@ -1,10 +1,9 @@
-﻿using StackExchange.Redis;
-using System;
-using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StackExchange.Redis;
 
 namespace Take.Elephant.Redis
 {
@@ -75,11 +74,13 @@ namespace Take.Elephant.Redis
             }
 
             var transaction = database.CreateTransaction();
+            var emptySetRedisKey = RedisSet<TItem>.GetEmptySetIndicatorForKey(redisKey);
 
             if (value == null && _supportEmptySets)
             {
-                _ = transaction.StringSetAsync(GetEmptySetIndicatorForKey(redisKey), true.ToString(), _emptyIndicatorExpiration).ConfigureAwait(false);
-                return await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false);
+                var commandTask = transaction.StringSetAsync(emptySetRedisKey, true.ToString(), _emptyIndicatorExpiration);
+                var result = await Task.WhenAll(commandTask, transaction.ExecuteAsync(WriteFlags));
+                return result.All(r => r); // soares
             }
             else if (value == null)
             {
@@ -104,7 +105,7 @@ namespace Take.Elephant.Redis
 
             if (_supportEmptySets)
             {
-                commandTasks.Add(transaction.StringSetAsync(GetEmptySetIndicatorForKey(redisKey), (itemsAdded > 0).ToString(), _emptyIndicatorExpiration));
+                commandTasks.Add(transaction.StringSetAsync(emptySetRedisKey, (itemsAdded > 0).ToString(), _emptyIndicatorExpiration));
             }
 
             var success = await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false);
@@ -118,15 +119,13 @@ namespace Take.Elephant.Redis
         {
             var database = GetDatabase();
             var redisKey = GetRedisKey(key);
+            var emptySetRedisKey = RedisSet<TItem>.GetEmptySetIndicatorForKey(redisKey);
 
             if ((_supportEmptySets
-                && bool.TryParse((await database.StringGetAsync(GetEmptySetIndicatorForKey(redisKey))).ToString(), out bool isEmpty)
-                && isEmpty)
+                && bool.TryParse((await database.StringGetAsync(emptySetRedisKey)).ToString(), out _))
                 || await database.KeyExistsAsync(redisKey, ReadFlags).ConfigureAwait(false))
             {
-                // TODO can't return memory here, as adds won't reflect in the cache
                 return CreateSet(key);
-                //return new Memory.Set<TItem>();
             }
 
             return null;
@@ -145,7 +144,7 @@ namespace Take.Elephant.Redis
 
             if (_supportEmptySets && removed)
             {
-                await database.KeyDeleteAsync(GetEmptySetIndicatorForKey(redisKey), WriteFlags);
+                await database.KeyDeleteAsync(RedisSet<TItem>.GetEmptySetIndicatorForKey(redisKey), WriteFlags);
             }
 
             return removed;
@@ -159,17 +158,43 @@ namespace Take.Elephant.Redis
 
         protected virtual InternalSet CreateSet(TKey key, ITransaction transaction = null)
         {
-            return new InternalSet(key, GetRedisKey(key), _serializer, ConnectionMultiplexer, Db, ReadFlags, WriteFlags, transaction, _useScanOnEnumeration);
+            return new InternalSet(key,
+                                   GetRedisKey(key),
+                                   _serializer,
+                                   ConnectionMultiplexer,
+                                   Db,
+                                   ReadFlags,
+                                   WriteFlags,
+                                   transaction,
+                                   useScanOnEnumeration: _useScanOnEnumeration,
+                                   supportEmptySets: _supportEmptySets,
+                                   emptyIndicatorExpiration: _emptyIndicatorExpiration);
         }
-
-        private RedisKey GetEmptySetIndicatorForKey(string key) => $"{key}{EMPTY_SET_INDICATOR}";
 
         protected class InternalSet : RedisSet<TItem>
         {
             private readonly ITransaction _transaction;
 
-            public InternalSet(TKey key, string setName, ISerializer<TItem> serializer, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags, ITransaction transaction = null, bool useScanOnEnumeration = true)
-                : base(setName, connectionMultiplexer, serializer, db, readFlags, writeFlags, useScanOnEnumeration)
+            public InternalSet(TKey key,
+                               string setName,
+                               ISerializer<TItem> serializer,
+                               IConnectionMultiplexer connectionMultiplexer,
+                               int db,
+                               CommandFlags readFlags,
+                               CommandFlags writeFlags,
+                               ITransaction transaction = null,
+                               bool useScanOnEnumeration = true,
+                               bool supportEmptySets = false,
+                               TimeSpan? emptyIndicatorExpiration = default)
+            : base(setName,
+                   connectionMultiplexer,
+                   serializer,
+                   db,
+                   readFlags,
+                   writeFlags,
+                   useScanOnEnumeration: useScanOnEnumeration,
+                   supportEmptySets: supportEmptySets,
+                   emptyIndicatorExpiration: emptyIndicatorExpiration)
             {
                 if (key == null)
                 {

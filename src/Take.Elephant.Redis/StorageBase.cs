@@ -36,9 +36,14 @@ namespace Take.Elephant.Redis
 
         protected virtual string GetRedisKey(TKey key)
         {
+            return GetRedisKey(KeyToString(key));
+        }
+
+        protected virtual string GetRedisKey(string key)
+        {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
-            return $"{Name}:{KeyToString(key)}";
+            return $"{Name}:{key}";
         }
 
         protected virtual TKey GetKeyFromString(string value)

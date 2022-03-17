@@ -60,13 +60,14 @@ namespace Take.Elephant.Redis
 
             var database = GetDatabase();
             // this must be done this way (instead of awaiting each one separately)
-            // otherwise, a "deadlock" will occur when database is a transaction database
+            // otherwise, a "deadlock" would occur when database is a transaction database
+            // and the caller awaits this method
             // https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
             var tasks = new List<Task> { database.SetAddAsync(Name, _serializer.Serialize(value), WriteFlags) };
 
             if (_supportEmptySets)
             {
-                tasks.Add(database.StringSetAsync($"{Name}{EMPTY_SET_INDICATOR}", false.ToString(), _emptyIndicatorExpiration, flags: WriteFlags));
+                tasks.Add(database.StringSetAsync($"{GetEmptySetIndicatorForKey(Name)}", false.ToString(), _emptyIndicatorExpiration, flags: WriteFlags));
             }
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -112,7 +113,7 @@ namespace Take.Elephant.Redis
             }
         }
 
-        public virtual async Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
+        public virtual Task<bool> ContainsAsync(T value, CancellationToken cancellationToken = default)
         {
             if (value == null)
             {
@@ -120,14 +121,16 @@ namespace Take.Elephant.Redis
             }
 
             var database = GetDatabase();
-            return await database.SetContainsAsync(Name, _serializer.Serialize(value), ReadFlags).ConfigureAwait(false);
+            return database.SetContainsAsync(Name, _serializer.Serialize(value), ReadFlags);
         }
 
-        public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
+        public virtual Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
-            return await database.SetLengthAsync(Name, ReadFlags).ConfigureAwait(false);
+            return database.SetLengthAsync(Name, ReadFlags);
         }
+
+        internal static RedisKey GetEmptySetIndicatorForKey(string key) => $"{key}{EMPTY_SET_INDICATOR}";
 
     }
 }

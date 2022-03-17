@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
-using Take.Elephant.Specialized.Cache;
 using Take.Elephant.Sql;
 using Take.Elephant.Sql.Mapping;
 using Take.Elephant.Tests.Redis;
@@ -24,12 +15,13 @@ namespace Take.Elephant.Tests.Specialized
     public class SqlRedisGuidItemOnDemandCacheSetMapFacts : GuidItemOnDemandCacheSetMapFacts
     {
         private readonly SqlRedisFixture _fixture;
-        public const string MapName = "guid-items";
 
         public SqlRedisGuidItemOnDemandCacheSetMapFacts(SqlRedisFixture fixture)
         {
             _fixture = fixture;
         }
+
+        public string MapName => "guid-items";
 
         public override IMap<Guid, ISet<Item>> CreateSource()
         {

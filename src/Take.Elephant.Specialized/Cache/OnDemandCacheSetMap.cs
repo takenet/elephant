@@ -38,7 +38,13 @@ namespace Take.Elephant.Specialized.Cache
             {
                 if (((ISetMap<TKey, TValue>)Cache).SupportsEmptySets)
                 {
-                    await Cache.TryAddAsync(key, null, false, cancellationToken).ConfigureAwait(false);
+                    if (await Cache.TryAddAsync(key, null, false, cancellationToken).ConfigureAwait(false))
+                    {
+                        return new OnDemandCacheSet<TValue>(
+                            new LazySet<TValue>(() => ((ISetMap<TKey, TValue>)Source).GetValueOrEmptyAsync(key, cancellationToken)),
+                            // using GetValueOrDefault here so that it uses the empty support logic
+                            new LazySet<TValue>(() => ((ISetMap<TKey, TValue>)Cache).GetValueOrDefaultAsync(key, cancellationToken)));
+                    }
                 }
 
                 return null;

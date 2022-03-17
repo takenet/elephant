@@ -142,7 +142,6 @@ namespace Take.Elephant.Tests
             AssertIsFalse(await map.ContainsItemAsync(key, item3));
         }
 
-
         [Fact(DisplayName = "RemoveMultipleItemsSucceeds")]
         public virtual async Task RemoveMultipleItemsSucceeds()
         {
