@@ -115,9 +115,9 @@ namespace Take.Elephant.Tests.Specialized
             var map = Create(source, cache);
             var key = CreateKey();
             var set = await map.GetValueOrDefaultAsync(key);
+            var expected = Fixture.Create<Item>();
 
             // Act
-            var expected = Fixture.Create<Item>();
             await set.AddAsync(expected);
             var actual = await map.GetValueOrDefaultAsync(key);
 
