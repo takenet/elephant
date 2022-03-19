@@ -2,7 +2,6 @@
 using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Shouldly;
@@ -40,7 +39,7 @@ namespace Take.Elephant.Tests.Specialized
             _fixture.SqlConnectionFixture.DropTable(table.Schema, table.Name);
             var keyMapper = new ValueMapper<Guid>("Key");
             var valueMapper = new TypeMapper<Item>(table);
-            return new SetMapReadCountDecorator(new SqlSetMap<Guid, Item>(databaseDriver, _fixture.SqlConnectionFixture.ConnectionString, table, keyMapper, valueMapper));
+            return new SetMapSpyDecorator<Guid, Item>(new SqlSetMap<Guid, Item>(databaseDriver, _fixture.SqlConnectionFixture.ConnectionString, table, keyMapper, valueMapper));
         }
 
         public override IMap<Guid, ISet<Item>> CreateCache()
@@ -73,26 +72,26 @@ namespace Take.Elephant.Tests.Specialized
         {
             // Arrange
             var cache = CreateCache();
-            var source = (SetMapReadCountDecorator)CreateSource();
+            var source = (SetMapSpyDecorator<Guid, Item>)CreateSource();
             var map = Create(source, cache);
             var key = CreateKey();
 
             // Act
             await map.GetValueOrDefaultAsync(key);
             await map.GetValueOrDefaultAsync(key);
-            var readCount = source.ReadCount;
 
             // Assert
+            var readCount = source.ReadCount;
             readCount.ShouldBe(1);
         }
 
         [Fact]
-        public async Task AccessingEmptyKeyTwiceAfterEmptyKeyExpirationHitsTheDatabaseTwice()
+        public async Task AccessingEmptyKeyTwiceAfterEmptyKeyExpiresHitsTheDatabaseTwice()
         {
             // Arrange
             EmptySetIndicatorExpiration = TimeSpan.FromMilliseconds(50);
             var cache = CreateCache();
-            var source = (SetMapReadCountDecorator)CreateSource();
+            var source = (SetMapSpyDecorator<Guid, Item>)CreateSource();
             var map = Create(source, cache);
             var key = CreateKey();
 
@@ -100,9 +99,9 @@ namespace Take.Elephant.Tests.Specialized
             await map.GetValueOrDefaultAsync(key);
             await Task.Delay(EmptySetIndicatorExpiration * 2);
             await map.GetValueOrDefaultAsync(key);
-            var readCount = source.ReadCount;
 
             // Assert
+            var readCount = source.ReadCount;
             readCount.ShouldBe(2);
         }
 
@@ -153,45 +152,6 @@ namespace Take.Elephant.Tests.Specialized
             // Assert
             AssertIsTrue(actual);
             AssertEquals(await (await map.GetValueOrDefaultAsync(key)).AsEnumerableAsync().CountAsync(), 0);
-        }
-
-        private class SetMapReadCountDecorator : ISetMap<Guid, Item>
-        {
-            private readonly ISetMap<Guid, Item> _setMap;
-
-            public SetMapReadCountDecorator(ISetMap<Guid, Item> setMap)
-            {
-                _setMap = setMap;
-            }
-
-            public int ReadCount { get; private set; }
-
-            public bool SupportsEmptySets => _setMap.SupportsEmptySets;
-
-            public Task<bool> ContainsKeyAsync(Guid key, CancellationToken cancellationToken = default)
-            {
-                return _setMap.ContainsKeyAsync(key, cancellationToken).ContinueWith(t => { if (!t.IsFaulted) ReadCount++; return t.Result; });
-            }
-
-            public Task<ISet<Item>> GetValueOrDefaultAsync(Guid key, CancellationToken cancellationToken = default)
-            {
-                return _setMap.GetValueOrDefaultAsync(key, cancellationToken).ContinueWith(t => { if (!t.IsFaulted) ReadCount++; return t.Result; });
-            }
-
-            public Task<ISet<Item>> GetValueOrEmptyAsync(Guid key, CancellationToken cancellationToken = default)
-            {
-                return _setMap.GetValueOrEmptyAsync(key, cancellationToken).ContinueWith(t => { if (!t.IsFaulted) ReadCount++; return t.Result; });
-            }
-
-            public Task<bool> TryAddAsync(Guid key, ISet<Item> value, bool overwrite = false, CancellationToken cancellationToken = default)
-            {
-                return _setMap.TryAddAsync(key, value, overwrite, cancellationToken);
-            }
-
-            public Task<bool> TryRemoveAsync(Guid key, CancellationToken cancellationToken = default)
-            {
-                return _setMap.TryRemoveAsync(key, cancellationToken);
-            }
         }
     }
 }

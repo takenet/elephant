@@ -59,10 +59,10 @@ namespace Take.Elephant.Redis
             }
 
             var database = GetDatabase();
-            // this must be done this way (instead of awaiting each one separately)
-            // otherwise, a "deadlock" would occur when database is a transaction database
-            // and the caller awaits this method
-            // https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
+            // This must be done this way (instead of awaiting each one separately)
+            // otherwise, a "deadlock" would occur when database is an instance of ITransaction
+            // and the caller awaits this method.
+            // See https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
             var tasks = new List<Task> { database.SetAddAsync(Name, _serializer.Serialize(value), WriteFlags) };
 
             if (_supportEmptySets)

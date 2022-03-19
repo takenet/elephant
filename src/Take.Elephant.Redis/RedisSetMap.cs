@@ -9,7 +9,6 @@ namespace Take.Elephant.Redis
 {
     public class RedisSetMap<TKey, TItem> : MapBase<TKey, ISet<TItem>>, ISetMap<TKey, TItem>
     {
-        private const string EMPTY_SET_INDICATOR = "__ELEPHANT_EMPTY_SET_INDICATOR__";
         private readonly ISerializer<TItem> _serializer;
         private readonly bool _useScanOnEnumeration;
         private readonly bool _supportEmptySets;
@@ -46,6 +45,14 @@ namespace Take.Elephant.Redis
         }
 
         public bool SupportsEmptySets => _supportEmptySets;
+
+        // Some methods below use tasks instead of async-await to 
+        // avoid redis transaction deadlock issues.
+        // See https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
+        // TODO: perhaps we should slap async in everything here (see "Async guidance performance optimization" in our internal wiki)
+        // and leave not awaiting these methods as a responsibility for the caller
+        // since they are the ones who know whether or not the provided IDatabase
+        // is an instance of ITransaction
 
         public override async Task<bool> TryAddAsync(TKey key,
             ISet<TItem> value,
@@ -136,24 +143,54 @@ namespace Take.Elephant.Redis
             return CreateSet(key).AsCompletedTask<ISet<TItem>>();
         }
 
-        public override async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
+        public override Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
             var redisKey = GetRedisKey(key);
-            var removed = await database.KeyDeleteAsync(redisKey, WriteFlags);
-
-            if (_supportEmptySets && removed)
+            return database.KeyDeleteAsync(redisKey, WriteFlags).ContinueWith(t =>
             {
-                await database.KeyDeleteAsync(RedisSet<TItem>.GetEmptySetIndicatorForKey(redisKey), WriteFlags);
-            }
+                var removed = t.Result;
+                if (_supportEmptySets && removed)
+                {
+                    return database.KeyDeleteAsync(RedisSet<TItem>.GetEmptySetIndicatorForKey(redisKey), WriteFlags);
+                }
 
-            return removed;
+                return Task.FromResult(removed);
+            }).Unwrap();
         }
 
-        public override async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
+        public override Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             var database = GetDatabase();
-            return await database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
+            return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
+        }
+
+        public override Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
+        {
+            return base.SetAbsoluteKeyExpirationAsync(key, expiration).ContinueWith(t =>
+            {
+                var success = t.Result;
+                if (_supportEmptySets && success && expiration - DateTimeOffset.Now < _emptyIndicatorExpiration)
+                {
+                    return base.SetAbsoluteKeyExpirationAsync(RedisSet<TItem>.GetEmptySetIndicatorForKey(GetRedisKey(key)), expiration);
+                }
+
+                return Task.FromResult(success);
+            }).Unwrap();
+        }
+
+        public override Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
+        {
+            return base.SetRelativeKeyExpirationAsync(key, ttl).ContinueWith(t =>
+            {
+                var success = t.Result;
+                if (_supportEmptySets && success && ttl < _emptyIndicatorExpiration)
+                {
+                    return base.SetRelativeKeyExpirationAsync(RedisSet<TItem>.GetEmptySetIndicatorForKey(GetRedisKey(key)), ttl);
+                }
+
+                return Task.FromResult(success);
+            }).Unwrap();
         }
 
         protected virtual InternalSet CreateSet(TKey key, ITransaction transaction = null)
