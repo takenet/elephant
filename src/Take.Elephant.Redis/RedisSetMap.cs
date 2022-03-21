@@ -49,6 +49,8 @@ namespace Take.Elephant.Redis
         // Some methods below use tasks instead of async-await to 
         // avoid redis transaction deadlock issues.
         // See https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
+        // GetDatabase() may return an ITransaction (which is-a IDatabase). For an example, see the overriden impl
+        // of InternalSet.GetDatabase
         // TODO: perhaps we should slap async in everything here (see "Async guidance performance optimization" in our internal wiki)
         // and leave not awaiting these methods as a responsibility for the caller
         // since they are the ones who know whether or not the provided IDatabase
@@ -80,20 +82,18 @@ namespace Take.Elephant.Redis
                 return false;
             }
 
-            var transaction = database.CreateTransaction();
             var emptySetRedisKey = RedisSet<TItem>.GetEmptySetIndicatorForKey(redisKey);
 
             if (value == null && _supportEmptySets)
             {
-                var commandTask = transaction.StringSetAsync(emptySetRedisKey, true.ToString(), _emptyIndicatorExpiration);
-                var result = await Task.WhenAll(commandTask, transaction.ExecuteAsync(WriteFlags));
-                return result.All(r => r); // soares
+                return await database.StringSetAsync(emptySetRedisKey, true.ToString(), _emptyIndicatorExpiration);
             }
             else if (value == null)
             {
                 return false;
             }
 
+            var transaction = database.CreateTransaction();
             var commandTasks = new List<Task>();
             if (overwrite)
             {

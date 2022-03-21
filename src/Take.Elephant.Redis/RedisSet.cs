@@ -63,6 +63,8 @@ namespace Take.Elephant.Redis
             // otherwise, a "deadlock" would occur when database is an instance of ITransaction
             // and the caller awaits this method.
             // See https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
+            // GetDatabase() may return an ITransaction (which is-a IDatabase). For an example, see the overriden impl
+            // of InternalSet.GetDatabase
             var tasks = new List<Task> { database.SetAddAsync(Name, _serializer.Serialize(value), WriteFlags) };
 
             if (_supportEmptySets)

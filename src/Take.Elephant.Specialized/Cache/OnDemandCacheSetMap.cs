@@ -19,7 +19,9 @@ namespace Take.Elephant.Specialized.Cache
         {
         }
 
-        public bool SupportsEmptySets => ((ISetMap<TKey, TValue>)Cache).SupportsEmptySets;
+        public bool SupportsEmptySets => _cacheSupportsEmptySets;
+
+        private bool _cacheSupportsEmptySets => ((ISetMap<TKey, TValue>)Cache).SupportsEmptySets;
 
         public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
@@ -36,7 +38,7 @@ namespace Take.Elephant.Specialized.Cache
 
             if (sourceValue is null)
             {
-                if (((ISetMap<TKey, TValue>)Cache).SupportsEmptySets)
+                if (SupportsEmptySets)
                 {
                     if (await Cache.TryAddAsync(key, null, false, cancellationToken).ConfigureAwait(false))
                     {
