@@ -38,7 +38,7 @@ namespace Take.Elephant.Specialized.Cache
 
             if (sourceValue is null)
             {
-                if (SupportsEmptySets)
+                if (_cacheSupportsEmptySets)
                 {
                     if (await Cache.TryAddAsync(key, null, false, cancellationToken).ConfigureAwait(false))
                     {
