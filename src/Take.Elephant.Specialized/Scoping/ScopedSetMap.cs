@@ -20,8 +20,6 @@ namespace Take.Elephant.Specialized.Scoping
             _removeOnEmptySet = removeOnEmptySet;
         }
 
-        public bool SupportsEmptySets => true;
-
         public override async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key,
             CancellationToken cancellationToken = default)
         {

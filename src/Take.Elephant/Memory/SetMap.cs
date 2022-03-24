@@ -26,7 +26,6 @@ namespace Take.Elephant.Memory
         {
             _valueEqualityComparer = valueEqualityComparer;
         }
-        public bool SupportsEmptySets => false;
 
         public override async Task<bool> TryAddAsync(
             TKey key,

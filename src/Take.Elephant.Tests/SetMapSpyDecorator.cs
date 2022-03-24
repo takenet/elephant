@@ -16,8 +16,6 @@ namespace Take.Elephant.Tests
         public int ReadCount { get; private set; }
         public int WriteCount { get; private set; }
 
-        public bool SupportsEmptySets => _setMap.SupportsEmptySets;
-
         public Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
             return _setMap.ContainsKeyAsync(key, cancellationToken).ContinueWith(t => { if (!t.IsFaulted) ReadCount++; return t.Result; });

@@ -9,19 +9,19 @@ namespace Take.Elephant.Specialized.Cache
 {
     public class OnDemandCacheSetMap<TKey, TValue> : OnDemandCacheMap<TKey, ISet<TValue>>, ISetMap<TKey, TValue>
     {
-        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, TimeSpan cacheExpiration = default, TimeSpan cacheFaultTolerance = default)
+        private readonly bool _cacheEmptyValues;
+
+        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, TimeSpan cacheExpiration = default, TimeSpan cacheFaultTolerance = default, bool cacheEmptyValues = false)
             : base(source, cache, cacheExpiration, cacheFaultTolerance)
         {
+            _cacheEmptyValues = cacheEmptyValues;
         }
 
-        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, CacheOptions cacheOptions, ILogger logger)
+        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, CacheOptions cacheOptions, ILogger logger, bool cacheEmptyValues = false)
             : base(source, cache, cacheOptions, logger)
         {
+            _cacheEmptyValues = cacheEmptyValues;
         }
-
-        public bool SupportsEmptySets => _cacheSupportsEmptySets;
-
-        private bool _cacheSupportsEmptySets => ((ISetMap<TKey, TValue>)Cache).SupportsEmptySets;
 
         public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
         {
@@ -38,7 +38,7 @@ namespace Take.Elephant.Specialized.Cache
 
             if (sourceValue is null)
             {
-                if (_cacheSupportsEmptySets)
+                if (_cacheEmptyValues)
                 {
                     if (await Cache.TryAddAsync(key, null, false, cancellationToken).ConfigureAwait(false))
                     {

@@ -7,6 +7,7 @@ using AutoFixture;
 using Shouldly;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
+using Take.Elephant.Specialized.Cache;
 using Take.Elephant.Sql;
 using Take.Elephant.Sql.Mapping;
 using Take.Elephant.Tests.Redis;
@@ -53,6 +54,11 @@ namespace Take.Elephant.Tests.Specialized
                                                      supportEmptySets: true,
                                                      emptyIndicatorExpiration: EmptySetIndicatorExpiration);
             return setMap;
+        }
+
+        public override OnDemandCacheMap<Guid, ISet<Item>> Create(IMap<Guid, ISet<Item>> source, IMap<Guid, ISet<Item>> cache, TimeSpan cacheExpiration = default)
+        {
+            return new OnDemandCacheSetMap<Guid, Item>((ISetMap<Guid, Item>)source, (ISetMap<Guid, Item>)cache, cacheExpiration, cacheEmptyValues: true );
         }
 
         public override ISet<Item> CreateValue(Guid key, bool populate)

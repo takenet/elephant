@@ -18,7 +18,5 @@ namespace Take.Elephant
         /// <param name="cancellationToken"></param>
         /// <returns>An existing set if the key exists; otherwise, an empty set.</returns>
         Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default);
-
-        bool SupportsEmptySets { get; }
     }
 }

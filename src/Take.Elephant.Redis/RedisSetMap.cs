@@ -44,8 +44,6 @@ namespace Take.Elephant.Redis
             _emptyIndicatorExpiration = emptyIndicatorExpiration ?? TimeSpan.FromMinutes(15);
         }
 
-        public bool SupportsEmptySets => _supportEmptySets;
-
         // Some methods below use tasks instead of async-await to 
         // avoid redis transaction deadlock issues.
         // See https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
