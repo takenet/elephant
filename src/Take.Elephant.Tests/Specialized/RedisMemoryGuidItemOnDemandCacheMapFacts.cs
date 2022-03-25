@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
 using Take.Elephant.Redis.Converters;
@@ -29,6 +30,13 @@ namespace Take.Elephant.Tests.Specialized
         public override IMap<Guid, Item> CreateCache()
         {
             return new Map<Guid, Item>();
+        }
+        
+        [Fact(Skip = "Atomic add not supported by the current implementation")]
+        public override Task AddExistingKeyConcurrentlyReturnsFalse()
+        {
+            // Not supported by this class
+            return base.AddExistingKeyConcurrentlyReturnsFalse();
         }
     }
 }

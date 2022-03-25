@@ -1,4 +1,5 @@
-﻿using Take.Elephant.Redis;
+﻿using System.Threading.Tasks;
+using Take.Elephant.Redis;
 using Take.Elephant.Redis.Converters;
 using Xunit;
 
@@ -20,6 +21,13 @@ namespace Take.Elephant.Tests.Redis
             _redisFixture.Server.FlushDatabase();
             const string mapName = "integer-object-hash";
             return new RedisHashMap<int, string>(mapName, new ValueRedisDictionaryConverter<string>(), "localhost");
+        }
+        
+        [Fact(Skip = "Atomic add not supported by the current implementation")]
+        public override Task AddExistingKeyConcurrentlyReturnsFalse()
+        {
+            // Not supported by this class
+            return base.AddExistingKeyConcurrentlyReturnsFalse();
         }
     }
 }
