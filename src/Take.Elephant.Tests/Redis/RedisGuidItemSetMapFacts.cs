@@ -12,17 +12,18 @@ namespace Take.Elephant.Tests.Redis
     public class RedisGuidItemSetMapFacts : GuidItemSetMapFacts
     {
         private readonly RedisFixture _redisFixture;
-        public const string MapName = "guid-items";
 
         public RedisGuidItemSetMapFacts(RedisFixture redisFixture)
         {
             _redisFixture = redisFixture;
         }
 
+        public string MapName => "guid-items";
+
         public override IMap<Guid, ISet<Item>> Create()
         {
             var db = 1;
-            _redisFixture.Server.FlushDatabase(db);            
+            _redisFixture.Server.FlushDatabase(db);
             var setMap = new RedisSetMap<Guid, Item>(MapName, _redisFixture.Connection.Configuration, new ItemSerializer(), db);
             return setMap;
         }

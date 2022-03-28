@@ -15,12 +15,13 @@ namespace Take.Elephant.Tests.Specialized
     public class SqlRedisGuidItemOnDemandCacheSetMapFacts : GuidItemOnDemandCacheSetMapFacts
     {
         private readonly SqlRedisFixture _fixture;
-        public const string MapName = "guid-items";
 
         public SqlRedisGuidItemOnDemandCacheSetMapFacts(SqlRedisFixture fixture)
         {
             _fixture = fixture;
         }
+
+        public string MapName => "guid-items";
 
         public override IMap<Guid, ISet<Item>> CreateSource()
         {

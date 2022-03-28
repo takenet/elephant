@@ -6,10 +6,10 @@ namespace Take.Elephant.Sql.Mapping
     /// Provides information about a SQL type.
     /// </summary>
     public sealed class SqlType
-    { 
+    {
         public const int DEFAULT_STRING_LENGTH = 250;
         private readonly int? _length;
-  
+
         public SqlType(DbType type, bool isIdentity = false)
         {
             Type = type;
@@ -37,8 +37,10 @@ namespace Take.Elephant.Sql.Mapping
             {
                 if (_length == null)
                 {
-                    if (Type == DbType.String) return DEFAULT_STRING_LENGTH;
-                    if (Type == DbType.Binary) return int.MaxValue;
+                    if (Type == DbType.String)
+                        return DEFAULT_STRING_LENGTH;
+                    if (Type == DbType.Binary)
+                        return int.MaxValue;
                 }
                 return _length;
             }
@@ -52,9 +54,11 @@ namespace Take.Elephant.Sql.Mapping
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj is SqlType && Equals((SqlType) obj);
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            return obj is SqlType && Equals((SqlType)obj);
         }
 
         private bool Equals(SqlType other)
@@ -79,7 +83,8 @@ namespace Take.Elephant.Sql.Mapping
         {
             if (Precision != null)
             {
-                if (Scale != null) return $"{Type}({Precision},{Scale})";            
+                if (Scale != null)
+                    return $"{Type}({Precision},{Scale})";
                 return $"{Type}({Precision})";
             }
 

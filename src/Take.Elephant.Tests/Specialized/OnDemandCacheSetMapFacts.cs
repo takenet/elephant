@@ -12,7 +12,7 @@ namespace Take.Elephant.Tests.Specialized
 {
     public abstract class OnDemandCacheSetMapFacts<TKey, TValue> : OnDemandCacheMapFacts<TKey, ISet<TValue>>
     {
-        public override OnDemandCacheMap<TKey, ISet<TValue>> Create(IMap<TKey, ISet<TValue>> source, IMap<TKey, ISet<TValue>> cache, TimeSpan cacheExpiration = default(TimeSpan))
+        public override OnDemandCacheMap<TKey, ISet<TValue>> Create(IMap<TKey, ISet<TValue>> source, IMap<TKey, ISet<TValue>> cache, TimeSpan cacheExpiration = default)
         {
             return new OnDemandCacheSetMap<TKey, TValue>((ISetMap<TKey,TValue>)source, (ISetMap<TKey, TValue>)cache, cacheExpiration);
         }

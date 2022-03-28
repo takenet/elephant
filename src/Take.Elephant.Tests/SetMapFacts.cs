@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using NFluent;
 using AutoFixture;
 using Xunit;
 
@@ -35,7 +34,6 @@ namespace Take.Elephant.Tests
         }
 
         public abstract ISet<TValue> CreateValue(TKey key, bool populate);
-
 
         [Fact(DisplayName = "AddMultipleSetsSucceeds")]
         public virtual async Task AddMultipleSetsSucceeds()
@@ -143,7 +141,6 @@ namespace Take.Elephant.Tests
             AssertIsTrue(await map.ContainsItemAsync(key, item2));
             AssertIsFalse(await map.ContainsItemAsync(key, item3));
         }
-
 
         [Fact(DisplayName = "RemoveMultipleItemsSucceeds")]
         public virtual async Task RemoveMultipleItemsSucceeds()

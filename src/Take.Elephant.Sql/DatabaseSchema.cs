@@ -97,7 +97,7 @@ namespace Take.Elephant.Sql
                     {
                         var columnType = (string)reader[1];
 
-                        if (reader.FieldCount == 3 && 
+                        if (reader.FieldCount == 3 &&
                             reader[2] != DBNull.Value)
                         {
                             var columnLength = (int)reader[2];
@@ -148,7 +148,7 @@ namespace Take.Elephant.Sql
             }
         }
 
-        private static Task AddColumnsAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table, 
+        private static Task AddColumnsAsync(IDatabaseDriver databaseDriver, DbConnection connection, ITable table,
             IEnumerable<KeyValuePair<string, SqlType>> columns, CancellationToken cancellationToken) =>
                 AlterTableColumnsAsync(databaseDriver, connection, table, columns, SqlStatement.AlterTableAddColumn,
                     cancellationToken);
@@ -195,7 +195,7 @@ namespace Take.Elephant.Sql
                 if (table.KeyColumnsNames.Contains(column.Key))
                 {
                     if (column.Value.IsIdentity)
-                    {                        
+                    {
                         switch (column.Value.Type)
                         {
                             case DbType.Int16:
@@ -237,8 +237,8 @@ namespace Take.Elephant.Sql
 
             if (sqlType.Length.HasValue)
             {
-                var lengthValue = sqlType.Length == int.MaxValue ? 
-                    databaseDriver.GetSqlStatementTemplate(SqlStatement.MaxLength) : 
+                var lengthValue = sqlType.Length == int.MaxValue ?
+                    databaseDriver.GetSqlStatementTemplate(SqlStatement.MaxLength) :
                     sqlType.Length.ToString();
                 typeSql = typeSql.Format(new
                 {

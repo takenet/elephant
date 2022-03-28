@@ -5,18 +5,12 @@ namespace Take.Elephant.Redis
 {
     public class StorageBase<TKey> : IDisposable
     {
-        protected readonly IConnectionMultiplexer ConnectionMultiplexer;
-        protected readonly string Name;
-        protected readonly int Db;
-        protected readonly CommandFlags ReadFlags;
-        protected readonly CommandFlags WriteFlags;
-
         private readonly bool _disposeMultiplexer;
 
         public StorageBase(string name, string configuration, int db, CommandFlags readFlags, CommandFlags writeFlags)
             : this(name, StackExchange.Redis.ConnectionMultiplexer.Connect(ConfigurationOptions.Parse(configuration)), db, readFlags, writeFlags, true)
         {
-            
+
         }
 
         protected StorageBase(string name, IConnectionMultiplexer connectionMultiplexer, int db, CommandFlags readFlags, CommandFlags writeFlags, bool disposeMultiplexer = false)
@@ -30,20 +24,32 @@ namespace Take.Elephant.Redis
             _disposeMultiplexer = disposeMultiplexer;
         }
 
-        ~StorageBase()
-        {
-            Dispose(false);
-        }
+        protected IConnectionMultiplexer ConnectionMultiplexer { get; }
+
+        protected string Name { get; }
+
+        protected int Db { get; }
+
+        protected CommandFlags ReadFlags { get; }
+
+        protected CommandFlags WriteFlags { get; }
 
         protected virtual string GetRedisKey(TKey key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            return $"{Name}:{KeyToString(key)}";
+            return GetRedisKey(KeyToString(key));
+        }
+
+        protected virtual string GetRedisKey(string key)
+        {
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
+            return $"{Name}:{key}";
         }
 
         protected virtual TKey GetKeyFromString(string value)
         {
-            if (typeof(TKey) == typeof(string)) return (TKey)(object)value;
+            if (typeof(TKey) == typeof(string))
+                return (TKey)(object)value;
             return TypeUtil.GetParseFunc<TKey>()(value);
         }
 
@@ -69,7 +75,6 @@ namespace Take.Elephant.Redis
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         #endregion IDisposable Members

@@ -12,12 +12,12 @@ namespace Take.Elephant
     {
         /// <summary>
         /// Tries to add an item.
-        /// </summary>₢
+        /// </summary>
         /// <param name="key">The item key</param>
         /// <param name="value">The value.</param>
         /// <param name="overwrite">Indicates if the item should be overwritten if the key already exists.</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns><see langword="true"/> if the item was added; <see langword="false"/> otherwise.</returns>
         Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false, CancellationToken cancellationToken = default);
 
         /// <summary>

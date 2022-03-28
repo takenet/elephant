@@ -30,8 +30,10 @@ namespace Take.Elephant.Sql
             bool overwrite = false,
             CancellationToken cancellationToken = default)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(KeyMapper.GetColumnValues(key));
 
             var internalSet = value as InternalSet;
@@ -65,7 +67,8 @@ namespace Take.Elephant.Sql
                         await items.ForEachAwaitAsync(
                             async item =>
                             {
-                                if (!success) return;
+                                if (!success)
+                                    return;
                                 var columnValues = GetColumnValues(key, item);
                                 var itemKeyColumnValues = GetKeyColumnValues(columnValues);
 
@@ -97,7 +100,8 @@ namespace Take.Elephant.Sql
         public virtual async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key,
             CancellationToken cancellationToken = default)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
             using (var cancellationTokenSource = CreateCancellationTokenSource())
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
@@ -117,7 +121,8 @@ namespace Take.Elephant.Sql
 
         public virtual Task<ISet<TItem>> GetValueOrEmptyAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));            
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
             var keyColumnValues = KeyMapper.GetColumnValues(key);
             return new InternalSet(ConnectionString, Table, Mapper, DatabaseDriver, keyColumnValues)
             {
@@ -168,9 +173,9 @@ namespace Take.Elephant.Sql
             var selectColumns = Table.KeyColumnsNames;
             return Task.FromResult<IAsyncEnumerable<TKey>>(
                 new DbDataReaderAsyncEnumerable<TKey>(
-                    GetConnectionAsync, 
+                    GetConnectionAsync,
                     c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns),
-                    KeyMapper, 
+                    KeyMapper,
                     selectColumns));
         }
 
@@ -178,7 +183,7 @@ namespace Take.Elephant.Sql
         {
             public IDictionary<string, object> MapKeyColumnValues { get; }
 
-            public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues) 
+            public InternalSet(string connectionString, ITable table, IMapper<TItem> mapper, IDatabaseDriver databaseDriver, IDictionary<string, object> mapKeyColumnValues)
                 : base(databaseDriver, connectionString, table, mapper)
             {
                 MapKeyColumnValues = mapKeyColumnValues;
@@ -198,12 +203,12 @@ namespace Take.Elephant.Sql
 
             public override IAsyncEnumerable<TItem> AsEnumerableAsync(CancellationToken cancellationToken =
                 default)
-            {                                
-                var selectColumns = Table.Columns.Keys.ToArray();                
+            {
+                var selectColumns = Table.Columns.Keys.ToArray();
                 return new DbDataReaderAsyncEnumerable<TItem>(
-                    GetConnectionAsync, 
+                    GetConnectionAsync,
                     c => c.CreateSelectCommand(DatabaseDriver, Table, MapKeyColumnValues, selectColumns),
-                    Mapper, 
+                    Mapper,
                     selectColumns);
             }
 
@@ -224,10 +229,10 @@ namespace Take.Elephant.Sql
             }
 
             protected override Task<QueryResult<TItem>> QueryAsync<TResult>(
-                SqlWhereStatement filter, 
-                string[] selectColumns, 
-                int skip, 
-                int take, 
+                SqlWhereStatement filter,
+                string[] selectColumns,
+                int skip,
+                int take,
                 CancellationToken cancellationToken,
                 string[] orderByColumns,
                 bool orderByAscending = true,
