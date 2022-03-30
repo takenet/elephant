@@ -132,7 +132,7 @@ namespace Take.Elephant.Redis
             return database.SetLengthAsync(Name, ReadFlags);
         }
 
-        internal static RedisKey GetEmptySetIndicatorForKey(string key) => $"{key}{EMPTY_SET_INDICATOR}";
+        internal static RedisKey GetEmptySetIndicatorForKey(string key) => $"{{{key}}}{EMPTY_SET_INDICATOR}";
 
     }
 }
