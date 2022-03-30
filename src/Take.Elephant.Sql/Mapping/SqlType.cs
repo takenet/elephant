@@ -106,8 +106,10 @@ namespace Take.Elephant.Sql.Mapping
         {
             if (Precision != null)
             {
-                if (Scale != null)
-                    return $"{Type}({Precision},{Scale})";
+                if (Scale != null) 
+                {
+                  return $"{Type}({Precision},{Scale})";
+                }
 
                 return $"{Type}({Precision})";
             }

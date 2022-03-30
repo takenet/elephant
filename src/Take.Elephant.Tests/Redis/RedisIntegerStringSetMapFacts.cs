@@ -12,12 +12,13 @@ namespace Take.Elephant.Tests.Redis
     public class RedisIntegerStringSetMapFacts : IntegerStringSetMapFacts
     {
         private readonly RedisFixture _redisFixture;
-        public const string MapName = "integer-strings";
 
         public RedisIntegerStringSetMapFacts(RedisFixture redisFixture)
         {
             _redisFixture = redisFixture;
         }
+
+        public string MapName => "integer-strings";
 
         public override IMap<int, ISet<string>> Create()
         {

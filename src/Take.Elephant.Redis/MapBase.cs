@@ -32,21 +32,31 @@ namespace Take.Elephant.Redis
         public abstract Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default);
 
         public abstract Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default);
-        
+
         #region IExpirableKeyMap<TKey, TValue> Members
+
+        protected virtual Task<bool> SetRelativeKeyExpirationAsync(RedisKey key, TimeSpan ttl)
+        {
+            var database = GetDatabase();
+            return database.KeyExpireAsync(key, ttl, WriteFlags);
+        }
+
+        protected virtual Task<bool> SetAbsoluteKeyExpirationAsync(RedisKey key, DateTimeOffset expiration)
+        {
+            var database = GetDatabase();
+            return database.KeyExpireAsync(key, expiration.UtcDateTime, WriteFlags);
+        }
 
         public virtual Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            var database = GetDatabase();
-            return database.KeyExpireAsync(GetRedisKey(key), ttl, WriteFlags);
+            return SetRelativeKeyExpirationAsync(GetRedisKey(key), ttl);
         }
 
         public virtual Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            var database = GetDatabase();
-            return database.KeyExpireAsync(GetRedisKey(key), expiration.UtcDateTime, WriteFlags);
+            return SetAbsoluteKeyExpirationAsync(GetRedisKey(key), expiration);
         }
 
         public virtual Task<bool> RemoveExpirationAsync(TKey key)

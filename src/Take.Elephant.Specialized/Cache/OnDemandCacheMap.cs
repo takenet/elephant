@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Take.Elephant.Specialized.Cache
 {
-    public class OnDemandCacheMap<TKey, TValue> : OnDemandCacheStrategy<IMap<TKey, TValue>>, IPropertyMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
+    public class OnDemandCacheMap<TKey, TValue> : OnDemandCacheBase<IMap<TKey, TValue>>, IPropertyMap<TKey, TValue>, IExpirableKeyMap<TKey, TValue>
     {
         private readonly bool _implementsPropertyMap;
 
@@ -159,7 +159,6 @@ namespace Take.Elephant.Specialized.Cache
 
             return (expirableSource, expirableCache);
         }
-
 
         protected async Task<bool> TryAddWithExpirationAsync(TKey key, TValue value, bool overwrite, IMap<TKey, TValue> map, CancellationToken cancellationToken)
         {
