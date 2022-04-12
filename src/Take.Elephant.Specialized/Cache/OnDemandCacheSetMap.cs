@@ -9,18 +9,14 @@ namespace Take.Elephant.Specialized.Cache
 {
     public class OnDemandCacheSetMap<TKey, TValue> : OnDemandCacheMap<TKey, ISet<TValue>>, ISetMap<TKey, TValue>
     {
-        private readonly bool _cacheEmptyValues;
-
-        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, TimeSpan cacheExpiration = default, TimeSpan cacheFaultTolerance = default, bool cacheEmptyValues = false)
+        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, TimeSpan cacheExpiration = default, TimeSpan cacheFaultTolerance = default)
             : base(source, cache, cacheExpiration, cacheFaultTolerance)
         {
-            _cacheEmptyValues = cacheEmptyValues;
         }
 
-        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, CacheOptions cacheOptions, ILogger logger, bool cacheEmptyValues = false)
+        public OnDemandCacheSetMap(ISetMap<TKey, TValue> source, ISetMap<TKey, TValue> cache, CacheOptions cacheOptions, ILogger logger)
             : base(source, cache, cacheOptions, logger)
         {
-            _cacheEmptyValues = cacheEmptyValues;
         }
 
         public override async Task<ISet<TValue>> GetValueOrDefaultAsync(TKey key, CancellationToken cancellationToken = default)
@@ -38,17 +34,6 @@ namespace Take.Elephant.Specialized.Cache
 
             if (sourceValue is null)
             {
-                if (_cacheEmptyValues)
-                {
-                    if (await Cache.TryAddAsync(key, null, false, cancellationToken).ConfigureAwait(false))
-                    {
-                        return new OnDemandCacheSet<TValue>(
-                            new LazySet<TValue>(() => ((ISetMap<TKey, TValue>)Source).GetValueOrEmptyAsync(key, cancellationToken)),
-                            // using GetValueOrDefault here so that it uses the empty support logic
-                            new LazySet<TValue>(() => ((ISetMap<TKey, TValue>)Cache).GetValueOrDefaultAsync(key, cancellationToken)));
-                    }
-                }
-
                 return null;
             }
 
