@@ -11,8 +11,6 @@ namespace Take.Elephant.Redis
     {
         private readonly ISerializer<TItem> _serializer;
         private readonly bool _useScanOnEnumeration;
-        private readonly bool _supportEmptySets;
-        private readonly TimeSpan _emptyIndicatorExpiration;
 
         public RedisSetMap(string mapName,
                            string configuration,
@@ -20,10 +18,8 @@ namespace Take.Elephant.Redis
                            int db = 0,
                            CommandFlags readFlags = CommandFlags.None,
                            CommandFlags writeFlags = CommandFlags.None,
-                           bool useScanOnEnumeration = true,
-                           bool supportEmptySets = false,
-                           TimeSpan? emptyIndicatorExpiration = default)
-            : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, useScanOnEnumeration, supportEmptySets, emptyIndicatorExpiration)
+                           bool useScanOnEnumeration = true)
+            : this(mapName, StackExchange.Redis.ConnectionMultiplexer.Connect(configuration), serializer, db, readFlags, writeFlags, useScanOnEnumeration)
         {
         }
 
@@ -40,8 +36,6 @@ namespace Take.Elephant.Redis
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _useScanOnEnumeration = useScanOnEnumeration;
-            _supportEmptySets = supportEmptySets;
-            _emptyIndicatorExpiration = emptyIndicatorExpiration ?? TimeSpan.FromMinutes(15);
         }
 
         // Some methods below use tasks instead of async-await to 
@@ -64,6 +58,11 @@ namespace Take.Elephant.Redis
                 throw new ArgumentNullException(nameof(key));
             }
 
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             if (value is InternalSet internalSet)
             {
                 return internalSet.Key.Equals(key) && overwrite;
@@ -76,17 +75,6 @@ namespace Take.Elephant.Redis
 
             var redisKey = GetRedisKey(key);
             if (await database.KeyExistsAsync(redisKey, ReadFlags).ConfigureAwait(false) && !overwrite)
-            {
-                return false;
-            }
-
-            var emptySetRedisKey = RedisSet<TItem>.GetEmptySetIndicatorForKey(redisKey);
-
-            if (value == null && _supportEmptySets)
-            {
-                return await database.StringSetAsync(emptySetRedisKey, true.ToString(), _emptyIndicatorExpiration);
-            }
-            else if (value == null)
             {
                 return false;
             }
@@ -108,11 +96,6 @@ namespace Take.Elephant.Redis
                 commandTasks.Add(internalSet.AddAsync(item, cancellationToken));
             }, cancellationToken).ConfigureAwait(false);
 
-            if (_supportEmptySets)
-            {
-                commandTasks.Add(transaction.StringSetAsync(emptySetRedisKey, (itemsAdded > 0).ToString(), _emptyIndicatorExpiration));
-            }
-
             var success = await transaction.ExecuteAsync(WriteFlags).ConfigureAwait(false);
             await Task.WhenAll(commandTasks).ConfigureAwait(false);
 
@@ -124,11 +107,8 @@ namespace Take.Elephant.Redis
         {
             var database = GetDatabase();
             var redisKey = GetRedisKey(key);
-            var emptySetRedisKey = RedisSet<TItem>.GetEmptySetIndicatorForKey(redisKey);
 
-            if ((_supportEmptySets
-                && bool.TryParse((await database.StringGetAsync(emptySetRedisKey)).ToString(), out _))
-                || await database.KeyExistsAsync(redisKey, ReadFlags).ConfigureAwait(false))
+            if (await database.KeyExistsAsync(redisKey, ReadFlags).ConfigureAwait(false))
             {
                 return CreateSet(key);
             }
@@ -145,16 +125,7 @@ namespace Take.Elephant.Redis
         {
             var database = GetDatabase();
             var redisKey = GetRedisKey(key);
-            return database.KeyDeleteAsync(redisKey, WriteFlags).ContinueWith(t =>
-            {
-                var removed = t.Result;
-                if (_supportEmptySets && removed)
-                {
-                    return database.KeyDeleteAsync(RedisSet<TItem>.GetEmptySetIndicatorForKey(redisKey), WriteFlags);
-                }
-
-                return Task.FromResult(removed);
-            }).Unwrap();
+            return database.KeyDeleteAsync(redisKey, WriteFlags);
         }
 
         public override Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
@@ -165,30 +136,12 @@ namespace Take.Elephant.Redis
 
         public override Task<bool> SetAbsoluteKeyExpirationAsync(TKey key, DateTimeOffset expiration)
         {
-            return base.SetAbsoluteKeyExpirationAsync(key, expiration).ContinueWith(t =>
-            {
-                var success = t.Result;
-                if (_supportEmptySets && success && expiration - DateTimeOffset.Now < _emptyIndicatorExpiration)
-                {
-                    return base.SetAbsoluteKeyExpirationAsync(RedisSet<TItem>.GetEmptySetIndicatorForKey(GetRedisKey(key)), expiration);
-                }
-
-                return Task.FromResult(success);
-            }).Unwrap();
+            return base.SetAbsoluteKeyExpirationAsync(key, expiration);
         }
 
         public override Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
-            return base.SetRelativeKeyExpirationAsync(key, ttl).ContinueWith(t =>
-            {
-                var success = t.Result;
-                if (_supportEmptySets && success && ttl < _emptyIndicatorExpiration)
-                {
-                    return base.SetRelativeKeyExpirationAsync(RedisSet<TItem>.GetEmptySetIndicatorForKey(GetRedisKey(key)), ttl);
-                }
-
-                return Task.FromResult(success);
-            }).Unwrap();
+            return base.SetRelativeKeyExpirationAsync(key, ttl);
         }
 
         protected virtual InternalSet CreateSet(TKey key, ITransaction transaction = null)
@@ -201,9 +154,7 @@ namespace Take.Elephant.Redis
                                    ReadFlags,
                                    WriteFlags,
                                    transaction,
-                                   useScanOnEnumeration: _useScanOnEnumeration,
-                                   supportEmptySets: _supportEmptySets,
-                                   emptyIndicatorExpiration: _emptyIndicatorExpiration);
+                                   useScanOnEnumeration: _useScanOnEnumeration);
         }
 
         protected class InternalSet : RedisSet<TItem>
@@ -218,18 +169,14 @@ namespace Take.Elephant.Redis
                                CommandFlags readFlags,
                                CommandFlags writeFlags,
                                ITransaction transaction = null,
-                               bool useScanOnEnumeration = true,
-                               bool supportEmptySets = false,
-                               TimeSpan? emptyIndicatorExpiration = default)
+                               bool useScanOnEnumeration = true)
             : base(setName,
                    connectionMultiplexer,
                    serializer,
                    db,
                    readFlags,
                    writeFlags,
-                   useScanOnEnumeration: useScanOnEnumeration,
-                   supportEmptySets: supportEmptySets,
-                   emptyIndicatorExpiration: emptyIndicatorExpiration)
+                   useScanOnEnumeration: useScanOnEnumeration)
             {
                 if (key == null)
                 {
