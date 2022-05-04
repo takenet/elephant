@@ -19,7 +19,7 @@ namespace Take.Elephant.Tests
         }
 
         [Fact(DisplayName = "UpdateExistingValueSucceeds")]
-        public async Task UpdateExistingValueSucceeds()
+        public virtual async Task UpdateExistingValueSucceeds()
         {
             // Arrange
             var map = Create();

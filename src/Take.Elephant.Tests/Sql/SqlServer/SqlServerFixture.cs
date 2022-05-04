@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.Common;
+﻿using System.Data.Common;
 using System.Data.SqlClient;
 using Take.Elephant.Sql;
 
@@ -11,7 +10,7 @@ namespace Take.Elephant.Tests.Sql.SqlServer
         {
             // Note: You should create the Localdb instance if it doesn't exists
             // Go to the command prompt and run: sqllocaldb create "MSSQLLocalDB"
-            Connection = new SqlConnection(ConnectionString.Replace(DatabaseName, "master"));
+            Connection = new SqlConnection(ConnectionString.Replace($"Database={DatabaseName}", "Database=master"));
             Connection.Open();            
             using (var dropDatabaseCommand = Connection.CreateCommand())
             {
@@ -34,7 +33,7 @@ namespace Take.Elephant.Tests.Sql.SqlServer
 
         public IDatabaseDriver DatabaseDriver { get; }
 
-        public string ConnectionString { get; } = @"Server=(localdb)\MSSQLLocalDB;Database=Elephant;Integrated Security=true";
+        public string ConnectionString { get; } = @"Server=localhost;Database=Elephant;User Id=sa;Password=Elephant123!;";
 
         public void DropTable(string schemaName, string tableName)
         {

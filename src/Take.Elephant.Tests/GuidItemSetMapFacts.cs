@@ -6,8 +6,8 @@ namespace Take.Elephant.Tests
 {
     public abstract class GuidItemSetMapFacts : SetMapFacts<Guid, Item>
     {
-        [Fact(DisplayName = "GetEmptySetSucceds")]
-        public virtual async Task GetEmptyListSucceds()
+        [Fact(DisplayName = "GetEmptySetSucceeds")]
+        public virtual async Task GetEmptyListSucceeds()
         {
             // Arrange
             var map = (ISetMap<Guid, Item>)Create();
