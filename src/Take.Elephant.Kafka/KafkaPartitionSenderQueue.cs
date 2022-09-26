@@ -11,22 +11,20 @@ namespace Take.Elephant.Kafka
         private readonly ISerializer<T> _serializer;
 
         public KafkaPartitionSenderQueue(string bootstrapServers, string topic, ISerializer<T> serializer)
-        : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer)
-        {
-        }
+        : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer) { }
 
         public KafkaPartitionSenderQueue(
             string bootstrapServers,
             string topic,
             ISerializer<T> serializer,
             Confluent.Kafka.ISerializer<string> kafkaSerializer)
-            : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer, kafkaSerializer) { }
+        : this(new ProducerConfig() { BootstrapServers = bootstrapServers }, topic, serializer, kafkaSerializer) { }
 
         public KafkaPartitionSenderQueue(
             ProducerConfig producerConfig,
             string topic,
             ISerializer<T> serializer)
-            : this(producerConfig, topic, serializer, null) { }
+        : this(producerConfig, topic, serializer, null) { }
 
         public KafkaPartitionSenderQueue(
             ProducerConfig producerConfig,
