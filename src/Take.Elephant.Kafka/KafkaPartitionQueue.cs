@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Confluent.Kafka;
 
 namespace Take.Elephant.Kafka
 {
@@ -10,6 +11,18 @@ namespace Take.Elephant.Kafka
     {
         private readonly KafkaPartitionSenderQueue<T> _senderQueue;
         private readonly KafkaReceiverQueue<T> _receiverQueue;
+
+        public KafkaPartitionQueue(
+            ProducerConfig producerConfig,
+            ConsumerConfig consumerConfig,
+            string topic,
+            Take.Elephant.ISerializer<T> serializer,
+            Confluent.Kafka.ISerializer<string> kafkaSerializer = null,
+            IDeserializer<string> kafkaDeserializer = null)
+        {
+            _senderQueue = new KafkaPartitionSenderQueue<T>(producerConfig, topic, serializer, kafkaSerializer);
+            _receiverQueue = new KafkaReceiverQueue<T>(consumerConfig, topic, serializer, kafkaDeserializer);
+        }
 
         public Task EnqueueAsync(T item, string key, CancellationToken cancellationToken = default)
         {
