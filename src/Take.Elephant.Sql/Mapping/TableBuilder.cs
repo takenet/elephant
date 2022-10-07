@@ -54,6 +54,7 @@ namespace Take.Elephant.Sql.Mapping
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Columns = new Dictionary<string, SqlType>();
             KeyColumns = new HashSet<string>();
+            SynchronizationStrategy = SchemaSynchronizationStrategy.Ignore;
         }
 
         /// <summary>

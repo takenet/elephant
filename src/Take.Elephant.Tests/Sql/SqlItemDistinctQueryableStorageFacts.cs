@@ -15,7 +15,10 @@ namespace Take.Elephant.Tests.Sql
 
         public override async Task<IDistinctQueryableStorage<Item>> CreateAsync(params Item[] values)
         {
-            var table = TableBuilder.WithName("OrderedItemsSet").WithColumnsFromTypeProperties<Item>().Build();
+            var table = TableBuilder.WithName("OrderedItemsSet")
+                .WithColumnsFromTypeProperties<Item>()
+                .WithSynchronizationStrategy(SchemaSynchronizationStrategy.UntilSuccess)
+                .Build();
             _serverFixture.DropTable(table.Schema, table.Name);
             var mapper = new TypeMapper<Item>(table);
             var list = new SqlList<Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, mapper);

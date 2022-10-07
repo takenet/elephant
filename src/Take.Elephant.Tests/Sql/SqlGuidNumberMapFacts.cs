@@ -19,6 +19,7 @@ namespace Take.Elephant.Tests.Sql
                 .WithName("GuidNumbers")
                 .WithKeyColumnFromType<Guid>("Key")
                 .WithColumnFromType<long>("Counter")
+                .WithSynchronizationStrategy(SchemaSynchronizationStrategy.UntilSuccess)
                 .Build();
             _serverFixture.DropTable(table.Schema, table.Name);
             var keyMapper = new ValueMapper<Guid>("Key");

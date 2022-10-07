@@ -21,6 +21,7 @@ namespace Take.Elephant.Tests.Sql
                 .WithColumnsFromTypeProperties<Item>(p => !p.Name.Equals(nameof(Item.StringProperty)))
                 .WithColumn(nameof(Item.StringProperty), new SqlType(DbType.String, int.MaxValue))
                 .WithKeyColumnFromType<Guid>("Key")
+                .WithSynchronizationStrategy(SchemaSynchronizationStrategy.UntilSuccess)
                 .Build();
             _serverFixture.DropTable(table.Schema, table.Name);
 

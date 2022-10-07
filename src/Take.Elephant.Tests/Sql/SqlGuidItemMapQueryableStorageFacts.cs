@@ -25,7 +25,7 @@ namespace Take.Elephant.Tests.Sql
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .ToSqlColumns();
             columns.Add("Key", new SqlType(DbType.Guid));
-            var table = new Table("GuidItems", new[] { "Key" }, columns);
+            var table = new Table("GuidItems", new[] { "Key" }, columns, synchronizationStrategy: SchemaSynchronizationStrategy.UntilSuccess);
             _serverFixture.DropTable(table.Schema, table.Name);
 
             var keyMapper = new ValueMapper<Guid>("Key");
