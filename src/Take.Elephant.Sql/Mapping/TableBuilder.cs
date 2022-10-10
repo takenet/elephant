@@ -46,15 +46,22 @@ namespace Take.Elephant.Sql.Mapping
         /// <summary>
         /// Indicates if the table schema is synchronized.
         /// </summary>
-        public SchemaSynchronizationStrategy SynchronizationStrategy { get; private set; }
+        public SchemaSynchronizationStrategy? SynchronizationStrategy { get; private set; }
 
+        /// <summary>
+        ///  Builds a Table for a SQL. 
+        ///  If you do not provide a value with SynchronizationStrategy, it shall define your default value based on Debugging.IsAttached
+        ///  If You are Debugging, synchronizationStrategy default value will be TryOnce. Otherwise, synchronizationStrategy defaults to Ignore.
+        /// </summary>
+        /// <param name="schema"></param>
+        /// <param name="name"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         private TableBuilder(string schema, string name)
         {
             Schema = schema;
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Columns = new Dictionary<string, SqlType>();
             KeyColumns = new HashSet<string>();
-            SynchronizationStrategy = SchemaSynchronizationStrategy.Ignore;
         }
 
         /// <summary>

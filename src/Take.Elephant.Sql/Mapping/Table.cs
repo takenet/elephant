@@ -14,24 +14,46 @@ namespace Take.Elephant.Sql.Mapping
         private readonly SchemaSynchronizationStrategy _synchronizationStrategy;
         private readonly SemaphoreSlim _schemaSynchronizedSemaphore;
         private int _synchronizationsTries;
-        
+
+        /// <summary>
+        ///  Constructor for a SQL Table.
+        ///  If You are Debugging, synchronizationStrategy default value will be TryOnce. Otherwise, synchronizationStrategy defaults to Ignore.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="keyColumnsNames"></param>
+        /// <param name="columns"></param>
+        /// <param name="schema"></param>
+        /// <param name="synchronizationStrategy"></param>
         public Table(
             string name,
             string[] keyColumnsNames,
             IDictionary<string, SqlType> columns,
             string schema = null,
-            SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.Ignore)
+            SchemaSynchronizationStrategy? synchronizationStrategy = null)
             :this(name, keyColumnsNames, columns, Debugger.IsAttached, schema, synchronizationStrategy)
         {
         }
-
+        /// <summary>
+        ///  Constructor for a SQL Table.
+        ///  It is internal as the parameter IsDebugging should be controlled by the other constructor for external clients.
+        ///  This constructor is the one hit by UnitTests.
+        ///  If You are Debugging, synchronizationStrategy default value will be TryOnce. Otherwise, synchronizationStrategy is Ignore.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="keyColumnsNames"></param>
+        /// <param name="columns"></param>
+        /// <param name="IsDebugging"></param>
+        /// <param name="schema"></param>
+        /// <param name="synchronizationStrategy"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         internal Table(
             string name,
             string[] keyColumnsNames,
             IDictionary<string, SqlType> columns,
             bool IsDebugging,
             string schema = null,
-            SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.Ignore)
+            SchemaSynchronizationStrategy? synchronizationStrategy = null)
         {
             if (keyColumnsNames == null)
                 throw new ArgumentNullException(nameof(keyColumnsNames));
@@ -50,10 +72,14 @@ namespace Take.Elephant.Sql.Mapping
             Columns = columns;
             Schema = schema;
             _schemaSynchronizedSemaphore = new SemaphoreSlim(1);
-            _synchronizationStrategy = synchronizationStrategy;
-            if (_synchronizationStrategy == SchemaSynchronizationStrategy.Ignore && IsDebugging)
+            if (synchronizationStrategy == null)
             {
-                _synchronizationStrategy = SchemaSynchronizationStrategy.TryOnce;
+                _synchronizationStrategy = IsDebugging ? 
+                    SchemaSynchronizationStrategy.TryOnce : SchemaSynchronizationStrategy.Ignore;
+            }
+            else
+            {
+                _synchronizationStrategy = synchronizationStrategy.Value;
             }
         }
         /// <inheritdoc />        
