@@ -29,7 +29,7 @@ namespace Take.Elephant.Sql.Mapping
             string[] keyColumnsNames,
             IDictionary<string, SqlType> columns,
             string schema = null,
-            SchemaSynchronizationStrategy? synchronizationStrategy = null)
+            SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.Default)
             :this(name, keyColumnsNames, columns, Debugger.IsAttached, schema, synchronizationStrategy)
         {
         }
@@ -53,7 +53,7 @@ namespace Take.Elephant.Sql.Mapping
             IDictionary<string, SqlType> columns,
             bool IsDebugging,
             string schema = null,
-            SchemaSynchronizationStrategy? synchronizationStrategy = null)
+            SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.Default)
         {
             if (keyColumnsNames == null)
                 throw new ArgumentNullException(nameof(keyColumnsNames));
@@ -72,14 +72,14 @@ namespace Take.Elephant.Sql.Mapping
             Columns = columns;
             Schema = schema;
             _schemaSynchronizedSemaphore = new SemaphoreSlim(1);
-            if (synchronizationStrategy == null)
+            if (synchronizationStrategy == SchemaSynchronizationStrategy.Default)
             {
                 _synchronizationStrategy = IsDebugging ? 
                     SchemaSynchronizationStrategy.TryOnce : SchemaSynchronizationStrategy.Ignore;
             }
             else
             {
-                _synchronizationStrategy = synchronizationStrategy.Value;
+                _synchronizationStrategy = synchronizationStrategy;
             }
         }
         /// <inheritdoc />        
@@ -177,6 +177,11 @@ namespace Take.Elephant.Sql.Mapping
         /// <summary>
         /// Do not try to synchronize the table schema.
         /// </summary>
-        Ignore
+        Ignore,
+
+        /// <summary>
+        /// Will default to TryOnce if Debubber.IsAttached. Otherwise, defaults to Ignore
+        /// </summary>
+        Default
     }
 }

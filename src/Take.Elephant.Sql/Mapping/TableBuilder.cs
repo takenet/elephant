@@ -46,7 +46,7 @@ namespace Take.Elephant.Sql.Mapping
         /// <summary>
         /// Indicates if the table schema is synchronized.
         /// </summary>
-        public SchemaSynchronizationStrategy? SynchronizationStrategy { get; private set; }
+        public SchemaSynchronizationStrategy SynchronizationStrategy { get; private set; }
 
         /// <summary>
         ///  Builds a Table for a SQL. 
@@ -62,6 +62,7 @@ namespace Take.Elephant.Sql.Mapping
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Columns = new Dictionary<string, SqlType>();
             KeyColumns = new HashSet<string>();
+            SynchronizationStrategy = SchemaSynchronizationStrategy.Default;
         }
 
         /// <summary>
