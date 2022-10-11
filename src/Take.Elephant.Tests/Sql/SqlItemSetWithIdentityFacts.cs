@@ -18,6 +18,7 @@ namespace Take.Elephant.Tests.Sql
                 .WithName("ItemsSetWithIdentity")
                 .WithKeyColumnFromType<int>(nameof(Item.IntegerProperty), isIdentity: true)
                 .WithColumnsFromTypeProperties<Item>(/*p => !p.Name.Equals(nameof(Item.IntegerProperty))*/)
+                .WithSynchronizationStrategy(SchemaSynchronizationStrategy.UntilSuccess)
                 .Build();
             _serverFixture.DropTable(table.Schema, table.Name);
             var mapper = new TypeMapper<Item>(table);

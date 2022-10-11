@@ -30,6 +30,7 @@ namespace Take.Elephant.Tests.Sql.SqlServer
             var table = TableBuilder.WithName(TABLE_NAME)
                 .WithKeyColumnFromType<long>(nameof(Item.IdentityProperty), true)
                 .WithColumnsFromTypeProperties<Item>(p => !p.Name.Equals(nameof(Item.IdentityProperty)))
+                .WithSynchronizationStrategy(SchemaSynchronizationStrategy.UntilSuccess)
                 .Build();
             
             _serverFixture.DropTable(table.Schema, table.Name);

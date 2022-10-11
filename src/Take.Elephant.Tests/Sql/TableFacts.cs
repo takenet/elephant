@@ -164,5 +164,33 @@ namespace Take.Elephant.Tests.Sql
             // Assert
             DatabaseDriver.Received(1).CreateConnection(ConnectionString);
         }
+
+        [Fact]
+        public async Task WithDefaultSynchronizationSchemeStrategyAndDebuggerAttachedShouldBeTryOnce()
+        {
+            // Arrange
+            var target = new Table("newTableThatDoesNotExist", KeyColumnsNames, Columns, IsDebugging: true, Schema);
+
+            // Act
+            await target.SynchronizeSchemaAsync(ConnectionString, DatabaseDriver, CancellationToken);
+            await target.SynchronizeSchemaAsync(ConnectionString, DatabaseDriver, CancellationToken);
+
+            // Assert
+            DatabaseDriver.Received(1).CreateConnection(ConnectionString);
+        }
+
+        [Fact]
+        public async Task WithDefaultSynchronizationSchemeStrategyAndDebuggerNotAttachedShouldBeIgnore()
+        {
+            // Arrange
+            var target = new Table("newTableThatDoesNotExist", KeyColumnsNames, Columns, IsDebugging: false, Schema);
+
+            // Act
+            await target.SynchronizeSchemaAsync(ConnectionString, DatabaseDriver, CancellationToken);
+            await target.SynchronizeSchemaAsync(ConnectionString, DatabaseDriver, CancellationToken);
+
+            // Assert
+            DatabaseDriver.DidNotReceive().CreateConnection(ConnectionString);
+        }
     }
 }

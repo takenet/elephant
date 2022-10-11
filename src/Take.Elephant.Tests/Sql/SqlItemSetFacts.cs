@@ -14,7 +14,11 @@ namespace Take.Elephant.Tests.Sql
 
         public override ISet<Item> Create()
         {
-            var table = TableBuilder.WithName("ItemsSet").WithKeyColumnsFromTypeProperties<Item>().Build();
+            var table = TableBuilder
+                .WithName("ItemsSet")
+                .WithKeyColumnsFromTypeProperties<Item>()
+                .WithSynchronizationStrategy(SchemaSynchronizationStrategy.UntilSuccess)
+                .Build();
             _serverFixture.DropTable(table.Schema, table.Name);
             var mapper = new TypeMapper<Item>(table);
             return new SqlSet<Item>(_serverFixture.DatabaseDriver, _serverFixture.ConnectionString, table, mapper);
