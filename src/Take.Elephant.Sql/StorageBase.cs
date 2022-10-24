@@ -26,6 +26,13 @@ namespace Take.Elephant.Sql
         /// </summary>
         public bool FetchQueryResultTotal { get; set; } = true;
 
+        /// <summary>
+        /// Enable/disable returning of a (new) fully async implementation of
+        /// IAsyncEnumerable/IAsyncEnumerator.
+        /// Default: false (backward compatibility)
+        /// </summary>
+        public bool UseFullyAsyncEnumerator { get; set; } = false;
+
         protected IDatabaseDriver DatabaseDriver { get; }
 
         protected string ConnectionString { get; }
@@ -182,7 +189,8 @@ namespace Take.Elephant.Sql
                                 filterValues,
                                 distinct),
                         Mapper,
-                        selectColumns),
+                        selectColumns,
+                        UseFullyAsyncEnumerator),
                     totalCount);
             }
         }

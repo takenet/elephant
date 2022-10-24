@@ -23,7 +23,8 @@ namespace Take.Elephant.Sql
                 GetConnectionAsync,
                 c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns),
                 Mapper,
-                selectColumns);
+                selectColumns,
+                UseFullyAsyncEnumerator);
         }
 
         public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)

@@ -60,11 +60,12 @@ namespace Take.Elephant.Sql
                     var selectColumns = Table.Columns.Keys.ToArray();
 
                     return await new DbDataReaderAsyncEnumerable<TValue>(
-                        // ReSharper disable once AccessToDisposedClosure
-                        t => connection.AsCompletedTask(),
-                        c => c.CreateSelectCommand(DatabaseDriver, Table, keyColumnValues, selectColumns),
-                        Mapper,
-                        selectColumns)
+                            // ReSharper disable once AccessToDisposedClosure
+                            t => connection.AsCompletedTask(),
+                            c => c.CreateSelectCommand(DatabaseDriver, Table, keyColumnValues, selectColumns),
+                            Mapper,
+                            selectColumns,
+                            UseFullyAsyncEnumerator)
                         .FirstOrDefaultAsync(cancellationTokenSource.Token)
                         .ConfigureAwait(false);
                 }
@@ -97,7 +98,12 @@ namespace Take.Elephant.Sql
         {
             var selectColumns = Table.KeyColumnsNames;
             return Task.FromResult<IAsyncEnumerable<TKey>>(
-                new DbDataReaderAsyncEnumerable<TKey>(GetConnectionAsync, c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns), KeyMapper, selectColumns));
+                new DbDataReaderAsyncEnumerable<TKey>(
+                    GetConnectionAsync, 
+                    c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns), 
+                    KeyMapper, 
+                    selectColumns, 
+                    UseFullyAsyncEnumerator));
         }
 
         public virtual async Task SetPropertyValueAsync<TProperty>(TKey key, string propertyName,

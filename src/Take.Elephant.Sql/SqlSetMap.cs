@@ -163,7 +163,8 @@ namespace Take.Elephant.Sql
                             GetConnectionAsync,
                             c => c.CreateSelectCommand(DatabaseDriver, Table, keyColumnValues, selectColumns),
                             Mapper,
-                            selectColumns)
+                            selectColumns,
+                            UseFullyAsyncEnumerator)
                             .FirstOrDefaultAsync(cancellationTokenSource.Token);
             }
         }
@@ -176,7 +177,8 @@ namespace Take.Elephant.Sql
                     GetConnectionAsync,
                     c => c.CreateSelectCommand(DatabaseDriver, Table, null, selectColumns),
                     KeyMapper,
-                    selectColumns));
+                    selectColumns,
+                    UseFullyAsyncEnumerator));
         }
 
         private class InternalSet : SqlSet<TItem>
@@ -209,7 +211,8 @@ namespace Take.Elephant.Sql
                     GetConnectionAsync,
                     c => c.CreateSelectCommand(DatabaseDriver, Table, MapKeyColumnValues, selectColumns),
                     Mapper,
-                    selectColumns);
+                    selectColumns,
+                    UseFullyAsyncEnumerator);
             }
 
             public override async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
