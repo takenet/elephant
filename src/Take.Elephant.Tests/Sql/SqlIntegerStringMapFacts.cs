@@ -23,7 +23,7 @@ namespace Take.Elephant.Tests.Sql
                 {
                     {"Key", new SqlType(DbType.Int32)},
                     {"Value", new SqlType(DbType.String)}
-                });        
+                }, synchronizationStrategy: SchemaSynchronizationStrategy.UntilSuccess);        
             _serverFixture.DropTable(table.Schema, table.Name);
             var keyMapper = new ValueMapper<int>("Key");
             var valueMapper = new ValueMapper<string>("Value");

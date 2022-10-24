@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Take.Elephant.Sql.Mapping
 {
@@ -13,29 +14,74 @@ namespace Take.Elephant.Sql.Mapping
         private readonly SchemaSynchronizationStrategy _synchronizationStrategy;
         private readonly SemaphoreSlim _schemaSynchronizedSemaphore;
         private int _synchronizationsTries;
-        
+
+        /// <summary>
+        ///  Constructor for a SQL Table.
+        ///  If You are Debugging, synchronizationStrategy default value will be TryOnce. Otherwise, synchronizationStrategy defaults to Ignore.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="keyColumnsNames"></param>
+        /// <param name="columns"></param>
+        /// <param name="schema"></param>
+        /// <param name="synchronizationStrategy"></param>
         public Table(
             string name,
             string[] keyColumnsNames,
             IDictionary<string, SqlType> columns,
             string schema = null,
-            SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.UntilSuccess)
+            SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.Default)
+            :this(name, keyColumnsNames, columns, Debugger.IsAttached, schema, synchronizationStrategy)
         {
-            if (keyColumnsNames == null) throw new ArgumentNullException(nameof(keyColumnsNames));
-            _synchronizationStrategy = synchronizationStrategy;
+        }
+        /// <summary>
+        ///  Constructor for a SQL Table.
+        ///  It is internal as the parameter IsDebugging should be controlled by the other constructor for external clients.
+        ///  This constructor is the one hit by UnitTests.
+        ///  If You are Debugging, synchronizationStrategy default value will be TryOnce. Otherwise, synchronizationStrategy is Ignore.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="keyColumnsNames"></param>
+        /// <param name="columns"></param>
+        /// <param name="IsDebugging"></param>
+        /// <param name="schema"></param>
+        /// <param name="synchronizationStrategy"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        internal Table(
+            string name,
+            string[] keyColumnsNames,
+            IDictionary<string, SqlType> columns,
+            bool IsDebugging,
+            string schema = null,
+            SchemaSynchronizationStrategy synchronizationStrategy = SchemaSynchronizationStrategy.Default)
+        {
+            if (keyColumnsNames == null)
+                throw new ArgumentNullException(nameof(keyColumnsNames));
             var repeatedKeyColumn = keyColumnsNames.GroupBy(k => k).FirstOrDefault(c => c.Count() > 1);
-            if (repeatedKeyColumn != null) throw new ArgumentException($"The key column named '{repeatedKeyColumn.Key}' appears more than once", nameof(columns));
-            if (columns == null) throw new ArgumentNullException(nameof(columns));
-            if (columns.Count == 0) throw new ArgumentException(@"The table must define at least one column", nameof(columns));
+            if (repeatedKeyColumn != null)
+                throw new ArgumentException($"The key column named '{repeatedKeyColumn.Key}' appears more than once", nameof(columns));
+            if (columns == null)
+                throw new ArgumentNullException(nameof(columns));
+            if (columns.Count == 0)
+                throw new ArgumentException(@"The table must define at least one column", nameof(columns));
             var repeatedColumn = columns.GroupBy(c => c.Key).FirstOrDefault(c => c.Count() > 1);
-            if (repeatedColumn != null) throw new ArgumentException($"The column named '{repeatedColumn.Key}' appears more than once", nameof(columns));
+            if (repeatedColumn != null)
+                throw new ArgumentException($"The column named '{repeatedColumn.Key}' appears more than once", nameof(columns));
             Name = name ?? throw new ArgumentNullException(nameof(name));
             KeyColumnsNames = keyColumnsNames;
             Columns = columns;
             Schema = schema;
             _schemaSynchronizedSemaphore = new SemaphoreSlim(1);
+            if (synchronizationStrategy == SchemaSynchronizationStrategy.Default)
+            {
+                _synchronizationStrategy = IsDebugging ? 
+                    SchemaSynchronizationStrategy.TryOnce : SchemaSynchronizationStrategy.Ignore;
+            }
+            else
+            {
+                _synchronizationStrategy = synchronizationStrategy;
+            }
         }
-
         /// <inheritdoc />        
         public string Schema { get; }
 
@@ -131,6 +177,11 @@ namespace Take.Elephant.Sql.Mapping
         /// <summary>
         /// Do not try to synchronize the table schema.
         /// </summary>
-        Ignore
+        Ignore,
+
+        /// <summary>
+        /// Will default to TryOnce if Debubber.IsAttached. Otherwise, defaults to Ignore
+        /// </summary>
+        Default
     }
 }

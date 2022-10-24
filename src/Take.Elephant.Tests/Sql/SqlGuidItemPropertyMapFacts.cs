@@ -19,6 +19,7 @@ namespace Take.Elephant.Tests.Sql
                 .WithName("GuidItems")
                 .WithColumnsFromTypeProperties<Item>()
                 .WithKeyColumnFromType<Guid>("Key")
+                .WithSynchronizationStrategy(SchemaSynchronizationStrategy.UntilSuccess)
                 .Build();
             _serverFixture.DropTable(table.Schema, table.Name);
 

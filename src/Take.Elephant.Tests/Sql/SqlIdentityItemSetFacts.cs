@@ -27,6 +27,7 @@ namespace Take.Elephant.Tests.Sql
                 .WithName("IdentityItemsSet")
                 .WithColumnsFromTypeProperties<Item>()
                 .WithKeyColumnFromType<int>(nameof(Item.IntegerProperty), true)
+                .WithSynchronizationStrategy(SchemaSynchronizationStrategy.UntilSuccess)
                 .Build();
 
             _serverFixture.DropTable(table.Schema, table.Name);

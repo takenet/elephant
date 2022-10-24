@@ -26,6 +26,7 @@ namespace Take.Elephant.Tests.Sql
                 .WithColumn(nameof(Item.StringProperty), new SqlType(DbType.String, int.MaxValue))
                 .WithColumn(expirationColumnName, new SqlType(DbType.DateTimeOffset))
                 .WithKeyColumnFromType<Guid>("Key")
+                .WithSynchronizationStrategy(SchemaSynchronizationStrategy.UntilSuccess)
                 .Build();
             _serverFixture.DropTable(table.Schema, table.Name);
 
