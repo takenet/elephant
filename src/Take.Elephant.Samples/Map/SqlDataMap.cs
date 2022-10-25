@@ -21,7 +21,7 @@ namespace Take.Elephant.Samples.Map
             : base(@"Server=(localdb)\MSSQLLocalDB;Database=Elephant;Integrated Security=true",
                 table, new ValueMapper<Guid>("Id"), new TypeMapper<Data>(table))
         {
-               
+            UseFullyAsyncEnumerator = true;
         }
     }
 }

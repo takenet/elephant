@@ -66,7 +66,8 @@ namespace Take.Elephant.Sql
                         c =>
                             c.CreateSelectSkipTakeCommand(DatabaseDriver, Table, selectColumns, filter.Where, skip, take, orderByColumns, filterValues: filter.FilterValues),
                         new KeyValuePairMapper<TKey, TValue>(KeyMapper, Mapper),
-                        selectColumns),
+                        selectColumns,
+                        UseFullyAsyncEnumerator),
                     totalCount);
             }
         }
@@ -112,7 +113,8 @@ namespace Take.Elephant.Sql
                             selectColumns,
                             filterValues: filter.FilterValues),
                         KeyMapper, 
-                        selectColumns),
+                        selectColumns,
+                        UseFullyAsyncEnumerator),
                     totalCount);
             }
         }

@@ -18,6 +18,7 @@ namespace Take.Elephant.Samples.Set
         public SqlDataSet() 
             : base(@"Server=(localdb)\MSSQLLocalDB;Database=Elephant;Integrated Security=true", table, new TypeMapper<Data>(table))
         {
+            UseFullyAsyncEnumerator = true;
         }
 
     }

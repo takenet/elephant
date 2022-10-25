@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Sql.Mapping;
@@ -15,17 +15,20 @@ namespace Take.Elephant.Sql
         private readonly Func<DbConnection, DbCommand> _dbCommandFactory;
         private readonly IMapper<T> _mapper;
         private readonly string[] _selectColumns;
+        private readonly bool _useFullyAsyncEnumerator;
 
         public DbDataReaderAsyncEnumerable(
-            Func<CancellationToken, Task<DbConnection>> dbConnectionFactory, 
+            Func<CancellationToken, Task<DbConnection>> dbConnectionFactory,
             Func<DbConnection, DbCommand> dbCommandFactory, 
             IMapper<T> mapper, 
-            string[] selectColumns)
+            string[] selectColumns,
+            bool useFullyAsyncEnumerator = false)
         {
             _dbConnectionFactory = dbConnectionFactory;
             _dbCommandFactory = dbCommandFactory;
             _mapper = mapper;
             _selectColumns = selectColumns;
+            _useFullyAsyncEnumerator = useFullyAsyncEnumerator;
         }
 
         public virtual async Task<IAsyncEnumerator<T>> GetEnumeratorAsync(CancellationToken cancellationToken)
@@ -39,7 +42,9 @@ namespace Take.Elephant.Sql
 
         public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
         {
-            return GetEnumeratorAsync(cancellationToken).Result;
+            return _useFullyAsyncEnumerator
+                ? new DbDataReaderAsyncEnumerator2<T>(_dbConnectionFactory, _dbCommandFactory, _mapper, _selectColumns, cancellationToken)
+                : GetEnumeratorAsync(cancellationToken).Result;
         }
     }
 }
