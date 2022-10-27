@@ -12,6 +12,7 @@ namespace Take.Elephant.Tests.Azure
     {
         public override IQueue<Item> Create()
         {
+            //Service Bus does not have a local testing method. Therefore, use an azure service bus connectionstring to run this tests https://jimmybogard.com/local-development-with-azure-service-bus/ 
             var connectionString = "";
             var path = "items";
 
