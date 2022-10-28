@@ -246,19 +246,26 @@ namespace Take.Elephant.Sql
                 });
             }
 
-            if (sqlType.Precision.HasValue)
+            if (sqlType.Precision.HasValue && sqlType.Scale.HasValue)
             {
                 typeSql = typeSql.Format(new
                 {
-                    precision = sqlType.Precision
+                    precision = sqlType.Precision,
+                    scale = sqlType.Scale,
                 });
             }
-
-            if (sqlType.Scale.HasValue)
+            else if (sqlType.Precision.HasValue)
             {
                 typeSql = typeSql.Format(new
                 {
-                    scale = sqlType.Scale
+                    precision = sqlType.Precision,
+                });
+            }
+            else if (sqlType.Scale.HasValue)
+            {
+                typeSql = typeSql.Format(new
+                {
+                    scale = sqlType.Scale,
                 });
             }
 

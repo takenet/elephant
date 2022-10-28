@@ -157,7 +157,7 @@
     <value>DATETIMEOFFSET(2)</value>
   </data>
   <data name="DbTypeDecimal" xml:space="preserve">
-    <value>DECIMAL(9,3)</value>
+    <value>DECIMAL({precision},{scale})</value>
   </data>
   <data name="DbTypeDouble" xml:space="preserve">
     <value>FLOAT</value>

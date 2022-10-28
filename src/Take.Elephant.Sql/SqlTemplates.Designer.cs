@@ -172,7 +172,7 @@ namespace Take.Elephant.Sql {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DECIMAL(9,3).
+        ///   Looks up a localized string similar to DECIMAL({precision},{scale}).
         /// </summary>
         public static string DbTypeDecimal {
             get {
