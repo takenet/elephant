@@ -27,6 +27,17 @@ namespace Take.Elephant.Azure
 
         private bool _queueExists;
 
+        /// <summary>
+        /// Creates a Azure Storage Account used as Queue.
+        /// </summary>
+        /// <param name="storageConnectionString"></param>
+        /// <param name="queueName"></param>
+        /// <param name="serializer"></param>
+        /// <param name="encodeMessage"></param>
+        /// <param name="minDequeueRetryDelay"></param>
+        /// <param name="maxDequeueRetryDelay"></param>
+        /// <param name="visibilityTimeout">Optional. Specifies the new visibility timeout value, in seconds, relative to
+        ///     server time. The default value is 30 seconds.</param>
         public AzureStorageQueue(
             string storageConnectionString,
             string queueName,
