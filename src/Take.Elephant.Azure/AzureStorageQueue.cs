@@ -95,7 +95,9 @@ namespace Take.Elephant.Azure
             await CreateQueueIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
             var message = await _queue.ReceiveMessageAsync(_visibilityTimeout, cancellationToken).ConfigureAwait(false);
             if (message?.Value == null)
+            {
                 return default;
+            }
 
             return await CreateItemAndDeleteMessageAsync(message.Value, cancellationToken).ConfigureAwait(false);
         }
@@ -106,7 +108,9 @@ namespace Take.Elephant.Azure
             await CreateQueueIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
             var messages = await _queue.ReceiveMessagesAsync(maxBatchSize, _visibilityTimeout, cancellationToken).ConfigureAwait(false);
             if (messages?.Value == null)
+            {
                 return Enumerable.Empty<T>();
+            }
 
             return await Task.WhenAll(
                 messages.Value.Select(m => CreateItemAndDeleteMessageAsync(m, cancellationToken))).ConfigureAwait(false);
@@ -125,7 +129,9 @@ namespace Take.Elephant.Azure
         {
             var message = await _queue.ReceiveMessageAsync(_visibilityTimeout, cancellationToken).ConfigureAwait(false);
             if (message == null)
+            {
                 return null;
+            }
 
             return CreateStorageTransaction(message);
         }
@@ -136,7 +142,9 @@ namespace Take.Elephant.Azure
         {
             var messages = await _queue.ReceiveMessagesAsync(maxBatchSize, _visibilityTimeout, cancellationToken).ConfigureAwait(false);
             if (messages == null)
+            {
                 return Enumerable.Empty<StorageTransaction<T>>();
+            }
 
             return messages.Value.Select(CreateStorageTransaction);
         }
@@ -174,13 +182,17 @@ namespace Take.Elephant.Azure
         private async Task CreateQueueIfNotExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_queueExists)
+            {
                 return;
+            }
 
             await _queueCreationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 if (_queueExists)
+                {
                     return;
+                }
 
                 await _queue.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -201,7 +213,9 @@ namespace Take.Elephant.Azure
         private static QueueMessage CreateCloudQueueMessage(StorageTransaction<T> transaction)
         {
             if (transaction == null)
+            {
                 throw new ArgumentNullException(nameof(transaction));
+            }
             if (!(transaction.Transaction is QueueMessage cloudQueueMessage))
             {
                 throw new ArgumentException("Invalid transaction type", nameof(transaction));
