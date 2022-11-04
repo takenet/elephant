@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Queue;
+using Azure.Storage.Queues;
 using Take.Elephant.Azure;
 using Xunit;
 
@@ -12,7 +11,8 @@ namespace Take.Elephant.Tests.Azure
     {
         public override IBlockingQueue<Item> Create()
         {
-            var connectionString = "";
+            //This connectionString points a local Azure Storage. You can run one using https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio#running-azurite-from-the-command-line 
+            var connectionString = "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;";
             var queueName = "items";
 
             DeleteQueueAsync(connectionString, queueName).Wait();
@@ -25,13 +25,13 @@ namespace Take.Elephant.Tests.Azure
 
         private async Task DeleteQueueAsync(string connectionString, string queueName)
         {
-            var storageAccount = CloudStorageAccount.Parse(connectionString);
-            var client = storageAccount.CreateCloudQueueClient();
-            var queue = client.GetQueueReference(queueName);
+            var options = new QueueClientOptions();
+            options.MessageEncoding = QueueMessageEncoding.Base64;
+            var queue = new QueueClient(connectionString, queueName, options);
 
             if (await queue.ExistsAsync())
             {
-                await queue.ClearAsync();
+                await queue.ClearMessagesAsync();
             }
         }
 
