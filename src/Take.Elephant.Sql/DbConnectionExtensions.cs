@@ -11,6 +11,9 @@ namespace Take.Elephant.Sql
 {
     public static class DbConnectionExtensions
     {
+        private const string SKIP_PARAMETER = "SkipParameter";
+        private const string TAKE_PARAMETER = "TakeParameter";
+
         public static Task<int> ExecuteNonQueryAsync(
             this DbConnection connection,
             string commandText,
@@ -79,7 +82,8 @@ namespace Take.Elephant.Sql
             ITable table,
             IDictionary<string, object> filterValues)
         {
-            if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
+            if (filterValues == null)
+                throw new ArgumentNullException(nameof(filterValues));
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Delete),
                 new
@@ -98,8 +102,10 @@ namespace Take.Elephant.Sql
             IDictionary<string, object> filterValues,
             IDictionary<string, object> columnValues)
         {
-            if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
-            if (columnValues == null) throw new ArgumentNullException(nameof(columnValues));
+            if (filterValues == null)
+                throw new ArgumentNullException(nameof(filterValues));
+            if (columnValues == null)
+                throw new ArgumentNullException(nameof(columnValues));
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
                 new
@@ -127,7 +133,7 @@ namespace Take.Elephant.Sql
                     filter = SqlHelper.GetAndEqualsStatement(databaseDriver, filterValues)
                 },
                 filterValues?.ToDbParameters(databaseDriver, table));
-        }        
+        }
 
         public static DbCommand CreateInsertCommand(
             this DbConnection connection,
@@ -199,7 +205,8 @@ namespace Take.Elephant.Sql
             string[] selectColumns,
             bool distinct = false)
         {
-            if (selectColumns == null) throw new ArgumentNullException(nameof(selectColumns));
+            if (selectColumns == null)
+                throw new ArgumentNullException(nameof(selectColumns));
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinct : SqlStatement.Select),
                 new
@@ -220,7 +227,8 @@ namespace Take.Elephant.Sql
             IDictionary<string, object> filterValues = null,
             bool distinct = false)
         {
-            if (filter == null) filter = databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
+            if (filter == null)
+                filter = databaseDriver.GetSqlStatementTemplate(SqlStatement.OneEqualsOne);
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectCountDistinct : SqlStatement.SelectCount),
                 new
@@ -262,9 +270,6 @@ namespace Take.Elephant.Sql
             IDictionary<string, object> filterValues = null,
             bool distinct = false)
         {
-            const string SkipParameter = "SkipParameter";
-            const string TakeParameter = "TakeParameter";
-
             var orderBy = orderByColumns.Length > 0
                 ? orderByColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                 : "1";
@@ -274,9 +279,8 @@ namespace Take.Elephant.Sql
                 orderBy = $"{orderBy} {databaseDriver.GetSqlStatementTemplate(SqlStatement.Desc)}";
             }
 
-            var parameterValues = new Dictionary<string, object>(filterValues);
-            parameterValues.Add(SkipParameter, skip);
-            parameterValues.Add(TakeParameter, take);
+            var parameterValues = GetParameterValues(skip, take, filterValues);
+
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct
                     ? SqlStatement.SelectDistinctSkipTake
@@ -287,8 +291,8 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(table.Name),
                     columns = selectColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     filter = filter,
-                    skip = $"@{SkipParameter}",
-                    take = $"@{TakeParameter}",
+                    skip = $"@{SKIP_PARAMETER}",
+                    take = $"@{TAKE_PARAMETER}",
                     orderBy = orderBy
                 },
                 parameterValues?.ToDbParameters(databaseDriver, table));
@@ -326,8 +330,8 @@ namespace Take.Elephant.Sql
                 .ToDictionary(c => c.Key, c => c.Value);
 
             IEnumerable<DbParameter> parameters;
-            string columnNamesAndValues;            
-            
+            string columnNamesAndValues;
+
             var columns = keyAndColumnValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate();
             string allColumns; // Including identity columns
             var values = keyAndColumnValues.Keys.Select(databaseDriver.ParseParameterName).ToCommaSeparate();
@@ -400,6 +404,21 @@ namespace Take.Elephant.Sql
                     keyColumns = keyValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                 },
                 keyAndColumnValues.ToDbParameters(databaseDriver, table));
+        }
+
+        private static Dictionary<string, object> GetParameterValues(
+            int skip,
+            int take,
+            IDictionary<string, object> filterValues)
+        {
+            var parameterValues = filterValues != null
+                ? new Dictionary<string, object>(filterValues)
+                : new Dictionary<string, object>();
+
+            parameterValues.Add(SKIP_PARAMETER, skip);
+            parameterValues.Add(TAKE_PARAMETER, take);
+
+            return parameterValues;
         }
     }
 }
