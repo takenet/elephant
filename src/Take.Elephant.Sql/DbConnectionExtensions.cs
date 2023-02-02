@@ -262,6 +262,9 @@ namespace Take.Elephant.Sql
             IDictionary<string, object> filterValues = null,
             bool distinct = false)
         {
+            const string SkipParameter = "SkipParameter";
+            const string TakeParameter = "TakeParameter";
+
             var orderBy = orderByColumns.Length > 0
                 ? orderByColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                 : "1";
@@ -271,6 +274,9 @@ namespace Take.Elephant.Sql
                 orderBy = $"{orderBy} {databaseDriver.GetSqlStatementTemplate(SqlStatement.Desc)}";
             }
 
+            var parameterValues = new Dictionary<string, object>(filterValues);
+            parameterValues.Add(SkipParameter, skip);
+            parameterValues.Add(TakeParameter, take);
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct
                     ? SqlStatement.SelectDistinctSkipTake
@@ -281,11 +287,11 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(table.Name),
                     columns = selectColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     filter = filter,
-                    skip = skip,
-                    take = take,
+                    skip = $"@{SkipParameter}",
+                    take = $"@{TakeParameter}",
                     orderBy = orderBy
                 },
-                filterValues?.ToDbParameters(databaseDriver, table));
+                parameterValues?.ToDbParameters(databaseDriver, table));
         }
 
         public static DbCommand CreateSelectTop1Command(
