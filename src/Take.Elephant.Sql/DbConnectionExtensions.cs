@@ -11,6 +11,9 @@ namespace Take.Elephant.Sql
 {
     public static class DbConnectionExtensions
     {
+        private const string SKIP_PARAMETER = "SkipParameter";
+        private const string TAKE_PARAMETER = "TakeParameter";
+
         public static Task<int> ExecuteNonQueryAsync(
             this DbConnection connection,
             string commandText,
@@ -262,9 +265,6 @@ namespace Take.Elephant.Sql
             IDictionary<string, object> filterValues = null,
             bool distinct = false)
         {
-            const string SkipParameter = "SkipParameter";
-            const string TakeParameter = "TakeParameter";
-
             var orderBy = orderByColumns.Length > 0
                 ? orderByColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                 : "1";
@@ -273,10 +273,9 @@ namespace Take.Elephant.Sql
             {
                 orderBy = $"{orderBy} {databaseDriver.GetSqlStatementTemplate(SqlStatement.Desc)}";
             }
+            
+            var parameterValues = GetParameterValues(skip, take, filterValues);
 
-            var parameterValues = new Dictionary<string, object>(filterValues);
-            parameterValues.Add(SkipParameter, skip);
-            parameterValues.Add(TakeParameter, take);
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct
                     ? SqlStatement.SelectDistinctSkipTake
@@ -287,8 +286,8 @@ namespace Take.Elephant.Sql
                     tableName = databaseDriver.ParseIdentifier(table.Name),
                     columns = selectColumns.Select(databaseDriver.ParseIdentifier).ToCommaSeparate(),
                     filter = filter,
-                    skip = $"@{SkipParameter}",
-                    take = $"@{TakeParameter}",
+                    skip = $"@{SKIP_PARAMETER}",
+                    take = $"@{TAKE_PARAMETER}",
                     orderBy = orderBy
                 },
                 parameterValues?.ToDbParameters(databaseDriver, table));
@@ -400,6 +399,21 @@ namespace Take.Elephant.Sql
                     keyColumns = keyValues.Keys.Select(databaseDriver.ParseIdentifier).ToCommaSeparate()
                 },
                 keyAndColumnValues.ToDbParameters(databaseDriver, table));
+        }
+
+        private static Dictionary<string, object> GetParameterValues(
+            int skip,
+            int take,
+            IDictionary<string, object> filterValues)
+        {
+            var parameterValues = filterValues != null
+                ? new Dictionary<string, object>(filterValues)
+                : new Dictionary<string, object>();
+
+            parameterValues.Add(SKIP_PARAMETER, skip);
+            parameterValues.Add(TAKE_PARAMETER, take);
+
+            return parameterValues;
         }
     }
 }
