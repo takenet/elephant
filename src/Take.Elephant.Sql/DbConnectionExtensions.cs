@@ -82,8 +82,8 @@ namespace Take.Elephant.Sql
             ITable table,
             IDictionary<string, object> filterValues)
         {
-            if (filterValues == null)
-                throw new ArgumentNullException(nameof(filterValues));
+            if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
+
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Delete),
                 new
@@ -102,10 +102,9 @@ namespace Take.Elephant.Sql
             IDictionary<string, object> filterValues,
             IDictionary<string, object> columnValues)
         {
-            if (filterValues == null)
-                throw new ArgumentNullException(nameof(filterValues));
-            if (columnValues == null)
-                throw new ArgumentNullException(nameof(columnValues));
+            if (filterValues == null) throw new ArgumentNullException(nameof(filterValues));
+            if (columnValues == null) throw new ArgumentNullException(nameof(columnValues));
+
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(SqlStatement.Update),
                 new
@@ -205,8 +204,8 @@ namespace Take.Elephant.Sql
             string[] selectColumns,
             bool distinct = false)
         {
-            if (selectColumns == null)
-                throw new ArgumentNullException(nameof(selectColumns));
+            if (selectColumns == null) throw new ArgumentNullException(nameof(selectColumns));
+
             return connection.CreateTextCommand(
                 databaseDriver.GetSqlStatementTemplate(distinct ? SqlStatement.SelectDistinct : SqlStatement.Select),
                 new
