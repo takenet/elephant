@@ -178,7 +178,7 @@
     <value>REAL</value>
   </data>
   <data name="DbTypeString" xml:space="preserve">
-    <value>VARCHAR({length})</value>
+    <value>TEXT</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>DELETE FROM {schemaName}.{tableName} WHERE {filter}</value>
