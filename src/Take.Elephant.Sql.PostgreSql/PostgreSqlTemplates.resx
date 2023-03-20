@@ -296,6 +296,9 @@ RETURNING {incrementColumnName}</value>
   <data name="QueryLessThen" xml:space="preserve">
     <value>{column} &lt; {value}</value>
   </data>
+  <data name="QueryIsNotNull" xml:space="preserve">
+    <value>{column} IS NOT NULL</value>
+  </data>
   <data name="ReservedKeywords" xml:space="preserve">
     <value>ABS
 ABSOLUTE
@@ -468,7 +471,6 @@ GROUPS
 HAVING
 HOLD
 HOUR
-IDENTITY
 IMMEDIATE
 IMPORT
 IN

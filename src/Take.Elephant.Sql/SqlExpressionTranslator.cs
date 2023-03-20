@@ -11,7 +11,7 @@ namespace Take.Elephant.Sql
 {
     public class SqlExpressionTranslator : ExpressionVisitor
     {
-        internal const string PARAMETER_COUNT_SEPARATOR = "$";
+        internal const string PARAMETER_COUNT_SEPARATOR = "__";
 
         private readonly StringBuilder _filter;
         private readonly IDictionary<string, object> _filterValues;
@@ -304,7 +304,7 @@ namespace Take.Elephant.Sql
                 name = _parameterNames.Dequeue();
                 if (_filterValues.ContainsKey(name))
                 {
-                    name = $"{name}{PARAMETER_COUNT_SEPARATOR}{_parameterCount}";
+                    name = $"{name}{PARAMETER_COUNT_SEPARATOR}{_parameterCount}{PARAMETER_COUNT_SEPARATOR}";
                 }
             }
 
