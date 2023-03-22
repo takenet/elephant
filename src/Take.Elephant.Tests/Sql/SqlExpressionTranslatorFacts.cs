@@ -124,9 +124,9 @@ namespace Take.Elephant.Tests.Sql
             var actual = target.GetStatement(expression);
 
             // Assert
-            AssertEquals(actual.Where, "(([BooleanProperty] = @BooleanProperty) OR ([BooleanProperty] = @BooleanProperty$1))");
+            AssertEquals(actual.Where, "(([BooleanProperty] = @BooleanProperty) OR ([BooleanProperty] = @BooleanProperty__1__))");
             AssertEquals(actual.FilterValues["BooleanProperty"], false);
-            AssertEquals(actual.FilterValues["BooleanProperty$1"], true);
+            AssertEquals(actual.FilterValues["BooleanProperty__1__"], true);
         }
 
         [Fact(Skip = "Not supported yet")]

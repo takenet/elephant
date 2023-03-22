@@ -178,7 +178,7 @@
     <value>REAL</value>
   </data>
   <data name="DbTypeString" xml:space="preserve">
-    <value>VARCHAR({length})</value>
+    <value>TEXT</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>DELETE FROM {schemaName}.{tableName} WHERE {filter}</value>
@@ -295,6 +295,9 @@ RETURNING {incrementColumnName}</value>
   </data>
   <data name="QueryLessThen" xml:space="preserve">
     <value>{column} &lt; {value}</value>
+  </data>
+  <data name="QueryIsNotNull" xml:space="preserve">
+    <value>{column} IS NOT NULL</value>
   </data>
   <data name="ReservedKeywords" xml:space="preserve">
     <value>ABS
@@ -468,7 +471,6 @@ GROUPS
 HAVING
 HOLD
 HOUR
-IDENTITY
 IMMEDIATE
 IMPORT
 IN
