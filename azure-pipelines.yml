@@ -15,17 +15,20 @@ pool:
 variables:
 - name: SkipDecorator
   value: true 
+  checkmarxName: Elephant
 
 resources:
   repositories:   
   - repository: templates
     type: git
     name: Operações/template-take-blip
-    ref: refs/tags/v1.3.11
+    ref: refs/tags/v1.4.30
 
 extends:
   template: template-pipeline.yml@templates    
-  parameters:    
+  parameters:   
+    skipSast: false
+    sastFilter: "!**/**, src/**/*" 
     packagename: elephant    
     type: dotnet
     to: nuget
