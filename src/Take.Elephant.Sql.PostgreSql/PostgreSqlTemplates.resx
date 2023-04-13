@@ -145,7 +145,7 @@
     <value>BYTEA</value>
   </data>
   <data name="DbTypeBoolean" xml:space="preserve">
-    <value>BOOLEAN</value>
+    <value>BIT</value>
   </data>
   <data name="DbTypeDate" xml:space="preserve">
     <value>DATE</value>
@@ -471,6 +471,7 @@ GROUPS
 HAVING
 HOLD
 HOUR
+IDENTITY
 IMMEDIATE
 IMPORT
 IN
@@ -555,6 +556,7 @@ OUTPUT
 OVER
 OVERLAPS
 OVERLAY
+OWNER
 PAD
 PARAMETER
 PARTIAL

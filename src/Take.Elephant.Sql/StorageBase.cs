@@ -54,6 +54,7 @@ namespace Take.Elephant.Sql
         {
             using (var command = connection.CreateContainsCommand(DatabaseDriver, Table, filterValues))
             {
+                System.Console.WriteLine($"Postgre query {command.CommandText.ToString()}");
                 return (bool)await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
             }
         }
