@@ -28,6 +28,7 @@ resources:
 extends:
   template: template-pipeline.yml@templates    
   parameters:   
+    skipSonarBranch: true
     skipSast: false
     sastFilter: "!**/**, src/**/*" 
     packagename: elephant    
