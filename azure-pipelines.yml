@@ -15,7 +15,8 @@ pool:
 variables:
 - name: SkipDecorator
   value: true 
-  checkmarxName: Elephant
+- name: checkmarxName
+  value: Elephant
 
 resources:
   repositories:   
