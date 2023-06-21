@@ -81,8 +81,7 @@ namespace Take.Elephant.Redis
                 var key = ((string) k).Substring(Name.Length + 1, value.Length - Name.Length - 1);
                 return GetKeyFromString(key);
             });
-            return Task.FromResult<IAsyncEnumerable<TKey>>(
-                new AsyncEnumerableWrapper<TKey>(keys));
+            return Task.FromResult(keys.ToAsyncEnumerable());
         }
     }
 }
