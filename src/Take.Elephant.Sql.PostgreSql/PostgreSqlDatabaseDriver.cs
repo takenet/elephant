@@ -5,9 +5,6 @@ using System.Data.Common;
 using System.Linq;
 using Npgsql;
 using Take.Elephant.Sql.Mapping;
-using Npgsql.TypeMapping;
-using NpgsqlTypes;
-using System.Drawing;
 
 namespace Take.Elephant.Sql.PostgreSql
 {
@@ -62,7 +59,9 @@ namespace Take.Elephant.Sql.PostgreSql
         public string ParseIdentifier(string identifier)
         {
             if (ReserverdKeywords.Contains(identifier.ToLowerInvariant()))
+            {
                 return $"\"{identifier}\"";
+            }
             return identifier;
         }
 
