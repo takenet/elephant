@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
@@ -16,6 +17,16 @@ namespace Take.Elephant.Sql
         public static string ToCommaSeparate(this IEnumerable<string> values)
         {
             return values.Aggregate((a, b) => $"{a},{b}").TrimEnd(',');
+        }
+
+        /// <summary>
+        /// Identify if the value is DBNull
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsNullable(this object value)
+        {
+            return value == null || Convert.IsDBNull(value);
         }
 
         public static DbParameter ToDbParameter(this KeyValuePair<string, object> keyValuePair, IDatabaseDriver databaseDriver)

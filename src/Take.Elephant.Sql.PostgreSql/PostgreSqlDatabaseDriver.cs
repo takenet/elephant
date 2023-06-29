@@ -5,6 +5,9 @@ using System.Data.Common;
 using System.Linq;
 using Npgsql;
 using Take.Elephant.Sql.Mapping;
+using Npgsql.TypeMapping;
+using NpgsqlTypes;
+using System.Drawing;
 
 namespace Take.Elephant.Sql.PostgreSql
 {
@@ -46,16 +49,11 @@ namespace Take.Elephant.Sql.PostgreSql
 
         public DbParameter CreateParameter(string parameterName, object value, SqlType sqlType)
         {
-            if (sqlType.Length == null)
+            return new NpgsqlParameter(parameterName, sqlType.Type)
             {
-                return CreateParameter(parameterName, value);
-            }
-            
-            return new NpgsqlParameter()
-            {
-                ParameterName = parameterName,
                 Value = value,
-                Size = sqlType.Length.Value
+                IsNullable = sqlType.IsNullable ?? value.IsNullable(),
+                Size = sqlType.Length != null ? sqlType.Length.Value : 0
             };
         }
 
@@ -63,7 +61,8 @@ namespace Take.Elephant.Sql.PostgreSql
 
         public string ParseIdentifier(string identifier)
         {
-            if (ReserverdKeywords.Contains(identifier.ToLowerInvariant())) return $"\"{identifier}\"";
+            if (ReserverdKeywords.Contains(identifier.ToLowerInvariant()))
+                return $"\"{identifier}\"";
             return identifier;
         }
 

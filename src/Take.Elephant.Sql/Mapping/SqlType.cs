@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace Take.Elephant.Sql.Mapping
 {
@@ -29,6 +30,32 @@ namespace Take.Elephant.Sql.Mapping
             Scale = scale;
         }
 
+        public SqlType(DbType type, int? length, bool? isNullable, bool isIdentity = false)
+            : this(type, isIdentity)
+        {
+            _length = length;
+            IsNullable = isNullable;
+        }
+
+        public SqlType(DbType type, int precision, int scale, bool? isNullable, bool isIdentity = false)
+            : this(type, isNullable, isIdentity)
+        {
+            Scale = scale;
+            Precision = precision;
+        }
+
+        public SqlType(DbType type, bool? isNullable, bool isIdentity)
+            : this(type, isIdentity)
+        {
+            IsNullable = isNullable;
+        }
+
+        public SqlType(DbType type, bool? isNullable)
+            : this(type, false)
+        {
+            IsNullable = isNullable;
+        }
+
         public DbType Type { get; }
 
         public int? Length
@@ -52,6 +79,8 @@ namespace Take.Elephant.Sql.Mapping
 
         public bool IsIdentity { get; }
 
+        public bool? IsNullable { get; }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
@@ -63,7 +92,12 @@ namespace Take.Elephant.Sql.Mapping
 
         private bool Equals(SqlType other)
         {
-            return _length == other._length && Type == other.Type && Precision == other.Precision && Scale == other.Scale && IsIdentity == other.IsIdentity;
+            return _length == other._length
+                && Type == other.Type
+                && Scale == other.Scale
+                && Precision == other.Precision
+                && IsIdentity == other.IsIdentity
+                && IsNullable == other.IsNullable;
         }
 
         public override int GetHashCode()
@@ -75,6 +109,7 @@ namespace Take.Elephant.Sql.Mapping
                 hashCode = (hashCode * 397) ^ Precision.GetHashCode();
                 hashCode = (hashCode * 397) ^ Scale.GetHashCode();
                 hashCode = (hashCode * 397) ^ IsIdentity.GetHashCode();
+                hashCode = (hashCode * 397) ^ IsNullable.GetHashCode();
                 return hashCode;
             }
         }
