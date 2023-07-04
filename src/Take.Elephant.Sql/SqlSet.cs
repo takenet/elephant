@@ -28,7 +28,7 @@ namespace Take.Elephant.Sql
             var nonIdentityKeyColumnValues = GetKeyColumnValues(keyColumnValues, false);
             var identityKeyColumnValues = GetKeyColumnValues(GetIdentityColumnValues(keyColumnValues), true);
 
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -93,7 +93,7 @@ namespace Take.Elephant.Sql
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(value, true);
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -106,7 +106,7 @@ namespace Take.Elephant.Sql
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var keyColumnValues = GetKeyColumnValues(value, true);
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {

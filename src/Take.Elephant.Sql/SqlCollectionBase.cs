@@ -29,7 +29,7 @@ namespace Take.Elephant.Sql
 
         public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {

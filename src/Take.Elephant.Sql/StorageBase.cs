@@ -206,6 +206,12 @@ namespace Take.Elephant.Sql
         protected CancellationTokenSource CreateCancellationTokenSource()
             => new CancellationTokenSource(DatabaseDriver.Timeout);
 
+        protected CancellationTokenSource CreateCancellationTokenSource(CancellationToken cancellationToken)
+        {
+            var dataBaseTimeOutTokenSource = new CancellationTokenSource(DatabaseDriver.Timeout);
+            return CancellationTokenSource.CreateLinkedTokenSource(dataBaseTimeOutTokenSource.Token, cancellationToken);
+        }
+
         protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitNullValues = false, bool includeIdentityTypes = false)
             => Mapper.GetColumnValues(entity, emitNullValues: emitNullValues, includeIdentityTypes: includeIdentityTypes);
 

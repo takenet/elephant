@@ -33,7 +33,7 @@ namespace Take.Elephant.Sql
             bool overwrite = false,
             CancellationToken cancellationToken = default)
         {
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -52,7 +52,7 @@ namespace Take.Elephant.Sql
         public virtual async Task<TValue> GetValueOrDefaultAsync(TKey key,
             CancellationToken cancellationToken = default)
         {
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -74,7 +74,7 @@ namespace Take.Elephant.Sql
 
         public virtual async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -85,7 +85,7 @@ namespace Take.Elephant.Sql
 
         public virtual async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -113,7 +113,7 @@ namespace Take.Elephant.Sql
             if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));           
             if (Table.KeyColumnsNames.Contains(propertyName)) throw new ArgumentException(@"A key property cannot be changed", nameof(propertyName));
 
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -136,7 +136,7 @@ namespace Take.Elephant.Sql
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (value == null) throw new ArgumentNullException(nameof(value));
 
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -163,7 +163,7 @@ namespace Take.Elephant.Sql
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Table.Columns.ContainsKey(propertyName)) throw new ArgumentException(@"Invalid property", nameof(propertyName));
 
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
