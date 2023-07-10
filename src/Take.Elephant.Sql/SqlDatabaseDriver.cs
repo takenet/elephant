@@ -34,15 +34,28 @@ namespace Take.Elephant.Sql
 
         public DbParameter CreateParameter(string parameterName, object value, SqlType sqlType)
         {
-            if (!TryGetSqlDbType(sqlType.Type, out var sqlDbType) || sqlType.Length == null)
+            if (TryGetSqlDbType(sqlType.Type, out var sqlDbType))
             {
-                return CreateParameter(parameterName, value);
+                if(sqlType.Length != null)
+                {
+                    return new SqlParameter(parameterName, sqlDbType.Value, sqlType.Length.Value)
+                    {
+                        Value = value,
+                        IsNullable = sqlType?.IsNullable ?? value.IsNullable()
+                    };
+                }
+                else
+                {
+                    return new SqlParameter(parameterName, sqlDbType.Value)
+                    {
+                        Value = value,
+                        IsNullable = sqlType?.IsNullable ?? value.IsNullable()
+                    };
+                }
+                
             }
-            
-            return new SqlParameter(parameterName, sqlDbType.Value, sqlType.Length.Value)
-            {
-                Value = value
-            };
+
+            return CreateParameter(parameterName, value);
         }
 
         public string ParseParameterName(string parameterName) => $"@{parameterName}";

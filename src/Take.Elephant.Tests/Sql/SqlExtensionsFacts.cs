@@ -7,6 +7,9 @@ using Take.Elephant.Sql.Mapping;
 using System.Reflection;
 using System.Linq;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using Shouldly;
+using System.Collections.Generic;
 
 namespace Take.Elephant.Tests.Sql
 {
@@ -34,6 +37,8 @@ namespace Take.Elephant.Tests.Sql
                 .WithKeyColumnsNames(nameof(FakeDocument.Id))
                 .WithColumnsFromTypeProperties<FakeDocument>(PropertyFilter)
                 .WithColumn(nameof(FakeDocument.PersonalField), new SqlType(DbType.String, 500))
+                .WithColumn(nameof(FakeDocument.IdIsNull), new SqlType(DbType.Int32))
+                .WithColumn(nameof(FakeDocument.PersonalNotNull), new SqlType(DbType.String, 50, isNullable: true))
                 .Build();
 
             return FakeTable;
@@ -51,6 +56,7 @@ namespace Take.Elephant.Tests.Sql
             var param6 = 85.75;
             var param7 = true;
             var param8 = Guid.NewGuid();
+            var param9 = "Not null";
 
             // Arrange
             Expression<Func<FakeDocument, bool>> expression = i =>
@@ -60,16 +66,22 @@ namespace Take.Elephant.Tests.Sql
                 i.DateProperty == param4 &&
                 (i.DecimalProperty == param5 || i.FloatProperty == param6) &&
                 i.BooleanProperty == param7 &&
-                i.GuidProperty == param8;
+                i.GuidProperty == param8 &&
+                i.PersonalNotNull == param9;
 
             var target = GetTarget(expression);
 
+            var param = new Dictionary<string, object>(target.FilterValues)
+            {
+                {nameof(FakeDocument.IdIsNull), null}
+            };
+
             // Act
-            var paramList = target.FilterValues?.ToDbParameters(DatabaseDriver, GetTable());
+            var paramList = param?.ToDbParameters(DatabaseDriver, GetTable());
             var actual = Enumerable.ToList(paramList);
 
             // Assert
-            AssertEquals(actual.Count, 9);
+            AssertEquals(actual.Count, 11);
 
             AssertEquals(actual[0].ParameterName, "@Id");
             AssertEquals(actual[0].Value, param0);
@@ -116,8 +128,8 @@ namespace Take.Elephant.Tests.Sql
             AssertEquals(actual[6].ParameterName, "@FloatProperty");
             AssertEquals(actual[6].Value, param6);
             AssertEquals(actual[6].Direction, ParameterDirection.Input);
-            AssertEquals(actual[6].DbType, DbType.Double);
-            AssertEquals(((SqlParameter)actual[6]).SqlDbType, SqlDbType.Float);
+            AssertEquals(actual[6].DbType, DbType.Single);
+            AssertEquals(((SqlParameter)actual[6]).SqlDbType, SqlDbType.Real);
 
             AssertEquals(actual[7].ParameterName, "@BooleanProperty");
             AssertEquals(actual[7].Value, param7);
@@ -125,11 +137,19 @@ namespace Take.Elephant.Tests.Sql
             AssertEquals(actual[7].DbType, DbType.Boolean);
             AssertEquals(((SqlParameter)actual[7]).SqlDbType, SqlDbType.Bit);
 
-            AssertEquals(actual[8].ParameterName, "@GuidProperty");
-            AssertEquals(actual[8].Value, param8);
-            AssertEquals(actual[8].Direction, ParameterDirection.Input);
-            AssertEquals(actual[8].DbType, DbType.Guid);
-            AssertEquals(((SqlParameter)actual[8]).SqlDbType, SqlDbType.UniqueIdentifier);
+            AssertEquals(actual[9].ParameterName, "@PersonalNotNull");
+            AssertEquals(actual[9].Value, param9);
+            AssertEquals(actual[9].Direction, ParameterDirection.Input);
+            AssertEquals(actual[9].DbType, DbType.String);
+            AssertEquals(((SqlParameter)actual[9]).SqlDbType, SqlDbType.NVarChar);
+            ((SqlParameter)actual[9]).IsNullable.ShouldBeTrue();
+
+            AssertEquals(actual[10].ParameterName, "@IdIsNull");
+            AssertEquals(actual[10].Value, null);
+            AssertEquals(actual[10].Direction, ParameterDirection.Input);
+            AssertEquals(actual[10].DbType, DbType.Int32);
+            AssertEquals(((SqlParameter)actual[10]).SqlDbType, SqlDbType.Int);
+            ((SqlParameter)actual[10]).IsNullable.ShouldBeTrue();
         }
     }
 
@@ -137,8 +157,12 @@ namespace Take.Elephant.Tests.Sql
     {
         public int Id { get; set; }
 
+        public int? IdIsNull { get; set; }
+
         public string Name { get; set; }
 
         public string PersonalField { get; set; }
+
+        public string PersonalNotNull { get; set; }
     }
 }

@@ -208,7 +208,7 @@ namespace Take.Elephant.Sql
                             columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, newColumnValues.Keys.ToArray()),
                             filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, oldColumnValues.Keys.ToArray(), filterOldColumnValues.Keys.ToArray())
                         },
-                        newColumnValues.Concat(filterOldColumnValues).Select(c => c.ToDbParameter(DatabaseDriver))))
+                        newColumnValues.Concat(filterOldColumnValues).Select(c => c.ToDbParameter(DatabaseDriver, Table.Columns))))
                     {
                         return await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 1;
                     }
