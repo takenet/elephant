@@ -119,6 +119,10 @@ namespace Take.Elephant.Sql
             {
                 return new DateTimeOffset((DateTime)dbValue);
             }
+            if (propertyType == typeof(TimeSpan) && dbValue is TimeSpan)
+            {
+                return Convert.ChangeType(dbValue, propertyType);
+            }
             if (dbValue is string)
             {
                 var dbValueString = (string)dbValue;
