@@ -63,11 +63,12 @@ namespace Take.Elephant.Sql
 
         private static bool TryGetSqlDbType(DbType dbType, out SqlDbType? type)
         {
-            //if (DbType.Time == dbType)
-            //{
-            //    type = SqlDbType.Time;
-            //    return true;
-            //}
+            // Work around an issue in SqlParameter converting Time to DateTime
+            if (DbType.Time == dbType)
+            {
+                type = SqlDbType.Time;
+                return true;
+            }
 
             // Use SqlParameter class to convert a DbType to SqlDbType
             SqlParameter sqlParameter = new SqlParameter();
