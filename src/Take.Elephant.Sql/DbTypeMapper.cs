@@ -72,7 +72,9 @@ namespace Take.Elephant.Sql
         public object ToDbType(object value, DbType type, int? length = null)
         {
             if (value == null)
+            {
                 return DBNull.Value;
+            }
             if (type == DbType.String)
             {
                 if (!(value is string))
