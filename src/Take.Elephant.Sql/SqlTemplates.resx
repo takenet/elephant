@@ -180,6 +180,9 @@
   <data name="DbTypeString" xml:space="preserve">
     <value>NVARCHAR({length})</value>
   </data>
+  <data name="DbTypeTime" xml:space="preserve">
+    <value>TIME({length})</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>DELETE FROM {schemaName}.{tableName} WHERE {filter}</value>
   </data>

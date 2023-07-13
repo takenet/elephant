@@ -244,6 +244,15 @@ namespace Take.Elephant.Sql {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TIME({length}).
+        /// </summary>
+        public static string DbTypeTime {
+            get {
+                return ResourceManager.GetString("DbTypeTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DELETE FROM {schemaName}.{tableName} WHERE {filter}.
         /// </summary>
         public static string Delete {
