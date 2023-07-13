@@ -208,8 +208,9 @@ namespace Take.Elephant.Sql
 
         protected CancellationTokenSource CreateCancellationTokenSource(CancellationToken cancellationToken)
         {
-            var dataBaseTimeOutTokenSource = new CancellationTokenSource(DatabaseDriver.Timeout);
-            return CancellationTokenSource.CreateLinkedTokenSource(dataBaseTimeOutTokenSource.Token, cancellationToken);
+            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cts.CancelAfter(DatabaseDriver.Timeout);
+            return cts;
         }
 
         protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitNullValues = false, bool includeIdentityTypes = false)
