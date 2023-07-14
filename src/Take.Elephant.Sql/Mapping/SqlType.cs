@@ -68,6 +68,8 @@ namespace Take.Elephant.Sql.Mapping
                         return DEFAULT_STRING_LENGTH;
                     if (Type == DbType.Binary)
                         return int.MaxValue;
+                    if (Type == DbType.Time)
+                        return 0;
                 }
                 return _length;
             }
