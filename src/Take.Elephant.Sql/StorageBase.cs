@@ -208,11 +208,10 @@ namespace Take.Elephant.Sql
 
         protected CancellationTokenSource CreateCancellationTokenSource(CancellationToken cancellationToken)
         {
-            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            cts.CancelAfter(DatabaseDriver.Timeout);
-            return cts;
+            var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cancellationTokenSource.CancelAfter(DatabaseDriver.Timeout);
+            return cancellationTokenSource;
         }
-
         protected virtual IDictionary<string, object> GetColumnValues(TEntity entity, bool emitNullValues = false, bool includeIdentityTypes = false)
             => Mapper.GetColumnValues(entity, emitNullValues: emitNullValues, includeIdentityTypes: includeIdentityTypes);
 
