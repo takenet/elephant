@@ -42,7 +42,7 @@ namespace Take.Elephant.Sql
                 return keyColumnValues.SequenceEqual(internalSet.MapKeyColumnValues) && overwrite;
             }
 
-            using (var cts = CreateCancellationTokenSource())
+            using (var cts = CreateCancellationTokenSource(cancellationToken))
             using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(linkedCts.Token).ConfigureAwait(false))
@@ -102,7 +102,7 @@ namespace Take.Elephant.Sql
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -133,7 +133,7 @@ namespace Take.Elephant.Sql
 
         public virtual async Task<bool> TryRemoveAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -144,7 +144,7 @@ namespace Take.Elephant.Sql
 
         public virtual async Task<bool> ContainsKeyAsync(TKey key, CancellationToken cancellationToken = default)
         {
-            using (var cancellationTokenSource = CreateCancellationTokenSource())
+            using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
             {
                 using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                 {
@@ -217,7 +217,7 @@ namespace Take.Elephant.Sql
 
             public override async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
             {
-                using (var cancellationTokenSource = CreateCancellationTokenSource())
+                using (var cancellationTokenSource = CreateCancellationTokenSource(cancellationToken))
                 {
                     using (var connection = await GetConnectionAsync(cancellationTokenSource.Token).ConfigureAwait(false))
                     {
