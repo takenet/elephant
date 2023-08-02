@@ -128,7 +128,10 @@ namespace Take.Elephant.Sql
 
         protected override Expression VisitMember(MemberExpression node)
         {
-            if (node.Expression == null) throw new NotSupportedException($"The member '{node.Member.Name}' is not supported");
+            if (node.Expression == null)
+            {
+                throw new NotSupportedException($"The member '{node.Member.Name}' is not supported");
+            }
 
             object value;
             switch (node.Expression.NodeType)
@@ -295,6 +298,11 @@ namespace Take.Elephant.Sql
         {
             if (value == null)
             {
+                // Don't use _parameterNames when null
+                if (_parameterNames?.Any() ?? false)
+                {
+                    _parameterNames.Dequeue();
+                }
                 return _databaseDriver.GetSqlStatementTemplate(SqlStatement.Null);
             }
 
