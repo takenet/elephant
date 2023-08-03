@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Take.Elephant.Sql.Mapping;
 
 [assembly: InternalsVisibleTo("Take.Elephant.Tests")]
+
 namespace Take.Elephant.Sql
 {
     /// <summary>
@@ -57,9 +58,9 @@ namespace Take.Elephant.Sql
                     schemaName = DatabaseDriver.ParseIdentifier(Table.Schema ?? DatabaseDriver.DefaultSchema),
                     tableName = DatabaseDriver.ParseIdentifier(Table.Name),
                     columnValues = SqlHelper.GetCommaEqualsStatement(DatabaseDriver, columnValues.Keys.ToArray()),
-                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())                    
+                    filter = SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray())
                 },
-                keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
+                keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver, Table.Columns)));
 
             if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
             {
@@ -91,7 +92,7 @@ namespace Take.Elephant.Sql
                         SqlHelper.GetAndEqualsStatement(DatabaseDriver, keyColumnValues.Keys.ToArray()),
                         SqlHelper.GetIsNotNullStatement(DatabaseDriver, columnValues.Keys.ToArray()))
                 },
-                keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver)));
+                keyColumnValues.Concat(columnValues).Select(c => c.ToDbParameter(DatabaseDriver, Table.Columns)));
 
             if (await command.ExecuteNonQueryAsync(cancellationTokenSource.Token).ConfigureAwait(false) == 0)
             {
