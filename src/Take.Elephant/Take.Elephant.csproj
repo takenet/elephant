@@ -11,7 +11,7 @@
     <Copyright>Copyright © 2015 Curupira S/A</Copyright>
     <Product>Elephant</Product>
     <PackageTags>elephant</PackageTags>
-    <Version>0.10.72.2</Version>
+    <Version>0.5.0</Version>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
     <LangVersion>8.0</LangVersion>

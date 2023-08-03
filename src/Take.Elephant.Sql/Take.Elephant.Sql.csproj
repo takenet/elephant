@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1</TargetFrameworks>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>0.10.72.3</Version>
+    <Version>0.5.0</Version>
     <Authors>takenet,andrebires</Authors>
     <Company>Take</Company>
     <Product>Elephant Sql and Sql Server</Product>
