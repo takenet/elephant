@@ -36,7 +36,7 @@ namespace Take.Elephant.Sql
         {
             if (TryGetSqlDbType(sqlType.Type, out var sqlDbType))
             {
-                if(sqlType.Length != null)
+                if (sqlType.Length != null)
                 {
                     return new SqlParameter(parameterName, sqlDbType.Value, sqlType.Length.Value)
                     {
@@ -52,7 +52,6 @@ namespace Take.Elephant.Sql
                         IsNullable = sqlType?.IsNullable ?? value.IsNullable()
                     };
                 }
-                
             }
 
             return CreateParameter(parameterName, value);
@@ -64,6 +63,13 @@ namespace Take.Elephant.Sql
 
         private static bool TryGetSqlDbType(DbType dbType, out SqlDbType? type)
         {
+            // Work around an issue in SqlParameter converting Time to DateTime
+            if (DbType.Time == dbType)
+            {
+                type = SqlDbType.Time;
+                return true;
+            }
+
             // Use SqlParameter class to convert a DbType to SqlDbType
             SqlParameter sqlParameter = new SqlParameter();
             try
