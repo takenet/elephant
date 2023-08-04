@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Take.Elephant.Tests.Sql.SqlServer;
-using Xunit;
+﻿using Xunit;
 
 namespace Take.Elephant.Tests.Sql.PostgreSql
 {

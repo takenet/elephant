@@ -37,14 +37,17 @@ namespace Take.Elephant.Tests
 
         public string RandomProperty { get; set; }
 
+        public bool? BooleanNullProperty { get; set; }
+
         public override string ToString()
         {
-            return $"{StringProperty ?? "<null>"};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{BooleanProperty};{string.Format("{0:0.000}",DecimalProperty)};{FloatProperty};{RandomProperty ?? "<null>"}";
+            return $"{StringProperty ?? "<null>"};{IntegerProperty};{GuidProperty};{UriProperty};{DateProperty.ToString(COMPARISON_DATE_FORMAT, CultureInfo.InvariantCulture)};{Select};{BooleanProperty};{string.Format("{0:0.000}", DecimalProperty)};{FloatProperty};{RandomProperty ?? "<null>"}";
         }
 
         public static Item Parse(string s)
         {
-            if (s == null) throw new ArgumentNullException(nameof(s));
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
 
             var values = s.Split(';');
             return new Item
@@ -64,10 +67,13 @@ namespace Take.Elephant.Tests
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Item) obj);
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((Item)obj);
         }
 
         protected bool Equals(Item other) => ToString().Equals(other.ToString());
