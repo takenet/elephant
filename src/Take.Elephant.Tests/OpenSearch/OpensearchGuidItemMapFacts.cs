@@ -8,7 +8,7 @@ using Xunit;
 namespace Take.Elephant.Tests.OpenSearch
 {
     [Trait("Category", nameof(OpenSearch))]
-    public class OpensearchGuidItemMapFacts : GuidItemMapFacts
+    public class OpenSearchGuidItemMapFacts : GuidItemMapFacts
     {
         public override IMap<Guid, Item> Create()
         {
