@@ -10,7 +10,7 @@ namespace Take.Elephant.OpenSearch
     public static class ExpressionExtensions
     {
         /// <summary>
-        /// Converts a Expression tree to a Elasticsearch Query DSL
+        /// Converts a Expression tree to a Opensearch Query DSL
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>

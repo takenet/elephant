@@ -34,11 +34,11 @@ namespace Take.Elephant.OpenSearch
             _openSearchClient = new OpenSearchClient(_connectionSettings);
         }
 
-        public StorageBase(IOpenSearchClient elasticClient, IMapping mapping)
+        public StorageBase(IOpenSearchClient openClient, IMapping mapping)
         {
             _propertiesDictionary = new ConcurrentDictionary<string, Func<T, object>>();
             Mapping = mapping;
-            _openSearchClient = elasticClient;
+            _openSearchClient = openClient;
         }
 
         public async Task<QueryResult<T>> QueryAsync<TResult>(

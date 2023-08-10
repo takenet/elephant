@@ -1,22 +1,22 @@
 ﻿namespace Take.Elephant.OpenSearch.Mapping
 {
     /// <summary>
-    /// Elasticsearch document mapping
+    /// Opensearch document mapping
     /// </summary>
     public interface IMapping
     {
         /// <summary>
-        /// Elasticsearch document inde
+        /// Opensearch document inde
         /// </summary>
         string Index { get; }
 
         /// <summary>
-        /// Elasticsearch document type
+        /// Opensearch document type
         /// </summary>
         string Type { get; }
 
         /// <summary>
-        /// Elasticsearch document key field
+        /// Opensearch document key field
         /// </summary>
         string KeyField { get; }
     }

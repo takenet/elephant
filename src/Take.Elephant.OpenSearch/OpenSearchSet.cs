@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using OpenSearch.Client;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using OpenSearch.Client;
 using Take.Elephant.OpenSearch.Mapping;
 
 namespace Take.Elephant.OpenSearch
