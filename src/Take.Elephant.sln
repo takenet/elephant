@@ -29,11 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Azure", "Take
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Kafka", "Take.Elephant.Kafka\Take.Elephant.Kafka.csproj", "{F5132A9D-6674-40E3-AB1D-6252C49BD23D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.ElasticSearch", "Take.Elephant.ElasticSearch\Take.Elephant.ElasticSearch.csproj", "{4CAFB6C5-9F17-46FA-90A8-621DA1C91423}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.Elasticsearch", "Take.Elephant.ElasticSearch\Take.Elephant.Elasticsearch.csproj", "{4CAFB6C5-9F17-46FA-90A8-621DA1C91423}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.EntityFramework", "Take.Elephant.EntityFramework\Take.Elephant.EntityFramework.csproj", "{F21FEBAC-B468-4EFA-8A2C-00A85CF56907}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Take.Elephant.OpenSearch", "Take.Elephant.OpenSearch\Take.Elephant.OpenSearch.csproj", "{CC332EBE-F65B-4A3F-8ACD-C5834BA5B97F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Take.Elephant.OpenSearch", "Take.Elephant.OpenSearch\Take.Elephant.OpenSearch.csproj", "{CC332EBE-F65B-4A3F-8ACD-C5834BA5B97F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
