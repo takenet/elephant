@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Take.Elephant.Tests.Elasticsearch
+namespace Take.Elephant.Tests.DocumentOrientedSearch
 {
     internal class DelayedMapDecorator<TKey, T> : IMap<TKey, T>
     {
         private readonly IMap<TKey, T> _map;
         private readonly int _delay;
 
-        public DelayedMapDecorator(IMap<TKey,T> map, int delay)
+        public DelayedMapDecorator(IMap<TKey, T> map, int delay)
         {
             _map = map;
             _delay = delay;

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Nest;
-using Take.Elephant.Elasticsearch;
-using Take.Elephant.Elasticsearch.Mapping;
+using OpenSearch.Client;
+using Take.Elephant.OpenSearch;
+using Take.Elephant.OpenSearch.Mapping;
 using Take.Elephant.Tests.DocumentOrientedSearch;
 using Xunit;
 
-namespace Take.Elephant.Tests.Elasticsearch
+namespace Take.Elephant.Tests.OpenSearch
 {
-    [Trait("Category", nameof(Elasticsearch))]
-    public class ElasticsearchItemSetFacts : ItemSetFacts
+    [Trait("Category", nameof(OpenSearch))]
+    public class OpenSearchItemSetFacts : ItemSetFacts
     {
         public override ISet<Item> Create()
         {
@@ -23,11 +23,11 @@ namespace Take.Elephant.Tests.Elasticsearch
                 .DefaultIndex("tests");
 
             return new DelayedSetDecorator<Item>(
-                    new ElasticsearchSet<Item>(
-                        new ElasticClient(settings), mapping), 1000);
+                    new OpenSearchSet<Item>(
+                        new OpenSearchClient(settings), mapping), 1000);
         }
 
-        [Fact(Skip = "Elasticsearch doesn't implement a lazy IEnumerable, so the AsEnumerableAsync method will return a snapshot of the index.")]
+        [Fact(Skip = "OpenSearch doesn't implement a lazy IEnumerable, so the AsEnumerableAsync method will return a snapshot of the index.")]
         public override Task EnumerateAfterRemovingItemsSucceeds()
         {
             return base.EnumerateAfterRemovingItemsSucceeds();

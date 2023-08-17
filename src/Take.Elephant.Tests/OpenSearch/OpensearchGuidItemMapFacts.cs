@@ -1,14 +1,14 @@
 ﻿using System;
-using Nest;
-using Take.Elephant.Elasticsearch;
-using Take.Elephant.Elasticsearch.Mapping;
+using OpenSearch.Client;
+using Take.Elephant.OpenSearch;
+using Take.Elephant.OpenSearch.Mapping;
 using Take.Elephant.Tests.DocumentOrientedSearch;
 using Xunit;
 
-namespace Take.Elephant.Tests.Elasticsearch
+namespace Take.Elephant.Tests.OpenSearch
 {
-    [Trait("Category", nameof(Elasticsearch))]
-    public class ElasticsearchGuidItemMapFacts : GuidItemMapFacts
+    [Trait("Category", nameof(OpenSearch))]
+    public class OpenSearchGuidItemMapFacts : GuidItemMapFacts
     {
         public override IMap<Guid, Item> Create()
         {
@@ -22,8 +22,8 @@ namespace Take.Elephant.Tests.Elasticsearch
                 .DefaultIndex("tests");
 
             return new DelayedMapDecorator<Guid, Item>(
-                    new ElasticsearchMap<Guid, Item>(
-                        new ElasticClient(settings), mapping), 1000);
+                    new OpenSearchMap<Guid, Item>(
+                        new OpenSearchClient(settings), mapping), 1000);
         }
     }
 }

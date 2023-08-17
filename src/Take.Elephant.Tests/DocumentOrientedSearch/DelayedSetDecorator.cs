@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Take.Elephant.Tests.Elasticsearch
+namespace Take.Elephant.Tests.DocumentOrientedSearch
 {
     internal class DelayedSetDecorator<T> : ISet<T>
     {
@@ -18,6 +15,7 @@ namespace Take.Elephant.Tests.Elasticsearch
             _set = set;
             _delay = delay;
         }
+
         public async Task AddAsync(T value, CancellationToken cancellationToken = default)
         {
             await Task.Delay(_delay, cancellationToken);

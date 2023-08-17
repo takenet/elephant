@@ -25,9 +25,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Take.Elephant.Azure\Take.Elephant.Azure.csproj" />
-    <ProjectReference Include="..\Take.Elephant.ElasticSearch\Take.Elephant.ElasticSearch.csproj" />
+    <ProjectReference Include="..\Take.Elephant.ElasticSearch\Take.Elephant.Elasticsearch.csproj" />
     <ProjectReference Include="..\Take.Elephant.EntityFramework\Take.Elephant.EntityFramework.csproj" />
     <ProjectReference Include="..\Take.Elephant.Kafka\Take.Elephant.Kafka.csproj" />
+    <ProjectReference Include="..\Take.Elephant.OpenSearch\Take.Elephant.OpenSearch.csproj" />
     <ProjectReference Include="..\Take.Elephant.Redis\Take.Elephant.Redis.csproj" />
     <ProjectReference Include="..\Take.Elephant.Specialized\Take.Elephant.Specialized.csproj" />
     <ProjectReference Include="..\Take.Elephant.Sql.PostgreSql\Take.Elephant.Sql.PostgreSql.csproj" />
