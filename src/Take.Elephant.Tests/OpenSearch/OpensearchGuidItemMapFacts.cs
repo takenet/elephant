@@ -2,7 +2,7 @@
 using OpenSearch.Client;
 using Take.Elephant.OpenSearch;
 using Take.Elephant.OpenSearch.Mapping;
-using Take.Elephant.Tests.Search;
+using Take.Elephant.Tests.DocumentOrientedSearch;
 using Xunit;
 
 namespace Take.Elephant.Tests.OpenSearch

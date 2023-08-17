@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Take.Elephant.Tests.Search
+namespace Take.Elephant.Tests.DocumentOrientedSearch
 {
     internal class DelayedMapDecorator<TKey, T> : IMap<TKey, T>
     {
