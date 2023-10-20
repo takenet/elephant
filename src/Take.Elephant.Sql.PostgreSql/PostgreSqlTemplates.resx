@@ -145,7 +145,7 @@
     <value>BYTEA</value>
   </data>
   <data name="DbTypeBoolean" xml:space="preserve">
-    <value>BIT</value>
+    <value>BOOLEAN</value>
   </data>
   <data name="DbTypeDate" xml:space="preserve">
     <value>DATE</value>
