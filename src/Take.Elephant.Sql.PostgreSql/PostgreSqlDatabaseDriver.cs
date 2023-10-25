@@ -58,11 +58,7 @@ namespace Take.Elephant.Sql.PostgreSql
 
         public string ParseIdentifier(string identifier)
         {
-            if (ReserverdKeywords.Contains(identifier.ToLowerInvariant()))
-            {
-                return $"\"{identifier}\"";
-            }
-            return identifier;
+            return $"\"{identifier}\"";
         }
 
         public string GetSqlStatementTemplate(SqlStatement sqlStatement)
