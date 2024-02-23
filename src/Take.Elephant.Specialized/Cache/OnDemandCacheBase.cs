@@ -40,14 +40,14 @@ namespace Take.Elephant.Specialized.Cache
         {
             // Tries in the cache
             var value = await queryFunc(Cache).ConfigureAwait(false);
-            if (!IsDefaultValueOfType(value))
+            if (!IsDefaultValueOfType(value) || (value != null && CacheOptions.CacheMissingValues))
             {
                 return value;
             }
 
             // Tries in the source
             value = await queryFunc(Source).ConfigureAwait(false);
-            if (IsDefaultValueOfType(value))
+            if (IsDefaultValueOfType(value) && !CacheOptions.CacheMissingValues)
             {
                 return value;
             }

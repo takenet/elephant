@@ -13,8 +13,9 @@ namespace Take.Elephant.Specialized.Cache
             IMap<TKey, TValue> source,
             IMap<TKey, TValue> cache,
             TimeSpan cacheExpiration = default,
-            TimeSpan cacheFaultTolerance = default)
-            : this(source, cache, new CacheOptions { CacheExpiration = cacheExpiration, CacheFaultTolerance = cacheFaultTolerance }, new TraceLogger())
+            TimeSpan cacheFaultTolerance = default,
+            bool cacheMissingValues = false)
+            : this(source, cache, new CacheOptions { CacheExpiration = cacheExpiration, CacheFaultTolerance = cacheFaultTolerance, CacheMissingValues = cacheMissingValues }, new TraceLogger())
         {
         }
 
@@ -57,7 +58,7 @@ namespace Take.Elephant.Specialized.Cache
                     if (result)
                     {
                         var value = await Source.GetValueOrDefaultAsync(key, cancellationToken).ConfigureAwait(false);
-                        if (!IsDefaultValueOfType(value))
+                        if (!IsDefaultValueOfType(value) || (value != null && CacheOptions.CacheMissingValues))
                         {
                             return await TryAddWithExpirationAsync(key, value, true, map, cancellationToken).ConfigureAwait(false);
                         }
