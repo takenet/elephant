@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.ServiceBus.Core;
-using Microsoft.Azure.ServiceBus.Management;
+using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
 
 namespace Take.Elephant.Azure
 {
@@ -16,11 +15,12 @@ namespace Take.Elephant.Azure
 
         private readonly string _entityPath;
         private readonly ISerializer<T> _serializer;
-        private QueueDescription _queueDescription;
-        private readonly ReceiveMode _receiveMode;
-        private readonly MessageSender _messageSender;
-        private readonly MessageReceiver _messageReceiver;
-        private readonly ManagementClient _managementClient;
+        private CreateQueueOptions _queueOptions;
+        private readonly ServiceBusReceiveMode _receiveMode;
+        private readonly ServiceBusClient _client;
+        private readonly ServiceBusSender _messageSender;
+        private readonly ServiceBusReceiver _messageReceiver;
+        private readonly ServiceBusAdministrationClient _administrationClient;
         private readonly SemaphoreSlim _queueCreationSemaphore;
         private bool _queueExists;
 
@@ -28,27 +28,35 @@ namespace Take.Elephant.Azure
             string connectionString,
             string entityPath,
             ISerializer<T> serializer,
-            ReceiveMode receiveMode = ReceiveMode.PeekLock,
-            RetryPolicy retryPolicy = null,
+            ServiceBusReceiveMode receiveMode = ServiceBusReceiveMode.PeekLock,
+            ServiceBusRetryOptions retryOptions = null,
             int receiverPrefetchCount = 0,
-            QueueDescription queueDescription = null)
+            CreateQueueOptions queueOptions = null)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _entityPath = entityPath;
             _receiveMode = receiveMode;
-            _messageSender = new MessageSender(connectionString, entityPath, retryPolicy);
-            _messageReceiver = new MessageReceiver(connectionString, entityPath, _receiveMode, retryPolicy, receiverPrefetchCount);
-            _managementClient = new ManagementClient(connectionString);
+            _client = new ServiceBusClient(connectionString, new ServiceBusClientOptions
+            {
+                RetryOptions = retryOptions,
+            });
+            _messageSender = _client.CreateSender(entityPath);
+            _messageReceiver = _client.CreateReceiver(entityPath, new ServiceBusReceiverOptions
+            {
+                ReceiveMode = _receiveMode,
+                PrefetchCount = receiverPrefetchCount
+            });
+            _administrationClient = new ServiceBusAdministrationClient(connectionString);
             _queueCreationSemaphore = new SemaphoreSlim(1, 1);
 
-            if (queueDescription != null)
+            if (queueOptions != null)
             {
-                queueDescription.Path = _entityPath;
-                _queueDescription = queueDescription;
+                queueOptions.Name = _entityPath;
+                _queueOptions = queueOptions;
             }
             else
             {
-                _queueDescription = new QueueDescription(_entityPath);
+                _queueOptions = new CreateQueueOptions(_entityPath);
             }
         }
 
@@ -56,13 +64,13 @@ namespace Take.Elephant.Azure
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
             var message = CreateMessage(item);
-            await _messageSender.SendAsync(message);
+            await _messageSender.SendMessageAsync(message, cancellationToken);
         }
 
         public virtual async Task EnqueueBatchAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
-            var batch = new List<Message>();
+            var batch = new List<ServiceBusMessage>();
 
             foreach (var item in items)
             {
@@ -70,7 +78,7 @@ namespace Take.Elephant.Azure
                 batch.Add(message);
             }
             
-            await _messageSender.SendAsync(batch);
+            await _messageSender.SendMessagesAsync(batch, cancellationToken);
         }
 
         public virtual async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
@@ -79,14 +87,13 @@ namespace Take.Elephant.Azure
 
             try
             {
-                var message = await _messageReceiver.ReceiveAsync(
-                    TimeSpan.FromMilliseconds(MIN_RECEIVE_TIMEOUT));
+                var message = await _messageReceiver.ReceiveMessageAsync(TimeSpan.FromMilliseconds(MIN_RECEIVE_TIMEOUT), cancellationToken);
                 if (message != null)
                 {
-                    return await CreateItemAndCompleteAsync(message);
+                    return await CreateItemAndCompleteAsync(message, cancellationToken);
                 }
             }
-            catch (ServiceBusTimeoutException) { }
+            catch (ServiceBusException ex) when (ex.Reason == ServiceBusFailureReason.ServiceTimeout) { }
 
             return default;
         }
@@ -109,14 +116,13 @@ namespace Take.Elephant.Azure
                         timeout = MAX_RECEIVE_TIMEOUT;
                     }
                     
-                    var message = await _messageReceiver.ReceiveAsync(
-                        TimeSpan.FromMilliseconds(timeout));
+                    var message = await _messageReceiver.ReceiveMessageAsync(TimeSpan.FromMilliseconds(timeout), cancellationToken);
                     if (message != null)
                     {
-                        return await CreateItemAndCompleteAsync(message);
+                        return await CreateItemAndCompleteAsync(message, cancellationToken);
                     }
                 }
-                catch (ServiceBusTimeoutException) { }
+                catch (ServiceBusException ex) when (ex.Reason == ServiceBusFailureReason.ServiceTimeout) { }
 
                 tryCount++;
             }
@@ -125,9 +131,9 @@ namespace Take.Elephant.Azure
         public virtual async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
         {
             await CreateQueueIfNotExistsAsync(cancellationToken);
-           
-            var queueRuntimeInfo = await _managementClient.GetQueueRuntimeInfoAsync(_entityPath, cancellationToken);
-            return queueRuntimeInfo.MessageCount;
+            
+            var queueRuntimeProperties = await _administrationClient.GetQueueRuntimePropertiesAsync(_entityPath, cancellationToken);
+            return queueRuntimeProperties.Value.TotalMessageCount;
         }
 
         public virtual async Task CloseAsync(CancellationToken cancellationToken)
@@ -136,8 +142,7 @@ namespace Take.Elephant.Azure
             
             await Task.WhenAll(
                 _messageSender.CloseAsync(),
-                _messageReceiver.CloseAsync(),
-                _managementClient.CloseAsync());
+                _messageReceiver.CloseAsync());
         }
 
         private async Task CreateQueueIfNotExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -149,15 +154,15 @@ namespace Take.Elephant.Azure
             {
                 if (_queueExists) return;
 
-                _queueExists = await _managementClient.QueueExistsAsync(_entityPath, cancellationToken);
+                _queueExists = await _administrationClient.QueueExistsAsync(_entityPath, cancellationToken);
 
                 if (!_queueExists)
                 {
                     try
                     {
-                        _queueDescription = await _managementClient.CreateQueueAsync(_queueDescription, cancellationToken);
+                        await _administrationClient.CreateQueueAsync(_queueOptions, cancellationToken);
                     }
-                    catch (MessagingEntityAlreadyExistsException)
+                    catch (ServiceBusException ex) when (ex.Reason == ServiceBusFailureReason.MessagingEntityAlreadyExists)
                     {
                         // Concurrency creation handling
                     }
@@ -171,19 +176,19 @@ namespace Take.Elephant.Azure
             }
         }
 
-        private Message CreateMessage(T item)
+        private ServiceBusMessage CreateMessage(T item)
         {
             var serializedItem = _serializer.Serialize(item);
-            return new Message(Encoding.UTF8.GetBytes(serializedItem));
+            return new ServiceBusMessage(Encoding.UTF8.GetBytes(serializedItem));
         }
 
-        private async Task<T> CreateItemAndCompleteAsync(Message message)
+        private async Task<T> CreateItemAndCompleteAsync(ServiceBusReceivedMessage message, CancellationToken cancellationToken)
         {
             var serializedItem = Encoding.UTF8.GetString(message.Body);
             var item = _serializer.Deserialize(serializedItem);
-            if (_receiveMode == ReceiveMode.PeekLock)
+            if (_receiveMode == ServiceBusReceiveMode.PeekLock)
             {
-                await _messageReceiver.CompleteAsync(message.SystemProperties.LockToken);
+                await _messageReceiver.CompleteMessageAsync(message, cancellationToken);
             }
             return item;
         }

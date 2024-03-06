@@ -1,5 +1,5 @@
-﻿using Microsoft.Azure.ServiceBus.Management;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Azure.Messaging.ServiceBus.Administration;
 using Take.Elephant.Azure;
 using Take.Elephant.Tests.Redis;
 using Xunit;
@@ -26,14 +26,12 @@ namespace Take.Elephant.Tests.Azure
 
         private async Task DeleteQueueAsync(string connectionString, string path)
         {
-            var managementClient = new ManagementClient(connectionString);
+            var administrationClient = new ServiceBusAdministrationClient(connectionString);
 
-            if (await managementClient.QueueExistsAsync(path))
+            if (await administrationClient.QueueExistsAsync(path))
             {
-                await managementClient.DeleteQueueAsync(path);
+                await administrationClient.DeleteQueueAsync(path);
             }
-
-            await managementClient.CloseAsync();
         }
     }
 }
