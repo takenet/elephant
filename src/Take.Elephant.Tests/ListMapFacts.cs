@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using NFluent;
-using AutoFixture;
+﻿using AutoFixture;
 
 namespace Take.Elephant.Tests
 {

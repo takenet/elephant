@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
-using Take.Elephant.Redis.Serializers;
 using Take.Elephant.Specialized.Cache;
 using Take.Elephant.Tests.Redis;
 using Xunit;

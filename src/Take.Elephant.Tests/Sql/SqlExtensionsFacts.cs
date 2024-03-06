@@ -6,8 +6,7 @@ using System.Data;
 using Take.Elephant.Sql.Mapping;
 using System.Reflection;
 using System.Linq;
-using System.Data.SqlClient;
-using System.Data.SqlTypes;
+using Microsoft.Data.SqlClient;
 using Shouldly;
 using System.Collections.Generic;
 

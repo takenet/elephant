@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using NFluent;
 using Take.Elephant.Specialized.Cache;
 using Xunit;
 

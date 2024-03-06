@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
-using Take.Elephant.Redis.Converters;
 using Take.Elephant.Redis.Serializers;
 using Take.Elephant.Specialized.Scoping;
 using Take.Elephant.Tests.Specialized;

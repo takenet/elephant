@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using NFluent;
 using Take.Elephant.Specialized.Scoping;
 using AutoFixture;
-using Take.Elephant.Memory;
 using Xunit;
 
 namespace Take.Elephant.Tests.Specialized

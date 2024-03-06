@@ -1,5 +1,3 @@
-using Take.Elephant.Redis;
-
 namespace Take.Elephant.Tests.Redis
 {
     public class ItemSerializer : ISerializer<Item>

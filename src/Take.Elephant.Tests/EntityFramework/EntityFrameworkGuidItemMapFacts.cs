@@ -1,6 +1,5 @@
 using System;
 using Microsoft.EntityFrameworkCore;
-using Take.Elephant.EntityFramework;
 
 namespace Take.Elephant.Tests.EntityFramework
 {

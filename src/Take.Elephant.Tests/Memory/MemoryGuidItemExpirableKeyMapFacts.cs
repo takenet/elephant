@@ -1,5 +1,4 @@
 ﻿using System;
-using Nest;
 using Take.Elephant.Memory;
 using Xunit;
 

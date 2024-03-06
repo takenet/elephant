@@ -1,4 +1,3 @@
-using Take.Elephant.Tests.Sql.SqlServer;
 using Xunit;
 
 namespace Take.Elephant.Tests.Sql.SqlServer

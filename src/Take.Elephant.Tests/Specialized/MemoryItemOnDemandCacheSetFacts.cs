@@ -1,8 +1,4 @@
 ﻿using Take.Elephant.Memory;
-using Take.Elephant.Redis;
-using Take.Elephant.Sql;
-using Take.Elephant.Sql.Mapping;
-using Take.Elephant.Tests.Redis;
 using Xunit;
 
 namespace Take.Elephant.Tests.Specialized

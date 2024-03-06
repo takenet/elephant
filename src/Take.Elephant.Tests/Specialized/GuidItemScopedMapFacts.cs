@@ -1,5 +1,4 @@
 using System;
-using Take.Elephant.Redis.Serializers;
 
 namespace Take.Elephant.Tests.Specialized
 {

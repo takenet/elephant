@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Take.Elephant.Specialized;
 using Take.Elephant.Specialized.Cache;
 using Xunit;
 

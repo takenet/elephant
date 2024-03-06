@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -102,7 +102,7 @@ namespace Take.Elephant.Sql
 
                 return new QueryResult<TKey>(
                     new DbDataReaderAsyncEnumerable<TKey>(
-                        GetConnectionAsync, 
+                        GetConnectionAsync,
                         c => c.CreateSelectSkipTakeCommand(
                             DatabaseDriver,
                             Table,
@@ -112,7 +112,7 @@ namespace Take.Elephant.Sql
                             take,
                             selectColumns,
                             filterValues: filter.FilterValues),
-                        KeyMapper, 
+                        KeyMapper,
                         selectColumns,
                         UseFullyAsyncEnumerator),
                     totalCount);

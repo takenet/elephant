@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data.Common;
-using Take.Elephant.Sql;
+﻿using Take.Elephant.Sql;
 using Take.Elephant.Sql.PostgreSql;
 
 namespace Take.Elephant.Tests.Sql.PostgreSql

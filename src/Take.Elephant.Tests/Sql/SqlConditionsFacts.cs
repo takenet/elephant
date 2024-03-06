@@ -6,7 +6,6 @@ using System.Data;
 using Take.Elephant.Sql.Mapping;
 using System.Reflection;
 using System.Linq;
-using System.Data.SqlClient;
 using Shouldly;
 
 namespace Take.Elephant.Tests.Sql

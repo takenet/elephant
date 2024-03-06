@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql

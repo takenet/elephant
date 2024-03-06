@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
 using AutoFixture;
-using Shouldly;
 using Xunit;
 
 namespace Take.Elephant.Tests

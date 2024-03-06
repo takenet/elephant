@@ -1,5 +1,4 @@
-﻿using System;
-using Take.Elephant.Memory;
+﻿using Take.Elephant.Memory;
 using Xunit;
 
 namespace Take.Elephant.Tests.Memory

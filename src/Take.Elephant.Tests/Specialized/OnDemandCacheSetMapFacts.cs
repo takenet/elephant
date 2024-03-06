@@ -1,10 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NFluent;
 using AutoFixture;
-using Shouldly;
-using Take.Elephant.Specialized;
 using Take.Elephant.Specialized.Cache;
 using Xunit;
 

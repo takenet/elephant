@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using Take.Elephant.Memory;
 using Take.Elephant.Sql;
-using Take.Elephant.Sql.Mapping;
 using Xunit;
 
 namespace Take.Elephant.Tests.Sql

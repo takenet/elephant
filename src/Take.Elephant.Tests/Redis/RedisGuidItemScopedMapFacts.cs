@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Take.Elephant.Memory;
 using Take.Elephant.Redis;
 using Take.Elephant.Redis.Converters;
 using Take.Elephant.Redis.Serializers;

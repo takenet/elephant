@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Take.Elephant.Elasticsearch.Mapping
+﻿namespace Take.Elephant.Elasticsearch.Mapping
 {
     public class Mapping : IMapping
     {
