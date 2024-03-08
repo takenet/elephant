@@ -38,7 +38,7 @@ namespace Take.Elephant.Azure
             _receiveMode = receiveMode;
             _client = new ServiceBusClient(connectionString, new ServiceBusClientOptions
             {
-                RetryOptions = retryOptions,
+                RetryOptions = retryOptions ?? new ServiceBusRetryOptions(),
             });
             _messageSender = _client.CreateSender(entityPath);
             _messageReceiver = _client.CreateReceiver(entityPath, new ServiceBusReceiverOptions
