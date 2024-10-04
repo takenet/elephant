@@ -38,6 +38,37 @@ namespace Take.Elephant.Redis
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
+        public override async Task<bool> TryAddWithAbsoluteExpirationAsync(TKey key, TValue value,
+            DateTimeOffset expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var database = GetDatabase();
+
+            if (expiration == default)
+            {
+                return await database.StringSetAsync(
+                    GetRedisKey(key),
+                    _serializer.Serialize(value),
+                    when: overwrite ? When.Always : When.NotExists,
+                    flags: WriteFlags);
+            }
+
+            if (expiration <= DateTimeOffset.Now)
+            {
+                // If expiration is a date from the past, do not add
+                return false;
+            }
+
+            return await database.StringSetAsync(
+                GetRedisKey(key),
+                _serializer.Serialize(value),
+                when: overwrite ? When.Always : When.NotExists,
+                expiry: expiration.Subtract(DateTimeOffset.Now),
+                flags: WriteFlags);
+        }
+
         public override Task<bool> TryAddAsync(TKey key, TValue value, bool overwrite = false, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -73,6 +104,6 @@ namespace Take.Elephant.Redis
 
             var database = GetDatabase();
             return database.KeyExistsAsync(GetRedisKey(key), ReadFlags);
-        }        
+        }
     }
 }

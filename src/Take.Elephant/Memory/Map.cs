@@ -140,6 +140,18 @@ namespace Take.Elephant.Memory
             return Task.FromResult(updated);
         }
 
+        public Task<bool> TryAddWithRelativeExpirationAsync(TKey key, TValue value,
+            TimeSpan expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default) =>
+            ExpirableKeyMapCommon.TryAddWithRelativeExpirationAsync(this, key, value,
+                expiration, overwrite, cancellationToken);
+
+        public Task<bool> TryAddWithAbsoluteExpirationAsync(TKey key, TValue value,
+            DateTimeOffset expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default)
+            => ExpirableKeyMapCommon.TryAddWithAbsoluteExpirationAsync(this, key, value,
+                expiration, overwrite, cancellationToken);
+
         public virtual Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl)
         {
             return SetAbsoluteKeyExpirationAsync(key, DateTimeOffset.UtcNow.Add(ttl));

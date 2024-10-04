@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Take.Elephant
@@ -10,6 +11,32 @@ namespace Take.Elephant
     /// <typeparam name="TValue">The type of the value.</typeparam>
     public interface IExpirableKeyMap<TKey, TValue> : IMap<TKey, TValue>
     {
+        /// <summary>
+        /// Tries to add an item with expiration relative to the current time.
+        /// </summary>
+        /// <param name="key">The item key</param>
+        /// <param name="value">The value.</param>
+        /// <param name="expiration">The relative expiration time span.</param>
+        /// <param name="overwrite">Indicates if the item should be overwritten if the key already exists.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns><see langword="true"/> if the item was added; <see langword="false"/> otherwise.</returns>
+        Task<bool> TryAddWithRelativeExpirationAsync(TKey key, TValue value,
+            TimeSpan expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Tries to add an item with absolute expiration date time
+        /// </summary>
+        /// <param name="key">The item key</param>
+        /// <param name="value">The value.</param>
+        /// <param name="expiration">The absolute expiration date.</param>
+        /// <param name="overwrite">Indicates if the item should be overwritten if the key already exists.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns><see langword="true"/> if the item was added; <see langword="false"/> otherwise.</returns>
+        Task<bool> TryAddWithAbsoluteExpirationAsync(TKey key, TValue value,
+            DateTimeOffset expiration = default, bool overwrite = false,
+            CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Sets the relative key expiration date.
         /// </summary>
