@@ -44,6 +44,12 @@ namespace Take.Elephant.Redis
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            if (expiration <= DateTimeOffset.Now && expiration != default)
+            {
+                // If expiration is a date from the past, do not add
+                return false;
+            }
+
             var database = GetDatabase();
 
             if (expiration == default)
@@ -53,12 +59,6 @@ namespace Take.Elephant.Redis
                     _serializer.Serialize(value),
                     when: overwrite ? When.Always : When.NotExists,
                     flags: WriteFlags);
-            }
-
-            if (expiration <= DateTimeOffset.Now)
-            {
-                // If expiration is a date from the past, do not add
-                return false;
             }
 
             return await database.StringSetAsync(
