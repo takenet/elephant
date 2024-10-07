@@ -28,7 +28,7 @@ namespace Take.Elephant
         {
             var added = await map.TryAddAsync(key, value, overwrite, cancellationToken);
 
-            if (added)
+            if (added && expiration != default)
             {
                 await map.SetAbsoluteKeyExpirationAsync(key, expiration);
             }
