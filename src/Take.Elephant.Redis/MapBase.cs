@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using StackExchange.Redis;
@@ -83,5 +82,17 @@ namespace Take.Elephant.Redis
             });
             return Task.FromResult(keys.ToAsyncEnumerable());
         }
+
+        public virtual Task<bool> TryAddWithRelativeExpirationAsync(TKey key, TValue value,
+            TimeSpan expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default) =>
+            ExpirableKeyMapCommon.TryAddWithRelativeExpirationAsync(this, key, value,
+                expiration, overwrite, cancellationToken);
+
+        public virtual Task<bool> TryAddWithAbsoluteExpirationAsync(TKey key, TValue value,
+            DateTimeOffset expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default)
+            => ExpirableKeyMapCommon.TryAddWithAbsoluteExpirationAsync(this, key, value,
+                expiration, overwrite, cancellationToken);
     }
 }

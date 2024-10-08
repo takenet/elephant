@@ -160,18 +160,63 @@ namespace Take.Elephant.Specialized.Cache
             return (expirableSource, expirableCache);
         }
 
-        protected async Task<bool> TryAddWithExpirationAsync(TKey key, TValue value, bool overwrite, IMap<TKey, TValue> map, CancellationToken cancellationToken)
+        public Task<bool> TryAddWithRelativeExpirationAsync(TKey key, TValue value,
+            TimeSpan expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default)
         {
-            var added = await map.TryAddAsync(key, value, overwrite, cancellationToken).ConfigureAwait(false);
-            if (added &&
-                map == Cache &&
-                CacheOptions.CacheExpiration != default &&
-                map is IExpirableKeyMap<TKey, TValue> expirableMap)
+            return TryAddWithAbsoluteExpirationAsync(key, value,
+                DateTimeOffset.UtcNow.Add(expiration), overwrite, cancellationToken);
+        }
+
+        /// <summary>
+        /// It will execute the write request in the source and cache.
+        /// If the cache is a map that expires, it will also add the element setting the expiration time for it.
+        /// If expiration is not defined, it will try to use the default expiration time of the cache.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="expiration"></param>
+        /// <param name="overwrite"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<bool> TryAddWithAbsoluteExpirationAsync(TKey key, TValue value,
+            DateTimeOffset expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default)
+        {
+            return ExecuteWriteFunc(async map =>
+                await _executeAddWithExpiration(key, value, expiration, overwrite,
+                    cancellationToken, map));
+        }
+
+        private async Task<bool> _executeAddWithExpiration(TKey key, TValue value,
+            DateTimeOffset expiration,
+            bool overwrite, CancellationToken cancellationToken, IMap<TKey, TValue> map)
+        {
+            if (!(map is IExpirableKeyMap<TKey, TValue> expireMap) || map != Cache)
             {
-                await expirableMap.SetRelativeKeyExpirationAsync(key, CacheOptions.CacheExpiration).ConfigureAwait(false);
+                return await map.TryAddAsync(key, value, overwrite, cancellationToken)
+                    .ConfigureAwait(false);
             }
 
-            return added;
+            // Only set the cache expiration if it's the cache map
+            // When the expiration is the default value, expiration is not set.
+            var cacheExpiration = expiration;
+
+            // Use default cache expiration if expiration is not defined
+            if (cacheExpiration == default &&
+                CacheOptions.CacheExpiration != default)
+            {
+                cacheExpiration = DateTimeOffset.UtcNow.Add(CacheOptions.CacheExpiration);
+            }
+
+            return await expireMap.TryAddWithAbsoluteExpirationAsync(key, value, cacheExpiration,
+                overwrite, cancellationToken);
+        }
+
+        protected Task<bool> TryAddWithExpirationAsync(TKey key, TValue value, bool overwrite,
+            IMap<TKey, TValue> map, CancellationToken cancellationToken)
+        {
+            return _executeAddWithExpiration(key, value, default, overwrite, cancellationToken, map);
         }
     }
 }

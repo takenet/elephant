@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Sql.Mapping;
@@ -38,6 +37,18 @@ namespace Take.Elephant.Sql
                 throw new ArgumentException($"The expiration column '{expirationColumnName}' must have a date type", nameof(expirationColumnName));
             }
         }
+
+        public Task<bool> TryAddWithRelativeExpirationAsync(TKey key, TValue value,
+            TimeSpan expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default) =>
+            ExpirableKeyMapCommon.TryAddWithRelativeExpirationAsync(this, key, value,
+                expiration, overwrite, cancellationToken);
+
+        public Task<bool> TryAddWithAbsoluteExpirationAsync(TKey key, TValue value,
+            DateTimeOffset expiration = default,
+            bool overwrite = false, CancellationToken cancellationToken = default)
+            => ExpirableKeyMapCommon.TryAddWithAbsoluteExpirationAsync(this, key, value,
+                expiration, overwrite, cancellationToken);
 
         public virtual Task<bool> SetRelativeKeyExpirationAsync(TKey key, TimeSpan ttl) =>
             SetAbsoluteKeyExpirationAsync(key, DateTimeOffset.UtcNow.Add(ttl));
