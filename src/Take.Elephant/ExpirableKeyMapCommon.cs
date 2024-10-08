@@ -15,7 +15,8 @@ namespace Take.Elephant
             CancellationToken cancellationToken = default)
         {
             return map.TryAddWithAbsoluteExpirationAsync(key, value,
-                DateTimeOffset.UtcNow.Add(expiration), overwrite, cancellationToken);
+                expiration == default ? default : DateTimeOffset.UtcNow.Add(expiration), overwrite,
+                cancellationToken);
         }
 
         public static async Task<bool> TryAddWithAbsoluteExpirationAsync<TKey, TValue>(
