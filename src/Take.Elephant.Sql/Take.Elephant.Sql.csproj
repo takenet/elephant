@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Version>0.5.0</Version>
     <Authors>takenet,andrebires</Authors>
@@ -13,7 +13,7 @@
     <PackageProjectUrl>http://github.com/takenet/elephant</PackageProjectUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
