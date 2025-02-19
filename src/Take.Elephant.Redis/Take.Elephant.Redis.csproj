@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>Take.Elephant.Redis</AssemblyName>
     <RootNamespace>Take.Elephant.Redis</RootNamespace>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
@@ -15,10 +15,10 @@
     <PackageLicenseUrl>https://raw.githubusercontent.com/takenet/elephant/master/LICENSE</PackageLicenseUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup> 
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis" Version="2.7.27" />
