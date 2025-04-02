@@ -73,15 +73,15 @@ namespace Take.Elephant.Kafka
             return StartConsumerTaskIfNotAsync(cancellationToken);
         }
 
-        public virtual Task CloseAsync(CancellationToken cancellationToken)
+        public virtual async Task CloseAsync(CancellationToken cancellationToken)
         {
             if (!_closed)
             {
-                _consumer.Close();
                 _closed = true;
+                await _cts.CancelAsync();
+                await _consumerTask;
+                _consumer.Close();
             }
-
-            return _consumerTask;
         }
 
         public event EventHandler<ExceptionEventArgs> ConsumerFailed;
