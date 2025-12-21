@@ -23,35 +23,44 @@ Docker Compose
 
 Create one file named `docker-compose.yml` with this content:
 ```
-version: "3"
 services:
-  zookeeper:
-    image: "confluentinc/cp-zookeeper"
+  broker:
+    image: confluentinc/cp-kafka:8.0.0
+    hostname: broker
+    container_name: broker
     ports:
-      - 2181:2181
+      - "9092:9092"
+      - "9101:9101"
     environment:
-      - ZOOKEEPER_CLIENT_PORT=2181
-    volumes:
-      - zookeeperData:/var/lib/zookeeper/data
-      - zookeeperLogs:/var/lib/zookeeper/log
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
-  kafka:
-    image: "confluentinc/cp-kafka"
-    ports:
-      - 9092:9092
-    environment:
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
-    volumes:
-      - kafka:/var/lib/kafka/data
+  schema-registry:
+    image: confluentinc/cp-schema-registry:8.0.0
+    hostname: schema-registry
+    container_name: schema-registry
     depends_on:
-      - zookeeper
-volumes:
-  kafka:
-  zookeeperData:
-  zookeeperLogs:
-
+      - broker
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 ```
 
 Basically this file is starting two services on your machine, the `Zookeeper` and the `kafka` itself. Inside the folder that you created the docker compose file, run the command `docker-compose up -d`, the `-d` is for second plan run. After the command run sucessfully you should run `docker-compose ps` to check if the services are running on your pc. You should see:
