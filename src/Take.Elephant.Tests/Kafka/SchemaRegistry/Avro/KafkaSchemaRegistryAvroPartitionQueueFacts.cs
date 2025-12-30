@@ -180,7 +180,6 @@ namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Avro
                 _bootstrapServers, topic, groupId, schemaRegistryOptions);
 
             await queue.OpenAsync(_cts.Token);
-            await Task.Delay(1000);
 
             var partitionKey = "avro-bootstrap-partition-key";
             var item = new SchemaRegistryAvroTestItem
