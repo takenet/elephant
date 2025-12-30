@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Kafka.SchemaRegistry;
+using Take.Elephant.Tests.Helpers;
 using Xunit;
 
 namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Avro
@@ -59,9 +60,13 @@ namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Avro
             };
 
             await publisher.PublishAsync(key, item, _cts.Token);
-            await Task.Delay(4000);
 
-            var result = await consumer.ConsumeOrDefaultAsync(_cts.Token);
+            var result = await TestHelpers.WaitUntilAsync(
+                ct => consumer.ConsumeOrDefaultAsync(ct),
+                r => r.item != null,
+                TimeSpan.FromSeconds(10),
+                TimeSpan.FromMilliseconds(200),
+                _cts.Token);
 
             Assert.NotNull(result.item);
             Assert.Equal(key, result.key);
@@ -108,17 +113,19 @@ namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Avro
                 await publisher.PublishAsync(item.Id, item, _cts.Token);
             }
 
-            await Task.Delay(4000);
-
             var consumedItems = new System.Collections.Generic.List<SchemaRegistryAvroTestItem>();
-            for (int i = 0; i < items.Count; i++)
-            {
-                var result = await consumer.ConsumeOrDefaultAsync(_cts.Token);
-                if (result.item != null)
+
+            await TestHelpers.WaitUntilAsync(async ct =>
                 {
-                    consumedItems.Add(result.item);
-                }
-            }
+                    var res = await consumer.ConsumeOrDefaultAsync(ct).ConfigureAwait(false);
+                    if (res.item != null)
+                        consumedItems.Add(res.item);
+                    return consumedItems.Count;
+                },
+                count => count >= items.Count,
+                TimeSpan.FromSeconds(10),
+                TimeSpan.FromMilliseconds(200),
+                _cts.Token);
 
             Assert.Equal(items.Count, consumedItems.Count);
 
@@ -159,11 +166,14 @@ namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Avro
             };
 
             await publisher.PublishAsync(key, item, _cts.Token);
-            await Task.Delay(4000);
 
-            var result = await consumer.ConsumeOrDefaultAsync(_cts.Token);
+            var result = await TestHelpers.WaitUntilAsync(
+                ct => consumer.ConsumeOrDefaultAsync(ct),
+                r => r.item != null,
+                TimeSpan.FromSeconds(10),
+                TimeSpan.FromMilliseconds(200),
+                _cts.Token);
 
-            Assert.NotNull(result.item);
             Assert.Equal(item.Id, result.item.Id);
 
             await consumer.CloseAsync(_cts.Token);
@@ -175,4 +185,3 @@ namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Avro
         }
     }
 }
-

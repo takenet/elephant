@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Take.Elephant.Kafka.SchemaRegistry;
+using Take.Elephant.Tests.Helpers;
 using Xunit;
 
 namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Json
@@ -52,18 +53,19 @@ namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Json
             var key = Guid.NewGuid().ToString();
             var item = new SchemaRegistryTestItem
             {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Test Item",
-                Value = 42,
-                CreatedAt = DateTime.UtcNow
+                Id = Guid.NewGuid().ToString(), Name = "Test Item", Value = 42, CreatedAt = DateTime.UtcNow
             };
 
             await publisher.PublishAsync(key, item, _cts.Token);
-            await Task.Delay(4000);
 
-            var result = await consumer.ConsumeOrDefaultAsync(_cts.Token);
+            var result = await TestHelpers.WaitUntilAsync(
+                ct => consumer.ConsumeOrDefaultAsync(ct),
+                r => r.item != null,
+                TimeSpan.FromSeconds(10),
+                TimeSpan.FromMilliseconds(200),
+                _cts.Token
+            );
 
-            Assert.NotNull(result.item);
             Assert.Equal(key, result.key);
             Assert.Equal(item.Id, result.item.Id);
             Assert.Equal(item.Name, result.item.Name);
@@ -97,10 +99,7 @@ namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Json
 
             var items = Enumerable.Range(1, 2).Select(i => new SchemaRegistryTestItem
             {
-                Id = Guid.NewGuid().ToString(),
-                Name = $"Test Item {i}",
-                Value = i * 10,
-                CreatedAt = DateTime.UtcNow
+                Id = Guid.NewGuid().ToString(), Name = $"Test Item {i}", Value = i * 10, CreatedAt = DateTime.UtcNow
             }).ToList();
 
             foreach (var item in items)
@@ -108,17 +107,22 @@ namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Json
                 await publisher.PublishAsync(item.Id, item, _cts.Token);
             }
 
-            await Task.Delay(4000);
-
             var consumedItems = new System.Collections.Generic.List<SchemaRegistryTestItem>();
-            for (int i = 0; i < items.Count; i++)
-            {
-                var result = await consumer.ConsumeOrDefaultAsync(_cts.Token);
-                if (result.item != null)
+
+            await TestHelpers.WaitUntilAsync(async ct =>
                 {
-                    consumedItems.Add(result.item);
-                }
-            }
+                    var res = await consumer.ConsumeOrDefaultAsync(ct).ConfigureAwait(false);
+                    if (res.item != null)
+                    {
+                        consumedItems.Add(res.item);
+                    }
+
+                    return consumedItems.Count;
+                },
+                count => count >= items.Count,
+                TimeSpan.FromSeconds(10),
+                TimeSpan.FromMilliseconds(200),
+                _cts.Token);
 
             Assert.Equal(items.Count, consumedItems.Count);
 
@@ -159,11 +163,15 @@ namespace Take.Elephant.Tests.Kafka.SchemaRegistry.Json
             };
 
             await publisher.PublishAsync(key, item, _cts.Token);
-            await Task.Delay(4000);
 
-            var result = await consumer.ConsumeOrDefaultAsync(_cts.Token);
+            var result = await TestHelpers.WaitUntilAsync(
+                ct => consumer.ConsumeOrDefaultAsync(ct),
+                r => r.item != null,
+                TimeSpan.FromSeconds(10),
+                TimeSpan.FromMilliseconds(200),
+                _cts.Token
+            );
 
-            Assert.NotNull(result.item);
             Assert.Equal(item.Id, result.item.Id);
 
             await consumer.CloseAsync(_cts.Token);
