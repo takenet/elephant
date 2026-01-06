@@ -55,7 +55,7 @@ namespace Take.Elephant.Tests.Kafka
             {
                 GroupId = "default"
             };
-            
+
             var adminClient = new AdminClientBuilder(_clientConfig).Build();
             var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(5));
             var topicMetadata = metadata.Topics.FirstOrDefault(t => t.Topic == _topic);
