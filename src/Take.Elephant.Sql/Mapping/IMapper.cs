@@ -19,6 +19,7 @@ namespace Take.Elephant.Sql.Mapping
         /// <param name="value">The value.</param>
         /// <param name="columns">The columns to be returned.</param>
         /// <param name="emitNullValues">Indicates if null column values should be returned.</param>
+        /// <param name="includeIdentityTypes"></param>
         /// <returns></returns>
         IDictionary<string, object> GetColumnValues(TEntity value, string[] columns = null, bool emitNullValues = false, bool includeIdentityTypes = false);
 
