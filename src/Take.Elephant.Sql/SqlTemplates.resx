@@ -196,7 +196,7 @@
     <value>=</value>
   </data>
   <data name="Exists" xml:space="preserve">
-    <value>SELECT CASE WHEN EXISTS ((SELECT 1 FROM {schemaName}.{tableName} WHERE {filter})) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END</value>
+    <value>SELECT CAST(CASE WHEN EXISTS ((SELECT 1 FROM {schemaName}.{tableName} WHERE {filter})) THEN '1' ELSE '0' END AS BIT)</value>
   </data>
   <data name="GetTableColumns" xml:space="preserve">
     <value>SELECT COLUMN_NAME, DATA_TYPE, COALESCE(CHARACTER_MAXIMUM_LENGTH, DATETIME_PRECISION) AS LENGTH_OR_PRECISION
