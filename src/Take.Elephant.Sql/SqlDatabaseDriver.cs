@@ -17,7 +17,19 @@ namespace Take.Elephant.Sql
 
         public DbConnection CreateConnection(string connectionString)
         {
-            return new SqlConnection(connectionString);
+            //return new SqlConnection(connectionString);
+            var retryProvider = SqlConfigurableRetryFactory.CreateFixedRetryProvider(new SqlRetryLogicOption
+            {
+                NumberOfTries = 3,
+                DeltaTime = TimeSpan.FromSeconds(2),
+                TransientErrors = new[] { 18456 }
+            });
+
+            var connection = new SqlConnection(connectionString)
+            {
+                RetryLogicProvider = retryProvider
+            };
+            return connection;
         }
 
         public string GetSqlStatementTemplate(SqlStatement sqlStatement)
