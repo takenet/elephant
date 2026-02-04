@@ -5,6 +5,7 @@ using Xunit;
 using System.Data;
 using System.Data.Common;
 using Take.Elephant.Sql.Mapping;
+using Microsoft.Data.SqlClient;
 
 namespace Take.Elephant.Tests.Sql
 {
@@ -348,7 +349,7 @@ namespace Take.Elephant.Tests.Sql
 
         public TimeSpan Timeout => _sqlDatabaseDriver.Timeout;
 
-        public DbConnection CreateConnection(string connectionString)
+        public DbConnection CreateConnection(string connectionString, SqlRetryLogicOption retryOptions = null)
         {
             throw new NotSupportedException();
         }
