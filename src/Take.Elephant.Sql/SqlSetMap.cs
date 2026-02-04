@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
@@ -19,8 +19,12 @@ namespace Take.Elephant.Sql
             _addIsolationLevel = addIsolationLevel;
         }
 
-        public SqlSetMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TItem> valueMapper, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted)
-            : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
+        public SqlSetMap(IDatabaseDriver databaseDriver, string connectionString,
+            ITable table, IMapper<TKey> keyMapper,
+            IMapper<TItem> valueMapper,
+            IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted,
+            SqlRetryLogicOption retryOptions = null) 
+                : base(databaseDriver, connectionString, table, keyMapper, valueMapper, retryOptions)
         {
             _addIsolationLevel = addIsolationLevel;
         }

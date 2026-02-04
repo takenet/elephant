@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Take.Elephant.Sql.Mapping;
 
 [assembly: InternalsVisibleTo("Take.Elephant.Tests")]
@@ -20,8 +21,8 @@ namespace Take.Elephant.Sql
     {
         private readonly string _expirationColumnName;
 
-        public ExpirableKeySqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, string expirationColumnName)
-            : base(new ExpirationDatabaseDriverDecorator(databaseDriver, expirationColumnName), connectionString, table, keyMapper, valueMapper)
+        public ExpirableKeySqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, string expirationColumnName, SqlRetryLogicOption retryOptions = null)
+            : base(new ExpirationDatabaseDriverDecorator(databaseDriver, expirationColumnName), connectionString, table, keyMapper, valueMapper, retryOptions)
         {
             _expirationColumnName = expirationColumnName ?? throw new ArgumentNullException(nameof(expirationColumnName));
             if (!Table.Columns.TryGetValue(expirationColumnName, out var expirationColumnType))

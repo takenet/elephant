@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
@@ -22,8 +23,8 @@ namespace Take.Elephant.Sql
 
         }
 
-        public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper)
-            : base(databaseDriver, connectionString, table, keyMapper, valueMapper)
+        public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, SqlRetryLogicOption retryOptions = null)
+            : base(databaseDriver, connectionString, table, keyMapper, valueMapper, retryOptions)
         {
 
         }

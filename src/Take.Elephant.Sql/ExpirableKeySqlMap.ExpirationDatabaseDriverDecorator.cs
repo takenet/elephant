@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
+using Microsoft.Data.SqlClient;
 using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
@@ -26,8 +24,8 @@ namespace Take.Elephant.Sql
                 _expirationColumnName = underlyingDatabaseDriver.ParseIdentifier(expirationColumnName ?? throw new ArgumentNullException(nameof(expirationColumnName)));
             }
 
-            public DbConnection CreateConnection(string connectionString)
-                => new ExpirationDbConnectionDecorator(_underlyingDatabaseDriver.CreateConnection(connectionString));
+            public DbConnection CreateConnection(string connectionString, SqlRetryLogicOption retryOptions = null)
+                => new ExpirationDbConnectionDecorator(_underlyingDatabaseDriver.CreateConnection(connectionString, retryOptions));
 
             public string GetSqlStatementTemplate(SqlStatement sqlStatement)
             {

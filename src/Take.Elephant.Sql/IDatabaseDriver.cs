@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using Microsoft.Data.SqlClient;
 using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
@@ -11,7 +12,7 @@ namespace Take.Elephant.Sql
 
         TimeSpan Timeout { get; }
 
-        DbConnection CreateConnection(string connectionString);
+        DbConnection CreateConnection(string connectionString, SqlRetryLogicOption retryOptions = null);
 
         string GetSqlStatementTemplate(SqlStatement sqlStatement);
 

@@ -13,8 +13,8 @@ namespace Take.Elephant.Sql
     public abstract class MapStorageBase<TKey, TValue> : StorageBase<TValue>,
         IQueryableStorage<KeyValuePair<TKey, TValue>>, IKeyQueryableMap<TKey, TValue>
     {
-        protected MapStorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper)
-            : base(databaseDriver, connectionString, table, valueMapper)
+        protected MapStorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, SqlRetryLogicOption retryOptions = null)
+            : base(databaseDriver, connectionString, table, valueMapper, retryOptions)
         {
             KeyMapper = keyMapper;
         }

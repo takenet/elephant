@@ -15,21 +15,28 @@ namespace Take.Elephant.Sql
 
         public string DefaultSchema => "dbo";
 
-        public DbConnection CreateConnection(string connectionString)
+        public DbConnection CreateConnection(string connectionString, SqlRetryLogicOption retryOptions = null)
         {
-            //return new SqlConnection(connectionString);
-            var retryProvider = SqlConfigurableRetryFactory.CreateFixedRetryProvider(new SqlRetryLogicOption
+            if (retryOptions != null)
             {
-                NumberOfTries = 3,
-                DeltaTime = TimeSpan.FromSeconds(2),
-                TransientErrors = new[] { 18456 }
-            });
+                var retryProvider = SqlConfigurableRetryFactory.CreateFixedRetryProvider(new SqlRetryLogicOption
+                {
+                    NumberOfTries = retryOptions.NumberOfTries,
+                    DeltaTime = retryOptions.DeltaTime,
+                    MinTimeInterval = retryOptions.MinTimeInterval,
+                    MaxTimeInterval = retryOptions.MaxTimeInterval,
+                    TransientErrors = retryOptions.TransientErrors
+                });
 
-            var connection = new SqlConnection(connectionString)
-            {
-                RetryLogicProvider = retryProvider
-            };
-            return connection;
+                var connection = new SqlConnection(connectionString)
+                {
+                    RetryLogicProvider = retryProvider
+                };
+                return connection;
+            }
+            
+            return new SqlConnection(connectionString);
+
         }
 
         public string GetSqlStatementTemplate(SqlStatement sqlStatement)
