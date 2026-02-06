@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
 {
     public abstract class SqlCollectionBase<T> : StorageBase<T>, ICollection<T>
     {        
-        protected SqlCollectionBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<T> mapper)
-            : base(databaseDriver, connectionString, table, mapper)
+        protected SqlCollectionBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<T> mapper, SqlRetryLogicOption retryOptions = null)
+            : base(databaseDriver, connectionString, table, mapper, retryOptions)
         {
 
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using Microsoft.Data.SqlClient;
 using Npgsql;
 using Take.Elephant.Sql.Mapping;
 
@@ -30,7 +31,7 @@ namespace Take.Elephant.Sql.PostgreSql
 
         public string DefaultSchema => "public";
 
-        public DbConnection CreateConnection(string connectionString)
+        public DbConnection CreateConnection(string connectionString, SqlRetryLogicOption retryOptions = null)
         {
             return new NpgsqlConnection(connectionString);
         }

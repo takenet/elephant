@@ -5,18 +5,20 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
 {
     public abstract class StorageBase<TEntity> : IQueryableStorage<TEntity>, IOrderedQueryableStorage<TEntity>, IDistinctQueryableStorage<TEntity>
     {
-        protected StorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TEntity> mapper)
+        protected StorageBase(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TEntity> mapper, SqlRetryLogicOption retryOptions = null)
         {
             ConnectionString = connectionString;
             Table = table;
             Mapper = mapper;
             DatabaseDriver = databaseDriver;
+            RetryOptions = retryOptions;
         }
 
         /// <summary>
@@ -40,6 +42,7 @@ namespace Take.Elephant.Sql
         protected ITable Table { get; }
 
         protected IMapper<TEntity> Mapper { get; }
+        protected SqlRetryLogicOption RetryOptions { get; } = null;
 
         protected async Task<bool> TryRemoveAsync(IDictionary<string, object> filterValues, DbConnection connection, CancellationToken cancellationToken, DbTransaction sqlTransaction = null)
         {
@@ -198,7 +201,7 @@ namespace Take.Elephant.Sql
         protected async Task<DbConnection> GetConnectionAsync(CancellationToken cancellationToken)
         {
             await Table.SynchronizeSchemaAsync(ConnectionString, DatabaseDriver, cancellationToken).ConfigureAwait(false);
-            var connection = DatabaseDriver.CreateConnection(ConnectionString);
+            var connection = DatabaseDriver.CreateConnection(ConnectionString, RetryOptions);
             await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
             return connection;
         }

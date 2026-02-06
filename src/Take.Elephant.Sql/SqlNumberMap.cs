@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Take.Elephant.Sql.Mapping;
 
 namespace Take.Elephant.Sql
@@ -22,7 +23,8 @@ namespace Take.Elephant.Sql
             string connectionString,
             ITable table,
             IMapper<TKey> keyMapper,
-            string numberColumnName) : base(databaseDriver, connectionString, table, keyMapper, new ValueMapper<long>(numberColumnName))
+            string numberColumnName,
+            SqlRetryLogicOption retryOptions = null) : base(databaseDriver, connectionString, table, keyMapper, new ValueMapper<long>(numberColumnName), retryOptions)
         {
             _numberColumnName = numberColumnName;
         }

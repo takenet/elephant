@@ -15,9 +15,28 @@ namespace Take.Elephant.Sql
 
         public string DefaultSchema => "dbo";
 
-        public DbConnection CreateConnection(string connectionString)
+        public DbConnection CreateConnection(string connectionString, SqlRetryLogicOption retryOptions = null)
         {
+            if (retryOptions != null)
+            {
+                var retryProvider = SqlConfigurableRetryFactory.CreateFixedRetryProvider(new SqlRetryLogicOption
+                {
+                    NumberOfTries = retryOptions.NumberOfTries,
+                    DeltaTime = retryOptions.DeltaTime,
+                    MinTimeInterval = retryOptions.MinTimeInterval == default ? DefaultRetryMinTimeInterval : retryOptions.MinTimeInterval,
+                    MaxTimeInterval = retryOptions.MaxTimeInterval == default ? DefaultRetryMaxTimeInterval : retryOptions.MaxTimeInterval,
+                    TransientErrors = retryOptions.TransientErrors
+                });
+
+                var connection = new SqlConnection(connectionString)
+                {
+                    RetryLogicProvider = retryProvider
+                };
+                return connection;
+            }
+            
             return new SqlConnection(connectionString);
+
         }
 
         public string GetSqlStatementTemplate(SqlStatement sqlStatement)
@@ -85,5 +104,9 @@ namespace Take.Elephant.Sql
             type = sqlParameter.SqlDbType;
             return true;
         }
+
+        private static TimeSpan DefaultRetryMinTimeInterval => TimeSpan.FromSeconds(1);
+
+        private static TimeSpan DefaultRetryMaxTimeInterval => TimeSpan.FromSeconds(6);
     }
 }
