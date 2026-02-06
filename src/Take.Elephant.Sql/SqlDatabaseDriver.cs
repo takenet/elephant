@@ -23,8 +23,8 @@ namespace Take.Elephant.Sql
                 {
                     NumberOfTries = retryOptions.NumberOfTries,
                     DeltaTime = retryOptions.DeltaTime,
-                    MinTimeInterval = retryOptions.MinTimeInterval,
-                    MaxTimeInterval = retryOptions.MaxTimeInterval,
+                    MinTimeInterval = retryOptions.MinTimeInterval == default ? DefaultRetryMinTimeInterval : retryOptions.MinTimeInterval,
+                    MaxTimeInterval = retryOptions.MaxTimeInterval == default ? DefaultRetryMaxTimeInterval : retryOptions.MaxTimeInterval,
                     TransientErrors = retryOptions.TransientErrors
                 });
 
@@ -104,5 +104,9 @@ namespace Take.Elephant.Sql
             type = sqlParameter.SqlDbType;
             return true;
         }
+
+        private static TimeSpan DefaultRetryMinTimeInterval => TimeSpan.FromSeconds(1);
+
+        private static TimeSpan DefaultRetryMaxTimeInterval => TimeSpan.FromSeconds(6);
     }
 }
