@@ -31,7 +31,7 @@ namespace Take.Elephant.Sql
             ITable table, IMapper<TKey> keyMapper,
             IMapper<TItem> valueMapper,
             IsolationLevel addIsolationLevel,
-            SqlRetryLogicOption retryOptions = null) 
+            SqlRetryLogicOption retryOptions) 
                 : base(databaseDriver, connectionString, table, keyMapper, valueMapper, retryOptions)
         {
             _addIsolationLevel = addIsolationLevel;
