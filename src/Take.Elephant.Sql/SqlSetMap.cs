@@ -29,7 +29,7 @@ namespace Take.Elephant.Sql
         public SqlSetMap(IDatabaseDriver databaseDriver, string connectionString,
             ITable table, IMapper<TKey> keyMapper,
             IMapper<TItem> valueMapper,
-            IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted,
+            IsolationLevel addIsolationLevel,
             SqlRetryLogicOption retryOptions = null) 
                 : base(databaseDriver, connectionString, table, keyMapper, valueMapper, retryOptions)
         {
