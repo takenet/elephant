@@ -21,7 +21,13 @@ namespace Take.Elephant.Sql
     {
         private readonly string _expirationColumnName;
 
-        public ExpirableKeySqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, string expirationColumnName, SqlRetryLogicOption retryOptions = null)
+        public ExpirableKeySqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, string expirationColumnName)
+            : this(databaseDriver, connectionString, table, keyMapper, valueMapper, expirationColumnName, null)
+        {
+            
+        }
+        
+        public ExpirableKeySqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, string expirationColumnName, SqlRetryLogicOption retryOptions)
             : base(new ExpirationDatabaseDriverDecorator(databaseDriver, expirationColumnName), connectionString, table, keyMapper, valueMapper, retryOptions)
         {
             _expirationColumnName = expirationColumnName ?? throw new ArgumentNullException(nameof(expirationColumnName));

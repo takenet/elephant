@@ -23,8 +23,19 @@ namespace Take.Elephant.Sql
             string connectionString,
             ITable table,
             IMapper<TKey> keyMapper,
+            string numberColumnName) : 
+            this(databaseDriver, connectionString, table, keyMapper, numberColumnName, null)
+        {
+            
+        }
+        
+        public SqlNumberMap(
+            IDatabaseDriver databaseDriver,
+            string connectionString,
+            ITable table,
+            IMapper<TKey> keyMapper,
             string numberColumnName,
-            SqlRetryLogicOption retryOptions = null) : base(databaseDriver, connectionString, table, keyMapper, new ValueMapper<long>(numberColumnName), retryOptions)
+            SqlRetryLogicOption retryOptions) : base(databaseDriver, connectionString, table, keyMapper, new ValueMapper<long>(numberColumnName), retryOptions)
         {
             _numberColumnName = numberColumnName;
         }

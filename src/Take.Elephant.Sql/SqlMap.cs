@@ -23,7 +23,13 @@ namespace Take.Elephant.Sql
 
         }
 
-        public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, SqlRetryLogicOption retryOptions = null)
+        public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper)
+            : this(databaseDriver, connectionString, table, keyMapper, valueMapper, null)
+        {
+
+        }
+        
+        public SqlMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TValue> valueMapper, SqlRetryLogicOption retryOptions)
             : base(databaseDriver, connectionString, table, keyMapper, valueMapper, retryOptions)
         {
 
