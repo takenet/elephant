@@ -13,17 +13,18 @@ namespace Take.Elephant.Sql
     {
         private readonly IsolationLevel _addIsolationLevel;
 
-        public SqlSetMap(string connectionString, ITable table, IMapper<TKey> keyMapper, IMapper<TItem> valueMapper, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted)
-            : this(new SqlDatabaseDriver(), connectionString, table, keyMapper, valueMapper, IsolationLevel.ReadCommitted, null)
+        public SqlSetMap(string connectionString, ITable table, IMapper<TKey> keyMapper, 
+            IMapper<TItem> valueMapper, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted)
+            : this(new SqlDatabaseDriver(), connectionString, table, keyMapper, valueMapper, addIsolationLevel, null)
         {
-            _addIsolationLevel = addIsolationLevel;
+            
         }
 
         public SqlSetMap(IDatabaseDriver databaseDriver, string connectionString, ITable table, IMapper<TKey> keyMapper,
             IMapper<TItem> valueMapper, IsolationLevel addIsolationLevel = IsolationLevel.ReadCommitted)
             : this(databaseDriver, connectionString, table, keyMapper, valueMapper, addIsolationLevel, null)
         {
-            _addIsolationLevel = addIsolationLevel;
+            
         }
         
         public SqlSetMap(IDatabaseDriver databaseDriver, string connectionString,
