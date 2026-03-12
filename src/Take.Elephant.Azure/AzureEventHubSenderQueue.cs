@@ -26,12 +26,8 @@ namespace Take.Elephant.Azure
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             var serializedItem = _serializer.Serialize(item);
-            using var eventBatch = await _producerClient.CreateBatchAsync(cancellationToken).ConfigureAwait(false);
-            if (!eventBatch.TryAdd(new EventData(Encoding.UTF8.GetBytes(serializedItem))))
-            {
-                throw new InvalidOperationException("The event is too large for an empty batch.");
-            }
-            await _producerClient.SendAsync(eventBatch, cancellationToken).ConfigureAwait(false);
+            var eventData = new EventData(Encoding.UTF8.GetBytes(serializedItem));
+            await _producerClient.SendAsync(new[] { eventData }, cancellationToken).ConfigureAwait(false);
         }
 
         public virtual async Task CloseAsync(CancellationToken cancellationToken)
