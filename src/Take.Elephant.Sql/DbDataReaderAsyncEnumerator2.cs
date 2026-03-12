@@ -16,6 +16,7 @@ namespace Take.Elephant.Sql
         private readonly string[] _selectColumns;
         private readonly CancellationToken _cancellationToken;
 
+        private DbConnection _dbConnection;
         private DbCommand _dbCommand;
         private DbDataReader _sqlDataReader;
 
@@ -39,10 +40,10 @@ namespace Take.Elephant.Sql
         {
             if (_sqlDataReader == null)
             {
-                var dbConnection = await _dbConnectionFactory(_cancellationToken).ConfigureAwait(false);
-                if (dbConnection.State == ConnectionState.Closed)
-                    await dbConnection.OpenAsync(_cancellationToken).ConfigureAwait(false);
-                _dbCommand = _dbCommandFactory(dbConnection);
+                _dbConnection = await _dbConnectionFactory(_cancellationToken).ConfigureAwait(false);
+                if (_dbConnection.State == ConnectionState.Closed)
+                    await _dbConnection.OpenAsync(_cancellationToken).ConfigureAwait(false);
+                _dbCommand = _dbCommandFactory(_dbConnection);
                 _sqlDataReader = await _dbCommand.ExecuteReaderAsync(_cancellationToken).ConfigureAwait(false);
             }
 
@@ -61,6 +62,10 @@ namespace Take.Elephant.Sql
                 await _dbCommand.DisposeAsync().ConfigureAwait(false);
             }
 
+            if (_dbConnection != null)
+            {
+                await _dbConnection.DisposeAsync().ConfigureAwait(false);
+            }
         }
     }
 }

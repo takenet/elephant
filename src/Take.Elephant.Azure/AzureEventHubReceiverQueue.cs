@@ -13,7 +13,7 @@ namespace Take.Elephant.Azure
     /// TODO: Incomplete implementation, should remain internal. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class AzureEventHubReceiverQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, IBatchReceiverQueue<T>, IOpenable, ICloseable
+    internal class AzureEventHubReceiverQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, IBatchReceiverQueue<T>, IOpenable, ICloseable, IDisposable
     {
         private readonly string _consumerGroupName;
         private readonly EventPosition _eventPosition;
@@ -119,6 +119,21 @@ namespace Take.Elephant.Azure
         {
             if (eventData == null) return default;
             return _serializer.Deserialize(Encoding.UTF8.GetString(eventData.Body.Array));            
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _openSemaphore.Dispose();
+                _eventHubClient.Close();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         internal class ExponentialInterval

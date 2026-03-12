@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace Take.Elephant.Sql.Mapping
 {
     /// <inheritdoc />        
-    public class Table : ITable
+    public class Table : ITable, IDisposable
     {
         private readonly SchemaSynchronizationStrategy _synchronizationStrategy;
         private readonly SemaphoreSlim _schemaSynchronizedSemaphore;
@@ -160,6 +160,20 @@ namespace Take.Elephant.Sql.Mapping
             _synchronizationStrategy != SchemaSynchronizationStrategy.Ignore &&
             (_synchronizationStrategy == SchemaSynchronizationStrategy.UntilSuccess ||
              (_synchronizationStrategy == SchemaSynchronizationStrategy.TryOnce && _synchronizationsTries == 0));
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _schemaSynchronizedSemaphore.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 
     public enum SchemaSynchronizationStrategy

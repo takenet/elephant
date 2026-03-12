@@ -11,7 +11,7 @@ namespace Take.Elephant.Memory
     /// Implements the <see cref="ISortedSet{T}"/> interface using the <see cref="System.Collections.Generic.SortedList{double, T}"/> class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SortedSet<T> : ISortedSet<T>
+    public class SortedSet<T> : ISortedSet<T>, IDisposable
     {
         private readonly SortedList<double, T> _sortedList;
         private readonly ConcurrentQueue<Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>> _promisesQueue;
@@ -179,6 +179,20 @@ namespace Take.Elephant.Memory
                 .Where(i => i.Key >= start && i.Key <= stop)
                 .Select(i => i.Value)
                 .ToAsyncEnumerable();
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _semaphore.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 
     /// <summary>
