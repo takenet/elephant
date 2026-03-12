@@ -125,8 +125,8 @@ namespace Take.Elephant.Azure
         {
             if (disposing)
             {
-                _openSemaphore.Dispose();
-                _eventHubClient.Close();
+                _openSemaphore?.Dispose();
+                _eventHubClient?.Close();
             }
         }
 
