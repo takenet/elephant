@@ -97,6 +97,7 @@ namespace Take.Elephant.Kafka
 
                 _consumer.Dispose();
                 _cts.Dispose();
+                _consumerStartSemaphore.Dispose();
             }
         }
 

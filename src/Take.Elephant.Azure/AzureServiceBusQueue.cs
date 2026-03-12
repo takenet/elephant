@@ -8,7 +8,7 @@ using Azure.Messaging.ServiceBus.Administration;
 
 namespace Take.Elephant.Azure
 {
-    public class AzureServiceBusQueue<T> : IBlockingQueue<T>, IBatchSenderQueue<T>, ICloseable
+    public class AzureServiceBusQueue<T> : IBlockingQueue<T>, IBatchSenderQueue<T>, ICloseable, IDisposable, IAsyncDisposable
     {
         private const int MIN_RECEIVE_TIMEOUT = 250;
         private const int MAX_RECEIVE_TIMEOUT = 30000;
@@ -191,6 +191,32 @@ namespace Take.Elephant.Azure
                 await _messageReceiver.CompleteMessageAsync(message, cancellationToken);
             }
             return item;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _queueCreationSemaphore?.Dispose();
+                _messageSender?.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                _messageReceiver?.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                _client?.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            _queueCreationSemaphore?.Dispose();
+            if (_messageSender != null) await _messageSender.DisposeAsync().ConfigureAwait(false);
+            if (_messageReceiver != null) await _messageReceiver.DisposeAsync().ConfigureAwait(false);
+            if (_client != null) await _client.DisposeAsync().ConfigureAwait(false);
+            GC.SuppressFinalize(this);
         }
     }
 }
