@@ -14,7 +14,7 @@ namespace Take.Elephant.Sql
         private const string SKIP_PARAMETER = "SkipParameter";
         private const string TAKE_PARAMETER = "TakeParameter";
 
-        public static Task<int> ExecuteNonQueryAsync(
+        public static async Task<int> ExecuteNonQueryAsync(
             this DbConnection connection,
             string commandText,
             CancellationToken cancellationToken,
@@ -30,7 +30,7 @@ namespace Take.Elephant.Sql
                     command.Parameters.AddRange(sqlParameters);
                 }
 
-                return command.ExecuteNonQueryAsync(cancellationToken);
+                return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
             }
         }
 
