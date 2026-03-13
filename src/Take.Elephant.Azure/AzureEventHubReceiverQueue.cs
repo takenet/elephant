@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Azure.Messaging.EventHubs;
-using Azure.Messaging.EventHubs.Consumer;
 using Dawn;
+using Microsoft.Azure.EventHubs;
 
 namespace Take.Elephant.Azure
 {
@@ -19,12 +18,12 @@ namespace Take.Elephant.Azure
         private readonly string _consumerGroupName;
         private readonly EventPosition _eventPosition;
         private readonly string _partitionId;
+        private readonly ReceiverOptions _receiverOptions;
         private readonly TimeSpan _minDequeueRetryDelay;
         private readonly TimeSpan _maxDequeueRetryDelay;
         private readonly ISerializer<T> _serializer;
-        private readonly string _eventHubConnectionString;
-        private readonly string _eventHubName;
-        private EventHubConsumerClient _consumerClient;
+        private readonly EventHubClient _eventHubClient;
+        private PartitionReceiver _receiver;
         private readonly SemaphoreSlim _openSemaphore;
 
         public AzureEventHubReceiverQueue(
@@ -34,51 +33,45 @@ namespace Take.Elephant.Azure
             string consumerGroupName,
             string partitionId, 
             EventPosition eventPosition, 
+            ReceiverOptions receiverOptions = null,
             int minDequeueRetryDelay = 250,
             int maxDequeueRetryDelay = 30000)
         {
             Guard.Argument(eventHubName).NotNull().NotEmpty();
             Guard.Argument(eventHubConnectionString).NotNull().NotEmpty();
             _consumerGroupName = Guard.Argument(consumerGroupName).NotNull().Value;
-            _eventPosition = eventPosition;
+            _eventPosition = Guard.Argument(eventPosition).NotNull().Value;
             _partitionId = Guard.Argument(partitionId).NotNull().Value;
+            _receiverOptions = receiverOptions;
             Guard.Argument(minDequeueRetryDelay).Max(maxDequeueRetryDelay);
             _minDequeueRetryDelay = TimeSpan.FromMilliseconds(minDequeueRetryDelay);
             _maxDequeueRetryDelay = TimeSpan.FromMilliseconds(maxDequeueRetryDelay);
             _serializer = Guard.Argument(serializer).NotNull().Value;
-            _eventHubConnectionString = eventHubConnectionString;
-            _eventHubName = eventHubName;
+            
+            _eventHubClient = EventHubClient.CreateFromConnectionString(
+                new EventHubsConnectionStringBuilder(eventHubConnectionString)
+                {
+                    EntityPath = eventHubName
+                }.ToString());
             _openSemaphore = new SemaphoreSlim(1);
         }
         
         public async Task<T> DequeueOrDefaultAsync(CancellationToken cancellationToken = default)
         {
             await OpenIfRequiredAsync(cancellationToken);
-            using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            cancellationSource.CancelAfter(_minDequeueRetryDelay);
-            try
-            {
-                await foreach (var partitionEvent in _consumerClient.ReadEventsFromPartitionAsync(
-                    _partitionId, _eventPosition, cancellationSource.Token))
-                {
-                    return CreateItem(partitionEvent.Data);
-                }
-            }
-            catch (OperationCanceledException) when (cancellationSource.IsCancellationRequested)
-            {
-                // Timeout reached, return default
-            }
-            return default;
+            var eventDatas = await _receiver.ReceiveAsync(1, _minDequeueRetryDelay);
+            var eventData = eventDatas?.FirstOrDefault();
+            return CreateItem(eventData);
         }
         
         public async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
-            await OpenIfRequiredAsync(cancellationToken);
-            
-            await foreach (var partitionEvent in _consumerClient.ReadEventsFromPartitionAsync(
-                _partitionId, _eventPosition, cancellationToken))
+            var interval = new ExponentialInterval(_minDequeueRetryDelay, _maxDequeueRetryDelay);
+
+            while (true)
             {
-                return CreateItem(partitionEvent.Data);
+                cancellationToken.ThrowIfCancellationRequested();
+                var eventDatas = await _receiver.ReceiveAsync(1, interval.Interval);
             }
             
             throw new NotImplementedException();
@@ -101,21 +94,19 @@ namespace Take.Elephant.Azure
         
         public async Task CloseAsync(CancellationToken cancellationToken)
         {
-            if (_consumerClient != null)
-            {
-                await _consumerClient.CloseAsync(cancellationToken).ConfigureAwait(false);
-            }
+            await (_receiver?.CloseAsync() ?? Task.CompletedTask);
+            await _eventHubClient.CloseAsync();
         }
 
         private async Task<bool> OpenIfRequiredAsync(CancellationToken cancellationToken)
         {
-            if (_consumerClient != null) return false;
+            if (_receiver != null) return false;
 
             await _openSemaphore.WaitAsync(cancellationToken);
             try
             {
-                if (_consumerClient != null) return false;
-                _consumerClient = new EventHubConsumerClient(_consumerGroupName, _eventHubConnectionString, _eventHubName);
+                if (_receiver != null) return false;
+                _receiver = _eventHubClient.CreateReceiver(_consumerGroupName, _partitionId, _eventPosition, _receiverOptions);
                 return true;
             }
             finally
@@ -127,7 +118,7 @@ namespace Take.Elephant.Azure
         private T CreateItem(EventData eventData)
         {
             if (eventData == null) return default;
-            return _serializer.Deserialize(Encoding.UTF8.GetString(eventData.EventBody.ToArray()));            
+            return _serializer.Deserialize(Encoding.UTF8.GetString(eventData.Body.Array));            
         }
 
         internal class ExponentialInterval

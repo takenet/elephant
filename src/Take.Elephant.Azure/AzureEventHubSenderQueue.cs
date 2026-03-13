@@ -2,16 +2,15 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Azure.Messaging.EventHubs;
-using Azure.Messaging.EventHubs.Producer;
 using Dawn;
+using Microsoft.Azure.EventHubs;
 
 namespace Take.Elephant.Azure
 {
     public class AzureEventHubSenderQueue<T> : ISenderQueue<T>, ICloseable
     {
         private readonly ISerializer<T> _serializer;
-        private readonly EventHubProducerClient _producerClient;
+        private readonly EventHubClient _eventHubClient;
         
         public AzureEventHubSenderQueue(string eventHubName, string eventHubConnectionString, ISerializer<T> serializer)
         {
@@ -19,20 +18,23 @@ namespace Take.Elephant.Azure
             Guard.Argument(eventHubConnectionString).NotNull().NotEmpty();
             _serializer = Guard.Argument(serializer).NotNull().Value;
 
-            _producerClient = new EventHubProducerClient(eventHubConnectionString, eventHubName);
+            _eventHubClient = EventHubClient.CreateFromConnectionString(
+                new EventHubsConnectionStringBuilder(eventHubConnectionString)
+                {
+                    EntityPath = eventHubName
+                }.ToString());
         }
 
-        public virtual async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
+        public virtual Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             var serializedItem = _serializer.Serialize(item);
-            var eventData = new EventData(Encoding.UTF8.GetBytes(serializedItem));
-            await _producerClient.SendAsync(new[] { eventData }, cancellationToken).ConfigureAwait(false);
+            return _eventHubClient.SendAsync(new EventData(Encoding.UTF8.GetBytes(serializedItem)));                        
         }
 
-        public virtual async Task CloseAsync(CancellationToken cancellationToken)
+        public virtual Task CloseAsync(CancellationToken cancellationToken)
         {
-            await _producerClient.CloseAsync(cancellationToken).ConfigureAwait(false);
+            return _eventHubClient.CloseAsync();
         }
     }
 }
