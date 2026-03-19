@@ -1,5 +1,4 @@
 ﻿using Confluent.Kafka;
-using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +24,7 @@ namespace Take.Elephant.Kafka
             ProducerConfig producerConfig,
             string topic,
             ISerializer<T> serializer)
-            : this(producerConfig, topic, serializer, null)
+            : this(producerConfig, topic, serializer, null, null)
         {
         }
 
@@ -34,10 +33,21 @@ namespace Take.Elephant.Kafka
             string topic,
             ISerializer<T> serializer,
             Confluent.Kafka.ISerializer<string> kafkaSerializer)
+            : this(producerConfig, topic, serializer, kafkaSerializer, null)
         {
-            Topic = topic;
-            _serializer = serializer;
-            _producer = new KafkaEventStreamPublisher<Null, string>(producerConfig, topic, kafkaSerializer ?? new StringSerializer());
+        }
+
+        public KafkaSenderQueue(
+            ProducerConfig producerConfig,
+            string topic,
+            ISerializer<T> serializer,
+            Confluent.Kafka.ISerializer<string> kafkaSerializer,
+            IKafkaHeaderProvider headerProvider)
+        {
+            if (producerConfig == null) throw new ArgumentNullException(nameof(producerConfig));
+            Topic = topic ?? throw new ArgumentNullException(nameof(topic));
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _producer = new KafkaEventStreamPublisher<Null, string>(producerConfig, topic, kafkaSerializer ?? new StringSerializer(), headerProvider);
         }
 
         public KafkaSenderQueue(
@@ -45,9 +55,30 @@ namespace Take.Elephant.Kafka
             ISerializer<T> serializer,
             string topic)
         {
-            _serializer = serializer;
-            Topic = topic;
-            _producer = new KafkaEventStreamPublisher<Null, string>(producer, topic);
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            Topic = topic ?? throw new ArgumentNullException(nameof(topic));
+            _producer = new KafkaEventStreamPublisher<Null, string>(producer ?? throw new ArgumentNullException(nameof(producer)), topic, null);
+        }
+
+        public KafkaSenderQueue(
+            IProducer<Null, string> producer,
+            ISerializer<T> serializer,
+            string topic,
+            IKafkaHeaderProvider headerProvider)
+        {
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            Topic = topic ?? throw new ArgumentNullException(nameof(topic));
+            _producer = new KafkaEventStreamPublisher<Null, string>(producer ?? throw new ArgumentNullException(nameof(producer)), topic, headerProvider);
+        }
+
+        public KafkaSenderQueue(
+            IEventStreamPublisher<Null, string> producer,
+            ISerializer<T> serializer,
+            string topic)
+        {
+            _producer = producer ?? throw new ArgumentNullException(nameof(producer));
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            Topic = topic ?? throw new ArgumentNullException(nameof(topic));
         }
 
         public string Topic { get; }
@@ -58,7 +89,17 @@ namespace Take.Elephant.Kafka
             return _producer.PublishAsync(null, stringItem, cancellationToken);
         }
 
-        public void Dispose() => (_producer as IDisposable)?.Dispose();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+            (_producer as IDisposable)?.Dispose();
+        }
     }
 
     public class StringSerializer : Confluent.Kafka.ISerializer<string>

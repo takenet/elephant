@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 
 namespace Take.Elephant.Kafka
 {
-    public class KafkaPartitionQueue<T> : IReceiverQueue<T>, IPartitionSenderQueue<T>, ICloseable, IDisposable
+    public class KafkaPartitionQueue<T> : IKafkaReceiverQueue<T>, IPartitionSenderQueue<T>, ICloseable, IDisposable
     {
         private readonly KafkaPartitionSenderQueue<T> _senderQueue;
         private readonly KafkaReceiverQueue<T> _receiverQueue;
@@ -16,12 +14,13 @@ namespace Take.Elephant.Kafka
             ProducerConfig producerConfig,
             ConsumerConfig consumerConfig,
             string topic,
-            Take.Elephant.ISerializer<T> serializer,
+            ISerializer<T> serializer,
             Confluent.Kafka.ISerializer<string> kafkaSerializer = null,
-            IDeserializer<string> kafkaDeserializer = null)
+            IDeserializer<string> kafkaDeserializer = null,
+            IKafkaHeaderProvider headerProvider = null)
         {
-            _senderQueue = new KafkaPartitionSenderQueue<T>(producerConfig, topic, serializer, kafkaSerializer);
-            _receiverQueue = new KafkaReceiverQueue<T>(consumerConfig, topic, serializer, kafkaDeserializer);
+            _senderQueue = new(producerConfig, topic, serializer, kafkaSerializer, headerProvider);
+            _receiverQueue = new(consumerConfig, topic, serializer, kafkaDeserializer);
         }
 
         public Task EnqueueAsync(T item, string key, CancellationToken cancellationToken = default)
@@ -34,9 +33,23 @@ namespace Take.Elephant.Kafka
             return _receiverQueue.DequeueOrDefaultAsync(cancellationToken);
         }
 
-        public Task<T> DequeueAsync(CancellationToken cancellationToken = default)
+        public Task<KafkaConsumedMessage<T>> DequeueWithHeadersOrDefaultAsync(
+            CancellationToken cancellationToken = default
+        )
+        {
+            return _receiverQueue.DequeueWithHeadersOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             return _receiverQueue.DequeueAsync(cancellationToken);
+        }
+
+        public Task<KafkaConsumedMessage<T>> DequeueWithHeadersAsync(
+            CancellationToken cancellationToken
+        )
+        {
+            return _receiverQueue.DequeueWithHeadersAsync(cancellationToken);
         }
 
         public Task CloseAsync(CancellationToken cancellationToken) => _receiverQueue.CloseAsync(cancellationToken);
@@ -47,13 +60,11 @@ namespace Take.Elephant.Kafka
             GC.SuppressFinalize(this);
         }
 
-        protected void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                _senderQueue?.Dispose();
-                _receiverQueue?.Dispose();
-            }
+            if (!disposing) return;
+            _senderQueue?.Dispose();
+            _receiverQueue?.Dispose();
         }
     }
 }

@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -9,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Take.Elephant.Kafka
 {
-    public class KafkaReceiverQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, IOpenable, ICloseable, IDisposable
+    public class KafkaReceiverQueue<T> : IKafkaReceiverQueue<T>, IOpenable, ICloseable, IDisposable
     {
         private readonly IConsumer<Ignore, string> _consumer;
         private readonly ISerializer<T> _serializer;
         private readonly SemaphoreSlim _consumerStartSemaphore;
         private readonly CancellationTokenSource _cts;
-        private readonly Channel<T> _channel;
+        private readonly Channel<(T Item, Headers KafkaHeaders)> _channel;
         private Task _consumerTask;
         private bool _closed;
 
@@ -42,11 +43,12 @@ namespace Take.Elephant.Kafka
         {
             if (string.IsNullOrWhiteSpace(topic)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
             _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
+            ArgumentNullException.ThrowIfNull(serializer);
             _serializer = serializer;
             Topic = topic;
             _consumerStartSemaphore = new SemaphoreSlim(1, 1);
             _cts = new CancellationTokenSource();
-            _channel = Channel.CreateBounded<T>(1);
+            _channel = Channel.CreateBounded<(T, Headers)>(1);
         }
 
         public string Topic { get; }
@@ -56,7 +58,18 @@ namespace Take.Elephant.Kafka
             await StartConsumerTaskIfNotAsync(cancellationToken);
             if (_channel.Reader.TryRead(out var item))
             {
-                return item;
+                return item.Item;
+            }
+
+            return default;
+        }
+
+        public async Task<KafkaConsumedMessage<T>> DequeueWithHeadersOrDefaultAsync(CancellationToken cancellationToken = default)
+        {
+            await StartConsumerTaskIfNotAsync(cancellationToken);
+            if (_channel.Reader.TryRead(out var item))
+            {
+                return KafkaHeadersConverter.BuildConsumedMessage(item.Item, item.KafkaHeaders);
             }
 
             return default;
@@ -65,7 +78,15 @@ namespace Take.Elephant.Kafka
         public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             await StartConsumerTaskIfNotAsync(cancellationToken);
-            return await _channel.Reader.ReadAsync(cancellationToken);
+            var item = await _channel.Reader.ReadAsync(cancellationToken);
+            return item.Item;
+        }
+
+        public async Task<KafkaConsumedMessage<T>> DequeueWithHeadersAsync(CancellationToken cancellationToken)
+        {
+            await StartConsumerTaskIfNotAsync(cancellationToken);
+            var item = await _channel.Reader.ReadAsync(cancellationToken);
+            return KafkaHeadersConverter.BuildConsumedMessage(item.Item, item.KafkaHeaders);
         }
 
         public Task OpenAsync(CancellationToken cancellationToken)
@@ -79,7 +100,10 @@ namespace Take.Elephant.Kafka
             {
                 _closed = true;
                 await _cts.CancelAsync();
-                await _consumerTask;
+                if (_consumerTask != null)
+                {
+                    await _consumerTask;
+                }
                 _consumer.Close();
             }
         }
@@ -88,16 +112,21 @@ namespace Take.Elephant.Kafka
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!disposing) return;
+            if (!_closed)
             {
-                if (!_closed)
+                _closed = true;
+                _cts.Cancel();
+                if (_consumerTask != null)
                 {
-                    _consumer.Close();
+                    _consumerTask.GetAwaiter().GetResult();
                 }
-
-                _consumer.Dispose();
-                _cts.Dispose();
+                _consumer.Close();
             }
+
+            _consumer.Dispose();
+            _cts.Dispose();
+            _consumerStartSemaphore.Dispose();
         }
 
         private async Task StartConsumerTaskIfNotAsync(CancellationToken cancellationToken)
@@ -107,15 +136,12 @@ namespace Take.Elephant.Kafka
             await _consumerStartSemaphore.WaitAsync(cancellationToken);
             try
             {
-                if (_consumerTask == null)
-                {
-                    _consumerTask = Task
-                        .Factory
-                        .StartNew(
-                            () => ConsumeAsync(_cts.Token),
-                            TaskCreationOptions.LongRunning)
-                        .Unwrap();
-                }
+                _consumerTask ??= Task
+                    .Factory
+                    .StartNew(
+                        () => ConsumeAsync(_cts.Token),
+                        TaskCreationOptions.LongRunning)
+                    .Unwrap();
             }
             finally
             {
@@ -135,8 +161,8 @@ namespace Take.Elephant.Kafka
                 try
                 {
                     var result = _consumer.Consume(cancellationToken);
-                    var resultValue = _serializer.Deserialize(result.Value);
-                    await _channel.Writer.WriteAsync(resultValue, cancellationToken);
+                    var resultValue = _serializer.Deserialize(result.Message.Value);
+                    await _channel.Writer.WriteAsync((resultValue, result.Message.Headers), cancellationToken);
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
