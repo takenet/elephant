@@ -91,7 +91,7 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             : this(
                 producerConfig,
                 topic,
-                new CachedSchemaRegistryClient(schemaRegistryOptions.SchemaRegistryConfig),
+                new CachedSchemaRegistryClient((schemaRegistryOptions ?? throw new ArgumentNullException(nameof(schemaRegistryOptions))).SchemaRegistryConfig),
                 schemaRegistryOptions,
                 ownsSchemaRegistryClient: true,
                 headerProvider: headerProvider)
@@ -241,15 +241,16 @@ namespace Take.Elephant.Kafka.SchemaRegistry
 
             if (_headerProvider != null)
             {
-                var headers = _headerProvider.GetHeaders();
-                message.Headers = [];
-                if (headers != null)
+                var headers = _headerProvider.GetHeaders() ?? Array.Empty<IHeader>();
+                foreach (var header in headers)
                 {
-                     foreach (var header in headers)
-                     {
-                         if (header == null || header.Key == null) continue;
-                         message.Headers.Add(header.Key, header.GetValueBytes());
-                     }
+                    if (header == null || header.Key == null)
+                    {
+                        continue;
+                    }
+
+                    message.Headers ??= new Headers();
+                    message.Headers.Add(header.Key, header.GetValueBytes());
                 }
             }
 

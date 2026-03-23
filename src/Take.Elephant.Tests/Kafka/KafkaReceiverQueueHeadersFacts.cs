@@ -19,7 +19,7 @@ namespace Take.Elephant.Tests.Kafka
         {
             // Arrange
             var expectedItem = new TestItem { Value = "payload" };
-            var serializer = Substitute.For<ISerializer<TestItem>>();
+            var serializer = Substitute.For<Take.Elephant.ISerializer<TestItem>>();
             serializer.Deserialize("serialized-value").Returns(expectedItem);
 
             var consumer = Substitute.For<IConsumer<Ignore, string>>();
@@ -30,11 +30,10 @@ namespace Take.Elephant.Tests.Kafka
                 Message = new Message<Ignore, string>
                 {
                     Value = "serialized-value",
-                    Headers =
-                    [
-                        new Header("x-origin", Encoding.UTF8.GetBytes("billing")),
-                        new Header("x-correlation-id", Encoding.UTF8.GetBytes("corr-123"))
-                    ]
+                    Headers = CreateHeaders(
+                        ("x-origin", "billing"),
+                        ("x-correlation-id", "corr-123")
+                    )
                 }
             };
 
@@ -68,11 +67,10 @@ namespace Take.Elephant.Tests.Kafka
                 Message = new Message<Ignore, TestItem>
                 {
                     Value = expectedItem,
-                    Headers =
-                    [
-                        new Header("x-origin", Encoding.UTF8.GetBytes("billing")),
-                        new Header("x-correlation-id", Encoding.UTF8.GetBytes("corr-123"))
-                    ]
+                    Headers = CreateHeaders(
+                        ("x-origin", "billing"),
+                        ("x-correlation-id", "corr-123")
+                    )
                 }
             };
 
@@ -98,7 +96,7 @@ namespace Take.Elephant.Tests.Kafka
         {
             // Arrange
             var expectedItem = new TestItem { Value = "payload" };
-            var serializer = Substitute.For<ISerializer<TestItem>>();
+            var serializer = Substitute.For<Take.Elephant.ISerializer<TestItem>>();
             serializer.Deserialize("serialized-value").Returns(expectedItem);
 
             var consumer = Substitute.For<IConsumer<Ignore, string>>();
@@ -179,6 +177,17 @@ namespace Take.Elephant.Tests.Kafka
                     cancellationToken.WaitHandle.WaitOne();
                     throw new OperationCanceledException(cancellationToken);
                 });
+        }
+
+        private static Headers CreateHeaders(params (string Key, string Value)[] headers)
+        {
+            var result = new Headers();
+            foreach (var (key, value) in headers)
+            {
+                result.Add(key, Encoding.UTF8.GetBytes(value));
+            }
+
+            return result;
         }
 
         public sealed class TestItem

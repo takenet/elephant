@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Confluent.Kafka;
 
 namespace Take.Elephant.Kafka
@@ -7,14 +8,14 @@ namespace Take.Elephant.Kafka
     {
         internal static KafkaConsumedMessage<T> BuildConsumedMessage<T>(T item, Headers headers)
         {
-            return new KafkaConsumedMessage<T>(item, ToDictionary(headers));
+            return new KafkaConsumedMessage<T>(item, ToDictionary(headers), headersAreSafe: true);
         }
 
-        internal static Dictionary<string, byte[]> ToDictionary(Headers headers)
+        internal static IReadOnlyDictionary<string, byte[]> ToDictionary(Headers headers)
         {
             if (headers == null || headers.Count == 0)
             {
-                return null;
+                return KafkaConsumedMessageDefaults.EmptyHeaders;
             }
 
             var result = new Dictionary<string, byte[]>(headers.Count);
@@ -29,7 +30,12 @@ namespace Take.Elephant.Kafka
                 result[header.Key] = valueBytes != null ? (byte[])valueBytes.Clone() : null;
             }
 
-            return result;
+            if (result.Count == 0)
+            {
+                return KafkaConsumedMessageDefaults.EmptyHeaders;
+            }
+
+            return new ReadOnlyDictionary<string, byte[]>(result);
         }
     }
 }

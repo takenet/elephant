@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,9 +27,7 @@ namespace Take.Elephant.Kafka
             string topic,
             ISerializer<TEvent> serializer)
             : this(
-                  new ProducerBuilder<TKey, TEvent>(producerConfig)
-                        .SetValueSerializer(new EventSerializer(serializer))
-                        .Build(),
+                CreateProducer(producerConfig, serializer),
                   topic,
                   null)
         {
@@ -40,9 +39,7 @@ namespace Take.Elephant.Kafka
             ISerializer<TEvent> serializer,
             IKafkaHeaderProvider headerProvider)
             : this(
-                  new ProducerBuilder<TKey, TEvent>(producerConfig)
-                        .SetValueSerializer(new EventSerializer(serializer))
-                        .Build(),
+                CreateProducer(producerConfig, serializer),
                   topic,
                   headerProvider)
         {
@@ -53,9 +50,7 @@ namespace Take.Elephant.Kafka
             string topic,
             Confluent.Kafka.ISerializer<TEvent> kafkaSerializer)
             : this(
-                  new ProducerBuilder<TKey, TEvent>(producerConfig)
-                        .SetValueSerializer(kafkaSerializer)
-                        .Build(),
+                CreateProducer(producerConfig, kafkaSerializer),
                   topic,
                   null)
         {
@@ -67,9 +62,7 @@ namespace Take.Elephant.Kafka
             Confluent.Kafka.ISerializer<TEvent> kafkaSerializer,
             IKafkaHeaderProvider headerProvider)
             : this(
-                  new ProducerBuilder<TKey, TEvent>(producerConfig)
-                        .SetValueSerializer(kafkaSerializer)
-                        .Build(),
+                CreateProducer(producerConfig, kafkaSerializer),
                   topic,
                   headerProvider)
         {
@@ -126,18 +119,16 @@ namespace Take.Elephant.Kafka
 
             if (_headerProvider != null)
             {
-                message.Headers = [];
-                var headers = _headerProvider.GetHeaders();
-                 if (headers != null)
+                var headers = _headerProvider.GetHeaders() ?? Array.Empty<IHeader>();
+                foreach (var header in headers)
                 {
-                    foreach (var header in headers)
-                     {
-                         if (header == null || header.Key == null)
-                         {
-                             continue;
-                         }
-                         message.Headers.Add(header.Key, header.GetValueBytes());
-                     }
+                    if (header == null || header.Key == null)
+                    {
+                        continue;
+                    }
+
+                    message.Headers ??= new Headers();
+                    message.Headers.Add(header.Key, header.GetValueBytes());
                 }
             }
 
@@ -158,11 +149,43 @@ namespace Take.Elephant.Kafka
             GC.SuppressFinalize(this);
         }
 
-        public class EventSerializer(ISerializer<TEvent> serializer) : Confluent.Kafka.ISerializer<TEvent>
+        private static IProducer<TKey, TEvent> CreateProducer(
+            ProducerConfig producerConfig,
+            ISerializer<TEvent> serializer)
         {
+            ArgumentNullException.ThrowIfNull(producerConfig);
+            ArgumentNullException.ThrowIfNull(serializer);
+
+            return new ProducerBuilder<TKey, TEvent>(producerConfig)
+                .SetValueSerializer(new EventSerializer(serializer))
+                .Build();
+        }
+
+        private static IProducer<TKey, TEvent> CreateProducer(
+            ProducerConfig producerConfig,
+            Confluent.Kafka.ISerializer<TEvent> kafkaSerializer)
+        {
+            ArgumentNullException.ThrowIfNull(producerConfig);
+            ArgumentNullException.ThrowIfNull(kafkaSerializer);
+
+            return new ProducerBuilder<TKey, TEvent>(producerConfig)
+                .SetValueSerializer(kafkaSerializer)
+                .Build();
+        }
+
+        public class EventSerializer : Confluent.Kafka.ISerializer<TEvent>
+        {
+            private readonly ISerializer<TEvent> _serializer;
+
+            public EventSerializer(ISerializer<TEvent> serializer)
+            {
+                ArgumentNullException.ThrowIfNull(serializer);
+                _serializer = serializer;
+            }
+
             public byte[] Serialize(TEvent data, SerializationContext context)
             {
-                return Encoding.UTF8.GetBytes(serializer.Serialize(data));
+                return Encoding.UTF8.GetBytes(_serializer.Serialize(data));
             }
         }
     }

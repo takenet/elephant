@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Confluent.Kafka;
 using Take.Elephant.Kafka;
 using Xunit;
@@ -8,19 +10,21 @@ namespace Take.Elephant.Tests.Kafka
     public class KafkaHeadersConverterFacts
     {
         [Fact]
-        public void ToDictionary_WithNullHeaders_ShouldReturnNull()
+        public void ToDictionary_WithNullHeaders_ShouldReturnEmptyReadOnlyDictionary()
         {
             var result = KafkaHeadersConverter.ToDictionary(null);
 
-            Assert.Null(result);
+            Assert.NotNull(result);
+            Assert.Empty(result);
         }
 
         [Fact]
-        public void ToDictionary_WithEmptyHeaders_ShouldReturnNull()
+        public void ToDictionary_WithEmptyHeaders_ShouldReturnEmptyReadOnlyDictionary()
         {
             var result = KafkaHeadersConverter.ToDictionary(new Headers());
 
-            Assert.Null(result);
+            Assert.NotNull(result);
+            Assert.Empty(result);
         }
 
         [Fact]
@@ -56,6 +60,21 @@ namespace Take.Elephant.Tests.Kafka
             Assert.Equal(new byte[] { 9, 8, 7 }, result["x-test"]);
 
             sourceBytes[0] = 1;
+            Assert.Equal(new byte[] { 9, 8, 7 }, result["x-test"]);
+        }
+
+        [Fact]
+        public void ToDictionary_WithNonEmptyHeaders_ShouldReturnReadOnlyDictionary()
+        {
+            var headers = new Headers
+            {
+                new Header("x-test", new byte[] { 9, 8, 7 })
+            };
+
+            var result = KafkaHeadersConverter.ToDictionary(headers);
+            var writableResult = Assert.IsAssignableFrom<IDictionary<string, byte[]>>(result);
+
+            Assert.Throws<NotSupportedException>(() => writableResult["x-test"] = new byte[] { 1 });
             Assert.Equal(new byte[] { 9, 8, 7 }, result["x-test"]);
         }
 

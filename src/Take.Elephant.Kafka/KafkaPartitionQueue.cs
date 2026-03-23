@@ -40,7 +40,7 @@ namespace Take.Elephant.Kafka
             return _receiverQueue.DequeueWithHeadersOrDefaultAsync(cancellationToken);
         }
 
-        public Task<T> DequeueAsync(CancellationToken cancellationToken)
+        public Task<T> DequeueAsync(CancellationToken cancellationToken = default)
         {
             return _receiverQueue.DequeueAsync(cancellationToken);
         }

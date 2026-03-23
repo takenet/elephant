@@ -113,35 +113,38 @@ namespace Take.Elephant.Tests.Kafka
                 }
                 catch (DeleteTopicsException ex)
                 {
-                    if (ex.Results == null)
-                    {
-                        continue;
-                    }
-
-                    var shouldIgnore = true;
-                    foreach (var result in ex.Results)
-                    {
-                        if (result == null)
-                        {
-                            continue;
-                        }
-
-                        if (
-                            result.Error.Code != ErrorCode.UnknownTopicOrPart
-                            && result.Error.Code != ErrorCode.TopicDeletionDisabled
-                        )
-                        {
-                            shouldIgnore = false;
-                            break;
-                        }
-                    }
-
-                    if (!shouldIgnore)
+                    if (!ShouldIgnore(ex))
                     {
                         throw;
                     }
                 }
             }
+        }
+
+        private static bool ShouldIgnore(DeleteTopicsException ex)
+        {
+            if (ex.Results == null)
+            {
+                return true;
+            }
+
+            foreach (var result in ex.Results)
+            {
+                if (result == null)
+                {
+                    continue;
+                }
+
+                if (
+                    result.Error.Code != ErrorCode.UnknownTopicOrPart
+                    && result.Error.Code != ErrorCode.TopicDeletionDisabled
+                )
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

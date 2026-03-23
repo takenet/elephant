@@ -17,7 +17,7 @@ namespace Take.Elephant.Tests.Kafka
         [Fact]
         public void KafkaSenderQueue_BootstrapCtor_ShouldCreateInstance()
         {
-            var serializer = Substitute.For<ISerializer<TestItem>>();
+            var serializer = Substitute.For<Take.Elephant.ISerializer<TestItem>>();
 
             var queue = new KafkaSenderQueue<TestItem>("localhost:9092", "topic-a", serializer);
 
@@ -28,7 +28,7 @@ namespace Take.Elephant.Tests.Kafka
         [Fact]
         public void KafkaSenderQueue_BootstrapCtorWithKafkaSerializer_ShouldCreateInstance()
         {
-            var serializer = Substitute.For<ISerializer<TestItem>>();
+            var serializer = Substitute.For<Take.Elephant.ISerializer<TestItem>>();
             var kafkaSerializer = Substitute.For<Confluent.Kafka.ISerializer<string>>();
 
             var queue = new KafkaSenderQueue<TestItem>(
@@ -46,7 +46,7 @@ namespace Take.Elephant.Tests.Kafka
         public void KafkaSenderQueue_WithIProducerCtor_ShouldCreateInstance()
         {
             var producer = Substitute.For<IProducer<Null, string>>();
-            var serializer = Substitute.For<ISerializer<TestItem>>();
+            var serializer = Substitute.For<Take.Elephant.ISerializer<TestItem>>();
 
             var queue = new KafkaSenderQueue<TestItem>(producer, serializer, "topic-a");
 
@@ -114,6 +114,42 @@ namespace Take.Elephant.Tests.Kafka
         }
 
         [Fact]
+        public void KafkaEventStreamPublisher_WithSerializerCtor_ShouldThrowForNullSerializer()
+        {
+            var producerConfig = new ProducerConfig { BootstrapServers = "localhost:9092" };
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new KafkaEventStreamPublisher<string, TestItem>(producerConfig, "topic-a", (Take.Elephant.ISerializer<TestItem>)null)
+            );
+
+            Assert.Equal("serializer", exception.ParamName);
+        }
+
+        [Fact]
+        public void KafkaEventStreamPublisher_WithSerializerCtor_ShouldThrowForNullProducerConfig()
+        {
+            var serializer = Substitute.For<Take.Elephant.ISerializer<TestItem>>();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new KafkaEventStreamPublisher<string, TestItem>((ProducerConfig)null, "topic-a", serializer)
+            );
+
+            Assert.Equal("producerConfig", exception.ParamName);
+        }
+
+        [Fact]
+        public void KafkaEventStreamPublisher_WithKafkaSerializerCtor_ShouldThrowForNullKafkaSerializer()
+        {
+            var producerConfig = new ProducerConfig { BootstrapServers = "localhost:9092" };
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new KafkaEventStreamPublisher<string, TestItem>(producerConfig, "topic-a", (Confluent.Kafka.ISerializer<TestItem>)null)
+            );
+
+            Assert.Equal("kafkaSerializer", exception.ParamName);
+        }
+
+        [Fact]
         public async Task KafkaEventStreamPublisher_WithHeaderProviderReturningNull_ShouldKeepEmptyHeaders()
         {
             var producer = Substitute.For<IProducer<string, TestItem>>();
@@ -138,8 +174,7 @@ namespace Take.Elephant.Tests.Kafka
             await publisher.PublishAsync("key-1", new TestItem(), CancellationToken.None);
 
             Assert.NotNull(capturedMessage);
-            Assert.NotNull(capturedMessage.Headers);
-            Assert.Empty(capturedMessage.Headers);
+            Assert.Null(capturedMessage.Headers);
 
             publisher.Dispose();
         }
