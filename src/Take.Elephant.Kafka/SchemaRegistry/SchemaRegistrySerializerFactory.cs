@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Confluent.Kafka;
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
@@ -23,10 +22,8 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             ISchemaRegistryClient schemaRegistryClient,
             SchemaRegistryOptions options) where T : class
         {
-            if (schemaRegistryClient == null)
-                throw new ArgumentNullException(nameof(schemaRegistryClient));
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(schemaRegistryClient);
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.SerializerType switch
             {
@@ -47,10 +44,8 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             ISchemaRegistryClient schemaRegistryClient,
             SchemaRegistryOptions options) where T : class
         {
-            if (schemaRegistryClient == null)
-                throw new ArgumentNullException(nameof(schemaRegistryClient));
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(schemaRegistryClient);
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.SerializerType switch
             {

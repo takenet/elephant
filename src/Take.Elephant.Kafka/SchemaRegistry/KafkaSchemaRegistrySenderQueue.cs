@@ -12,9 +12,11 @@ namespace Take.Elephant.Kafka.SchemaRegistry
     /// <typeparam name="T">The type of items in the queue.</typeparam>
     public class KafkaSchemaRegistrySenderQueue<T> : ISenderQueue<T>, IDisposable where T : class
     {
+        private const string TopicNullOrWhitespaceMessage = "Value cannot be null or whitespace.";
         private readonly IProducer<Null, T> _producer;
         private readonly ISchemaRegistryClient _schemaRegistryClient;
         private readonly bool _ownsSchemaRegistryClient;
+        private readonly IKafkaHeaderProvider _headerProvider;
 
         /// <summary>
         /// Creates a new instance of <see cref="KafkaSchemaRegistrySenderQueue{T}"/>.
@@ -33,6 +35,26 @@ namespace Take.Elephant.Kafka.SchemaRegistry
         /// <summary>
         /// Creates a new instance of <see cref="KafkaSchemaRegistrySenderQueue{T}"/>.
         /// </summary>
+        /// <param name="bootstrapServers">The Kafka bootstrap servers.</param>
+        /// <param name="topic">The topic name.</param>
+        /// <param name="schemaRegistryOptions">The Schema Registry options.</param>
+        /// <param name="headerProvider">
+         /// An optional provider used to generate Kafka message headers for each item before it is sent.
+         /// If <c>null</c>, no headers are added. Implementations may return <c>null</c> or an empty set
+         /// to indicate that no headers should be attached for a given message.
+         /// </param>
+        public KafkaSchemaRegistrySenderQueue(
+            string bootstrapServers,
+            string topic,
+            SchemaRegistryOptions schemaRegistryOptions,
+            IKafkaHeaderProvider headerProvider)
+            : this(new ProducerConfig { BootstrapServers = bootstrapServers }, topic, schemaRegistryOptions, headerProvider)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="KafkaSchemaRegistrySenderQueue{T}"/>.
+        /// </summary>
         /// <param name="producerConfig">The producer configuration.</param>
         /// <param name="topic">The topic name.</param>
         /// <param name="schemaRegistryOptions">The Schema Registry options.</param>
@@ -43,9 +65,36 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             : this(
                 producerConfig,
                 topic,
-                new CachedSchemaRegistryClient(schemaRegistryOptions.SchemaRegistryConfig),
+                new CachedSchemaRegistryClient((schemaRegistryOptions ?? throw new ArgumentNullException(nameof(schemaRegistryOptions))).SchemaRegistryConfig),  
                 schemaRegistryOptions,
-                ownsSchemaRegistryClient: true)
+                ownsSchemaRegistryClient: true,
+                headerProvider: null)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="KafkaSchemaRegistrySenderQueue{T}"/>.
+        /// </summary>
+        /// <param name="producerConfig">The producer configuration.</param>
+        /// <param name="topic">The topic name.</param>
+        /// <param name="schemaRegistryOptions">The Schema Registry options.</param>
+        /// <param name="headerProvider">
+         /// An optional provider used to generate Kafka message headers for each item before it is sent.
+         /// If <c>null</c>, no headers are added. Implementations may return <c>null</c> or an empty set
+         /// to indicate that no headers should be attached for a given message.
+         /// </param>
+        public KafkaSchemaRegistrySenderQueue(
+            ProducerConfig producerConfig,
+            string topic,
+            SchemaRegistryOptions schemaRegistryOptions,
+            IKafkaHeaderProvider headerProvider)
+            : this(
+                producerConfig,
+                topic,
+                new CachedSchemaRegistryClient((schemaRegistryOptions ?? throw new ArgumentNullException(nameof(schemaRegistryOptions))).SchemaRegistryConfig),
+                schemaRegistryOptions,
+                ownsSchemaRegistryClient: true,
+                headerProvider: headerProvider)
         {
         }
 
@@ -61,7 +110,29 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             string topic,
             ISchemaRegistryClient schemaRegistryClient,
             SchemaRegistryOptions schemaRegistryOptions)
-            : this(producerConfig, topic, schemaRegistryClient, schemaRegistryOptions, ownsSchemaRegistryClient: false)
+            : this(producerConfig, topic, schemaRegistryClient, schemaRegistryOptions, ownsSchemaRegistryClient: false, headerProvider: null)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="KafkaSchemaRegistrySenderQueue{T}"/>.
+        /// </summary>
+        /// <param name="producerConfig">The producer configuration.</param>
+        /// <param name="topic">The topic name.</param>
+        /// <param name="schemaRegistryClient">The Schema Registry client.</param>
+        /// <param name="schemaRegistryOptions">The Schema Registry options.</param>
+        /// <param name="headerProvider">
+         /// An optional provider used to generate Kafka message headers for each item before it is sent.
+         /// If <c>null</c>, no headers are added. Implementations may return <c>null</c> or an empty set
+         /// to indicate that no headers should be attached for a given message.
+         /// </param>
+        public KafkaSchemaRegistrySenderQueue(
+            ProducerConfig producerConfig,
+            string topic,
+            ISchemaRegistryClient schemaRegistryClient,
+            SchemaRegistryOptions schemaRegistryOptions,
+            IKafkaHeaderProvider headerProvider)
+            : this(producerConfig, topic, schemaRegistryClient, schemaRegistryOptions, ownsSchemaRegistryClient: false, headerProvider: headerProvider)
         {
         }
 
@@ -70,14 +141,16 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             string topic,
             ISchemaRegistryClient schemaRegistryClient,
             SchemaRegistryOptions schemaRegistryOptions,
-            bool ownsSchemaRegistryClient)
+            bool ownsSchemaRegistryClient,
+            IKafkaHeaderProvider headerProvider = null)
         {
             if (string.IsNullOrWhiteSpace(topic))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
+                throw new ArgumentException(TopicNullOrWhitespaceMessage, nameof(topic));
 
             Topic = topic;
             _schemaRegistryClient = schemaRegistryClient ?? throw new ArgumentNullException(nameof(schemaRegistryClient));
             _ownsSchemaRegistryClient = ownsSchemaRegistryClient;
+            _headerProvider = headerProvider;
 
             var serializer = SchemaRegistrySerializerFactory.CreateSerializer<T>(schemaRegistryClient, schemaRegistryOptions);
             _producer = new ProducerBuilder<Null, T>(producerConfig)
@@ -90,19 +163,66 @@ namespace Take.Elephant.Kafka.SchemaRegistry
         /// </summary>
         /// <param name="producer">The Kafka producer.</param>
         /// <param name="topic">The topic name.</param>
+        public KafkaSchemaRegistrySenderQueue(
+            IProducer<Null, T> producer,
+            string topic)
+        {
+            if (string.IsNullOrWhiteSpace(topic))
+                throw new ArgumentException(TopicNullOrWhitespaceMessage, nameof(topic));
+
+            _producer = producer ?? throw new ArgumentNullException(nameof(producer));
+            Topic = topic;
+            _schemaRegistryClient = null;
+            _ownsSchemaRegistryClient = false;
+            _headerProvider = null;
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="KafkaSchemaRegistrySenderQueue{T}"/> using a pre-built producer.
+        /// </summary>
+        /// <param name="producer">The Kafka producer.</param>
+        /// <param name="topic">The topic name.</param>
         /// <param name="schemaRegistryClient">The Schema Registry client (optional, for lifecycle management).</param>
         public KafkaSchemaRegistrySenderQueue(
             IProducer<Null, T> producer,
             string topic,
-            ISchemaRegistryClient schemaRegistryClient = null)
+            ISchemaRegistryClient schemaRegistryClient)
         {
             if (string.IsNullOrWhiteSpace(topic))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(topic));
+                throw new ArgumentException(TopicNullOrWhitespaceMessage, nameof(topic));
 
             _producer = producer ?? throw new ArgumentNullException(nameof(producer));
             Topic = topic;
             _schemaRegistryClient = schemaRegistryClient;
             _ownsSchemaRegistryClient = false;
+            _headerProvider = null;
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="KafkaSchemaRegistrySenderQueue{T}"/> using a pre-built producer.
+        /// </summary>
+        /// <param name="producer">The Kafka producer.</param>
+        /// <param name="topic">The topic name.</param>
+        /// <param name="schemaRegistryClient">The Schema Registry client (optional, for lifecycle management).</param>
+        /// <param name="headerProvider">
+         /// An optional provider used to generate Kafka message headers for each item before it is sent.
+         /// If <c>null</c>, no headers are added. Implementations may return <c>null</c> or an empty set
+         /// to indicate that no headers should be attached for a given message.
+         /// </param>
+        public KafkaSchemaRegistrySenderQueue(
+            IProducer<Null, T> producer,
+            string topic,
+            ISchemaRegistryClient schemaRegistryClient,
+            IKafkaHeaderProvider headerProvider)
+        {
+            if (string.IsNullOrWhiteSpace(topic))
+                throw new ArgumentException(TopicNullOrWhitespaceMessage, nameof(topic));
+
+            _producer = producer ?? throw new ArgumentNullException(nameof(producer));
+            Topic = topic;
+            _schemaRegistryClient = schemaRegistryClient;
+            _ownsSchemaRegistryClient = false;
+            _headerProvider = headerProvider;
         }
 
         /// <summary>
@@ -113,14 +233,28 @@ namespace Take.Elephant.Kafka.SchemaRegistry
         /// <inheritdoc />
         public virtual async Task EnqueueAsync(T item, CancellationToken cancellationToken = default)
         {
-            await _producer.ProduceAsync(
-                Topic,
-                new Message<Null, T>
+            var message = new Message<Null, T>
+            {
+                Key = null,
+                Value = item
+            };
+
+            if (_headerProvider != null)
+            {
+                var headers = _headerProvider.GetHeaders() ?? Array.Empty<IHeader>();
+                foreach (var header in headers)
                 {
-                    Key = null,
-                    Value = item
-                },
-                cancellationToken);
+                    if (header == null || header.Key == null)
+                    {
+                        continue;
+                    }
+
+                    message.Headers ??= new Headers();
+                    message.Headers.Add(header.Key, header.GetValueBytes());
+                }
+            }
+
+            await _producer.ProduceAsync(Topic, message, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -132,13 +266,11 @@ namespace Take.Elephant.Kafka.SchemaRegistry
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!disposing) return;
+            _producer?.Dispose();
+            if (_ownsSchemaRegistryClient)
             {
-                _producer?.Dispose();
-                if (_ownsSchemaRegistryClient)
-                {
-                    _schemaRegistryClient?.Dispose();
-                }
+                _schemaRegistryClient?.Dispose();
             }
         }
     }

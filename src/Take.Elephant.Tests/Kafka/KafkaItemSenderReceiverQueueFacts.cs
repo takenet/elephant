@@ -1,6 +1,7 @@
 using Confluent.Kafka;
+using Confluent.Kafka.Admin;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using Take.Elephant.Kafka;
 using Take.Elephant.Tests.Azure;
 using Xunit;
@@ -10,72 +11,46 @@ namespace Take.Elephant.Tests.Kafka
     [Trait("Category", nameof(Kafka))]
     public class KafkaItemSenderReceiverQueueFacts : ItemSenderReceiverQueueFacts
     {
-        private readonly string _topic = "items";
+        private const string TOPIC_PREFIX = "items";
         private static readonly ClientConfig _clientConfig = GetKafkaConfig();
-        private static readonly ConsumerConfig _consumerConfig = new ConsumerConfig(_clientConfig) { GroupId = "default" };
+        private readonly List<string> _createdTopics = [];
         private KafkaSenderQueue<Item> _senderQueue;
         private KafkaReceiverQueue<Item> _receiverQueue;
 
         private static ClientConfig GetKafkaConfig()
         {
-            ClientConfig clientConfig;
-            var localKafka = true;
+            const string bootstrapServers = "localhost:9092";
 
-            // Local Kafka
-            if (localKafka)
+            var clientConfig = new ClientConfig
             {
-                var bootstrapServers = "localhost:9092";
-
-                clientConfig = new ClientConfig
-                {
-                    BootstrapServers = bootstrapServers
-                };
-            }
-
-            //Azure Event Hub
-            else
-            {
-                var fqdn = "";
-                var connectionString = "";
-                clientConfig = new ClientConfig
-                {
-                    BootstrapServers = fqdn,
-                    SecurityProtocol = SecurityProtocol.SaslSsl,
-                    SaslMechanism = SaslMechanism.Plain,
-                    SaslUsername = "$ConnectionString",
-                    SaslPassword = connectionString,
-                };
-            }
+                BootstrapServers = bootstrapServers
+            };
+            
             return clientConfig;
         }
 
         public override (ISenderQueue<Item>, IBlockingReceiverQueue<Item>) Create()
         {
+            var topic = $"{TOPIC_PREFIX}-{Guid.NewGuid():N}";
+            EnsureTopicExists(topic);
+            _createdTopics.Add(topic);
+
             var consumerConfig = new ConsumerConfig(_clientConfig)
             {
-                GroupId = "default"
+                GroupId = $"default-{Guid.NewGuid():N}",
+                AutoOffsetReset = AutoOffsetReset.Earliest,
             };
-
-            var adminClient = new AdminClientBuilder(_clientConfig).Build();
-            var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(5));
-            var topicMetadata = metadata.Topics.FirstOrDefault(t => t.Topic == _topic);
-            if (topicMetadata != null)
-            {
-                var consumer = new ConsumerBuilder<Ignore, Item>(consumerConfig)
-                    .SetValueDeserializer(new JsonDeserializer<Item>())
-                    .Build();
-
-                foreach (var partition in topicMetadata.Partitions)
-                {
-                    var topicPartition = new TopicPartition(_topic, new Partition(partition.PartitionId));
-                    var offSet = consumer.QueryWatermarkOffsets(topicPartition, TimeSpan.FromSeconds(5));
-                    consumer.Commit(new TopicPartitionOffset[] {new TopicPartitionOffset(topicPartition, offSet.High)});
-                }
-                consumer.Close();
-            }
             
-            var senderQueue = new KafkaSenderQueue<Item>(new ProducerConfig(_clientConfig), _topic, new JsonItemSerializer());
-            var receiverQueue = new KafkaReceiverQueue<Item>(consumerConfig, _topic, new JsonItemSerializer());
+            var senderQueue = new KafkaSenderQueue<Item>(
+                new ProducerConfig(_clientConfig),
+                topic,
+                new JsonItemSerializer()
+            );
+            var receiverQueue = new KafkaReceiverQueue<Item>(
+                consumerConfig,
+                topic,
+                new JsonItemSerializer()
+            );
             receiverQueue.OpenAsync(CancellationToken).Wait();
 
             _senderQueue = senderQueue;
@@ -86,9 +61,96 @@ namespace Take.Elephant.Tests.Kafka
 
         protected override void Dispose(bool disposing)
         {
+            if (!disposing)
+             {
+                 base.Dispose(disposing);
+                 return;
+             }
+             
             _senderQueue?.Dispose();
             _receiverQueue?.Dispose();
+            DeleteCreatedTopics();
             base.Dispose(disposing);
+        }
+
+        private static void EnsureTopicExists(string topic)
+        {
+            using var adminClient = new AdminClientBuilder(_clientConfig).Build();
+
+            try
+            {
+                adminClient.CreateTopicsAsync(
+                    [
+                        new TopicSpecification
+                        {
+                            Name = topic,
+                            NumPartitions = 1,
+                            ReplicationFactor = 1,
+                        }
+                    ]
+                ).GetAwaiter().GetResult();
+            }
+            catch (CreateTopicsException ex)
+            {
+                if (
+                    ex.Results is not { Count: 1 }
+                    || ex.Results[0].Error.Code != ErrorCode.TopicAlreadyExists
+                )
+                {
+                    throw;
+                }
+            }
+        }
+
+        private void DeleteCreatedTopics()
+        {
+            if (_createdTopics.Count == 0)
+            {
+                return;
+            }
+
+            using var adminClient = new AdminClientBuilder(_clientConfig).Build();
+
+            foreach (var topic in _createdTopics)
+            {
+                try
+                {
+                    adminClient.DeleteTopicsAsync([topic]).GetAwaiter().GetResult();
+                }
+                catch (DeleteTopicsException ex)
+                {
+                    if (!ShouldIgnore(ex))
+                    {
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private static bool ShouldIgnore(DeleteTopicsException ex)
+        {
+            if (ex.Results == null)
+            {
+                return true;
+            }
+
+            foreach (var result in ex.Results)
+            {
+                if (result == null)
+                {
+                    continue;
+                }
+
+                if (
+                    result.Error.Code != ErrorCode.UnknownTopicOrPart
+                    && result.Error.Code != ErrorCode.TopicDeletionDisabled
+                )
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

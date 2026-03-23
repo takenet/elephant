@@ -10,7 +10,7 @@ namespace Take.Elephant.Kafka.SchemaRegistry
     /// A Kafka partition queue (partition sender and receiver) that uses Schema Registry for serialization/deserialization.
     /// </summary>
     /// <typeparam name="T">The type of items in the queue.</typeparam>
-    public class KafkaSchemaRegistryPartitionQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, IPartitionSenderQueue<T>, IOpenable, ICloseable, IDisposable where T : class
+    public class KafkaSchemaRegistryPartitionQueue<T> : IKafkaReceiverQueue<T>, IPartitionSenderQueue<T>, IOpenable, ICloseable, IDisposable where T : class
     {
         private readonly KafkaSchemaRegistryPartitionSenderQueue<T> _senderQueue;
         private readonly KafkaSchemaRegistryReceiverQueue<T> _receiverQueue;
@@ -110,10 +110,24 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             return _receiverQueue.DequeueOrDefaultAsync(cancellationToken);
         }
 
+        public Task<KafkaConsumedMessage<T>> DequeueWithHeadersOrDefaultAsync(
+            CancellationToken cancellationToken = default
+        )
+        {
+            return _receiverQueue.DequeueWithHeadersOrDefaultAsync(cancellationToken);
+        }
+
         /// <inheritdoc />
         public Task<T> DequeueAsync(CancellationToken cancellationToken = default)
         {
             return _receiverQueue.DequeueAsync(cancellationToken);
+        }
+
+        public Task<KafkaConsumedMessage<T>> DequeueWithHeadersAsync(
+            CancellationToken cancellationToken
+        )
+        {
+            return _receiverQueue.DequeueWithHeadersAsync(cancellationToken);
         }
 
         /// <inheritdoc />
@@ -134,13 +148,10 @@ namespace Take.Elephant.Kafka.SchemaRegistry
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                _senderQueue?.Dispose();
-                _receiverQueue?.Dispose();
-                _sharedSchemaRegistryClient?.Dispose();
-            }
+            if (!disposing) return;
+            _senderQueue?.Dispose();
+            _receiverQueue?.Dispose();
+            _sharedSchemaRegistryClient?.Dispose();
         }
     }
 }
-

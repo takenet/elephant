@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -13,14 +14,14 @@ namespace Take.Elephant.Kafka.SchemaRegistry
     /// A Kafka receiver queue that uses Schema Registry for deserialization.
     /// </summary>
     /// <typeparam name="T">The type of items in the queue.</typeparam>
-    public class KafkaSchemaRegistryReceiverQueue<T> : IReceiverQueue<T>, IBlockingReceiverQueue<T>, IOpenable, ICloseable, IDisposable where T : class
+    public class KafkaSchemaRegistryReceiverQueue<T> : IKafkaReceiverQueue<T>, IOpenable, ICloseable, IDisposable where T : class
     {
         private readonly IConsumer<Ignore, T> _consumer;
         private readonly ISchemaRegistryClient _schemaRegistryClient;
         private readonly bool _ownsSchemaRegistryClient;
         private readonly SemaphoreSlim _consumerStartSemaphore;
         private readonly CancellationTokenSource _cts;
-        private readonly Channel<T> _channel;
+        private readonly Channel<(T Item, Headers KafkaHeaders)> _channel;
         private Task _consumerTask;
         private bool _closed;
 
@@ -99,7 +100,7 @@ namespace Take.Elephant.Kafka.SchemaRegistry
 
             _consumerStartSemaphore = new SemaphoreSlim(1, 1);
             _cts = new CancellationTokenSource();
-            _channel = Channel.CreateBounded<T>(1);
+            _channel = Channel.CreateBounded<(T, Headers)>(1);
         }
 
         /// <summary>
@@ -122,7 +123,7 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             _ownsSchemaRegistryClient = false;
             _consumerStartSemaphore = new SemaphoreSlim(1, 1);
             _cts = new CancellationTokenSource();
-            _channel = Channel.CreateBounded<T>(1);
+            _channel = Channel.CreateBounded<(T, Headers)>(1);
         }
 
         /// <summary>
@@ -141,17 +142,40 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             await StartConsumerTaskIfNotAsync(cancellationToken);
             if (_channel.Reader.TryRead(out var item))
             {
-                return item;
+                return item.Item;
             }
 
-            return default;
+            return null;
+        }
+
+        public async Task<KafkaConsumedMessage<T>> DequeueWithHeadersOrDefaultAsync(
+            CancellationToken cancellationToken = default
+        )
+        {
+            await StartConsumerTaskIfNotAsync(cancellationToken);
+            if (_channel.Reader.TryRead(out var item))
+            {
+                return KafkaHeadersConverter.BuildConsumedMessage(item.Item, item.KafkaHeaders);
+            }
+
+            return null;
         }
 
         /// <inheritdoc />
         public virtual async Task<T> DequeueAsync(CancellationToken cancellationToken)
         {
             await StartConsumerTaskIfNotAsync(cancellationToken);
-            return await _channel.Reader.ReadAsync(cancellationToken);
+            var item = await _channel.Reader.ReadAsync(cancellationToken);
+            return item.Item;
+        }
+
+        public async Task<KafkaConsumedMessage<T>> DequeueWithHeadersAsync(
+            CancellationToken cancellationToken
+        )
+        {
+            await StartConsumerTaskIfNotAsync(cancellationToken);
+            var item = await _channel.Reader.ReadAsync(cancellationToken);
+            return KafkaHeadersConverter.BuildConsumedMessage(item.Item, item.KafkaHeaders);
         }
 
         /// <inheritdoc />
@@ -184,21 +208,25 @@ namespace Take.Elephant.Kafka.SchemaRegistry
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!disposing) return;
+            if (!_closed)
             {
-                if (!_closed)
+                _closed = true;
+                _cts.Cancel();
+                if (_consumerTask != null)
                 {
-                    _consumer.Close();
+                    _consumerTask.GetAwaiter().GetResult();
                 }
+                _consumer.Close();
+            }
 
-                _consumer.Dispose();
-                _cts.Dispose();
-                _consumerStartSemaphore.Dispose();
+            _consumer.Dispose();
+            _cts.Dispose();
+            _consumerStartSemaphore.Dispose();
 
-                if (_ownsSchemaRegistryClient)
-                {
-                    _schemaRegistryClient?.Dispose();
-                }
+            if (_ownsSchemaRegistryClient)
+            {
+                _schemaRegistryClient?.Dispose();
             }
         }
 
@@ -209,15 +237,12 @@ namespace Take.Elephant.Kafka.SchemaRegistry
             await _consumerStartSemaphore.WaitAsync(cancellationToken);
             try
             {
-                if (_consumerTask == null)
-                {
-                    _consumerTask = Task
-                        .Factory
-                        .StartNew(
-                            () => ConsumeAsync(_cts.Token),
-                            TaskCreationOptions.LongRunning)
-                        .Unwrap();
-                }
+                _consumerTask ??= Task
+                    .Factory
+                    .StartNew(
+                        () => ConsumeAsync(_cts.Token),
+                        TaskCreationOptions.LongRunning)
+                    .Unwrap();
             }
             finally
             {
@@ -237,7 +262,7 @@ namespace Take.Elephant.Kafka.SchemaRegistry
                 try
                 {
                     var result = _consumer.Consume(cancellationToken);
-                    await _channel.Writer.WriteAsync(result.Message.Value, cancellationToken);
+                    await _channel.Writer.WriteAsync((result.Message.Value, result.Message.Headers), cancellationToken);
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
@@ -262,4 +287,3 @@ namespace Take.Elephant.Kafka.SchemaRegistry
         }
     }
 }
-
