@@ -17,6 +17,12 @@ namespace Take.Elephant.Sql
 
         public DbConnection CreateConnection(string connectionString, SqlRetryLogicOption retryOptions = null)
         {
+            // Normalize the connection string using SqlConnectionStringBuilder to ensure a
+            // consistent connection pool key. This prevents pool proliferation caused by minor
+            // formatting differences (e.g., different key ordering, casing, or extra whitespace)
+            // in otherwise equivalent connection strings.
+            var normalizedConnectionString = new SqlConnectionStringBuilder(connectionString).ConnectionString;
+
             if (retryOptions != null)
             {
                 var retryProvider = SqlConfigurableRetryFactory.CreateFixedRetryProvider(new SqlRetryLogicOption
@@ -28,15 +34,14 @@ namespace Take.Elephant.Sql
                     TransientErrors = retryOptions.TransientErrors
                 });
 
-                var connection = new SqlConnection(connectionString)
+                var connection = new SqlConnection(normalizedConnectionString)
                 {
                     RetryLogicProvider = retryProvider
                 };
                 return connection;
             }
-            
-            return new SqlConnection(connectionString);
 
+            return new SqlConnection(normalizedConnectionString);
         }
 
         public string GetSqlStatementTemplate(SqlStatement sqlStatement)
