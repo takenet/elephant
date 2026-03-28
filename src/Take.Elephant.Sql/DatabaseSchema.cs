@@ -162,18 +162,20 @@ namespace Take.Elephant.Sql
         {
             foreach (var column in columns)
             {
-                var command = connection.CreateCommand();
-                command.CommandText = databaseDriver.GetSqlStatementTemplate(
-                    sqlStatement).Format(
-                        new
-                        {
-                            schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
-                            tableName = databaseDriver.ParseIdentifier(table.Name),
-                            columnDefinition = GetColumnsDefinitionSql(databaseDriver, table, new[] { column }).TrimEnd(',')
-                        });
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = databaseDriver.GetSqlStatementTemplate(
+                        sqlStatement).Format(
+                            new
+                            {
+                                schemaName = databaseDriver.ParseIdentifier(table.Schema ?? databaseDriver.DefaultSchema),
+                                tableName = databaseDriver.ParseIdentifier(table.Name),
+                                columnDefinition = GetColumnsDefinitionSql(databaseDriver, table, new[] { column }).TrimEnd(',')
+                            });
 
-                await command.ExecuteNonQueryAsync(cancellationToken);
-                (table as Table)?.RaiseSchemaChanged(command);
+                    await command.ExecuteNonQueryAsync(cancellationToken);
+                    (table as Table)?.RaiseSchemaChanged(command);
+                }
             }
         }
 
