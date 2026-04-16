@@ -37,5 +37,11 @@ namespace Take.Elephant.Kafka
 
             return new ReadOnlyDictionary<string, byte[]>(result);
         }
+
+        /// <summary>
+        /// Alias for <see cref="ToDictionary"/> — exposed for ackable message construction.
+        /// </summary>
+        internal static IReadOnlyDictionary<string, byte[]> ToReadOnlyDictionary(Headers headers)
+            => ToDictionary(headers);
     }
 }
