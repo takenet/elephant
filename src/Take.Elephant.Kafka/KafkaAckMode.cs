@@ -15,10 +15,10 @@ namespace Take.Elephant.Kafka
         Eager = 0,
 
         /// <summary>
-        /// Offset is stored only after the caller explicitly invokes
-        /// <see cref="KafkaAckableMessage{T}.AcknowledgeAsync"/> following
-        /// successful processing. If the POD restarts before ack, the message
-        /// will be redelivered.
+        /// Offset is committed to the broker only after the caller explicitly invokes
+        /// <see cref="KafkaAckableMessage{T}.AcknowledgeAsync"/> following successful
+        /// processing. If the process restarts before ack, the message will be
+        /// redelivered (at-least-once delivery guarantee).
         /// </summary>
         OnSuccess = 1,
 
