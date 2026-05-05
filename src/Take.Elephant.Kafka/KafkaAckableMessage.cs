@@ -44,9 +44,16 @@ namespace Take.Elephant.Kafka
         public bool IsAcknowledged => _acknowledged == 1;
 
         /// <summary>
-        /// Commits the offset to the broker. Idempotent on success; if the commit throws,
-        /// <see cref="IsAcknowledged"/> remains <see langword="false"/> allowing retry.
+        /// Advances the local HWM and, when all preceding offsets are contiguous, commits to the broker.
+        /// The commit may be suppressed if earlier offsets are still pending, or if the partition was
+        /// revoked or the consumer closed before this call completed.
+        /// Idempotent on success; if the commit throws, <see cref="IsAcknowledged"/> remains
+        /// <see langword="false"/> so the caller can retry on the same instance.
         /// </summary>
+        /// <remarks>
+        /// Not safe for concurrent calls on the same instance. Each <see cref="KafkaAckableMessage{T}"/>
+        /// is intended to be owned and acknowledged by a single task.
+        /// </remarks>
         public Task AcknowledgeAsync(CancellationToken cancellationToken = default)
         {
             // Fast path: already successfully acknowledged — no-op.

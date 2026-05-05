@@ -41,7 +41,8 @@ namespace Take.Elephant.Kafka
         }
 
         // IDeserializer<string> is required (not optional) to avoid CLR ambiguity with the 5-param overload above.
-        public KafkaReceiverQueue(string bootstrapServers, string topic, string groupId, ISerializer<T> serializer, IDeserializer<string> deserializer, KafkaAckMode ackMode)
+        // internal: callers must use KafkaReceiverQueue.Create* factory to get the correct narrowed interface.
+        internal KafkaReceiverQueue(string bootstrapServers, string topic, string groupId, ISerializer<T> serializer, IDeserializer<string> deserializer, KafkaAckMode ackMode)
             : this(new ConsumerConfig() { BootstrapServers = bootstrapServers, GroupId = groupId }, topic, serializer, deserializer, ackMode)
         {
         }
@@ -53,7 +54,8 @@ namespace Take.Elephant.Kafka
         }
 
         // IDeserializer<string> is required (not optional) to avoid CLR ambiguity with the 4-param overload above.
-        public KafkaReceiverQueue(
+        // internal: callers must use KafkaReceiverQueue.Create* factory to get the correct narrowed interface.
+        internal KafkaReceiverQueue(
             ConsumerConfig consumerConfig,
             string topic,
             ISerializer<T> serializer,
@@ -441,22 +443,41 @@ namespace Take.Elephant.Kafka
                 try
                 {
                     var result = _consumer.Consume(cancellationToken);
-                    var resultValue = _serializer.Deserialize(result.Message.Value);
 
                     if (_ackMode == KafkaAckMode.Eager)
                     {
+                        var resultValue = _serializer.Deserialize(result.Message.Value);
                         await _channel.Writer.WriteAsync((resultValue, result.Message.Headers), cancellationToken);
                     }
                     else
                     {
                         var tp = result.TopicPartition;
                         var offset = result.Offset.Value;
-                        // Track before channel write: no ack can race ahead of its Track() call.
                         var tracker = _partitionTrackers.GetOrAdd(tp, _ => new PartitionCommitTracker());
+                        // Track before deserialize: if Deserialize throws for offset N, the tracker
+                        // would never see N, allowing the next offset to bootstrap/advance past it
+                        // and silently skip the poison record on commit.
                         tracker.Track(offset);
+                        T resultValue;
+                        try
+                        {
+                            resultValue = _serializer.Deserialize(result.Message.Value);
+                        }
+                        catch
+                        {
+                            // Auto-advance HWM past the poison record so the tracker never blocks
+                            // future commits waiting for an offset that will never be acked.
+                            // The exception still propagates to the ConsumerFailed handler.
+                            tracker.Acknowledge(offset);
+                            throw;
+                        }
+                        // Track before channel write: no ack can race ahead of its Track() call.
                         await _ackableChannel.Writer.WriteAsync(
                             (resultValue, result.Message.Headers, tp, offset, tracker),
                             cancellationToken);
+                        // Clear the state-machine field so a revoked tracker becomes GC-eligible
+                        // before the loop blocks again at _consumer.Consume().
+                        tracker = null;
                     }
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -509,37 +530,38 @@ namespace Take.Elephant.Kafka
     }
 
     /// <summary>
-    /// Type-safe factory for <see cref="KafkaReceiverQueue{T}"/>. Returns the narrowest interface
-    /// for the requested <see cref="KafkaAckMode"/>, making accidental DI misregistration a compile-time error.
+    /// Factory for <see cref="KafkaReceiverQueue{T}"/>. Returns the concrete type so callers
+    /// retain access to lifecycle operations such as <see cref="KafkaReceiverQueue{T}.OpenAsync"/>,
+    /// <see cref="KafkaReceiverQueue{T}.CloseAsync"/>, and <see cref="KafkaReceiverQueue{T}.Dispose"/>.
     /// </summary>
     public static class KafkaReceiverQueue
     {
-        public static IKafkaReceiverQueue<T> CreateEager<T>(
+        public static KafkaReceiverQueue<T> CreateEager<T>(
             string bootstrapServers, string topic, string groupId,
             ISerializer<T> serializer, IDeserializer<string> deserializer = null)
             => new KafkaReceiverQueue<T>(bootstrapServers, topic, groupId, serializer, deserializer, KafkaAckMode.Eager);
 
-        public static IKafkaReceiverQueue<T> CreateEager<T>(
+        public static KafkaReceiverQueue<T> CreateEager<T>(
             ConsumerConfig config, string topic,
             ISerializer<T> serializer, IDeserializer<string> deserializer = null)
             => new KafkaReceiverQueue<T>(config, topic, serializer, deserializer, KafkaAckMode.Eager);
 
-        public static IKafkaAckableReceiverQueue<T> CreateOnSuccess<T>(
+        public static KafkaReceiverQueue<T> CreateOnSuccess<T>(
             string bootstrapServers, string topic, string groupId,
             ISerializer<T> serializer, IDeserializer<string> deserializer = null)
             => new KafkaReceiverQueue<T>(bootstrapServers, topic, groupId, serializer, deserializer, KafkaAckMode.OnSuccess);
 
-        public static IKafkaAckableReceiverQueue<T> CreateOnSuccess<T>(
+        public static KafkaReceiverQueue<T> CreateOnSuccess<T>(
             ConsumerConfig config, string topic,
             ISerializer<T> serializer, IDeserializer<string> deserializer = null)
             => new KafkaReceiverQueue<T>(config, topic, serializer, deserializer, KafkaAckMode.OnSuccess);
 
-        public static IKafkaAckableReceiverQueue<T> CreateManual<T>(
+        public static KafkaReceiverQueue<T> CreateManual<T>(
             string bootstrapServers, string topic, string groupId,
             ISerializer<T> serializer, IDeserializer<string> deserializer = null)
             => new KafkaReceiverQueue<T>(bootstrapServers, topic, groupId, serializer, deserializer, KafkaAckMode.Manual);
 
-        public static IKafkaAckableReceiverQueue<T> CreateManual<T>(
+        public static KafkaReceiverQueue<T> CreateManual<T>(
             ConsumerConfig config, string topic,
             ISerializer<T> serializer, IDeserializer<string> deserializer = null)
             => new KafkaReceiverQueue<T>(config, topic, serializer, deserializer, KafkaAckMode.Manual);

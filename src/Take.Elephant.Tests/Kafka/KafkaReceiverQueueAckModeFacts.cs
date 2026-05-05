@@ -414,36 +414,49 @@ namespace Take.Elephant.Tests.Kafka
             await queue.CloseAsync(CancellationToken.None);
         }
 
-        // ─── Factory class — compile-time type safety ─────────────────────────────
+        // ─── Factory class — concrete return type and lifecycle access ──────────
 
         [Fact]
-        public void Factory_CreateEager_ReturnsIKafkaReceiverQueue()
+        public void Factory_CreateEager_ReturnsConcreteType_AssignableToIKafkaReceiverQueue()
         {
-            // The factory must return the narrowest interface for the requested mode.
-            // CreateEager → IKafkaReceiverQueue<T>
-            // CreateOnSuccess/CreateManual → IKafkaAckableReceiverQueue<T>
-            // Because IKafkaAckableReceiverQueue<T> does NOT extend IKafkaReceiverQueue<T>,
-            // assigning the result of CreateOnSuccess/CreateManual to IKafkaReceiverQueue<T>
-            // is a compile-time error (CS0266) — the factory enforces this at the type level.
+            // Factory returns the concrete KafkaReceiverQueue<T> so callers have direct
+            // access to lifecycle methods (OpenAsync, CloseAsync, Dispose) without cast.
+            // The concrete type is still assignable to IKafkaReceiverQueue<T> and
+            // IKafkaAckableReceiverQueue<T> for callers that want the narrower interface.
             var config = new ConsumerConfig { BootstrapServers = "localhost:9092", GroupId = "g" };
             var serializer = Substitute.For<ISerializer<TestItem>>();
 
-            IKafkaReceiverQueue<TestItem> eager = KafkaReceiverQueue.CreateEager<TestItem>(config, "t", serializer);
+            KafkaReceiverQueue<TestItem> eager = KafkaReceiverQueue.CreateEager<TestItem>(config, "t", serializer);
             Assert.NotNull(eager);
+            Assert.IsAssignableFrom<IKafkaReceiverQueue<TestItem>>(eager);
 
-            IKafkaAckableReceiverQueue<TestItem> onSuccess = KafkaReceiverQueue.CreateOnSuccess<TestItem>(config, "t", serializer);
+            KafkaReceiverQueue<TestItem> onSuccess = KafkaReceiverQueue.CreateOnSuccess<TestItem>(config, "t", serializer);
             Assert.NotNull(onSuccess);
+            Assert.IsAssignableFrom<IKafkaAckableReceiverQueue<TestItem>>(onSuccess);
 
-            IKafkaAckableReceiverQueue<TestItem> manual = KafkaReceiverQueue.CreateManual<TestItem>(config, "t", serializer);
+            KafkaReceiverQueue<TestItem> manual = KafkaReceiverQueue.CreateManual<TestItem>(config, "t", serializer);
             Assert.NotNull(manual);
+            Assert.IsAssignableFrom<IKafkaAckableReceiverQueue<TestItem>>(manual);
 
-            // The ackable references must NOT be implicitly castable to IKafkaReceiverQueue<T>.
-            // (Verified at compile time by the explicit type annotations above — if the factory
-            // returned IKafkaReceiverQueue<T>, the lines above would not compile.)
+            eager.Dispose();
+            onSuccess.Dispose();
+            manual.Dispose();
+        }
 
-            (eager as IDisposable)?.Dispose();
-            (onSuccess as IDisposable)?.Dispose();
-            (manual as IDisposable)?.Dispose();
+        [Fact]
+        public async Task Factory_ConcreteReturn_LifecycleAccessibleWithoutCast()
+        {
+            // Verifies that OpenAsync, CloseAsync and Dispose are accessible directly
+            // on the factory return value — no cast to IOpenable/ICloseable/IDisposable needed.
+            var config = new ConsumerConfig { BootstrapServers = "localhost:9092", GroupId = "g" };
+            var serializer = Substitute.For<ISerializer<TestItem>>();
+
+            KafkaReceiverQueue<TestItem> queue = KafkaReceiverQueue.CreateEager<TestItem>(config, "t", serializer);
+
+            // All three lifecycle methods must be callable directly (compile-time proof).
+            await queue.OpenAsync(CancellationToken.None);
+            await queue.CloseAsync(CancellationToken.None);
+            queue.Dispose();
         }
 
         // ─── Concurrent ack ordering — monotonic commit ───────────────────────────
