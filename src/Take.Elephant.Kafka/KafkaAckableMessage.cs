@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 namespace Take.Elephant.Kafka
 {
     /// <summary>
-    /// A Kafka message that carries the payload, headers, and a delegate to acknowledge the offset.
-    /// The acknowledge operation commits the offset to the broker immediately via synchronous
-    /// <c>Commit(IEnumerable&lt;TopicPartitionOffset&gt;)</c>, bypassing the local offset store.
-    /// Call <see cref="AcknowledgeAsync"/> only after the business processing is fully completed.
+    /// A Kafka message envelope with payload, headers, and an <see cref="AcknowledgeAsync"/> delegate
+    /// that commits the offset to the broker. Call only after processing is fully complete.
     /// </summary>
     /// <typeparam name="T">Payload type.</typeparam>
     public sealed class KafkaAckableMessage<T>
@@ -33,29 +31,21 @@ namespace Take.Elephant.Kafka
             _acknowledge = acknowledge ?? throw new ArgumentNullException(nameof(acknowledge));
         }
 
-        /// <summary>The deserialized payload.</summary>
         public T Item { get; }
 
-        /// <summary>Kafka message headers.</summary>
         public IReadOnlyDictionary<string, byte[]> Headers { get; }
 
-        /// <summary>Topic the message was consumed from.</summary>
         public string Topic { get; }
 
-        /// <summary>Partition the message was consumed from.</summary>
         public int Partition { get; }
 
-        /// <summary>Offset of the message in the partition.</summary>
         public long Offset { get; }
 
-        /// <summary>Whether this message has already been acknowledged.</summary>
         public bool IsAcknowledged => _acknowledged == 1;
 
         /// <summary>
-        /// Acknowledges the message by committing its offset to the broker.
-        /// Idempotent: once the commit succeeds, subsequent calls are no-ops.
-        /// If the commit throws, <see cref="IsAcknowledged"/> remains <see langword="false"/>
-        /// so the caller may retry by calling this method again.
+        /// Commits the offset to the broker. Idempotent on success; if the commit throws,
+        /// <see cref="IsAcknowledged"/> remains <see langword="false"/> allowing retry.
         /// </summary>
         public Task AcknowledgeAsync(CancellationToken cancellationToken = default)
         {

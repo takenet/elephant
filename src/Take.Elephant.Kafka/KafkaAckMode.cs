@@ -6,26 +6,20 @@ namespace Take.Elephant.Kafka
     public enum KafkaAckMode
     {
         /// <summary>
-        /// Legacy default. Auto-commit is managed by the Confluent client
-        /// (<c>enable.auto.commit=true</c>). Offset is committed periodically
-        /// regardless of processing outcome. If the offset is auto-committed
-        /// before processing completes, a crash before completion may cause
-        /// message loss (message committed but not processed).
+        /// Legacy default. Offset committed by Confluent auto-commit before processing completes.
+        /// A pod crash after commit but before processing finishes causes silent message loss.
         /// </summary>
         Eager = 0,
 
         /// <summary>
-        /// Offset is committed to the broker only after the caller explicitly invokes
-        /// <see cref="KafkaAckableMessage{T}.AcknowledgeAsync"/> following successful
-        /// processing. If the process restarts before ack, the message will be
-        /// redelivered (at-least-once delivery guarantee).
+        /// Offset committed only after <see cref="KafkaAckableMessage{T}.AcknowledgeAsync"/> is called.
+        /// At-least-once delivery: message is redelivered if the process restarts before ack.
         /// </summary>
         OnSuccess = 1,
 
         /// <summary>
-        /// Same as <see cref="OnSuccess"/> but the caller has full, explicit control
-        /// over when to acknowledge. Useful when acknowledgement depends on downstream
-        /// conditions (e.g., waiting for a secondary confirmation).
+        /// Same semantics as <see cref="OnSuccess"/>; the name signals that acknowledgement
+        /// timing is fully controlled by the application.
         /// </summary>
         Manual = 2,
     }
