@@ -221,19 +221,20 @@ namespace Take.Elephant.Tests.Kafka
         [Fact]
         public void Track_BackwardSeek_StaleAckAtOverlappingOffset_Discarded()
         {
-            // Key scenario: an in-flight ack delegate holds an offset that falls WITHIN the
-            // new epoch's range (offset >= new epochStart), but was tracked in the old epoch.
-            // The old _epochStart check alone would NOT catch this; only epoch-id validation does.
+            // Key scenario: in-flight ack delegates hold offsets that fall WITHIN the new epoch's
+            // range (offset >= new epochStart), but were tracked in the old epoch. The old
+            // _epochStart check alone would NOT catch these; only epoch-id validation does.
             var tracker = new PartitionCommitTracker();
-            tracker.Track(50);
-            var staleEpoch55 = tracker.Track(55); // epoch 0, offset 55
+            var staleEpoch = tracker.Track(50);  // epoch 0
+            tracker.Track(55);                   // also epoch 0, offset 55 > epochStart will be 40
 
             // Backward seek to 40 → epochStart=40, epoch incremented to 1.
             var newEpoch40 = tracker.Track(40);
 
-            // Stale ack for offset 55 (epoch 0): 55 >= epochStart(40) so the old offset-comparison
-            // guard would have accepted it — the epoch-id check correctly rejects it.
-            Assert.Null(tracker.Acknowledge(55, staleEpoch55));
+            // Stale acks from epoch 0: offsets 50 and 55 are both >= epochStart(40), so the
+            // old offset-comparison guard would have accepted them — the epoch-id check rejects both.
+            Assert.Null(tracker.Acknowledge(50, staleEpoch));
+            Assert.Null(tracker.Acknowledge(55, staleEpoch));
 
             // Legitimate ack in the new epoch commits correctly.
             Assert.Equal(41L, tracker.Acknowledge(40, newEpoch40));

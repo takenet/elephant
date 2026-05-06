@@ -95,6 +95,11 @@ namespace Take.Elephant.Kafka
                 if (epochId != _currentEpoch)
                     return null;
 
+                // Defense-in-depth: also reject any offset that predates the current epoch's start,
+                // guarding against edge cases where epochs match but the offset is otherwise stale.
+                if (offset < _epochStart)
+                    return null;
+
                 // Discard already-committed offsets to prevent unbounded _acked growth on duplicate acks.
                 if (offset <= _lastCommitted)
                     return null;
