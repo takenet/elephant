@@ -14,7 +14,9 @@ namespace Take.Elephant.Kafka
     /// <summary>
     /// Kafka receiver queue with three offset-commit modes: <see cref="KafkaAckMode.Eager"/> (auto-commit),
     /// <see cref="KafkaAckMode.OnSuccess"/>, and <see cref="KafkaAckMode.Manual"/>.
-    /// Prefer the <see cref="KafkaReceiverQueue"/> static factory for type-safe construction.
+    /// Prefer the <see cref="KafkaReceiverQueue"/> static factory to guarantee the correct ack-mode
+    /// configuration is applied; direct constructor calls may bypass required settings such as
+    /// <c>EnableAutoCommit = false</c>.
     /// </summary>
     public class KafkaReceiverQueue<T> : IKafkaAckableReceiverQueue<T>, IKafkaReceiverQueue<T>, IOpenable, ICloseable, IDisposable
     {
@@ -533,6 +535,14 @@ namespace Take.Elephant.Kafka
     /// Factory for <see cref="KafkaReceiverQueue{T}"/>. Returns the concrete type so callers
     /// retain access to lifecycle operations such as <see cref="KafkaReceiverQueue{T}.OpenAsync"/>,
     /// <see cref="KafkaReceiverQueue{T}.CloseAsync"/>, and <see cref="KafkaReceiverQueue{T}.Dispose"/>.
+    /// <para>
+    /// Note: <see cref="KafkaReceiverQueue{T}"/> implements both <see cref="IKafkaReceiverQueue{T}"/>
+    /// and <see cref="IKafkaAckableReceiverQueue{T}"/>. Assigning a non-Eager instance to
+    /// <see cref="IKafkaReceiverQueue{T}"/> and calling <c>Dequeue*</c> methods will throw
+    /// <see cref="InvalidOperationException"/> at runtime. Always use the concrete type or
+    /// <see cref="IKafkaAckableReceiverQueue{T}"/> for <see cref="KafkaAckMode.OnSuccess"/>
+    /// and <see cref="KafkaAckMode.Manual"/> instances.
+    /// </para>
     /// </summary>
     public static class KafkaReceiverQueue
     {
