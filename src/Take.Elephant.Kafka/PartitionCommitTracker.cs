@@ -17,10 +17,17 @@ namespace Take.Elephant.Kafka
         private readonly object _lock = new object();
         private long _lastCommitted = long.MinValue; // uninitialized sentinel
         private long _lastTracked   = long.MinValue; // last offset seen in Track()
-        private long _epochStart    = long.MinValue; // lowest valid offset for current assignment; stale acks below this are discarded
+        private long _epochStart    = long.MinValue; // lowest valid offset for current assignment
+        // Monotonically increasing counter: incremented on every backward seek so that all
+        // in-flight ack delegates from the old epoch are rejected, even for offsets that fall
+        // within the new epoch's offset range.
+        private long _currentEpoch  = 0;
 
-        /// <summary>Records a consumed offset. Must be called before dispatching downstream.</summary>
-        public void Track(long offset)
+        /// <summary>
+        /// Records a consumed offset. Must be called before dispatching downstream.
+        /// Returns the epoch id that must be passed to <see cref="Acknowledge"/> for this offset.
+        /// </summary>
+        public long Track(long offset)
         {
             lock (_lock)
             {
@@ -30,7 +37,7 @@ namespace Take.Elephant.Kafka
                     _lastCommitted = offset - 1;
                     _lastTracked   = offset;
                     _epochStart    = offset;
-                    return;
+                    return _currentEpoch;
                 }
 
                 if (offset != _lastTracked + 1)
@@ -38,11 +45,13 @@ namespace Take.Elephant.Kafka
                     if (offset < _lastTracked)
                     {
                         // Backward seek: reset HWM, acked set, and phantom-gap queue.
-                        // Advance epoch boundary to discard in-flight acks from the old position.
+                        // Advance epoch to invalidate ALL in-flight ack delegates from the old epoch,
+                        // including those whose offset happens to fall within the new epoch's range.
                         _lastCommitted = offset - 1;
                         _acked.Clear();
                         _phantomGaps.Clear();
                         _epochStart = offset;
+                        _currentEpoch++;
                     }
                     else if (_acked.Count == 0 && _lastCommitted == _lastTracked)
                     {
@@ -58,14 +67,17 @@ namespace Take.Elephant.Kafka
                 }
 
                 _lastTracked = offset;
+                return _currentEpoch;
             }
         }
 
         /// <summary>
-        /// Marks <paramref name="offset"/> as acknowledged. Returns <c>hwm + 1</c> (Kafka commit convention)
-        /// when a contiguous run is complete; otherwise <see langword="null"/>.
+        /// Marks <paramref name="offset"/> as acknowledged for the given <paramref name="epochId"/>.
+        /// Returns <c>hwm + 1</c> (Kafka commit convention) when a contiguous run is complete;
+        /// otherwise <see langword="null"/>.
+        /// Acks from a superseded epoch (e.g. issued before a backward seek) are silently discarded.
         /// </summary>
-        public long? Acknowledge(long offset)
+        public long? Acknowledge(long offset, long epochId)
         {
             lock (_lock)
             {
@@ -77,8 +89,14 @@ namespace Take.Elephant.Kafka
                     _epochStart    = offset;
                 }
 
-                // Discard stale acks from a previous epoch; they'd cause a memory leak or spurious HWM advance.
-                if (offset < _epochStart)
+                // Discard stale acks from a superseded epoch. This catches both offset-below-epochStart
+                // stale acks AND in-flight acks for offsets that fall within the new epoch's range but
+                // were tracked before the backward seek occurred.
+                if (epochId != _currentEpoch)
+                    return null;
+
+                // Discard already-committed offsets to prevent unbounded _acked growth on duplicate acks.
+                if (offset <= _lastCommitted)
                     return null;
 
                 _acked.Add(offset);

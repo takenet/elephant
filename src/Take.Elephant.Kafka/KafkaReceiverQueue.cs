@@ -32,7 +32,7 @@ namespace Take.Elephant.Kafka
         private SemaphoreSlim _consumerStartSemaphore;
         private CancellationTokenSource _cts;
         private Channel<(T Item, Headers KafkaHeaders)> _channel;
-        private Channel<(T Item, Headers KafkaHeaders, TopicPartition Partition, long Offset, PartitionCommitTracker Tracker)> _ackableChannel;
+        private Channel<(T Item, Headers KafkaHeaders, TopicPartition Partition, long Offset, PartitionCommitTracker Tracker, long Epoch)> _ackableChannel;
         private Task _consumerTask;
         private volatile bool _closed;
 
@@ -184,7 +184,7 @@ namespace Take.Elephant.Kafka
                 _partitionTrackers = partitionTrackers ?? new ConcurrentDictionary<TopicPartition, PartitionCommitTracker>();
                 _partitionCommitLocks = partitionCommitLocks ?? new ConcurrentDictionary<TopicPartition, SemaphoreSlim>();
                 _partitionMaxCommitted = partitionMaxCommitted ?? new ConcurrentDictionary<TopicPartition, long>();
-                _ackableChannel = Channel.CreateBounded<(T, Headers, TopicPartition, long, PartitionCommitTracker)>(1);
+                _ackableChannel = Channel.CreateBounded<(T, Headers, TopicPartition, long, PartitionCommitTracker, long)>(1);
             }
         }
 
@@ -276,13 +276,15 @@ namespace Take.Elephant.Kafka
         }
 
         private KafkaAckableMessage<T> BuildAckableMessage(
-            (T Item, Headers KafkaHeaders, TopicPartition Partition, long Offset, PartitionCommitTracker Tracker) entry)
+            (T Item, Headers KafkaHeaders, TopicPartition Partition, long Offset, PartitionCommitTracker Tracker, long Epoch) entry)
         {
             var tp = entry.Partition;
             var offset = entry.Offset;
-            // Capture tracker at dequeue time; a post-dequeue rebalance gets a new tracker instance,
-            // so stale ack delegates reference the old one and get rejected by the revocation check.
+            // Capture tracker and epoch at dequeue time; a post-dequeue rebalance gets a new tracker
+            // instance, and a backward seek increments the epoch, so stale ack delegates are rejected
+            // both by the revocation check and by the epoch mismatch guard in Acknowledge().
             var capturedTracker = entry.Tracker;
+            var capturedEpoch = entry.Epoch;
             var headers = KafkaHeadersConverter.ToReadOnlyDictionary(entry.KafkaHeaders);
 
             // Cached commit offset: reused on retry if a preceding Commit() threw,
@@ -298,7 +300,7 @@ namespace Take.Elephant.Kafka
                 async ct =>
                 {
                     // Use cached value from a failed retry, or compute fresh via tracker.
-                    var commitOffset = cachedCommitOffset ?? capturedTracker.Acknowledge(offset);
+                    var commitOffset = cachedCommitOffset ?? capturedTracker.Acknowledge(offset, capturedEpoch);
                     if (!commitOffset.HasValue)
                         return;
 
@@ -459,7 +461,7 @@ namespace Take.Elephant.Kafka
                         // Track before deserialize: if Deserialize throws for offset N, the tracker
                         // would never see N, allowing the next offset to bootstrap/advance past it
                         // and silently skip the poison record on commit.
-                        tracker.Track(offset);
+                        var epoch = tracker.Track(offset);
                         T resultValue;
                         try
                         {
@@ -470,12 +472,12 @@ namespace Take.Elephant.Kafka
                             // Auto-advance HWM past the poison record so the tracker never blocks
                             // future commits waiting for an offset that will never be acked.
                             // The exception still propagates to the ConsumerFailed handler.
-                            tracker.Acknowledge(offset);
+                            tracker.Acknowledge(offset, epoch);
                             throw;
                         }
                         // Track before channel write: no ack can race ahead of its Track() call.
                         await _ackableChannel.Writer.WriteAsync(
-                            (resultValue, result.Message.Headers, tp, offset, tracker),
+                            (resultValue, result.Message.Headers, tp, offset, tracker, epoch),
                             cancellationToken);
                         // Clear the state-machine field so a revoked tracker becomes GC-eligible
                         // before the loop blocks again at _consumer.Consume().
