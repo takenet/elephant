@@ -37,5 +37,8 @@ namespace Take.Elephant.Kafka
 
             return new ReadOnlyDictionary<string, byte[]>(result);
         }
+
+        internal static IReadOnlyDictionary<string, byte[]> ToReadOnlyDictionary(Headers headers)
+            => ToDictionary(headers);
     }
 }
