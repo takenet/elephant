@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using SmartFormat;
+using System.Text.RegularExpressions;
 
 namespace Take.Elephant
 {
@@ -41,7 +41,17 @@ namespace Take.Elephant
         /// <param name="format"></param>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static string Format(this string format, object source) => Smart.Format(format, source);
+        public static string Format(this string format, object source)
+        {
+            if (format == null) throw new ArgumentNullException(nameof(format));
+            if (source == null) return format;
+            return Regex.Replace(format, @"\{(\w+)\}", m =>
+            {
+                var prop = source.GetType().GetProperty(m.Groups[1].Value,
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                return prop?.GetValue(source)?.ToString() ?? string.Empty;
+            });
+        }
 
         /// <summary>
         /// Check if the strings are equals ignoring the casing.
