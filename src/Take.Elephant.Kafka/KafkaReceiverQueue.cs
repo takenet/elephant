@@ -1,6 +1,6 @@
 using Confluent.Kafka;
-using Newtonsoft.Json;
 using System;
+using System.Text.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -197,8 +197,8 @@ namespace Take.Elephant.Kafka
     {
         public T Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
         {
-            var json = Deserializers.Utf8.Deserialize(data, isNull, context);
-            return JsonConvert.DeserializeObject<T>(json);
+            if (isNull) return default;
+            return JsonSerializer.Deserialize<T>(data) ?? default;
         }
     }
 

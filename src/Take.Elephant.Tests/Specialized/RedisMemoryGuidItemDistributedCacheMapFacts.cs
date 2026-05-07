@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Take.Elephant.Memory;
 using Take.Elephant.Redis;
 using Take.Elephant.Redis.Serializers;
@@ -52,12 +52,12 @@ namespace Take.Elephant.Tests.Specialized
     {
         public SynchronizationEvent<Guid> Deserialize(string value)
         {
-            return JsonConvert.DeserializeObject<SynchronizationEvent<Guid>>(value);
+            return JsonSerializer.Deserialize<SynchronizationEvent<Guid>>(value) ?? default;
         }
 
         public string Serialize(SynchronizationEvent<Guid> value)
         {
-            return JsonConvert.SerializeObject(value);
+            return JsonSerializer.Serialize(value);
         }
     }
 }

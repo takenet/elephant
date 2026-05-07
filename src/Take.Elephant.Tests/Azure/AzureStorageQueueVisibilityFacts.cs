@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Azure.Storage.Queues;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Take.Elephant.Azure;
 using Xunit;
 
@@ -111,12 +111,12 @@ namespace Take.Elephant.Tests.Azure
         {
             public Item Deserialize(string value)
             {
-                return JsonConvert.DeserializeObject<Item>(value);
+                return JsonSerializer.Deserialize<Item>(value) ?? default;
             }
 
             public string Serialize(Item value)
             {
-                return JsonConvert.SerializeObject(value);
+                return JsonSerializer.Serialize(value);
             }
         }
     }
