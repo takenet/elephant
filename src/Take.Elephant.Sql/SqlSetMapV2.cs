@@ -85,6 +85,11 @@ namespace Take.Elephant.Sql
                 throw;
             }
 
+                if (success)
+                    transaction.Commit();
+                else
+                    transaction.Rollback();
+
                 return success;
             }
         }
