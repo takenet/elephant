@@ -58,31 +58,35 @@ namespace Take.Elephant.Sql
             if (!overwrite && await ContainsAsync(keyColumnValues, connection, linkedCts.Token))
                 return false;
 
-            using var transaction = connection.BeginTransaction(_addIsolationLevel);
+            using(var transaction = connection.BeginTransaction(_addIsolationLevel)){
             // Unlike SqlSetMap, overwrite never deletes existing rows first; items already present are left untouched.
             var success = true;
-            var items = value.AsEnumerableAsync(linkedCts.Token);
-            await items.ForEachAwaitAsync(
-                async item =>
-                {
-                    if (!success)
-                        return;
-                    var columnValues = GetColumnValues(key, item);
-                    var itemKeyColumnValues = GetKeyColumnValues(columnValues);
+            try
+            {
+                var items = value.AsEnumerableAsync(linkedCts.Token);
+                await items.ForEachAwaitAsync(
+                    async item =>
+                    {
+                        if (!success)
+                            return;
+                        var columnValues = GetColumnValues(key, item);
+                        var itemKeyColumnValues = GetKeyColumnValues(columnValues);
 
-                    using var command = connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table, itemKeyColumnValues, columnValues);
-                    command.Transaction = transaction;
-                    success =
-                        await command.ExecuteNonQueryAsync(linkedCts.Token).ConfigureAwait(false) > 0;
-                },
-                linkedCts.Token);
-
-            if (success)
-                transaction.Commit();
-            else
+                        using var command = connection.CreateInsertWhereNotExistsCommand(DatabaseDriver, Table, itemKeyColumnValues, columnValues);
+                        command.Transaction = transaction;
+                        success =
+                            await command.ExecuteNonQueryAsync(linkedCts.Token).ConfigureAwait(false) > 0;
+                    },
+                    linkedCts.Token);
+            }
+            catch
+            {
                 transaction.Rollback();
+                throw;
+            }
 
-            return success;
+                return success;
+            }
         }
 
         public virtual async Task<ISet<TItem>> GetValueOrDefaultAsync(TKey key,
